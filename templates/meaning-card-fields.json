@@ -1,0 +1,95 @@
+{
+  "front": [
+    {
+      "id": "momentId",
+      "label": "Moment ID",
+      "layout": "third",
+      "hint": "A unique code such as P07-M03 (participant 7, moment 3), so the card can be cited later without naming anyone."
+    },
+    {
+      "id": "setting",
+      "label": "Setting",
+      "layout": "third",
+      "hint": "Where this happened and who else was present."
+    },
+    {
+      "id": "time",
+      "label": "Time",
+      "layout": "third",
+      "hint": "Date and clock time, or the timestamp in the recording."
+    },
+    {
+      "id": "happening",
+      "label": "What was happening",
+      "layout": "full",
+      "hint": "The situation just before and during the moment, in plain words."
+    },
+    {
+      "id": "exactWords",
+      "label": "Exact words (original language)",
+      "layout": "full",
+      "printHint": "as spoken, do not translate",
+      "hint": "The words as spoken, in the language spoken, including code-switches and exclamations such as “arre” or “haye”. Do not translate them here."
+    },
+    {
+      "id": "observed",
+      "label": "What was observed",
+      "layout": "full",
+      "hint": "Gesture, expression, tone, pause, or action: what you could see or hear, not what you concluded."
+    },
+    {
+      "id": "guess",
+      "label": "Researcher’s guess at meaning",
+      "layout": "full",
+      "printHint": "a guess, not a finding",
+      "hint": "Your inference, written down as a guess. It is not a finding until the back of the card says it is."
+    }
+  ],
+  "back": [
+    {
+      "id": "asked",
+      "label": "What was asked to confirm",
+      "layout": "full",
+      "hint": "The question you actually asked the participant, in the language you asked it."
+    },
+    {
+      "id": "explanation",
+      "label": "Participant’s explanation",
+      "layout": "full",
+      "hint": "Their answer in their own words, in their own language."
+    },
+    {
+      "id": "status",
+      "label": "Correction status",
+      "layout": "choice",
+      "options": ["Confirmed", "Corrected", "Disagreed", "Not yet checked"],
+      "hint": "Did the participant confirm your guess, correct it, disagree with it, or has it not been checked yet?"
+    },
+    {
+      "id": "otherMeaning",
+      "label": "Another possible meaning",
+      "layout": "full",
+      "hint": "A rival reading you cannot yet rule out. Writing it down keeps the first reading from hardening."
+    },
+    {
+      "id": "translationReview",
+      "label": "Translation review flag",
+      "layout": "flag",
+      "flagText": "A language collaborator still needs to check the translation",
+      "hint": "Tick if the rendering has not yet been reviewed by a local language collaborator."
+    },
+    {
+      "id": "sensitive",
+      "label": "Sensitive to reuse",
+      "layout": "flag",
+      "flagText": "Quoting or sharing this could expose the participant",
+      "hint": "Tick if quoting, sharing, or design use of this moment could expose the participant or their family. It stays inside the research team."
+    }
+  ],
+  "fidelityColumns": [
+    { "id": "sourceLanguage", "label": "Source language (incl. code-switching)" },
+    { "id": "interpreter", "label": "Who interpreted" },
+    { "id": "rendering", "label": "Rendering type (verbatim / gloss / paraphrase)" },
+    { "id": "singleSource", "label": "Single-source flag (second reader agrees? yes / no)" }
+  ]
+}

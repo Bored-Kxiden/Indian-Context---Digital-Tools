@@ -1,0 +1,329 @@
+---
+import ToolLayout from '../../layouts/ToolLayout.astro';
+import { patterns, lensNames, type LensCode } from '../../data/library';
+import { url } from '../../utils/url';
+
+const lenses: {
+  code: LensCode;
+  name: string;
+  question: string;
+  detail: string;
+  lookFor: string[];
+  fails: string[];
+}[] = [
+  {
+    code: 'N',
+    name: 'Nomenclature',
+    question: 'Would someone who has never filled in this exact form before understand the wording without asking anyone?',
+    detail:
+      'Being comfortable with WhatsApp or UPI is not the same as knowing this form’s own terms. Familiarity with everyday apps does not carry over to the vocabulary of one particular portal.',
+    lookFor: [
+      'Terms that belong to this form or this institution rather than to everyday speech',
+      'Abbreviations and English words whose official meaning differs from their everyday meaning',
+      'Labels that only make sense to someone who already knows the process',
+    ],
+    fails: ['A first-time applicant stops to ask someone what a word means', 'They guess, and guess wrong'],
+  },
+  {
+    code: 'P',
+    name: 'Proxy / Audience',
+    question:
+      'Does the wording still work when it is read aloud and operated by a CSC operator or a family member, not only by the named applicant reading it themselves?',
+    detail:
+      'Many people complete official forms through someone else: an operator at a Common Service Centre, a relative, a friend. The copy has to survive being spoken and acted on by a proxy.',
+    lookFor: [
+      'Sentences that only work when read silently, or that are too long to read aloud',
+      'Meaning that depends on layout, colour, or icons the proxy will not read out',
+      'Wording addressed to “you” that a proxy will have to translate on the fly',
+    ],
+    fails: ['The operator paraphrases the sentence and the meaning changes', 'The proxy is unsure who the wording is addressed to'],
+  },
+  {
+    code: 'T',
+    name: 'Trust',
+    question:
+      'Does the wording read as legitimately official to someone primed to be suspicious, or does it pattern-match a scam?',
+    detail:
+      'People who have been warned about fraud read official messages defensively. Copy that borrows the shape of a scam loses trust even when it is genuine.',
+    lookFor: [
+      'Urgency: countdowns, threats of losing the opportunity',
+      'An unofficial channel: contact on a personal number or an unfamiliar app',
+      'A fee request, or any mention of money without clear official reassurance',
+    ],
+    fails: ['The reader hesitates, steps back, or asks “is this real?”', 'They abandon the step to check with someone else'],
+  },
+];
+
+const steps = [
+  {
+    title: 'Name the audience',
+    body: 'A named segment, such as India 1, 2, or 3, not a generic user. “This audience” always means a specific group.',
+  },
+  {
+    title: 'Take the candidate as it will appear',
+    body: 'Use the actual wording or interaction, in context, not a paraphrase of it in a document.',
+  },
+  {
+    title: 'Test each lens with the right people',
+    body: 'Lens N with someone new to the form. Lens P read aloud and operated by a proxy. Lens T with someone primed to be suspicious.',
+  },
+  {
+    title: 'Record pass or fail for each lens',
+    body: 'Write the result and one line on why. A pass on one lens says nothing about the other two.',
+  },
+  {
+    title: 'Revise or store',
+    body: 'Any fail sends the wording back to be revised and tested again. Passing all three, for that audience, earns it a place in the Design Language Library.',
+  },
+];
+
+const example = patterns[0];
+const lensOrder: LensCode[] = ['N', 'P', 'T'];
+---
+
+<ToolLayout
+  slug="language-lens-audit"
+  intro="Three lenses for auditing portal or interface copy before it ships: Nomenclature, Proxy/Audience, and Trust. Wording is cleared by being tested on people, not by someone’s sense that it sounds right."
+>
+  <section class="section" aria-labelledby="why">
+    <div class="prose">
+      <h2 id="why">Why audit the wording</h2>
+      <p>
+        The Fidelity Protocol checks meaning on the way in. The Language Lens does the same thing on the way out: before a piece of
+        wording or an interaction pattern ships, it has to survive being read by someone unfamiliar with the exact form, by a proxy
+        operator instead of the named user, and by someone primed to distrust the source.
+      </p>
+      <p>
+        It is the check behind the second decision in Module 3: <em>does it work for this audience?</em> A “no” sends the candidate
+        back to be revised. A “yes” stores the tested response in the{' '}
+        <a href={url('/tools/design-language-library/')}>Design Language Library</a>.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="lenses">
+    <div class="section-head">
+      <h2 id="lenses">The three lenses</h2>
+    </div>
+    <div class="lenses">
+      {
+        lenses.map((l) => (
+          <article class="card lens">
+            <header>
+              <span class="code" aria-hidden="true">{l.code}</span>
+              <div>
+                <p class="lname">Lens {l.code}</p>
+                <h3>{l.name}</h3>
+              </div>
+            </header>
+            <p class="question">{l.question}</p>
+            <p>{l.detail}</p>
+            <h4>Look for</h4>
+            <ul>{l.lookFor.map((x) => <li>{x}</li>)}</ul>
+            <h4>It fails when</h4>
+            <ul>{l.fails.map((x) => <li>{x}</li>)}</ul>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="run">
+    <div class="section-head">
+      <h2 id="run">How to run an audit</h2>
+    </div>
+    <ol class="steps">
+      {
+        steps.map((s) => (
+          <li>
+            <b>{s.title}</b>
+            <p>{s.body}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <section class="section" aria-labelledby="record">
+    <div class="section-head">
+      <h2 id="record">What an audit record looks like</h2>
+      <p>
+        Each Design Language Library entry carries its result on all three lenses. This one is a sample entry from the library, shown
+        here to illustrate the format.
+      </p>
+    </div>
+
+    <div class="card record">
+      <p class="tag">{example.id} · {example.type} · Sample</p>
+      <p class="pattern">“{example.pattern}”</p>
+      <p class="meta">{example.context} · Audience: {example.audience}</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Lens</th>
+              <th scope="col">Result</th>
+              <th scope="col">Why</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              lensOrder.map((c) => {
+                const r = example.lenses[c];
+                return (
+                  <tr>
+                    <th scope="row">
+                      {c} · {lensNames[c]}
+                    </th>
+                    <td>
+                      <span class:list={['chip', r.result === 'pass' ? 'chip--ok' : r.result === 'fail' ? 'chip--bad' : '']}>
+                        {r.result === 'pass' ? 'Pass' : r.result === 'fail' ? 'Fail' : 'Not tested'}
+                      </span>
+                    </td>
+                    <td>{r.note ?? '—'}</td>
+                  </tr>
+                );
+              })
+            }
+          </tbody>
+        </table>
+      </div>
+      <p class="after">
+        Passing only some lenses gives a status of <strong>Partially confirmed</strong>. See it in the{' '}
+        <a href={url('/tools/design-language-library/#DL-001')}>Design Language Library</a>.
+      </p>
+    </div>
+  </section>
+</ToolLayout>
+
+<style>
+  .lenses {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
+  }
+  .lens header {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    margin-bottom: 0.75rem;
+  }
+  .code {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2.8rem;
+    height: 2.8rem;
+    border-radius: 10px;
+    background: var(--m-interpret);
+    color: var(--bg);
+    font-family: var(--font-head);
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+  .lname {
+    margin: 0;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .lens h3 {
+    margin: 0;
+  }
+  .lens h4 {
+    margin: 1rem 0 0.3rem;
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .lens ul {
+    margin-bottom: 0;
+    font-size: 0.95rem;
+  }
+  .question {
+    font-weight: 600;
+  }
+  .steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1rem;
+    counter-reset: step;
+    max-width: var(--prose);
+  }
+  .steps li {
+    counter-increment: step;
+    position: relative;
+    margin: 0;
+    padding-left: 3rem;
+  }
+  .steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 2.1rem;
+    height: 2.1rem;
+    border-radius: 50%;
+    background: var(--m-interpret);
+    color: var(--bg);
+    font-weight: 700;
+    display: grid;
+    place-items: center;
+  }
+  .steps b {
+    display: block;
+    font-family: var(--font-head);
+    font-size: 1.1rem;
+  }
+  .steps p {
+    margin: 0.15rem 0 0;
+    color: var(--ink-soft);
+  }
+  .record {
+    max-width: 52rem;
+  }
+  .tag {
+    margin: 0 0 0.4rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--warn);
+  }
+  .pattern {
+    font-family: var(--font-head);
+    font-size: 1.2rem;
+    margin-bottom: 0.3rem;
+  }
+  .meta {
+    color: var(--ink-soft);
+    font-size: 0.92rem;
+  }
+  .table-wrap {
+    overflow-x: auto;
+  }
+  th,
+  td {
+    text-align: left;
+    vertical-align: top;
+    padding: 0.65rem 0.75rem;
+    border-bottom: 1px solid var(--line);
+    font-size: 0.95rem;
+  }
+  thead th {
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .after {
+    margin: 1rem 0 0;
+    font-size: 0.95rem;
+  }
+</style>

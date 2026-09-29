@@ -1,0 +1,312 @@
+---
+import { entryStep, loopText, modules } from '../data/modules';
+import { toolBySlug, toolHref, tools } from '../data/tools';
+import { url } from '../utils/url';
+
+// Renders the process as plain HTML (an ordered list per module) rather than a
+// picture, so it reads properly on phones, in screen readers, and when printed.
+---
+
+<div class="flow">
+  <div class="entry">
+    <p class="tag">{entryStep.title}</p>
+    <p class="entry-text"><strong>{entryStep.text}</strong> {entryStep.detail}</p>
+  </div>
+
+  <div class="arrow down" aria-hidden="true"></div>
+
+  <ol class="modules">
+    {
+      modules.map((m) => {
+        let n = 0;
+        const moduleTools = tools.filter((t) => t.modules.includes(m.id));
+        return (
+          <li class={`module m-${m.id}`}>
+            <header>
+              <span class="badge" aria-hidden="true">{m.number}</span>
+              <div>
+                <p class="cadence">{m.cadence}</p>
+                <h3>
+                  <span class="visually-hidden">Module {m.number}: </span>
+                  {m.title}
+                </h3>
+              </div>
+            </header>
+            <p class="purpose">{m.purpose}</p>
+            <ol class="steps">
+              {m.items.map((item) => {
+                if (item.kind === 'step') {
+                  n += 1;
+                  return <li class="step" value={n}>{item.text}</li>;
+                }
+                if (item.kind === 'note') {
+                  return (
+                    <li class="note">
+                      <b>{item.label}:</b> {item.text}
+                    </li>
+                  );
+                }
+                const tool = toolBySlug[item.tool];
+                return (
+                  <li class="gate">
+                    <p class="q">
+                      <span aria-hidden="true">◆</span> Decision: {item.question}
+                    </p>
+                    <p>{item.no}</p>
+                    <p>{item.yes}</p>
+                    <p class="backed">
+                      Backed by <a href={url(toolHref(tool.slug))}>{tool.name}</a>
+                    </p>
+                  </li>
+                );
+              })}
+            </ol>
+            <p class="used">
+              <span>Tools</span>
+              {moduleTools.map((t) => <a class="chip" href={url(toolHref(t.slug))}>{t.name.replace(/^The /, '')}</a>)}
+            </p>
+          </li>
+        );
+      })
+    }
+  </ol>
+
+  <div class="loop">
+    <span class="loop-icon" aria-hidden="true">↺</span>
+    <p><strong>{loopText.label}.</strong> {loopText.text}</p>
+  </div>
+</div>
+
+<style>
+  .flow {
+    display: grid;
+    gap: 1rem;
+  }
+  .entry {
+    background: var(--surface);
+    border: 2px solid var(--ink);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+  }
+  .tag {
+    margin: 0 0 0.25rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .entry-text {
+    margin: 0;
+  }
+  .arrow {
+    justify-self: center;
+    width: 2px;
+    height: 1.5rem;
+    background: var(--line-strong);
+    position: relative;
+  }
+  .arrow::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -1px;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: var(--line-strong);
+    border-bottom: 0;
+  }
+
+  .modules {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 2.25rem;
+    counter-reset: none;
+  }
+  .module {
+    --mod: var(--m-context);
+    --mod-soft: var(--m-context-soft);
+    position: relative;
+    margin: 0;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-top: 5px solid var(--mod);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.25rem 1.1rem;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow);
+  }
+  .m-person {
+    --mod: var(--m-person);
+    --mod-soft: var(--m-person-soft);
+  }
+  .m-interpret {
+    --mod: var(--m-interpret);
+    --mod-soft: var(--m-interpret-soft);
+  }
+  /* Arrow to the next module: down on phones, right on wide screens. */
+  .module:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -1.65rem;
+    transform: translateX(-50%);
+    border: 0.6rem solid transparent;
+    border-top-color: var(--line-strong);
+    border-bottom: 0;
+  }
+
+  .module header {
+    display: flex;
+    gap: 0.8rem;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+  .badge {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 50%;
+    background: var(--mod);
+    color: var(--bg);
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 1.2rem;
+  }
+  .cadence {
+    margin: 0;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--mod);
+  }
+  h3 {
+    margin: 0;
+    font-size: 1.25rem;
+  }
+  .purpose {
+    color: var(--ink-soft);
+    font-size: 0.98rem;
+  }
+
+  .steps {
+    list-style: none;
+    margin: 0 0 1rem;
+    padding: 0;
+    display: grid;
+    gap: 0.5rem;
+    flex: 1;
+    align-content: start;
+  }
+  .steps li {
+    margin: 0;
+    font-size: 0.97rem;
+    line-height: 1.45;
+  }
+  .step {
+    position: relative;
+    padding-left: 2rem;
+    counter-increment: none;
+  }
+  .step::before {
+    content: attr(value);
+    position: absolute;
+    left: 0;
+    top: 0.05em;
+    width: 1.35rem;
+    height: 1.35rem;
+    border-radius: 50%;
+    background: var(--mod-soft);
+    color: var(--mod);
+    font-size: 0.78rem;
+    font-weight: 700;
+    display: grid;
+    place-items: center;
+  }
+  .note {
+    margin-left: 2rem;
+    padding: 0.5rem 0.7rem;
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+  }
+  .gate {
+    border: 2px solid var(--mod);
+    border-radius: var(--radius-sm);
+    padding: 0.7rem 0.85rem;
+    background: var(--mod-soft);
+  }
+  .gate p {
+    margin: 0 0 0.3rem;
+    font-size: 0.92rem;
+  }
+  .gate .q {
+    font-weight: 700;
+    color: var(--mod);
+    font-size: 0.97rem;
+  }
+  .gate .backed {
+    margin: 0.4rem 0 0;
+    font-size: 0.88rem;
+  }
+  .used {
+    margin: 0;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--line);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    align-items: center;
+  }
+  .used span {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-right: 0.2rem;
+  }
+
+  .loop {
+    display: flex;
+    gap: 0.9rem;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    border: 2px dashed var(--line-strong);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+  .loop p {
+    margin: 0;
+  }
+  .loop-icon {
+    font-size: 2rem;
+    line-height: 1;
+    color: var(--accent);
+  }
+
+  @media (min-width: 62rem) {
+    .modules {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 2.25rem;
+      align-items: stretch;
+    }
+    .module:not(:last-child)::after {
+      left: auto;
+      right: -1.65rem;
+      bottom: auto;
+      top: 2.4rem;
+      transform: none;
+      border: 0.6rem solid transparent;
+      border-left-color: var(--line-strong);
+      border-right: 0;
+    }
+  }
+</style>

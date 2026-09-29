@@ -1,0 +1,14 @@
+---
+import { moduleById, type ModuleId } from '../data/modules';
+
+interface Props {
+  id: ModuleId;
+  /** Show the module title after the number. */
+  full?: boolean;
+}
+
+const { id, full = false } = Astro.props;
+const m = moduleById[id];
+---
+
+<span class={`chip chip--${id}`}>Module {m.number}{full && ` · ${m.title}`}</span>

@@ -1,0 +1,66 @@
+[
+  {
+    "id": "DL-001",
+    "sample": true,
+    "title": "Explain “domicile” in plain words, with the local term",
+    "type": "Wording",
+    "context": "Scholarship portal, document upload step",
+    "pattern": "Certificate that shows you live in this state (Domicile / Niwas praman patra)",
+    "audience": "India 2",
+    "cites": ["EX-001"],
+    "status": "Partially confirmed",
+    "lenses": {
+      "N": { "result": "pass", "note": "First-time applicants understood it without help." },
+      "P": { "result": "fail", "note": "Read aloud by an operator, the Hindi term was dropped and the meaning was lost." },
+      "T": { "result": "untested" }
+    }
+  },
+  {
+    "id": "DL-002",
+    "sample": true,
+    "title": "Say plainly that this step is free",
+    "type": "Wording",
+    "context": "Scholarship portal, any step that could be mistaken for a payment request",
+    "pattern": "This step is free. No one from the office will ask you for money.",
+    "audience": "India 2",
+    "cites": ["EX-002"],
+    "status": "Not yet tested",
+    "lenses": {
+      "N": { "result": "untested" },
+      "P": { "result": "untested" },
+      "T": { "result": "untested" }
+    }
+  },
+  {
+    "id": "DL-003",
+    "sample": true,
+    "title": "Reassure that answers can still be changed",
+    "type": "Wording",
+    "context": "Final review screen before submit",
+    "pattern": "You can still change your answers after this step, until the last date.",
+    "audience": "India 2",
+    "cites": ["EX-004"],
+    "status": "Not yet tested",
+    "lenses": {
+      "N": { "result": "untested" },
+      "P": { "result": "untested" },
+      "T": { "result": "untested" }
+    }
+  },
+  {
+    "id": "DL-004",
+    "sample": true,
+    "title": "Show every required document on the first screen",
+    "type": "Interaction",
+    "context": "Start of a multi-step application",
+    "pattern": "One checklist of all required documents before the first upload, so nothing is asked for twice.",
+    "audience": "India 2",
+    "cites": ["EX-003"],
+    "status": "Confirmed",
+    "lenses": {
+      "N": { "result": "pass" },
+      "P": { "result": "pass", "note": "Operator could read the list aloud and tick items with the applicant." },
+      "T": { "result": "pass" }
+    }
+  }
+]

@@ -1,0 +1,79 @@
+---
+import ModuleChip from './ModuleChip.astro';
+import { toolHref, type Tool } from '../data/tools';
+import { url } from '../utils/url';
+
+interface Props {
+  tool: Tool;
+  /** Position in the list, shown as a numeral. */
+  index?: number;
+}
+
+const { tool, index } = Astro.props;
+---
+
+<article class="card tool">
+  <p class="kind">
+    {index !== undefined && <span class="num">{index}</span>}
+    {tool.kind}
+  </p>
+  <h3><a href={url(toolHref(tool.slug))}>{tool.name}</a></h3>
+  <p class="blurb">{tool.blurb}</p>
+  <div class="chip-row">
+    {tool.modules.map((m) => <ModuleChip id={m} />)}
+  </div>
+</article>
+
+<style>
+  .tool {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    position: relative;
+    transition: border-color 0.15s;
+  }
+  .tool:hover,
+  .tool:focus-within {
+    border-color: var(--accent);
+  }
+  .kind {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .num {
+    display: inline-grid;
+    place-items: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-size: 0.8rem;
+    letter-spacing: 0;
+  }
+  h3 {
+    margin: 0.25rem 0 0.4rem;
+  }
+  h3 a {
+    color: var(--ink);
+    text-decoration: none;
+  }
+  /* Whole card is clickable, but the link remains the accessible target. */
+  h3 a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+  .blurb {
+    color: var(--ink-soft);
+    flex: 1;
+    margin-bottom: 0.75rem;
+  }
+</style>

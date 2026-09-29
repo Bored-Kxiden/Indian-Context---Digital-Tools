@@ -1,0 +1,188 @@
+---
+import ToolLayout from '../../layouts/ToolLayout.astro';
+import MeaningCardMock from '../../components/MeaningCardMock.astro';
+import fields from '../../../templates/meaning-card-fields.json';
+import { url } from '../../utils/url';
+
+const exampleFront = {
+  momentId: 'P07-M03',
+  setting: 'College computer lab; friend seated beside',
+  time: '14 Mar, 3:40 pm (recording 00:22:10)',
+  happening: 'First time reaching the document-upload step of a scholarship portal.',
+  exactWords: '“Portal pe ‘domicile’ likha hai, papa se poochna padega.”',
+  observed: 'Paused, leaned back, picked up phone. A half-laugh. Tone flat, not distressed.',
+  guess: 'Does not know the term; relies on family to interpret official words.',
+};
+
+const exampleBack = {
+  asked: '“Jab aapne ‘papa se poochna padega’ kaha, tab aap kya soch rahe the?”',
+  explanation: '“Yeh word kabhi suna nahi tha. Papa kisi se pooch lenge.”',
+  status: 'Corrected',
+  otherMeaning: 'Reluctance to admit not knowing in front of a friend.',
+  translationReview: true,
+  sensitive: false,
+};
+
+const steps = [
+  {
+    title: 'Notice',
+    body: 'During the interview, spot a phrase, an action, or a pause that seems to carry more than its words. Jot the exact words and what you saw right away, before the moment fades.',
+  },
+  {
+    title: 'Fill the front',
+    body: 'Record the setting, what was happening, the exact words in the language spoken, and what you observed. Only then write your guess at the meaning, and label it as a guess.',
+  },
+  {
+    title: 'Ask, then fill the back',
+    body: 'Ask the participant what the moment meant to them. Write down the question, their explanation in their own words, and whether they confirmed, corrected, or disagreed with your guess.',
+  },
+  {
+    title: 'Flag what needs care',
+    body: 'Tick the translation review flag if a collaborator still needs to check the rendering. Tick sensitive-to-reuse if quoting or sharing could expose the participant or their family.',
+  },
+  {
+    title: 'Hand on',
+    body: 'In Module 3, cards go through thick translation and the Fidelity Protocol. Cards that pass are digitized into the Expression Library.',
+  },
+];
+---
+
+<ToolLayout
+  slug="meaning-card"
+  intro="One card per meaning moment: a phrase, action, or pause worth a second look. It keeps what was said, what was observed, and what the researcher infers apart, then records what the participant said when asked."
+>
+  <section class="section" aria-labelledby="why">
+    <div class="prose">
+      <h2 id="why">Why one card per moment</h2>
+      <p>
+        The Meaning Card is the atomic unit the rest of the toolkit builds on. It is created in Module 2, for a single moment, and
+        it does not yet claim that the researcher’s inference is correct. Keeping each moment on its own card means it can be
+        translated, checked, tagged, and later cited by a design pattern, without dragging a whole interview along with it.
+      </p>
+      <p>
+        The front captures the moment. The back is where the inference is tested with the participant, so a guess is never mistaken
+        for a finding.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="front">
+    <h2 id="front">The front: capture the moment</h2>
+    <div class="split">
+      <MeaningCardMock side="front" />
+      <ul class="fields">
+        {
+          fields.front.map((f) => (
+            <li>
+              <b>{f.label}</b>
+              <span>{f.hint}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="back">
+    <h2 id="back">The back: check it with the participant</h2>
+    <div class="split">
+      <MeaningCardMock side="back" />
+      <ul class="fields">
+        {
+          fields.back.map((f) => (
+            <li>
+              <b>{f.label}</b>
+              <span>{f.hint}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="how">
+    <div class="section-head">
+      <h2 id="how">How to use it</h2>
+    </div>
+    <ol class="steps">
+      {
+        steps.map((s) => (
+          <li>
+            <b>{s.title}</b>
+            <p>{s.body}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <section class="section" aria-labelledby="example">
+    <div class="section-head">
+      <h2 id="example">A filled-in example</h2>
+      <p>
+        <strong>Illustrative only.</strong> This card was written to show how the fields work. It does not come from a real
+        participant.
+      </p>
+    </div>
+    <div class="grid grid--2">
+      <MeaningCardMock side="front" values={exampleFront} />
+      <MeaningCardMock side="back" values={exampleBack} />
+    </div>
+    <p class="after">
+      Note the difference between the guess (“does not know the term”) and what the participant said. The correction status
+      records that the guess was only partly right. The moment is not ready to enter the Expression Library until it has passed
+      the <a href={url('/tools/fidelity-protocol/')}>Fidelity Protocol</a>.
+    </p>
+  </section>
+</ToolLayout>
+
+<style>
+  .split {
+    display: grid;
+    gap: 1.5rem 2.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    align-items: start;
+  }
+  .steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1rem;
+    counter-reset: step;
+    max-width: var(--prose);
+  }
+  .steps li {
+    counter-increment: step;
+    position: relative;
+    margin: 0;
+    padding-left: 3rem;
+  }
+  .steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 2.1rem;
+    height: 2.1rem;
+    border-radius: 50%;
+    background: var(--m-person);
+    color: var(--bg);
+    font-weight: 700;
+    display: grid;
+    place-items: center;
+  }
+  .steps b {
+    display: block;
+    font-family: var(--font-head);
+    font-size: 1.1rem;
+  }
+  .steps p {
+    margin: 0.15rem 0 0;
+    color: var(--ink-soft);
+  }
+  .after {
+    max-width: var(--prose);
+    margin-top: 1.5rem;
+  }
+</style>

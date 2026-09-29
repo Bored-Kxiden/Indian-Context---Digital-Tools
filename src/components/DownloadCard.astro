@@ -1,0 +1,86 @@
+---
+import type { Download } from '../data/downloads';
+import { toolBySlug, toolHref } from '../data/tools';
+import { url } from '../utils/url';
+
+interface Props {
+  item: Download;
+  /** Hide the "belongs to" link, for use on the tool's own page. */
+  hideTool?: boolean;
+}
+
+const { item, hideTool = false } = Astro.props;
+const tool = toolBySlug[item.tool];
+---
+
+<article class="card dl">
+  <div class="top">
+    <span class="fmt">{item.format}</span>
+    <div class="meta">
+      <span>{item.size}</span>
+      {item.pages && <span>{item.pages} pages</span>}
+      <span class:list={['chip', item.status === 'Final' ? 'chip--ok' : 'chip--warn']}>{item.status}</span>
+    </div>
+  </div>
+  <h3>{item.title}</h3>
+  <p>{item.description}</p>
+  {item.note && <p class="note">{item.note}</p>}
+  <div class="actions">
+    <a class="btn btn--sm" href={url(item.href)} download>
+      Download {item.format}
+      <span class="visually-hidden">: {item.title}</span>
+    </a>
+    {!hideTool && tool && <a href={url(toolHref(tool.slug))}>About {tool.name.replace(/^The /, '')}</a>}
+  </div>
+</article>
+
+<style>
+  .dl {
+    display: flex;
+    flex-direction: column;
+  }
+  .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  .fmt {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.3rem 0.55rem;
+    border-radius: var(--radius-sm);
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem 0.8rem;
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+  }
+  h3 {
+    margin-bottom: 0.4rem;
+  }
+  p {
+    margin-bottom: 0.6rem;
+  }
+  .note {
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+  }
+  .actions {
+    margin-top: auto;
+    padding-top: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem 1.2rem;
+    font-size: 0.95rem;
+  }
+</style>

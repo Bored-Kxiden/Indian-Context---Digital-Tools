@@ -1,0 +1,90 @@
+[
+  {
+    "id": "EX-001",
+    "sample": true,
+    "title": "Asking a parent for the meaning of a form term",
+    "originalText": "Portal pe “domicile” likha hai, papa se poochna padega.",
+    "language": "Hindi–English (code-switched: “portal”, “domicile”)",
+    "literal": "The portal says “domicile”; I will have to ask Dad.",
+    "implied": "The term is not part of the participant’s vocabulary and they rely on a family member to interpret official language. This is a pause to get help, not a refusal to continue.",
+    "setting": "Scholarship portal, first login, college computer lab",
+    "lenses": ["N", "P"],
+    "fidelity": {
+      "sourceLanguage": "Hindi–English (code-switched)",
+      "interpreter": "independent-interpreter",
+      "rendering": "gloss",
+      "singleSource": false
+    },
+    "sensitive": false
+  },
+  {
+    "id": "EX-002",
+    "sample": true,
+    "title": "A fee request reads as a possible scam",
+    "originalText": "Arre, fees maangenge kya?",
+    "language": "Hindi",
+    "literal": "Oh, will they ask for fees?",
+    "implied": "Alarm. A request for money inside an official flow pattern-matches a scam, and trust drops at once. Observed with a step back from the screen.",
+    "setting": "Scholarship portal, payment step",
+    "lenses": ["T"],
+    "fidelity": {
+      "sourceLanguage": "Hindi",
+      "interpreter": "research-coordinator",
+      "rendering": "verbatim",
+      "singleSource": true
+    },
+    "sensitive": false
+  },
+  {
+    "id": "EX-003",
+    "sample": true,
+    "title": "Repeated document requests as a burden, not a puzzle",
+    "originalText": "Haye, ab phir se sab documents?",
+    "language": "Hindi",
+    "literal": "Oh no, all the documents again?",
+    "implied": "Fatigue and exasperation at being asked for the same documents more than once. “Haye” signals burden, not confusion. Treating it as an error state would miss the emotional weight.",
+    "setting": "Scholarship portal, document upload step",
+    "lenses": ["N"],
+    "fidelity": {
+      "sourceLanguage": "Hindi",
+      "interpreter": "independent-interpreter",
+      "rendering": "paraphrase",
+      "singleSource": false
+    },
+    "sensitive": false
+  },
+  {
+    "id": "EX-004",
+    "sample": true,
+    "title": "Hesitation before the final submit",
+    "originalText": "Submit karne se pehle ek baar aur dekh loon.",
+    "language": "Hindi–English (code-switched: “submit”)",
+    "literal": "Let me look once more before I submit.",
+    "implied": "Submitting feels irreversible. The participant wants reassurance that a mistake can still be fixed after this step.",
+    "setting": "Scholarship portal, final review screen",
+    "lenses": ["N", "T"],
+    "fidelity": {
+      "sourceLanguage": "Hindi–English (code-switched)",
+      "rendering": "gloss"
+    },
+    "sensitive": false
+  },
+  {
+    "id": "EX-005",
+    "sample": true,
+    "title": "Being the family’s translator for institutions",
+    "originalText": "Ghar mein kisi ko yeh sab nahi aata, isliye main hi sab karta hoon.",
+    "language": "Hindi",
+    "literal": "No one at home understands all this, so I am the one who does everything.",
+    "implied": "Pride and burden together. The participant acts as the family’s interpreter for institutions. Touches family circumstances.",
+    "setting": "Interview, daily-life conversation",
+    "lenses": ["P"],
+    "fidelity": {
+      "sourceLanguage": "Hindi",
+      "interpreter": "independent-interpreter",
+      "rendering": "verbatim",
+      "singleSource": false
+    },
+    "sensitive": true
+  }
+]

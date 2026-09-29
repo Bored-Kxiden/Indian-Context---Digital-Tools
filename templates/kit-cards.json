@@ -1,0 +1,203 @@
+{
+  "_note": "Draft card content for the Physical Field Kit. Edit this file, then run `npm run build:templates` to regenerate the PDFs. The site's Physical Field Kit page reads this file too.",
+  "decks": [
+    {
+      "id": "context",
+      "name": "Context Cards",
+      "module": "context",
+      "moduleLabel": "Module 1",
+      "when": "Module 1, once per context or setting",
+      "purpose": "Prompts for building a picture of the setting before you talk to anyone one-on-one. They feed the provisional codebook, glossary, and interview guide.",
+      "backHeading": "What I noticed",
+      "backFields": ["Date", "Setting"],
+      "cards": [
+        {
+          "title": "People and guide",
+          "prompts": [
+            "Who am I spending time with, and who is my local guide?",
+            "How does my guide know this place, and whom might they steer me away from?",
+            "Who lives or works here differently from the people I have met so far?"
+          ]
+        },
+        {
+          "title": "Routines and relationships",
+          "prompts": [
+            "What happens here at different times of the day?",
+            "Who depends on whom? Who speaks for whom?",
+            "Where do people go for help, and who do they ask first?"
+          ]
+        },
+        {
+          "title": "Language and communication",
+          "prompts": [
+            "Which languages are used here, by whom, and with whom?",
+            "Where do people switch language or register, and what seems to trigger it?",
+            "Which words, exclamations, or gestures do I not yet fully understand?"
+          ]
+        },
+        {
+          "title": "Possible meanings and their limits",
+          "prompts": [
+            "What do I think this means?",
+            "What would make me wrong?",
+            "Who could tell me, and how would I ask?"
+          ]
+        },
+        {
+          "title": "Glossary seed",
+          "prompts": [
+            "The term or phrase, in the language it was used.",
+            "Who said it, where, and to whom.",
+            "What I think it means, and what I am unsure about."
+          ],
+          "footnote": "Feeds the provisional codebook, glossary, and interview guide."
+        }
+      ]
+    },
+    {
+      "id": "interview",
+      "name": "Interview Cards",
+      "module": "person",
+      "moduleLabel": "Module 2",
+      "when": "Module 2, once per person or session",
+      "purpose": "One card per step of the one-on-one interview, from consent to correction, so nothing is skipped when the conversation gets absorbing.",
+      "backHeading": "Notes and exact words",
+      "backFields": ["Participant code", "Date"],
+      "cards": [
+        {
+          "title": "Ask for consent",
+          "kicker": "Audio and video",
+          "prompts": [
+            "Say who you are, what this is for, who will hear or see the recording, and when it will be deleted.",
+            "Ask about audio and video separately. Either can be declined.",
+            "Remind them they can skip any question or stop at any time."
+          ],
+          "ticks": ["Audio", "Video", "Notes only"]
+        },
+        {
+          "title": "Begin with daily life",
+          "kicker": "Put them at ease",
+          "prompts": [
+            "“Tell me about yesterday, from the time you woke up.”",
+            "“Tell me about the last time you had to sort out something official.”",
+            "Follow their stories. The aim is to learn how they live and to make them comfortable."
+          ]
+        },
+        {
+          "title": "Notice",
+          "kicker": "A phrase, an action, or a pause",
+          "prompts": [
+            "A significant phrase (a micro comment), an action (an expression or gesture), or a pause.",
+            "Write down the exact words, what you saw, and how long the pause lasted.",
+            "Do not interpret yet. Start a Meaning Card."
+          ]
+        },
+        {
+          "title": "Probe heavy moments",
+          "kicker": "Branch: if it is hard to understand",
+          "prompts": [
+            "If an emotion, expression, or gesture is heavy or hard to understand, ask what it is like.",
+            "Invite a picture, a saying, or a comparison, in their own language.",
+            "Offer a spoken idiom only after they have tried, and ask whether it fits."
+          ]
+        },
+        {
+          "title": "Ask what it meant to them",
+          "kicker": "Before you share your guess",
+          "prompts": [
+            "“Earlier you said … What did you mean by that?”",
+            "Ask in their language first. Write down their words.",
+            "Share your guess only after they have answered."
+          ]
+        },
+        {
+          "title": "Record correction and reaction",
+          "kicker": "Where you were wrong is data",
+          "prompts": [
+            "If they correct or disagree with your guess, write it down as they say it.",
+            "Note how they react: a laugh, a silence, pushback.",
+            "Mark the correction status on the Meaning Card."
+          ]
+        },
+        {
+          "title": "Optional: observe a task",
+          "kicker": "A task or service experience",
+          "prompts": [
+            "If needed, ask whether you can watch them do a task or use a service.",
+            "Notice, note, and ask in the same way as in the interview.",
+            "Capture each moment on its own Meaning Card."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reflection",
+      "name": "Reflection Cards",
+      "module": "person",
+      "moduleLabel": "After each session",
+      "when": "After each session, before moving into Module 3",
+      "purpose": "Short prompts for the researcher, straight after a session, about surprises, assumptions, and what crossed a language boundary.",
+      "backHeading": "My reflection",
+      "backFields": ["Participant code", "Date"],
+      "cards": [
+        {
+          "title": "What surprised me?",
+          "prompts": [
+            "What did I not expect to hear, see, or feel?",
+            "What does that tell me about what I assumed?"
+          ]
+        },
+        {
+          "title": "Where did I assume?",
+          "prompts": [
+            "Which of my guesses came from my own background rather than from what was said?",
+            "Where did I finish a sentence in my head?"
+          ]
+        },
+        {
+          "title": "What crossed a language boundary?",
+          "prompts": [
+            "Which moments were spoken in one language and noted in another?",
+            "Who interpreted, and what might they have shaped?",
+            "Do I have all four Fidelity tags for each: source language, who interpreted, rendering, second reader?"
+          ]
+        },
+        {
+          "title": "What needs another look?",
+          "prompts": [
+            "Which Meaning Cards need a second reader, a translation review, or another question?",
+            "What new questions should go into the next round?"
+          ],
+          "footnote": "New questions feed back into Module 1."
+        }
+      ]
+    }
+  ],
+  "positionality": {
+    "name": "Researcher Positionality Card",
+    "moduleLabel": "Module 1",
+    "fields": ["Researcher", "Date"],
+    "prompts": [
+      "Languages I speak, understand, and do not understand.",
+      "How my background differs from, or overlaps with, the people I am talking to.",
+      "How participants may see me, and what that might lead them to say or leave unsaid.",
+      "What I treat as normal that may not be.",
+      "What I may find hard to notice."
+    ],
+    "backHeading": "Revisit at the end of fieldwork",
+    "backPrompt": "What changed in how I see my own position?"
+  },
+  "blankMeaningCardCopies": 4,
+  "guide": {
+    "frontTitle": "The Physical Field Kit",
+    "frontIntro": "Cards for capturing meaning on paper, in the language it was spoken.",
+    "backTitle": "Printing and using the kit",
+    "backPoints": [
+      "Every card is 6 × 4 in (152 × 102 mm). Print at 100%, double-sided.",
+      "If a back is upside down, switch between flip on long edge and flip on short edge.",
+      "Use card stock (200 to 300 gsm) for cards that will be handled in the field.",
+      "Keep one Meaning Card per moment. Do not squeeze two moments onto one card.",
+      "Cards can be written on in any language. Do not translate exact words on the front."
+    ]
+  }
+}

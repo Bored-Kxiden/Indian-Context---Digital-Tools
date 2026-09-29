@@ -1,0 +1,86 @@
+---
+import { site } from '../data/site';
+import { tools, toolHref } from '../data/tools';
+import { url } from '../utils/url';
+---
+
+<footer class="site-footer">
+  <div class="wrap cols">
+    <div>
+      <p class="name">{site.name}</p>
+      <p class="small">
+        A framework for capturing emotional and cultural meaning faithfully during cross-language field research.
+        Built for research on first-generation Indian college students; reusable for any cross-language qualitative work.
+      </p>
+    </div>
+    <nav aria-label="Tools">
+      <p class="head">Tools</p>
+      <ul>
+        {
+          tools.map((t) => (
+            <li>
+              <a href={url(toolHref(t.slug))}>{t.name.replace(/^The /, '')}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+    <nav aria-label="More">
+      <p class="head">More</p>
+      <ul>
+        <li><a href={url('/downloads/')}>Downloads</a></li>
+        <li><a href={url('/about/')}>Methodology</a></li>
+        <li><a href={site.repoUrl}>Source on GitHub</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="wrap legal">
+    <p class="small">Released under the {site.licenseName} License. Sample library entries are illustrative and contain no real participant data.</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--line);
+    background: var(--surface-2);
+    margin-top: 3rem;
+    padding-block: 2.5rem 1.5rem;
+    font-size: 0.95rem;
+  }
+  .cols {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  }
+  .cols > div {
+    max-width: 26rem;
+  }
+  .name {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 0.4rem;
+  }
+  .head {
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+  }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  li {
+    margin-bottom: 0.25rem;
+  }
+  .small {
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+    margin: 0;
+  }
+  .legal {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
+  }
+</style>

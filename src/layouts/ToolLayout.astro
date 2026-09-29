@@ -1,0 +1,123 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import ModuleChip from '../components/ModuleChip.astro';
+import DownloadCard from '../components/DownloadCard.astro';
+import { getDownloadsForTool } from '../data/downloads';
+import { toolBySlug, toolHref, tools } from '../data/tools';
+import { url } from '../utils/url';
+
+interface Props {
+  slug: string;
+  /** Overrides the tool blurb as the page intro. */
+  intro?: string;
+}
+
+const { slug, intro } = Astro.props;
+const tool = toolBySlug[slug];
+const downloads = getDownloadsForTool(slug);
+const i = tools.findIndex((t) => t.slug === slug);
+const prev = tools[i - 1];
+const next = tools[i + 1];
+---
+
+<BaseLayout title={tool.name} description={tool.blurb}>
+  <div class="page-head">
+    <div class="wrap">
+      <p class="crumbs">
+        <a href={url('/tools/')}>Tools</a><span aria-hidden="true">/</span>{tool.name}
+      </p>
+      <p class="eyebrow">Tool {i + 1} of {tools.length} · {tool.kind}</p>
+      <h1>{tool.name}</h1>
+      <p class="lede">{intro ?? tool.blurb}</p>
+      <div class="chip-row">
+        <span class="where">Used in</span>
+        {tool.modules.map((m) => <ModuleChip id={m} full />)}
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap body">
+    <slot />
+
+    {
+      downloads.length > 0 && (
+        <section class="section" aria-labelledby="dl-heading">
+          <h2 id="dl-heading">Download</h2>
+          <div class="grid grid--2">
+            {downloads.map((d) => <DownloadCard item={d} hideTool />)}
+          </div>
+          <p class="more"><a href={url('/downloads/')}>All downloads</a></p>
+        </section>
+      )
+    }
+
+    <nav class="pager" aria-label="Other tools">
+      {
+        prev ? (
+          <a class="prev" href={url(toolHref(prev.slug))}>
+            <span>Previous</span>
+            {prev.name}
+          </a>
+        ) : (
+          <span />
+        )
+      }
+      {
+        next && (
+          <a class="next" href={url(toolHref(next.slug))}>
+            <span>Next</span>
+            {next.name}
+          </a>
+        )
+      }
+    </nav>
+  </div>
+</BaseLayout>
+
+<style>
+  .where {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    align-self: center;
+    margin-right: 0.3rem;
+  }
+  .body {
+    padding-bottom: 1rem;
+  }
+  .more {
+    margin: 1rem 0 0;
+  }
+  .pager {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding-block: 2rem;
+    border-top: 1px solid var(--line);
+    margin-top: 2rem;
+  }
+  .pager a {
+    display: block;
+    text-decoration: none;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 1.1rem;
+    max-width: 22rem;
+  }
+  .pager a span {
+    display: block;
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .pager .next {
+    text-align: right;
+    margin-left: auto;
+  }
+</style>

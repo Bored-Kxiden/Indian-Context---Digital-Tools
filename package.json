@@ -1,0 +1,23 @@
+{
+  "name": "meaning-to-interface-toolkit",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Public website for the Meaning-to-Interface Toolkit: capturing emotional and cultural meaning faithfully in cross-language field research.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "build:templates": "node scripts/build-templates.mjs"
+  },
+  "dependencies": {
+    "astro": "^7.3.5"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.63.0"
+  }
+}

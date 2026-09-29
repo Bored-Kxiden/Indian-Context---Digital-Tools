@@ -1,0 +1,155 @@
+---
+import fields from '../../templates/meaning-card-fields.json';
+
+interface Props {
+  side: 'front' | 'back';
+  /** Field values keyed by field id. Leave empty for a blank card. */
+  values?: Record<string, string | boolean>;
+}
+
+const { side, values = {} } = Astro.props;
+const list = fields[side];
+const filled = Object.keys(values).length > 0;
+---
+
+<figure class:list={['mock', { filled }]}>
+  <figcaption class="cap">
+    <span>Meaning Card</span>
+    <b>{side === 'front' ? 'Front' : 'Back'}</b>
+  </figcaption>
+  <div class="fields">
+    {
+      list.map((f) => {
+        const v = values[f.id];
+        if (f.layout === 'choice') {
+          return (
+            <div class="field choice">
+              <span class="label">{f.label}</span>
+              <span class="opts">
+                {(f.options ?? []).map((o) => (
+                  <span class:list={['opt', { on: v === o }]}>
+                    <i aria-hidden="true">{v === o ? '☑' : '☐'}</i> {o}
+                  </span>
+                ))}
+              </span>
+            </div>
+          );
+        }
+        if (f.layout === 'flag') {
+          return (
+            <div class="field flag">
+              <span class="label">{f.label}</span>
+              <span class:list={['opt', { on: v === true }]}>
+                <i aria-hidden="true">{v === true ? '☑' : '☐'}</i> {f.flagText}
+              </span>
+            </div>
+          );
+        }
+        return (
+          <div class:list={['field', f.layout]}>
+            <span class="label">
+              {f.label}
+              {'printHint' in f && f.printHint && <em> ({f.printHint})</em>}
+            </span>
+            <span class="val" lang={f.id === 'exactWords' || f.id === 'asked' || f.id === 'explanation' ? 'hi-Latn' : undefined}>
+              {typeof v === 'string' ? v : ''}
+            </span>
+          </div>
+        );
+      })
+    }
+  </div>
+</figure>
+
+<style>
+  .mock {
+    margin: 0;
+    background: var(--surface);
+    border: 2px solid var(--ink);
+    border-radius: 12px;
+    padding: 0.9rem 1rem 1rem;
+    box-shadow: var(--shadow);
+    container-type: inline-size;
+  }
+  .cap {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.6rem;
+    border-bottom: 1px solid var(--line-strong);
+  }
+  .cap b {
+    color: var(--m-person);
+  }
+  .fields {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+  .field {
+    grid-column: 1 / -1;
+    border: 1px solid var(--line-strong);
+    border-radius: 6px;
+    padding: 0.35rem 0.55rem 0.45rem;
+    min-height: 3.6rem;
+    background: var(--bg);
+  }
+  .field.third {
+    grid-column: span 1;
+    min-height: 3rem;
+  }
+  @container (max-width: 30rem) {
+    .field.third {
+      grid-column: 1 / -1;
+    }
+  }
+  .field.choice,
+  .field.flag {
+    min-height: 0;
+  }
+  .label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 0.15rem;
+  }
+  .label em {
+    font-weight: 400;
+    font-style: italic;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+  .val {
+    display: block;
+    font-size: 0.92rem;
+    line-height: 1.4;
+  }
+  .filled .val {
+    font-family: var(--font-body);
+  }
+  .opts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+  }
+  .opt {
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+  }
+  .opt.on {
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .opt i {
+    font-style: normal;
+    font-size: 1.05em;
+  }
+</style>

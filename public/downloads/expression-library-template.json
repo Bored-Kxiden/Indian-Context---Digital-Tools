@@ -1,0 +1,28 @@
+{
+  "_help": {
+    "how": "Copy this object into the array in src/data/expressions.json, delete the _help key, and fill in every field. See the README.",
+    "id": "Unique, de-identified ID such as EX-012. Never use a participant's name or code.",
+    "sample": "Delete this key for real entries. Only illustrative examples set it to true.",
+    "lenses": "Which Language Lens codes this moment mainly bears on: any of N (Nomenclature), P (Proxy/Audience), T (Trust).",
+    "fidelity.interpreter": "One of: none-needed, research-coordinator, independent-interpreter, professional-translator. Leave empty if not recorded.",
+    "fidelity.rendering": "One of: verbatim, gloss, paraphrase. Leave empty if not recorded.",
+    "fidelity.singleSource": "false = a second interpreter read it the same way. true = rests on one person alone. null = not yet checked.",
+    "rule": "An entry missing any of the four fidelity tags is shown as 'Needs re-check' and cannot carry full confidence.",
+    "sensitive": "true if quoting, sharing, or design use could expose the participant or their family."
+  },
+  "id": "EX-000",
+  "title": "",
+  "originalText": "",
+  "language": "",
+  "literal": "",
+  "implied": "",
+  "setting": "",
+  "lenses": [],
+  "fidelity": {
+    "sourceLanguage": "",
+    "interpreter": "",
+    "rendering": "",
+    "singleSource": null
+  },
+  "sensitive": false
+}
