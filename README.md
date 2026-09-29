@@ -84,7 +84,9 @@ The workflow sets both for the GitHub Pages project URL. Internal links go throu
 
 **Custom domain:** set `BASE_PATH: /` and `SITE_URL: https://your-domain` in the workflow, add a `public/CNAME` file containing the domain, and configure the domain under **Settings → Pages**.
 
-**Other hosts (Vercel, Netlify, Cloudflare Pages):** the defaults work as they are (`BASE_PATH` unset means the site is served from `/`). Use the build command `npm run build` and the output directory `dist`.
+**Vercel:** [Import this repository into Vercel](https://vercel.com/new/import?s=https%3A%2F%2Fgithub.com%2FBored-Kxiden%2FIndian-Context---Digital-Tools). Vercel detects Astro and the defaults work as they are: build command `npm run build`, output directory `dist`, and no environment variables (`BASE_PATH` unset means the site is served from `/`).
+
+**Other hosts (Netlify, Cloudflare Pages):** same settings as Vercel.
 
 ## Adding a new downloadable template
 
