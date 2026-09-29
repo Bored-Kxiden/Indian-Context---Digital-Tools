@@ -1,0 +1,265 @@
+---
+import Icon from './Icon.astro';
+import { finderGroups } from '../data/finder';
+import { url } from '../utils/url';
+
+// "Find a tool": a search dialog over every tool, step and page (opened with / or Ctrl+K).
+// Without JavaScript the buttons that open it are plain links to the "I want to…" list.
+---
+
+<dialog class="finder" id="finder" aria-labelledby="finder-title">
+  <div class="box">
+    <div class="head">
+      <h2 id="finder-title" class="visually-hidden">Find a tool</h2>
+      <label class="search">
+        <span class="visually-hidden">Search tools, steps and pages</span>
+        <Icon name="search" size={20} />
+        <input type="search" placeholder="Find a tool, step or page…" autocomplete="off" spellcheck="false" data-finder-q />
+      </label>
+      <button type="button" class="close" data-finder-close aria-label="Close search">
+        <kbd>Esc</kbd>
+      </button>
+    </div>
+    <p class="count" role="status" aria-live="polite" data-finder-count></p>
+    <div class="scroll" data-finder-scroll>
+      {
+        finderGroups.map((g) => (
+          <section data-finder-group>
+            <h3>{g.title}</h3>
+            <ul>
+              {g.items.map((i) => (
+                <li data-finder-item data-text={`${i.title} ${i.hint}`.toLowerCase()}>
+                  <a href={url(i.href)} data-c={i.c}>
+                    <span class="dot" aria-hidden="true" />
+                    <span class="t">
+                      {i.title}
+                      <small>{i.hint}</small>
+                    </span>
+                    <Icon name="arrow" size={18} />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))
+      }
+    </div>
+  </div>
+</dialog>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('#finder');
+  if (dialog && typeof dialog.showModal === 'function') {
+    const q = dialog.querySelector<HTMLInputElement>('[data-finder-q]');
+    const count = dialog.querySelector<HTMLElement>('[data-finder-count]');
+    const groups = [...dialog.querySelectorAll<HTMLElement>('[data-finder-group]')];
+    const items = [...dialog.querySelectorAll<HTMLElement>('[data-finder-item]')];
+    const total = items.length;
+    let opener: HTMLElement | null = null;
+
+    const visibleLinks = () =>
+      items.filter((i) => !i.hidden).map((i) => i.querySelector<HTMLAnchorElement>('a')).filter((a): a is HTMLAnchorElement => !!a);
+
+    const filter = () => {
+      const term = (q?.value ?? '').trim().toLowerCase();
+      const words = term.split(/\s+/).filter(Boolean);
+      let shown = 0;
+      for (const el of items) {
+        const text = el.dataset.text ?? '';
+        const ok = words.every((w) => text.includes(w));
+        el.hidden = !ok;
+        if (ok) shown += 1;
+      }
+      for (const g of groups) g.hidden = !g.querySelector('[data-finder-item]:not([hidden])');
+      if (count) {
+        count.textContent = !term
+          ? `${total} places to go. Type to narrow them down.`
+          : shown
+            ? `${shown} ${shown === 1 ? 'result' : 'results'}`
+            : 'Nothing matches. Try “translate”, “blame”, “phone” or “trust”.';
+      }
+    };
+
+    const open = (from: HTMLElement | null) => {
+      if (dialog.open) return;
+      opener = from;
+      if (q) q.value = '';
+      filter();
+      dialog.showModal();
+      q?.focus();
+    };
+    const close = () => dialog.open && dialog.close();
+
+    document.querySelectorAll<HTMLElement>('[data-finder-open]').forEach((b) =>
+      b.addEventListener('click', (e) => {
+        e.preventDefault();
+        open(b);
+      }),
+    );
+    dialog.querySelector('[data-finder-close]')?.addEventListener('click', close);
+    // A click on the backdrop (the dialog element itself, outside its box) closes it.
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) close();
+    });
+    dialog.addEventListener('close', () => opener?.focus());
+    // Following a result to another page needs no cleanup; a #anchor on this page closes the dialog.
+    dialog.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).closest('a')) close();
+    });
+
+    q?.addEventListener('input', filter);
+    dialog.addEventListener('keydown', (e) => {
+      const links = visibleLinks();
+      if (!links.length) return;
+      const at = links.indexOf(document.activeElement as HTMLAnchorElement);
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        links[Math.min(at + 1, links.length - 1)].focus();
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (at <= 0) q?.focus();
+        else links[at - 1].focus();
+      } else if (e.key === 'Enter' && document.activeElement === q) {
+        e.preventDefault();
+        links[0].click();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      const el = e.target as HTMLElement | null;
+      const typing = !!el && (el.matches('input, textarea, select') || el.isContentEditable);
+      const slash = e.key === '/' && !typing && !e.ctrlKey && !e.metaKey && !e.altKey;
+      const palette = e.key.toLowerCase() === 'k' && (e.ctrlKey || e.metaKey);
+      if (slash || palette) {
+        e.preventDefault();
+        open(document.activeElement as HTMLElement | null);
+      }
+    });
+  }
+</script>
+
+<style>
+  .finder {
+    width: min(100% - 2 * var(--sp-2), 44rem);
+    max-height: min(80dvh, 44rem);
+    margin: 10dvh auto auto;
+    padding: 0;
+    border: 2px solid var(--ink);
+    border-radius: var(--r-lg);
+    background: var(--surface);
+    color: var(--ink);
+    box-shadow: 0 32px 64px -24px rgb(22 20 15 / 0.5);
+    overflow: hidden;
+  }
+  .finder::backdrop {
+    background: rgb(22 20 15 / 0.55);
+  }
+  .box {
+    display: flex;
+    flex-direction: column;
+    max-height: inherit;
+  }
+  .head {
+    display: flex;
+    gap: var(--sp-2);
+    align-items: center;
+    padding: var(--sp-2) var(--sp-3);
+    border-bottom: 1px solid var(--line-strong);
+  }
+  .search {
+    flex: 1;
+    position: relative;
+    display: block;
+  }
+  .search :global(svg) {
+    position: absolute;
+    left: var(--sp-2);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    pointer-events: none;
+  }
+  .search input {
+    padding-left: var(--sp-6);
+    border-radius: 999px;
+  }
+  .close {
+    min-width: 48px;
+    min-height: 48px;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    border-radius: var(--r-sm);
+    color: var(--muted);
+  }
+  .close:hover {
+    background: var(--sand);
+  }
+  .count {
+    margin: 0;
+    padding: var(--sp-1) var(--sp-3);
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+  }
+  .scroll {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: var(--sp-1) var(--sp-2) var(--sp-3);
+  }
+  section h3 {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: var(--sp-2) var(--sp-1) var(--sp-half);
+  }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  li {
+    margin: 0;
+  }
+  a {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    min-height: 56px;
+    padding: var(--sp-1) var(--sp-2);
+    border-radius: var(--r-sm);
+    color: var(--ink);
+    text-decoration: none;
+  }
+  a:hover,
+  a:focus-visible {
+    background: var(--accent-tint);
+  }
+  a:focus-visible {
+    outline-offset: -3px;
+  }
+  .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex: none;
+  }
+  .t {
+    flex: 1;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+  .t small {
+    display: block;
+    font-weight: 400;
+    color: var(--muted);
+    font-size: var(--fs-sm);
+    margin-top: 2px;
+  }
+</style>

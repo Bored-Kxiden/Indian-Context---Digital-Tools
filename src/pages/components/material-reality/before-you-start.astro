@@ -1,5 +1,6 @@
 ---
 import ComponentLayout from '../../../layouts/ComponentLayout.astro';
+import Section from '../../../components/Section.astro';
 import PageFigure from '../../../components/PageFigure.astro';
 import DownloadCard from '../../../components/DownloadCard.astro';
 import Icon from '../../../components/Icon.astro';
@@ -22,103 +23,100 @@ const strip = getDownloadById('tpl-journey-strip');
   chips={['Component 4', 'Before Tool 1']}
   crumb="Before you start"
 >
-  <section class="block" id="journey" aria-labelledby="s1-h">
-    <p class="eb">Step 1</p>
-    <h2 id="s1-h">{s1.title}</h2>
-    <p class="big">{s1.lead}</p>
+  <Section id="journey" eyebrow="Step 1" title={s1.title}>
+    <p slot="lead" class="lead-text">{s1.lead}</p>
+    <div class="cols">
+      <div class="left">
+        <div class="two">
+          <div class="card">
+            <h3>{s1.alreadyHave.title}</h3>
+            <p>{s1.alreadyHave.body}</p>
+            <ul class="links">
+              {
+                s1.alreadyHave.links.map((l) => (
+                  <li>
+                    {l.href ? (
+                      <a href={l.href} rel="noopener">
+                        {l.label} <Icon name="arrow" size={16} />
+                      </a>
+                    ) : (
+                      <span>{l.label}</span>
+                    )}
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+          <div class="card card--tint">
+            <h3>{s1.newToThis.title}</h3>
+            <p>{s1.newToThis.body}</p>
+            <p class="note-line">{s1.newToThis.note}</p>
+          </div>
+        </div>
+        {strip && <DownloadCard item={strip} />}
+      </div>
+      <PageFigure image={bookletImage(s1.image)} alt={s1.alt} caption={`Booklet ${s1.printed}. The top strip is the example; fill in the blank one below it.`} />
+    </div>
+  </Section>
 
-    <div class="two">
-      <div class="card">
-        <h3>{s1.alreadyHave.title}</h3>
-        <p>{s1.alreadyHave.body}</p>
-        <ul class="links">
+  <Section id="visual-toolkit" eyebrow="Step 2" title={s2.title} tone="white">
+    <p slot="lead" class="lead-text">{s2.lead}</p>
+    <div class="cols">
+      <div class="left">
+        <ol class="steps-list narrow">
           {
-            s1.alreadyHave.links.map((l) => (
-              <li>
-                {l.href ? (
-                  <a href={l.href} rel="noopener">
-                    {l.label} <Icon name="arrow" size={14} />
-                  </a>
-                ) : (
-                  <span>{l.label}</span>
-                )}
+            s2.steps.map((s, i) => (
+              <li class="stp">
+                <b>{i + 1}</b>
+                <span>{s}</span>
               </li>
             ))
           }
-        </ul>
+        </ol>
+        <div class="callout">
+          <strong>{s2.alsoBring.title}</strong>
+          <p>{s2.alsoBring.body}</p>
+        </div>
+        <div class="callout callout--warn">
+          <strong>{s2.noVisualToolkit.title}</strong>
+          <p>{s2.noVisualToolkit.body}</p>
+        </div>
+        <p class="go">
+          <a class="btn btn--accent" href={url('/components/material-reality/build/')}>
+            Next: Tool 1 · Build <Icon name="arrow" size={20} />
+          </a>
+        </p>
       </div>
-      <div class="card card--tint">
-        <h3>{s1.newToThis.title}</h3>
-        <p>{s1.newToThis.body}</p>
-        <p class="note-line">{s1.newToThis.note}</p>
-      </div>
+      <PageFigure image={bookletImage(s2.image)} alt={s2.alt} caption={s2.note} />
     </div>
-
-    <div class="fig">
-      <PageFigure image={bookletImage(s1.image)} alt={s1.alt} caption={`Booklet ${s1.printed}. The top strip is the example; fill in the blank one below it.`} />
-      {strip && <DownloadCard item={strip} />}
-    </div>
-  </section>
-
-  <section class="block" id="visual-toolkit" aria-labelledby="s2-h">
-    <p class="eb">Step 2</p>
-    <h2 id="s2-h">{s2.title}</h2>
-    <p class="big">{s2.lead}</p>
-
-    <ol class="steps-list narrow">
-      {
-        s2.steps.map((s, i) => (
-          <li class="stp">
-            <b>{i + 1}</b>
-            <span>{s}</span>
-          </li>
-        ))
-      }
-    </ol>
-
-    <div class="two">
-      <div class="callout">
-        <strong>{s2.alsoBring.title}</strong>
-        <p>{s2.alsoBring.body}</p>
-      </div>
-      <div class="callout callout--warn">
-        <strong>{s2.noVisualToolkit.title}</strong>
-        <p>{s2.noVisualToolkit.body}</p>
-      </div>
-    </div>
-
-    <PageFigure image={bookletImage(s2.image)} alt={s2.alt} caption={s2.note} />
-
-    <p class="go">
-      <a class="btn btn--accent" href={url('/components/material-reality/build/')}>
-        Next: Tool 1 · Build <Icon name="arrow" size={18} />
-      </a>
-    </p>
-  </section>
+  </Section>
 </ComponentLayout>
 
 <style>
-  .big {
-    font-size: 1.15rem;
-    color: var(--ink-soft);
-    max-width: 44rem;
+  .cols {
+    display: grid;
+    gap: var(--sp-5);
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+  @media (min-width: 64rem) {
+    .cols {
+      grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    }
+  }
+  .left {
+    display: grid;
+    gap: var(--sp-3);
+    align-content: start;
   }
   .two {
     display: grid;
-    gap: 1rem;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
-    margin: 1.5rem 0;
-    max-width: 62rem;
-  }
-  .two .callout {
-    margin: 0;
-  }
-  .two .callout p {
-    margin: 0;
+    gap: var(--sp-2);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
   }
   .card h3 {
-    font-size: 1.3rem;
-    margin-bottom: 0.4rem;
+    font-size: var(--fs-h4);
+    margin-bottom: var(--sp-1);
   }
   .card p {
     color: var(--ink-soft);
@@ -128,15 +126,15 @@ const strip = getDownloadById('tpl-journey-strip');
     border-color: transparent;
   }
   .note-line {
-    font-size: 0.93rem;
+    font-size: var(--fs-ui);
     margin: 0;
   }
   .links {
     list-style: none;
     padding: 0;
-    margin: 0.5rem 0 0;
+    margin: var(--sp-1) 0 0;
     display: grid;
-    gap: 0.4rem;
+    gap: var(--sp-half);
   }
   .links li {
     margin: 0;
@@ -144,18 +142,19 @@ const strip = getDownloadById('tpl-journey-strip');
   .links a {
     display: inline-flex;
     align-items: center;
-    gap: 0.35rem;
+    gap: var(--sp-half);
+    min-height: 32px;
   }
-  .fig {
-    display: grid;
-    gap: 1rem;
-    max-width: 44rem;
+  .callout {
+    margin: 0;
+  }
+  .callout p {
+    margin: 0;
   }
   .narrow {
-    max-width: 44rem;
-    margin-bottom: 1.5rem;
+    max-width: var(--measure);
   }
   .go {
-    margin: 2rem 0 0;
+    margin: var(--sp-1) 0 0;
   }
 </style>

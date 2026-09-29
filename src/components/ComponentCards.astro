@@ -2,25 +2,33 @@
 import Icon from './Icon.astro';
 import { liveComponents, soonComponents } from '../data/components';
 import { url } from '../utils/url';
+
+// Component 1 is the tallest tile, 3 and 4 stack beside it: one colour per component,
+// and the biggest block goes to the component with the most in it.
 ---
 
-<div class="live">
+<div class="bento">
   {
     liveComponents.map((c) => (
-      <a class={`big big--${c.c}`} href={url(c.href)}>
+      <article class={`big big--${c.c}`} data-c={c.c} data-tile={c.c}>
         <div class="top">
-          <span class="num">{c.number}</span>
+          <span class="num" aria-hidden="true">{c.number}</span>
           {c.hours && <span class="pill">{c.hours}</span>}
         </div>
-        <h3>{c.name}</h3>
+        <h3>
+          <a href={url(c.href)}>
+            <span class="visually-hidden">Component {c.number}: </span>
+            {c.name}
+          </a>
+        </h3>
         <p>{c.blurb}</p>
         <ul class="tags" aria-label="Tools">
           {c.tags.map((t) => <li>{t}</li>)}
         </ul>
-        <span class="open">
-          Open component <Icon name="arrow" size={18} />
+        <span class="open" aria-hidden="true">
+          Open component <Icon name="arrow" size={20} />
         </span>
-      </a>
+      </article>
     ))
   }
 </div>
@@ -28,9 +36,9 @@ import { url } from '../utils/url';
 <ul class="soon">
   {
     soonComponents.map((c) => (
-      <li>
+      <li data-c={c.c}>
         <a href={url(c.href)}>
-          <span class="n">{c.number ?? '↺'}</span>
+          <span class="n" aria-hidden="true">{c.number ?? '↺'}</span>
           <span>
             <b>{c.name}</b>
             <small>Coming next</small>
@@ -42,92 +50,160 @@ import { url } from '../utils/url';
 </ul>
 
 <style>
-  .live {
+  .bento {
     display: grid;
-    gap: 1.25rem;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    gap: var(--sp-3);
+    grid-template-columns: minmax(0, 1fr);
+  }
+  @media (min-width: 64rem) {
+    .bento {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      grid-template-areas:
+        'c1 c3'
+        'c1 c4';
+    }
+    [data-tile='c1'] {
+      grid-area: c1;
+    }
+    [data-tile='c3'] {
+      grid-area: c3;
+    }
+    [data-tile='c4'] {
+      grid-area: c4;
+    }
   }
   .big {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
-    gap: 0.9rem;
-    border-radius: 24px;
-    padding: clamp(1.5rem, 3vw, 2.25rem);
-    color: #fff;
-    text-decoration: none;
-    min-height: 22rem;
-    transition: transform 0.15s ease;
+    gap: var(--sp-2);
+    border-radius: var(--r-lg);
+    padding: var(--sp-4);
+    background: var(--accent);
+    color: var(--accent-ink);
+    transition:
+      transform var(--t-med) var(--ease),
+      box-shadow var(--t-med) var(--ease);
+  }
+  /* A pale circle bleeding off the corner: the mark of the toolkit */
+  .big::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    width: 22rem;
+    height: 22rem;
+    right: -7rem;
+    bottom: -9rem;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 0.1);
+  }
+  .big--c1::before {
+    width: 34rem;
+    height: 34rem;
+    right: -10rem;
+    bottom: -14rem;
   }
   .big:hover {
-    transform: translateY(-3px);
-    text-decoration: none;
+    transform: translateY(-4px);
+    box-shadow: 0 24px 40px -24px rgb(22 20 15 / 0.6);
   }
-  .big--c1 { background: var(--c1); }
-  .big--c3 { background: var(--c3); }
-  .big--c4 { background: var(--c4); }
+  .big--c1 {
+    min-height: 32rem;
+  }
+  .big--c3,
+  .big--c4 {
+    min-height: 15rem;
+  }
   .top {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+    gap: var(--sp-2);
   }
   .num {
-    font-size: clamp(3rem, 6vw, 4.5rem);
+    font-size: 5rem;
     font-weight: 800;
-    line-height: 0.9;
+    line-height: 0.85;
+    letter-spacing: -0.04em;
+  }
+  .big--c1 .num {
+    font-size: 9rem;
   }
   .pill {
     font-family: var(--font-mono);
-    font-size: 0.7rem;
+    font-size: var(--fs-xs);
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    border: 1.5px solid rgb(255 255 255 / 0.7);
+    border: 1.5px solid currentColor;
     border-radius: 999px;
-    padding: 0.5rem 0.9rem;
+    padding: var(--sp-1) var(--sp-2);
+    white-space: nowrap;
   }
   h3 {
-    margin: 0.5rem 0 0;
-    font-size: clamp(1.7rem, 3vw, 2.25rem);
-    color: #fff;
+    margin: var(--sp-1) 0 0;
+    font-size: clamp(1.75rem, 1.2rem + 1.2vw, 2.5rem);
+    line-height: 1.1;
+  }
+  h3 a {
+    color: inherit;
+    text-decoration: none;
+  }
+  /* The whole tile is the link */
+  h3 a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+  h3 a:focus-visible {
+    outline: none;
+  }
+  h3 a:focus-visible::after {
+    outline: 3px solid var(--ink);
+    outline-offset: 4px;
+    border-radius: var(--r-lg);
   }
   p {
     margin: 0;
-    color: rgb(255 255 255 / 0.92);
-    max-width: 30rem;
+    color: inherit;
+    max-width: 34rem;
+    font-size: var(--fs-body);
   }
   .tags {
     list-style: none;
     padding: 0;
-    margin: 0.5rem 0 0;
+    margin: var(--sp-1) 0 0;
     display: flex;
     flex-wrap: wrap;
-    gap: 0.4rem;
+    gap: var(--sp-1);
   }
   .tags li {
     margin: 0;
     font-family: var(--font-mono);
-    font-size: 0.66rem;
+    font-size: var(--fs-xs);
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    border: 1.5px solid rgb(255 255 255 / 0.65);
+    border: 1.5px solid currentColor;
     border-radius: 999px;
-    padding: 0.28rem 0.65rem;
+    padding: 4px 12px;
   }
   .open {
     margin-top: auto;
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--sp-1);
     font-weight: 700;
-    padding-top: 1rem;
+    padding-top: var(--sp-2);
   }
 
   .soon {
     list-style: none;
     padding: 0;
-    margin: 1.25rem 0 0;
+    margin: var(--sp-3) 0 0;
     display: grid;
-    gap: 1rem;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    gap: var(--sp-3);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
   }
   .soon li {
     margin: 0;
@@ -135,22 +211,31 @@ import { url } from '../utils/url';
   .soon a {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    padding: 1.1rem 1.4rem;
-    border: 1px solid var(--line-strong);
-    border-radius: var(--radius);
-    background: var(--ground);
+    gap: var(--sp-2);
+    min-height: 80px;
+    padding: var(--sp-2) var(--sp-3);
+    border: 2px dashed var(--line-strong);
+    border-radius: var(--r-md);
+    background: transparent;
     color: var(--ink);
     text-decoration: none;
+    transition: background-color var(--t-fast) var(--ease);
   }
   .soon a:hover {
     background: var(--surface);
+    border-color: var(--ink);
   }
   .n {
-    font-size: 2rem;
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    flex: none;
+    font-size: var(--fs-h3);
     font-weight: 800;
-    color: var(--line-strong);
-    min-width: 1.6rem;
+    color: var(--muted);
+    box-shadow: inset 0 0 0 2px var(--line-strong);
   }
   .soon b {
     display: block;
@@ -158,7 +243,7 @@ import { url } from '../utils/url';
   }
   .soon small {
     font-family: var(--font-mono);
-    font-size: 0.68rem;
+    font-size: var(--fs-xs);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--muted);

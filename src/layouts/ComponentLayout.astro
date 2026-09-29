@@ -1,16 +1,17 @@
 ---
 import BaseLayout from './BaseLayout.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
-import ComponentRail from '../components/ComponentRail.astro';
+import ComponentStepper from '../components/ComponentStepper.astro';
 import { componentById } from '../data/components';
 import { railFor } from '../data/rail';
 
-// Shell for the pages that sit beside the rail in Components 1 and 4: the component's
-// overview, "Pick a product", "Before you start" and "Ask your participants".
+// Shell for a component's own pages: its overview, "Pick a product", "Before you start",
+// "Ask your participants". The step bar under the heading lists every page of the
+// component in order; the content is a stack of Sections that run the full width.
 
 interface Props {
-  component: 'existing-products' | 'material-reality';
-  /** "overview", or the slug of the page (matches the rail). */
+  component: 'existing-products' | 'material-reality' | 'language';
+  /** "overview", or the slug of the page (matches the step bar). */
   current: string;
   title: string;
   heading: string;
@@ -36,62 +37,60 @@ const crumbs = [
 
 <BaseLayout title={title} description={description ?? lead} component={comp.c}>
   <div class="page-head">
-    <div class="wrap">
-      <Breadcrumb items={crumbs} />
-      {chips.length > 0 && <div class="chip-row chips">{chips.map((c) => <span class="chip chip--quiet">{c}</span>)}</div>}
-      <h1>{heading}</h1>
-      {lead && <p class="lead">{lead}</p>}
-      <slot name="head" />
+    <div class="wrap head-grid">
+      <div class="hl">
+        <Breadcrumb items={crumbs} />
+        {chips.length > 0 && <div class="chip-row chips">{chips.map((c) => <span class="chip chip--quiet">{c}</span>)}</div>}
+        <h1>{heading}</h1>
+        {lead && <p class="lead">{lead}</p>}
+        <slot name="head" />
+      </div>
+      <span class="bignum" aria-hidden="true">{comp.number}</span>
     </div>
   </div>
 
-  <div class="wrap body">
-    <ComponentRail rail={rail} current={current} />
-    <div class="main">
-      <slot />
-    </div>
-  </div>
+  <ComponentStepper rail={rail} current={current} />
+
+  <slot />
 </BaseLayout>
 
 <style>
+  .head-grid {
+    display: grid;
+    gap: var(--sp-4);
+    grid-template-columns: minmax(0, 1fr);
+    align-items: end;
+  }
+  @media (min-width: 64rem) {
+    .head-grid {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: var(--sp-8);
+    }
+  }
   .chips {
-    margin-bottom: 1.25rem;
+    margin-bottom: var(--sp-3);
   }
   .page-head h1 {
-    font-size: clamp(2.4rem, 6vw, 4.75rem);
-    margin-bottom: 1rem;
-    max-width: 16ch;
+    margin-bottom: var(--sp-2);
+    max-width: 18ch;
   }
   .page-head .lead {
     max-width: 44rem;
     margin-bottom: 0;
   }
-  .body {
-    display: grid;
-    gap: 2rem 2.5rem;
-    grid-template-columns: minmax(0, 1fr);
-    padding-block: 2rem 4.5rem;
-    align-items: start;
+  /* The component's number, large, in its own colour */
+  .bignum {
+    display: none;
+    font-size: clamp(9rem, 16vw, 16rem);
+    line-height: 0.75;
+    font-weight: 800;
+    letter-spacing: -0.06em;
+    color: var(--accent);
+    user-select: none;
   }
-  @media (min-width: 62rem) {
-    .body {
-      grid-template-columns: 16rem minmax(0, 1fr);
+  @media (min-width: 64rem) {
+    .bignum {
+      display: block;
     }
-  }
-  .main {
-    min-width: 0;
-  }
-  .main :global(.block) {
-    padding-block: 1.5rem 2rem;
-  }
-  .main :global(.block + .block) {
-    border-top: 1px solid var(--line);
-  }
-  .main :global(.block > h2) {
-    font-size: clamp(1.7rem, 3.4vw, 2.3rem);
-    margin-bottom: 0.75rem;
-  }
-  .main :global(.block > .eb) {
-    margin-bottom: 0.5rem;
   }
 </style>

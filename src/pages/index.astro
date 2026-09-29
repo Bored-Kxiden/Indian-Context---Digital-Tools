@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
+import Section from '../components/Section.astro';
 import VennHero from '../components/VennHero.astro';
 import GoalIndex from '../components/GoalIndex.astro';
 import ComponentCards from '../components/ComponentCards.astro';
@@ -8,123 +9,102 @@ import { goals } from '../data/goals';
 import { site } from '../data/site';
 import { whyThisExists, howToRead, guideline, meera } from '../data/booklet/shared';
 import { url } from '../utils/url';
+
+const ways = howToRead.everyTool.parts;
 ---
 
 <BaseLayout>
-  <section class="hero">
+  <section class="hero" aria-labelledby="hero-h">
     <div class="wrap hero-grid">
-      <div>
-        <div class="chip-row tags">
+      <div class="copy">
+        <div class="chip-row rise" style="--i: 0">
           <span class="chip chip--quiet">Toolkit</span>
           <span class="chip chip--quiet">BITSDES 2024–28</span>
         </div>
-        <h1>Designing for the Indian Context</h1>
-        <p class="lead">{site.tagline}</p>
-        <div class="btn-row">
-          <a class="btn" href="#i-want-to">Find your tool <Icon name="arrow" size={18} /></a>
+        <h1 id="hero-h" class="rise" style="--i: 1">Designing for the Indian Context</h1>
+        <p class="lead rise" style="--i: 2">{site.tagline}</p>
+        <div class="btn-row rise" style="--i: 3">
+          <a class="btn" href="#i-want-to">Find your tool <Icon name="arrow" size={20} /></a>
           <a class="btn btn--outline" href="#components">Pick a component</a>
-          <a class="btn btn--outline" href={url(site.bookletPdf)} download><Icon name="download" size={18} /> Booklet (PDF)</a>
+          <a class="btn btn--outline" href={url(site.bookletPdf)} download><Icon name="download" size={20} /> Booklet (PDF)</a>
         </div>
-        <p class="free">Print it, run it with cards, or work straight from this site.</p>
+        <p class="free rise" style="--i: 4">Print it, run it with cards, or work straight from this site.</p>
       </div>
-      <div class="art">
+      <div class="art" aria-hidden="false">
         <VennHero />
       </div>
     </div>
   </section>
 
-  <section class="section section--white goals-section" aria-labelledby="i-want-to-heading">
-    <div class="wrap">
-      <GoalIndex
-        groups={goals}
-        lead="Find what you need and go to that tool. Every tool works on its own. Used in order, they build one picture."
-      />
-    </div>
-  </section>
+  <Section id="i-want-to" eyebrow="Start here" title="I want to…" tone="white">
+    <p slot="lead" class="lead-text">
+      Say what you’re trying to do and go straight to the tool. Every tool works on its own. Used in order, they build one picture.
+    </p>
+    <GoalIndex groups={goals} />
+  </Section>
 
-  <section class="section" id="components" aria-labelledby="components-heading">
-    <div class="wrap">
-      <div class="section-head split">
-        <div>
-          <p class="eb">Components</p>
-          <h2 id="components-heading">Pick a way of reading.</h2>
-        </div>
-        <p>Each component works on its own. Used together, they give you a fuller picture of the person you’re designing for.</p>
-      </div>
-      <ComponentCards />
-    </div>
-  </section>
+  <Section id="components" eyebrow="Components" title="Pick a way of reading.">
+    <p slot="lead" class="lead-text">
+      Each component works on its own. Used together, they give you a fuller picture of the person you’re designing for.
+    </p>
+    <ComponentCards />
+  </Section>
 
-  <section class="section section--white" aria-labelledby="why-heading">
-    <div class="wrap two">
-      <div>
-        <p class="eb">Why this exists</p>
-        <h2 id="why-heading">{whyThisExists.title}</h2>
-        <p class="bd">{whyThisExists.body}</p>
-        <ul class="chip-row made">
-          {whyThisExists.madeFor.map((m) => <li class="chip chip--quiet">{m}</li>)}
+  <Section id="why" eyebrow="Why this exists" title={whyThisExists.title} tone="white" split>
+    <p class="big">{whyThisExists.body}</p>
+    <ul class="chip-row made" aria-label="Made for">
+      {whyThisExists.madeFor.map((m) => <li class="chip chip--quiet">{m}</li>)}
+    </ul>
+    <div class="quotes">
+      <figure class="q q--without">
+        <figcaption class="lbl">Without it</figcaption>
+        <blockquote>{whyThisExists.without}</blockquote>
+      </figure>
+      <figure class="q q--with">
+        <figcaption class="lbl">With it</figcaption>
+        <blockquote>{whyThisExists.with}</blockquote>
+      </figure>
+    </div>
+  </Section>
+
+  <Section id="how" eyebrow="How every tool works" title="Read it, see it, do it." split>
+    <ol class="ways">
+      {
+        ways.map((w, i) => (
+          <li>
+            <span class="idx" aria-hidden="true">{i + 1}</span>
+            <div class="wt">
+              <h3>{w.title.replace(/^\d · /, '')}</h3>
+              <p>{w.body}</p>
+            </div>
+            <span class="wi" aria-hidden="true"><Icon name={w.icon} size={40} /></span>
+          </li>
+        ))
+      }
+    </ol>
+  </Section>
+
+  <Section id="guideline" eyebrow={guideline.eyebrow} title={guideline.title} tone="ink" split>
+    <p class="on-dark-body">{guideline.body}</p>
+    <div class="gt">
+      <div class="gt-good">
+        <span class="lbl">Good</span>
+        <ul>
+          {guideline.good.map((g) => <li><Icon name="check" size={20} /> {g}</li>)}
         </ul>
       </div>
-      <div class="quotes">
-        <div class="q q--without">
-          <span class="lbl">Without it</span>
-          <p>{whyThisExists.without}</p>
-        </div>
-        <div class="q q--with">
-          <span class="lbl">With it</span>
-          <p>{whyThisExists.with}</p>
-        </div>
+      <div class="gt-broad">
+        <span class="lbl">Too broad</span>
+        <ul>
+          {guideline.tooBroad.map((g) => <li><Icon name="x" size={20} /> {g}</li>)}
+        </ul>
       </div>
     </div>
-  </section>
+    <a class="link-arrow light" href={url('/guideline/')}>Read the guideline <Icon name="arrow" size={20} /></a>
+  </Section>
 
-  <section class="section" aria-labelledby="how-heading">
-    <div class="wrap">
-      <div class="section-head">
-        <p class="eb">How every tool works</p>
-        <h2 id="how-heading">Read it, see it, do it.</h2>
-      </div>
-      <div class="grid grid--3 how">
-        {
-          howToRead.everyTool.parts.map((p, i) => (
-            <article class={`how-card how-card--${i}`}>
-              <span class="ico"><Icon name={p.icon} size={30} /></span>
-              <h3>{p.title}</h3>
-              <p>{p.body}</p>
-            </article>
-          ))
-        }
-      </div>
-    </div>
-  </section>
-
-  <section class="section section--ink guide" aria-labelledby="guide-heading">
-    <div class="wrap two">
-      <div>
-        <p class="eb on-dark">{guideline.eyebrow}</p>
-        <h2 id="guide-heading">Be specific. <br />One real person, one real thing.</h2>
-        <p class="on-dark-body">{guideline.body}</p>
-        <a class="link-arrow light" href={url('/guideline/')}>Read the guideline <Icon name="arrow" size={18} /></a>
-      </div>
-      <div class="gt">
-        <div class="gt-good">
-          <span class="lbl">Good</span>
-          <ul>
-            {guideline.good.map((g) => <li><Icon name="check" size={18} /> {g}</li>)}
-          </ul>
-        </div>
-        <div class="gt-broad">
-          <span class="lbl">Too broad</span>
-          <ul>
-            {guideline.tooBroad.map((g) => <li><Icon name="x" size={18} /> {g}</li>)}
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" aria-labelledby="meera-heading">
-    <div class="wrap two meera">
+  <Section id="meera" eyebrow="The running example" title={meera.note} split>
+    <div class="meera">
       <article class="card persona">
         <div class="head">
           <span class="avatar" aria-hidden="true">M</span>
@@ -137,176 +117,182 @@ import { url } from '../utils/url';
           {meera.facts.map((f) => <><dt>{f.k}</dt><dd>{f.v}</dd></>)}
         </dl>
       </article>
-      <div>
-        <p class="eb">The running example</p>
-        <h2 id="meera-heading">{meera.note}</h2>
-        <p class="bd">{meera.useYourOwn.body}</p>
-        <a class="btn btn--outline" href={url('/guideline/#meera')}>Read Meera’s story <Icon name="arrow" size={18} /></a>
+      <div class="story">
+        <p class="big">{meera.useYourOwn.body}</p>
+        <a class="btn btn--outline" href={url('/guideline/#meera')}>Read Meera’s story <Icon name="arrow" size={20} /></a>
       </div>
     </div>
-  </section>
+  </Section>
 </BaseLayout>
 
 <style>
   .hero {
-    padding-block: clamp(2.5rem, 7vw, 5.5rem);
+    padding-block: clamp(var(--sp-6), 6vw, var(--sp-12));
     border-bottom: 1px solid var(--line);
+    overflow: clip;
   }
   .hero-grid {
     display: grid;
-    gap: 2.5rem;
+    gap: var(--sp-6);
     align-items: center;
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
-  @media (min-width: 62rem) {
+  @media (min-width: 64rem) {
     .hero-grid {
-      grid-template-columns: 1.15fr 1fr;
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      gap: var(--sp-8);
     }
   }
-  .tags {
-    margin-bottom: 1.5rem;
+  .copy h1 {
+    margin: var(--sp-4) 0 var(--sp-3);
+    max-width: 14ch;
   }
-  .hero h1 {
-    margin-bottom: 1.25rem;
-    max-width: 12ch;
-  }
-  .hero .lead {
-    margin-bottom: 2rem;
+  .copy .lead {
+    margin-bottom: var(--sp-4);
+    max-width: 36rem;
   }
   .free {
-    margin: 1.25rem 0 0;
+    margin: var(--sp-3) 0 0;
     color: var(--muted);
-    font-size: 0.95rem;
+    font-size: var(--fs-ui);
   }
   .art {
     display: flex;
     justify-content: center;
   }
-  .goals-section {
-    border-top: 0;
-  }
-  .split {
-    max-width: none;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: end;
-    gap: 1rem 3rem;
-  }
-  .split p {
-    max-width: 26rem;
-    margin: 0;
-  }
-  .two {
-    display: grid;
-    gap: 2.5rem 4rem;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
-    align-items: center;
-  }
-  .bd {
-    font-size: 1.1rem;
+
+  .big {
+    font-size: var(--fs-lead);
     color: var(--ink-soft);
-    max-width: 32rem;
+    max-width: 44rem;
   }
   .made {
     list-style: none;
     padding: 0;
-    margin: 1.5rem 0 0;
+    margin: var(--sp-3) 0 var(--sp-5);
   }
   .made li {
     margin: 0;
   }
   .quotes {
     display: grid;
-    gap: 1rem;
+    gap: var(--sp-2);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
   }
   .q {
-    border-radius: var(--radius);
-    padding: 1.5rem 1.75rem;
+    margin: 0;
+    border-radius: var(--r-lg);
+    padding: var(--sp-3) var(--sp-4);
   }
-  .q p {
-    margin: 0.4rem 0 0;
-    font-size: clamp(1.15rem, 2vw, 1.45rem);
-    line-height: 1.35;
-    font-weight: 600;
+  .q blockquote {
+    margin: var(--sp-1) 0 0;
+    font-size: var(--fs-h3);
+    line-height: 1.3;
+    font-weight: 700;
+    letter-spacing: -0.005em;
   }
   .q--without {
     background: var(--ground);
-    border: 1px solid var(--line-strong);
+    border: 2px solid var(--line-strong);
   }
   .q--with {
-    background: var(--c1);
+    background: var(--ink);
     color: #fff;
   }
   .q--with .lbl {
-    color: rgb(255 255 255 / 0.8);
+    color: rgb(255 255 255 / 0.85);
   }
-  .q--with p {
-    font-weight: 700;
+
+  .ways {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--sp-2);
   }
-  .how-card {
-    border-radius: var(--radius);
-    padding: 1.75rem;
-    min-height: 15rem;
+  .ways li {
+    margin: 0;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--sp-3);
+    padding: var(--sp-3) var(--sp-4);
+    border-radius: var(--r-lg);
+    background: var(--surface);
+    border: 2px solid var(--line-strong);
   }
-  .how-card--0 { background: var(--ground); border: 1px solid var(--line-strong); }
-  .how-card--1 { background: var(--c2-tint); }
-  .how-card--2 { background: var(--c1-tint); }
-  .how-card h3 {
-    margin: 1.25rem 0 0.5rem;
+  .idx {
+    font-size: var(--fs-display);
+    font-weight: 800;
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    min-width: 1ch;
   }
-  .how-card p {
+  .wt h3 {
+    margin: 0 0 var(--sp-half);
+  }
+  .wt p {
     margin: 0;
     color: var(--ink-soft);
+    max-width: 40rem;
   }
-  .ico {
+  .wi {
     display: inline-flex;
     color: var(--ink);
   }
-  .how-card--2 .ico {
-    color: var(--c1);
+  @media (max-width: 40rem) {
+    .ways li {
+      grid-template-columns: auto minmax(0, 1fr);
+      padding: var(--sp-3);
+    }
+    .wi {
+      display: none;
+    }
+    .idx {
+      font-size: 3rem;
+    }
   }
 
-  .guide h2 {
-    color: #fff;
-  }
-  .on-dark {
-    color: #b9b1a0;
-  }
   .on-dark-body {
     color: var(--on-dark);
-    font-size: 1.1rem;
-    max-width: 30rem;
-  }
-  .link-arrow.light {
-    color: #fff;
+    font-size: var(--fs-lead);
+    max-width: 44rem;
   }
   .gt {
     display: grid;
-    gap: 1rem;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+    gap: var(--sp-2);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    margin: var(--sp-4) 0;
   }
   .gt-good,
   .gt-broad {
-    border-radius: var(--radius);
-    padding: 1.25rem 1.4rem;
+    border-radius: var(--r-lg);
+    padding: var(--sp-3);
   }
-  .gt-good { background: var(--c1); }
-  .gt-broad { background: #2a261e; }
+  .gt-good {
+    background: var(--surface);
+    color: var(--ink);
+  }
+  .gt-good .lbl {
+    color: var(--muted);
+  }
+  .gt-broad {
+    background: #2a261e;
+  }
   .gt .lbl {
-    color: rgb(255 255 255 / 0.75);
-    margin-bottom: 0.6rem;
+    color: rgb(255 255 255 / 0.85);
+    margin-bottom: var(--sp-1);
   }
   .gt ul {
     list-style: none;
     padding: 0;
     margin: 0;
     display: grid;
-    gap: 0.6rem;
+    gap: var(--sp-2);
   }
   .gt li {
     display: flex;
-    gap: 0.6rem;
+    gap: var(--sp-1);
     align-items: flex-start;
     margin: 0;
     font-weight: 600;
@@ -314,58 +300,70 @@ import { url } from '../utils/url';
   }
   .gt li :global(svg) {
     flex: none;
-    margin-top: 0.15rem;
+    margin-top: 2px;
   }
   .gt-broad li {
     color: var(--on-dark);
     font-weight: 500;
   }
+  .link-arrow.light {
+    color: #fff;
+  }
 
+  .meera {
+    display: grid;
+    gap: var(--sp-4);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    align-items: start;
+  }
   .persona .head {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.25rem;
+    gap: var(--sp-2);
+    margin-bottom: var(--sp-3);
   }
   .avatar {
-    width: 3.4rem;
-    height: 3.4rem;
+    width: 56px;
+    height: 56px;
     border-radius: 50%;
-    background: var(--c2);
-    color: var(--ink);
+    background: var(--ink);
+    color: #fff;
     display: grid;
     place-items: center;
     font-weight: 800;
-    font-size: 1.5rem;
+    font-size: var(--fs-h3);
   }
   .persona b {
-    font-size: 1.35rem;
+    font-size: var(--fs-h4);
     display: block;
     line-height: 1.1;
   }
   .persona small {
     font-family: var(--font-mono);
-    font-size: 0.68rem;
+    font-size: var(--fs-xs);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--muted);
   }
   .persona dl {
     display: grid;
-    grid-template-columns: 5rem 1fr;
-    gap: 0.6rem 1rem;
+    grid-template-columns: 5rem minmax(0, 1fr);
+    gap: var(--sp-1) var(--sp-2);
     margin: 0;
   }
   .persona dt {
     font-family: var(--font-mono);
-    font-size: 0.68rem;
+    font-size: var(--fs-xs);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--muted);
-    padding-top: 0.3rem;
+    padding-top: 4px;
   }
   .persona dd {
     margin: 0;
     font-weight: 600;
+  }
+  .story .btn {
+    margin-top: var(--sp-1);
   }
 </style>

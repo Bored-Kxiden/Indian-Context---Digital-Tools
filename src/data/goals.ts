@@ -5,6 +5,7 @@ import { iWantTo as c4Goals } from './booklet/material-reality';
 // component; each item is a phrase that finishes "I want to…", plus the tool it opens.
 //
 //  - Component 4 items are the booklet's own list (page 4.03), verbatim.
+//  - Every chip takes its own component's colour (D19): a tool never borrows another component's colour.
 //  - Component 1 items are written by us, from each tool's subtitle (not in the booklet).
 //  - Component 3 (Language) items are ours, from the Meaning-to-Interface work.
 //
@@ -35,7 +36,6 @@ const C1 = '/components/existing-products/';
 const C3 = '/components/language/';
 const C4 = '/components/material-reality/';
 
-const c4Tone: Record<string, Tone> = { build: 'c4', break: 'c3', weigh: 'c2', say: 'ink' };
 
 export const goals: Goal[] = [
   {
@@ -115,7 +115,7 @@ export const goals: Goal[] = [
     items: c4Goals.map((g) => ({
       phrase: g.phrase,
       tag: g.tag,
-      tone: c4Tone[g.tool],
+      tone: 'c4' as Tone,
       href: `${C4}${g.tool}/${g.anchor}`,
     })),
   },

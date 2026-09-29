@@ -16,9 +16,11 @@ const { item, compact = false } = Astro.props;
   compact ? (
     <a class="dl-row" href={url(item.href)} download>
       <span class="ic"><Icon name="download" size={18} /></span>
-      <span class="t">{item.title}</span>
-      <span class="m">
-        {item.format} · {item.size}
+      <span class="t">
+        {item.title}
+        <span class="m">
+          {item.format} · {item.size}
+        </span>
       </span>
     </a>
   ) : (
@@ -54,60 +56,62 @@ const { item, compact = false } = Astro.props;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 0.75rem;
+    gap: var(--sp-2);
+    margin-bottom: var(--sp-2);
   }
   .fmt {
     font-family: var(--font-mono);
-    font-size: 0.72rem;
+    font-size: var(--fs-xs);
     font-weight: 600;
     letter-spacing: 0.06em;
-    padding: 0.3rem 0.65rem;
+    padding: 4px 12px;
     border-radius: 999px;
     background: var(--accent-tint);
-    color: var(--ink);
+    color: var(--accent-deep);
   }
   .meta {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.4rem 0.8rem;
-    font-size: 0.88rem;
+    gap: var(--sp-half) var(--sp-2);
+    font-size: var(--fs-sm);
     color: var(--muted);
   }
   h3 {
-    margin-bottom: 0.4rem;
-    font-size: 1.2rem;
+    margin-bottom: var(--sp-1);
+    font-size: var(--fs-h4);
   }
   p {
-    margin-bottom: 0.6rem;
+    margin-bottom: var(--sp-1);
     color: var(--ink-soft);
   }
   .note-line {
-    font-size: 0.92rem;
+    font-size: var(--fs-ui);
     color: var(--muted);
   }
   .actions {
     margin-top: auto;
-    padding-top: 0.5rem;
+    padding-top: var(--sp-1);
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.6rem 1.2rem;
-    font-size: 0.95rem;
+    gap: var(--sp-1) var(--sp-3);
+    font-size: var(--fs-ui);
   }
 
   .dl-row {
     display: flex;
     align-items: center;
-    gap: 0.7rem;
-    padding: 0.7rem 0.9rem;
-    border: 1px solid var(--line-strong);
-    border-radius: var(--radius-sm);
+    gap: var(--sp-2);
+    min-height: 56px;
+    padding: var(--sp-1) var(--sp-2);
+    border: 2px solid var(--line-strong);
+    border-radius: var(--r-sm);
     background: var(--surface);
     color: var(--ink);
     text-decoration: none;
-    font-size: 0.95rem;
+    font-size: var(--fs-ui);
+    transition: border-color var(--t-fast) var(--ease);
   }
   .dl-row:hover {
     border-color: var(--ink);
@@ -120,13 +124,15 @@ const { item, compact = false } = Astro.props;
     font-weight: 600;
     flex: 1;
     line-height: 1.3;
+    display: grid;
+    gap: 2px;
   }
   .dl-row .m {
+    font-weight: 400;
     font-family: var(--font-mono);
-    font-size: 0.68rem;
+    font-size: var(--fs-xs);
     letter-spacing: 0.05em;
     text-transform: uppercase;
     color: var(--muted);
-    white-space: nowrap;
   }
 </style>

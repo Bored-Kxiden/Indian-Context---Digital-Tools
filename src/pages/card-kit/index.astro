@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Breadcrumb from '../../components/Breadcrumb.astro';
+import PageHead from '../../components/PageHead.astro';
+import Section from '../../components/Section.astro';
 import PageFigure from '../../components/PageFigure.astro';
 import DownloadCard from '../../components/DownloadCard.astro';
 import Icon from '../../components/Icon.astro';
@@ -16,273 +17,250 @@ const toolHref = (slug: string) => `/components/existing-products/${slug}/`;
 ---
 
 <BaseLayout title="Card kit" description={cardKitIntro} component="c1">
-  <div class="page-head">
-    <div class="wrap">
-      <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Card kit' }]} />
-      <div class="chip-row chips">
-        <span class="chip chip--quiet">Component 1</span>
-        <span class="chip chip--quiet">Print and play</span>
-      </div>
-      <h1>Card kit</h1>
-      <p class="lead">{cardKitIntro}</p>
-      <p class="pick">
-        <a class="btn btn--accent" href="#print"><Icon name="print" size={18} /> Print the kit</a>
-        <a class="btn btn--outline" href="#boards">Boards B1–B7</a>
-        <a class="btn btn--outline" href="#sheets">Sheets S1–S8</a>
-      </p>
-    </div>
-  </div>
+  <PageHead
+    crumbs={[{ label: 'Home', href: '/' }, { label: 'Card kit' }]}
+    heading="Card kit"
+    lead={cardKitIntro}
+    chips={['Component 1', 'Print and play']}
+  >
+    <nav slot="aside" class="jump" aria-label="On this page">
+      <a class="btn btn--accent" href="#print"><Icon name="print" size={20} /> Print the kit</a>
+      <a class="btn btn--outline" href="#boards">Boards B1–B7</a>
+      <a class="btn btn--outline" href="#sheets">Sheets S1–S8</a>
+    </nav>
+  </PageHead>
 
-  <section class="section" aria-labelledby="inside-h">
-    <div class="wrap">
-      <div class="section-head">
-        <p class="eb">What’s inside</p>
-        <h2 id="inside-h">Boards, and cards to lay on them.</h2>
-        <p>Seven boards, one for each step of Component 1. Eight sheets of cards.</p>
-      </div>
-      <ul class="inside">
-        {
-          inside.map((i) => (
-            <li>
-              <b>{i.name}</b>
-              <span>{i.use}</span>
-              <span class="tg">{i.sheet}</span>
-            </li>
-          ))
-        }
-      </ul>
-      <div class="callout callout--ink principle">
-        <strong>The one rule</strong>
-        <p>{principle}</p>
-      </div>
+  <Section id="inside" eyebrow="What’s inside" title="Boards, and cards to lay on them." split>
+    <p slot="lead" class="lead-text">Seven boards, one for each step of Component 1. Eight sheets of cards.</p>
+    <ul class="inside">
+      {
+        inside.map((i) => (
+          <li>
+            <b>{i.name}</b>
+            <span>{i.use}</span>
+            <span class="tg">{i.sheet}</span>
+          </li>
+        ))
+      }
+    </ul>
+    <div class="callout callout--ink principle">
+      <strong>The one rule</strong>
+      <p>{principle}</p>
     </div>
-  </section>
+  </Section>
 
-  <section class="section section--white" id="print" aria-labelledby="print-h">
-    <div class="wrap">
-      <div class="section-head">
-        <p class="eb">Print</p>
-        <h2 id="print-h">Print and set up.</h2>
+  <Section id="print" eyebrow="Print" title="Print and set up." tone="white" split>
+    <div class="two">
+      <div>
+        <ul class="print-notes">
+          <li><Icon name="cards" size={24} /> <span>{printCards}</span></li>
+          <li><Icon name="board" size={24} /> <span>{printBoards}</span></li>
+        </ul>
+        <h3 class="h3">Set up the table</h3>
+        <ol class="steps-list">
+          {
+            setUpTable.map((s, i) => (
+              <li class="stp">
+                <b>{i + 1}</b>
+                <span>{s}</span>
+              </li>
+            ))
+          }
+        </ol>
       </div>
-      <div class="two">
-        <div>
-          <ul class="print-notes">
-            <li><Icon name="cards" size={22} /> <span>{printCards}</span></li>
-            <li><Icon name="board" size={22} /> <span>{printBoards}</span></li>
-          </ul>
-          <h3 class="h3">Set up the table</h3>
-          <ol class="steps-list">
-            {
-              setUpTable.map((s, i) => (
-                <li class="stp">
-                  <b>{i + 1}</b>
-                  <span>{s}</span>
-                </li>
-              ))
-            }
-          </ol>
-        </div>
-        <div class="dls">
-          {all && <DownloadCard item={all} />}
-          {allSheets && <DownloadCard item={allSheets} />}
-          {allBoards && <DownloadCard item={allBoards} />}
-        </div>
+      <div class="dls">
+        {all && <DownloadCard item={all} />}
+        {allSheets && <DownloadCard item={allSheets} />}
+        {allBoards && <DownloadCard item={allBoards} />}
       </div>
     </div>
-  </section>
+  </Section>
 
-  <section class="section" id="boards" aria-labelledby="boards-h">
-    <div class="wrap">
-      <div class="section-head">
-        <p class="eb">Boards</p>
-        <h2 id="boards-h">B1–B7</h2>
-        <p>Put one board in the middle of the table, the one for the tool you’re doing.</p>
-      </div>
-      <div class="items">
-        {
-          boards.map((b) => {
-            const dl = getDownloadById(`board-${b.id.toLowerCase()}`);
-            return (
-              <article class="item" id={b.id.toLowerCase()}>
-                <div class="text">
-                  <p class="eb"><span class="tg">{b.id}</span> {b.page}</p>
-                  <h3>{b.name}</h3>
-                  <p class="for">{b.tool}</p>
-                  <p class="uses">
-                    Uses: {b.cards.map((c, i) => <>{i > 0 && ', '}{/^S\d/.test(c) ? <a href={`#${c.toLowerCase()}`}>{c}</a> : c}</>)}
-                  </p>
-                  <p><a class="link-arrow" href={url(toolHref(b.toolSlug))}>Open the tool <Icon name="arrow" size={18} /></a></p>
-                  {dl && <DownloadCard item={dl} compact />}
-                </div>
+  <Section id="boards" eyebrow="Boards" title="B1–B7">
+    <p slot="lead" class="lead-text">Put one board in the middle of the table, the one for the tool you’re doing.</p>
+    <div class="items">
+      {
+        boards.map((b) => {
+          const dl = getDownloadById(`board-${b.id.toLowerCase()}`);
+          return (
+            <article class="item" id={b.id.toLowerCase()}>
+              <div class="text">
+                <p class="eb"><span class="tg">{b.id}</span> {b.page}</p>
+                <h3>{b.name}</h3>
+                <p class="for">{b.tool}</p>
+                <p class="uses">
+                  Uses: {b.cards.map((c, i) => <>{i > 0 && ', '}{/^S\d/.test(c) ? <a href={`#${c.toLowerCase()}`}>{c}</a> : c}</>)}
+                </p>
+                <p><a class="link-arrow" href={url(toolHref(b.toolSlug))}>Open the tool <Icon name="arrow" size={20} /></a></p>
+                {dl && <DownloadCard item={dl} compact />}
+              </div>
+              <div class="fig board">
                 <PageFigure
                   image={cardKitImage(b.id)}
                   alt={`Board ${b.id}, ${b.name}, from the card kit. Print at A2 landscape.`}
                   caption="A2 landscape. A3 works for pairs."
                 />
-              </article>
-            );
-          })
-        }
-      </div>
+              </div>
+            </article>
+          );
+        })
+      }
     </div>
-  </section>
+  </Section>
 
-  <section class="section section--white" id="sheets" aria-labelledby="sheets-h">
-    <div class="wrap">
-      <div class="section-head">
-        <p class="eb">Card sheets</p>
-        <h2 id="sheets-h">S1–S8</h2>
-        <p>Print on A4 card, 250–300 gsm. Cut along the dashed lines.</p>
-      </div>
-      <div class="items">
-        {
-          sheets.map((s) => {
-            const dl = getDownloadById(`sheet-${s.id.toLowerCase()}`);
-            return (
-              <article class="item" id={s.id.toLowerCase()}>
-                <div class="text">
-                  <p class="eb"><span class="tg">{s.id}</span> {s.page} · {sheetMeta(s)}</p>
-                  <h3>{s.name}</h3>
-                  <p class="for">{s.tools}</p>
-                  <p class="uses">{s.blurb}</p>
-                  {dl && <DownloadCard item={dl} compact />}
-                </div>
+  <Section id="sheets" eyebrow="Card sheets" title="S1–S8" tone="white">
+    <p slot="lead" class="lead-text">Print on A4 card, 250–300 gsm. Cut along the dashed lines.</p>
+    <div class="items">
+      {
+        sheets.map((s) => {
+          const dl = getDownloadById(`sheet-${s.id.toLowerCase()}`);
+          return (
+            <article class="item" id={s.id.toLowerCase()}>
+              <div class="text">
+                <p class="eb"><span class="tg">{s.id}</span> {s.page} · {sheetMeta(s)}</p>
+                <h3>{s.name}</h3>
+                <p class="for">{s.tools}</p>
+                <p class="uses">{s.blurb}</p>
+                {dl && <DownloadCard item={dl} compact />}
+              </div>
+              <div class="fig sheet">
                 <PageFigure
                   image={cardKitImage(s.id)}
                   alt={`Card sheet ${s.id}, ${s.name}, from the card kit. Print on A4 card and cut along the dashed lines.`}
                   caption={s.copies > 1 ? `Print ${s.copies} times.` : 'Print once.'}
                 />
-              </article>
-            );
-          })
-        }
-      </div>
+              </div>
+            </article>
+          );
+        })
+      }
     </div>
-  </section>
+  </Section>
 </BaseLayout>
 
 <style>
-  .chips {
-    margin-bottom: 1.25rem;
-  }
-  .page-head h1 {
-    font-size: clamp(2.6rem, 7vw, 5rem);
-    margin-bottom: 1rem;
-  }
-  .page-head .lead {
-    max-width: 44rem;
-  }
-  .pick {
+  .jump {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.75rem;
-    margin: 1.75rem 0 0;
+    gap: var(--sp-2);
+    justify-content: flex-start;
+  }
+  @media (min-width: 64rem) {
+    .jump {
+      justify-content: flex-end;
+    }
   }
   .inside {
     list-style: none;
-    margin: 0 0 1.5rem;
+    margin: 0 0 var(--sp-3);
     padding: 0;
     display: grid;
-    gap: 0.9rem;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+    gap: var(--sp-2);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
   }
   .inside li {
     margin: 0;
     display: grid;
-    gap: 0.4rem;
+    gap: var(--sp-1);
     align-content: start;
-    padding: 1.1rem 1.2rem;
-    border-radius: var(--radius);
+    padding: var(--sp-3);
+    border-radius: var(--r-md);
     background: var(--c1-tint);
   }
   .inside b {
-    font-size: 1.1rem;
+    font-size: var(--fs-h4);
   }
   .inside li > span:not(.tg) {
     color: var(--ink-soft);
-    font-size: 0.95rem;
-    line-height: 1.4;
+    font-size: var(--fs-ui);
+    line-height: 1.45;
   }
   .inside .tg {
     justify-self: start;
-    margin-top: 0.25rem;
+    margin-top: var(--sp-half);
   }
   .principle {
     max-width: 44rem;
   }
   .principle p {
     margin: 0;
-    font-size: 1.1rem;
+    font-size: var(--fs-lead);
   }
   .two {
     display: grid;
-    gap: 2rem 3rem;
+    gap: var(--sp-5) var(--sp-6);
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
     align-items: start;
   }
   .print-notes {
     list-style: none;
     padding: 0;
-    margin: 0 0 1.5rem;
+    margin: 0 0 var(--sp-3);
     display: grid;
-    gap: 1rem;
+    gap: var(--sp-2);
   }
   .print-notes li {
     margin: 0;
     display: flex;
-    gap: 0.8rem;
+    gap: var(--sp-2);
     align-items: flex-start;
     color: var(--ink-soft);
   }
   .print-notes :global(svg) {
     flex: none;
-    margin-top: 0.15rem;
+    margin-top: 2px;
     color: var(--c1);
   }
   .h3 {
     font-family: var(--font-mono);
-    font-size: 0.8rem;
+    font-size: var(--fs-sm);
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--muted);
-    margin: 1.75rem 0 0.9rem;
+    margin: var(--sp-4) 0 var(--sp-2);
   }
   .dls {
     display: grid;
-    gap: 1rem;
+    gap: var(--sp-2);
   }
   .items {
     display: grid;
-    gap: 3rem;
+    gap: var(--sp-8);
   }
   .item {
     display: grid;
-    gap: 1.5rem 2.5rem;
+    gap: var(--sp-3) var(--sp-5);
     grid-template-columns: minmax(0, 1fr);
     align-items: start;
-    scroll-margin-top: 1.5rem;
+    scroll-margin-top: var(--scroll-offset);
   }
-  @media (min-width: 62rem) {
+  @media (min-width: 64rem) {
     .item {
       grid-template-columns: minmax(16rem, 22rem) minmax(0, 1fr);
     }
   }
   .item h3 {
-    margin: 0.25rem 0 0.4rem;
+    margin: var(--sp-1) 0;
   }
   .item .eb {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
-    margin-bottom: 0.4rem;
+    gap: var(--sp-1);
+    margin-bottom: var(--sp-half);
+  }
+  .fig.board {
+    --fig-max: 96rem;
+  }
+  .fig.sheet {
+    --fig-max: 64rem;
   }
   .for {
-    font-weight: 600;
-    margin-bottom: 0.5rem;
+    font-weight: 700;
+    margin-bottom: var(--sp-1);
   }
   .uses {
     color: var(--ink-soft);
-    font-size: 0.95rem;
+    font-size: var(--fs-ui);
   }
 </style>

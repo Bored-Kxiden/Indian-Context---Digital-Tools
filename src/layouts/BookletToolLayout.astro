@@ -1,7 +1,7 @@
 ---
 import BaseLayout from './BaseLayout.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
-import ComponentRail from '../components/ComponentRail.astro';
+import ComponentStepper from '../components/ComponentStepper.astro';
 import PageFigure from '../components/PageFigure.astro';
 import DownloadCard from '../components/DownloadCard.astro';
 import Icon from '../components/Icon.astro';
@@ -16,6 +16,8 @@ import { url } from '../utils/url';
 // One page per tool in Components 1 and 4. Four tabs, always in the same order:
 // Guide · Example · Blank template · Card kit (Component 1 only).
 // Without JavaScript the panels simply stack; with it they become tabs.
+// The layout uses the whole width: examples sit side by side when there is room, and
+// each one puts its steps beside the page or below it, whichever leaves the page larger.
 
 interface Props {
   tool: Tool;
@@ -42,7 +44,7 @@ const tabs = [
 ] as const;
 
 const eyebrow = [
-  tool.number ? `Tool ${tool.number} of ${tool.of}` : tool.kind ?? 'Closing',
+  tool.number ? `Tool ${tool.number} of ${tool.of}` : (tool.kind ?? 'Closing'),
   tool.worksOnItsOwn ? 'Works on its own' : 'Needs the tools before it',
 ];
 const crumbs = [
@@ -55,213 +57,244 @@ const crumbs = [
 
 <BaseLayout title={`${tool.name}: ${comp.short}`} description={tool.question} component={comp.c}>
   <div class="page-head">
-    <div class="wrap">
-      <Breadcrumb items={crumbs} />
-      <div class="chip-row eyebrow-row">
-        {eyebrow.map((e) => <span class="chip chip--quiet">{e}</span>)}
-        {tool.kind && tool.number && <span class="chip chip--quiet">{tool.kind}</span>}
-      </div>
-      <h1>{tool.name}</h1>
-      <p class="lead q">{tool.question}</p>
-      <ul class="meta" aria-label="About this tool">
-        <li><Icon name="clock" size={18} /> <span><b>{tool.time}</b></span></li>
-        <li><Icon name="people" size={18} /> <span>{tool.group}</span></li>
-        <li><Icon name="pin" size={18} /> <span>{tool.mode}</span></li>
-        <li>
-          <Icon name="bolt" size={18} />
-          <span>
-            Effort
-            <span class="effort" role="img" aria-label={`${tool.effort} out of 3`}>
-              {[1, 2, 3].map((n) => <i class:list={{ on: n <= tool.effort }}></i>)}
+    <div class="wrap head-grid">
+      <div class="hl">
+        <Breadcrumb items={crumbs} />
+        <div class="chip-row eyebrow-row">
+          {eyebrow.map((e) => <span class="chip chip--quiet">{e}</span>)}
+          {tool.kind && tool.number && <span class="chip chip--quiet">{tool.kind}</span>}
+        </div>
+        <h1>{tool.name}</h1>
+        <p class="lead q">{tool.question}</p>
+        <ul class="meta" aria-label="About this tool">
+          <li><Icon name="clock" size={20} /> <span><b>{tool.time}</b></span></li>
+          <li><Icon name="people" size={20} /> <span>{tool.group}</span></li>
+          <li><Icon name="pin" size={20} /> <span>{tool.mode}</span></li>
+          <li>
+            <Icon name="bolt" size={20} />
+            <span>
+              Effort
+              <span class="effort" role="img" aria-label={`${tool.effort} out of 3`}>
+                {[1, 2, 3].map((n) => <i class:list={{ on: n <= tool.effort }}></i>)}
+              </span>
             </span>
-          </span>
-        </li>
-      </ul>
-      <div class="two-up">
+          </li>
+        </ul>
+      </div>
+      <div class="hr">
         <div class="callout"><strong>What it shows you</strong><p>{tool.shows}</p></div>
         <div class="callout callout--done"><strong>You’re done when</strong><p>{tool.done}</p></div>
       </div>
     </div>
   </div>
 
-  <div class="wrap body" data-tool>
-    <ComponentRail rail={rail} current={tool.slug} />
+  <ComponentStepper rail={rail} current={tool.slug} />
 
+  <div class="wrap body" data-tool>
     <div class="main">
-      <div class="tabs" data-tabs hidden>
+      <div class="tabbar" data-tabbar hidden>
+        <div class="tabs" data-tabs>
+          {
+            tabs.map((t) => (
+              <button type="button" class="tab" data-tab={t.id} aria-selected="false">
+                <Icon name={t.icon} size={20} /> {t.label}
+              </button>
+            ))
+          }
+        </div>
         {
-          tabs.map((t) => (
-            <button type="button" class="tab" data-tab={t.id} aria-selected="false">
-              <Icon name={t.icon} size={18} /> {t.label}
-            </button>
-          ))
+          kit && (
+            <div class="mode" data-mode-switch role="group" aria-label="How are you working?">
+              <div class="seg">
+                <button type="button" data-mode="paper" aria-pressed="true">
+                  <Icon name="print" size={18} /> Paper
+                </button>
+                <button type="button" data-mode="cards" aria-pressed="false">
+                  <Icon name="cards" size={18} /> Cards
+                </button>
+              </div>
+            </div>
+          )
         }
       </div>
 
       <!-- Guide -->
       <section class="panel" id="guide" data-panel="guide">
         <h2 class="panel-h">Guide</h2>
-        <h3 class="sub">What is it?</h3>
-        {tool.whatIsIt.map((p) => <p class="body-p">{p}</p>)}
+        <div class="guide-grid">
+          <div class="g-text">
+            <h3 class="sub">What is it?</h3>
+            {tool.whatIsIt.map((p) => <p class="body-p">{p}</p>)}
 
-        {
-          tool.sevenSteps && (
-            <>
-              <h3 class="sub">The seven steps</h3>
-              <ol class="seven">
-                {tool.sevenSteps.map((s, i) => (
-                  <li class="stp">
-                    <b>{i + 1}</b>
-                    <span>
-                      <strong>{s.title}.</strong> {s.body}
-                    </span>
-                  </li>
-                ))}
-              </ol>
-            </>
-          )
-        }
-
-        {
-          tool.words.length > 0 && (
-            <>
-              <h3 class="sub">Words you’ll see</h3>
-              <dl class="words">
-                {tool.words.map((w) => (
-                  <>
-                    <dt>{w.term}</dt>
-                    <dd>{w.def}</dd>
-                  </>
-                ))}
-              </dl>
-            </>
-          )
-        }
-
-        {
-          tool.extras.map((e) => (
-            <div class:list={['callout', { 'callout--warn': e.tone === 'care' }]}>
-              <strong>{e.title}</strong>
-              {e.body && <p>{e.body}</p>}
-              {e.list && (
-                <ul class="plain">
-                  {e.list.map((li) => <li>{li}</li>)}
-                </ul>
-              )}
-            </div>
-          ))
-        }
-
-        {
-          tool.isItWorking && (
-            <>
-              <h3 class="sub">Is it working?</h3>
-              <div class="two-up iw">
-                <div class="callout">
-                  <strong>Good signs</strong>
-                  <ul class="plain">
-                    {tool.isItWorking.good.map((g) => <li>{g}</li>)}
-                  </ul>
-                </div>
-                <div class="callout callout--warn">
-                  <strong>Warning signs, and what to do</strong>
-                  <ul class="plain">
-                    {tool.isItWorking.warnings.map((w) => (
-                      <li>
-                        {w.sign} <em>{w.fix}</em>
+            {
+              tool.sevenSteps && (
+                <>
+                  <h3 class="sub">The seven steps</h3>
+                  <ol class="seven">
+                    {tool.sevenSteps.map((s, i) => (
+                      <li class="stp">
+                        <b>{i + 1}</b>
+                        <span>
+                          <strong>{s.title}.</strong> {s.body}
+                        </span>
                       </li>
                     ))}
-                  </ul>
-                </div>
-              </div>
-            </>
-          )
-        }
+                  </ol>
+                </>
+              )
+            }
 
-        <details class="pagebox">
-          <summary>See the booklet page <span class="mono">p.{tool.guidePage}</span></summary>
-          <PageFigure image={guideImage} alt={`The booklet’s guide page for ${tool.name}, page ${tool.guidePage}.`} />
-        </details>
+            {
+              tool.words.length > 0 && (
+                <>
+                  <h3 class="sub">Words you’ll see</h3>
+                  <dl class="words">
+                    {tool.words.map((w) => (
+                      <>
+                        <dt>{w.term}</dt>
+                        <dd>{w.def}</dd>
+                      </>
+                    ))}
+                  </dl>
+                </>
+              )
+            }
+
+            {
+              tool.extras.map((e) => (
+                <div class:list={['callout', { 'callout--warn': e.tone === 'care' }]}>
+                  <strong>{e.title}</strong>
+                  {e.body && <p>{e.body}</p>}
+                  {e.list && (
+                    <ul class="plain">
+                      {e.list.map((li) => <li>{li}</li>)}
+                    </ul>
+                  )}
+                </div>
+              ))
+            }
+
+            {
+              tool.isItWorking && (
+                <>
+                  <h3 class="sub">Is it working?</h3>
+                  <div class="two-up iw">
+                    <div class="callout">
+                      <strong>Good signs</strong>
+                      <ul class="plain">
+                        {tool.isItWorking.good.map((g) => <li>{g}</li>)}
+                      </ul>
+                    </div>
+                    <div class="callout callout--warn">
+                      <strong>Warning signs, and what to do</strong>
+                      <ul class="plain">
+                        {tool.isItWorking.warnings.map((w) => (
+                          <li>
+                            {w.sign} <em>{w.fix}</em>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </>
+              )
+            }
+          </div>
+
+          <div class="g-page">
+            <PageFigure
+              image={guideImage}
+              alt={`The booklet’s guide page for ${tool.name}, page ${tool.guidePage}.`}
+              caption={`The booklet page, p.${tool.guidePage}`}
+            />
+          </div>
+        </div>
       </section>
 
       <!-- Example -->
       <section class="panel" id="example" data-panel="example">
         <h2 class="panel-h">Example</h2>
         <p class="sample-banner">
-          <strong>Illustrative example.</strong> Follow the steps beside it, then do the same for your own person. On your table, use real ads, real quotes and real words.
+          <strong>Illustrative example.</strong> Follow the steps, then do the same for your own person. On your table, use real ads, real quotes and real words.
         </p>
-        {
-          tool.parts.map((p) => (
-            <article class="part" id={`part-${p.id}`}>
-              <header>
-                <p class="eb">{multi ? p.label : tool.name}</p>
-                <h3>{p.title}</h3>
-              </header>
-              <div class="split">
-                <PageFigure image={bookletImage(p.example.page)} alt={p.example.alt} caption={p.example.note} />
-                <div class="how">
-                  <h4>How to use it</h4>
-                  <ol class="steps-list">
-                    {p.steps.map((s, i) => (
-                      <li class="stp">
-                        <b>{i + 1}</b>
-                        <span>{s}</span>
-                      </li>
-                    ))}
-                  </ol>
-                  {p.board && (
-                    <a class="kp" href={url(`/card-kit/#${p.board.toLowerCase()}`)}>
-                      <b>Card kit</b> Board {p.board}
-                    </a>
-                  )}
+        <div class="parts">
+          {
+            tool.parts.map((p) => (
+              <article class="part" id={`part-${p.id}`}>
+                <div class="part-in">
+                  <header class="part-head">
+                    <div>
+                      <p class="eb">{multi ? p.label : tool.name}</p>
+                      <h3>{p.title}</h3>
+                    </div>
+                    {p.board && (
+                      <a class="kp" href={url(`/card-kit/#${p.board.toLowerCase()}`)}>
+                        <b>Card kit</b> Board {p.board}
+                      </a>
+                    )}
+                  </header>
+                  <PageFigure image={bookletImage(p.example.page)} alt={p.example.alt} caption={p.example.note} />
+                  <div class="how">
+                    <h4>How to use it</h4>
+                    <ol class="steps-list">
+                      {p.steps.map((s, i) => (
+                        <li class="stp">
+                          <b>{i + 1}</b>
+                          <span>{s}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
                 </div>
-              </div>
-            </article>
-          ))
-        }
+              </article>
+            ))
+          }
+        </div>
       </section>
 
       <!-- Blank template -->
       <section class="panel" id="blank" data-panel="blank">
         <h2 class="panel-h">Blank template</h2>
         <p class="body-p">Print it on A4, or copy it onto a big sheet. Write on sticky notes.</p>
-        {
-          tool.parts.map((p) => {
-            const dl = getDownloadById(`tpl-${p.blank.pdf.replace(/\.pdf$/, '')}`);
-            return (
-              <article class="part" id={`blank-part-${p.id}`}>
-                <header>
-                  <p class="eb">{multi ? p.label : tool.name}</p>
-                  <h3>{p.title}</h3>
-                </header>
-                <div class="split">
-                  {p.blank.shared ? (
-                    <div class="callout">
-                      <strong>Example and blank share one page.</strong>
-                      <p>
-                        On p.{p.blank.page} of the booklet, the filled example sits above the blank to fill in. The download below is that page.{' '}
-                        <a href={url(`${pagePath}#part-${p.id}`)}>See the example</a>
-                      </p>
-                    </div>
-                  ) : (
-                    <PageFigure image={bookletImage(p.blank.page)} alt={p.blank.alt} caption={p.blank.note} />
-                  )}
-                  <div class="how">
-                    {dl && (
-                      <a class="btn btn--accent" href={url(dl.href)} download>
-                        <Icon name="download" size={18} /> Download blank
-                        <span class="btn-meta">
-                          {dl.format} · {dl.size}
-                        </span>
-                      </a>
+        <div class="parts">
+          {
+            tool.parts.map((p) => {
+              const dl = getDownloadById(`tpl-${p.blank.pdf.replace(/\.pdf$/, '')}`);
+              return (
+                <article class="part" id={`blank-part-${p.id}`}>
+                  <div class="part-in">
+                    <header class="part-head">
+                      <div>
+                        <p class="eb">{multi ? p.label : tool.name}</p>
+                        <h3>{p.title}</h3>
+                      </div>
+                      {dl && (
+                        <a class="btn btn--accent" href={url(dl.href)} download>
+                          <Icon name="download" size={20} /> Download blank
+                          <span class="btn-meta">
+                            {dl.format} · {dl.size}
+                          </span>
+                        </a>
+                      )}
+                    </header>
+                    {p.blank.shared ? (
+                      <div class="callout">
+                        <strong>Example and blank share one page.</strong>
+                        <p>
+                          On p.{p.blank.page} of the booklet, the filled example sits above the blank to fill in. The download is that page.{' '}
+                          <a href={url(`${pagePath}#part-${p.id}`)}>See the example</a>
+                        </p>
+                      </div>
+                    ) : (
+                      <PageFigure image={bookletImage(p.blank.page)} alt={p.blank.alt} caption={p.blank.note} />
                     )}
                     <p class="small">Booklet <span class="mono">{p.blank.printed}</span> · A4</p>
                   </div>
-                </div>
-              </article>
-            );
-          })
-        }
+                </article>
+              );
+            })
+          }
+        </div>
       </section>
 
       <!-- Card kit -->
@@ -269,24 +302,28 @@ const crumbs = [
         kit && (
           <section class="panel" id="card-kit" data-panel="card-kit">
             <h2 class="panel-h">Card kit</h2>
-            <p class="body-p">{kit.intro}</p>
-            <p class="small">
-              Booklet <span class="mono">{kit.page}</span>. {' '}
-              <a href={url('/card-kit/')}>All boards and sheets</a>
-            </p>
-
-            <h3 class="sub">At the table</h3>
-            <ol class="steps-list at-table">
-              {kit.steps.map((s, i) => (
-                <li class="stp">
-                  <b>{i + 1}</b>
-                  <span>{s}</span>
-                </li>
-              ))}
-            </ol>
+            <div class="kit-intro">
+              <div>
+                <p class="body-p">{kit.intro}</p>
+                <p class="small">
+                  Booklet <span class="mono">{kit.page}</span>. <a href={url('/card-kit/')}>All boards and sheets</a>
+                </p>
+              </div>
+              <div>
+                <h3 class="sub">At the table</h3>
+                <ol class="steps-list at-table">
+                  {kit.steps.map((s, i) => (
+                    <li class="stp">
+                      <b>{i + 1}</b>
+                      <span>{s}</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            </div>
 
             <h3 class="sub">{kit.boards.length > 1 ? 'Boards' : 'Board'}</h3>
-            <div class="kit-figs">
+            <div class="kit-figs kit-figs--boards">
               {kit.boards.map((id) => {
                 const b = boardById[id];
                 const dl = getDownloadById(`board-${id.toLowerCase()}`);
@@ -304,7 +341,7 @@ const crumbs = [
             </div>
 
             <h3 class="sub">{kit.sheets.length > 1 ? 'Card sheets' : 'Card sheet'}</h3>
-            <div class="kit-figs">
+            <div class="kit-figs kit-figs--sheets">
               {kit.sheets.map((id) => {
                 const s = sheetById[id];
                 const dl = getDownloadById(`sheet-${id.toLowerCase()}`);
@@ -328,7 +365,7 @@ const crumbs = [
         {
           prev ? (
             <a class="prev" href={url(prev.href)}>
-              <Icon name="arrow-left" size={18} />
+              <Icon name="arrow-left" size={20} />
               <span>
                 <small>Before</small>
                 <b>{prev.label}</b>
@@ -345,7 +382,7 @@ const crumbs = [
                 <small>Next</small>
                 <b>{next.label}</b>
               </span>
-              <Icon name="arrow" size={18} />
+              <Icon name="arrow" size={20} />
             </a>
           ) : (
             <a class="next" href={url(comp.href)}>
@@ -353,7 +390,7 @@ const crumbs = [
                 <small>Back to</small>
                 <b>{comp.name}</b>
               </span>
-              <Icon name="arrow" size={18} />
+              <Icon name="arrow" size={20} />
             </a>
           )
         }
@@ -362,7 +399,7 @@ const crumbs = [
 
     <aside class="side" aria-label="Print and prepare">
       <div class="card">
-        <h2 class="side-h"><Icon name="print" size={18} /> Print</h2>
+        <h2 class="side-h"><Icon name="print" size={20} /> Print</h2>
         <div class="dl-list">
           {templates.map((d) => <DownloadCard item={d} compact />)}
         </div>
@@ -387,11 +424,11 @@ const crumbs = [
 <script>
   const root = document.querySelector<HTMLElement>('[data-tool]');
   if (root) {
+    const bar = root.querySelector<HTMLElement>('[data-tabbar]');
     const tablist = root.querySelector<HTMLElement>('[data-tabs]');
     const tabs = [...root.querySelectorAll<HTMLButtonElement>('[data-tab]')];
     const panels = [...root.querySelectorAll<HTMLElement>('[data-panel]')];
     const ids = tabs.map((t) => t.dataset.tab ?? '');
-    const modeBox = document.querySelector<HTMLElement>('[data-mode-switch]');
     const modeBtns = [...document.querySelectorAll<HTMLButtonElement>('[data-mode]')];
     const KEY = 'toolkit-mode';
 
@@ -425,9 +462,10 @@ const crumbs = [
     };
 
     // Turn the stacked sections into tabs.
-    if (tablist && tabs.length) {
-      tablist.hidden = false;
+    if (bar && tablist && tabs.length) {
+      bar.hidden = false;
       tablist.setAttribute('role', 'tablist');
+      tablist.setAttribute('aria-label', 'Parts of this tool');
       tabs.forEach((t) => {
         const id = t.dataset.tab ?? '';
         t.setAttribute('role', 'tab');
@@ -445,7 +483,7 @@ const crumbs = [
         if (h && ids.includes(h)) {
           show(h);
           // Keep the tab bar in view, not just the panel under it.
-          if (scroll) tablist.scrollIntoView();
+          if (scroll) bar.scrollIntoView();
           return;
         }
         const el = h ? document.getElementById(h) : null;
@@ -465,6 +503,9 @@ const crumbs = [
           const id = t.dataset.tab ?? 'guide';
           show(id);
           history.replaceState(null, '', `#${id}`);
+          // A long panel scrolled far down: bring the new panel's top into view.
+          const top = bar.getBoundingClientRect().top;
+          if (top < 0) bar.scrollIntoView();
         });
         t.addEventListener('keydown', (e) => {
           const keys: Record<string, number> = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 };
@@ -478,8 +519,7 @@ const crumbs = [
     }
 
     // Paper | Cards: remembers how you work, and opens the matching tab.
-    if (modeBox) {
-      modeBox.hidden = false;
+    if (modeBtns.length) {
       paintMode(readMode());
       modeBtns.forEach((b) =>
         b.addEventListener('click', () => {
@@ -496,180 +536,251 @@ const crumbs = [
   }
 </script>
 
+<style is:global>
+  /* Room for the sticky strip and the tab bar when jumping to an anchor */
+  :root:has([data-tool]) {
+    --scroll-offset: 152px;
+  }
+</style>
+
 <style>
+  .head-grid {
+    display: grid;
+    gap: var(--sp-4) var(--sp-8);
+    grid-template-columns: minmax(0, 1fr);
+    align-items: end;
+  }
+  @media (min-width: 64rem) {
+    .head-grid {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    }
+  }
   .eyebrow-row {
-    margin-bottom: 1.25rem;
+    margin-bottom: var(--sp-3);
   }
   .page-head h1 {
-    font-size: clamp(2.4rem, 6vw, 4.5rem);
-    margin-bottom: 0.75rem;
+    font-size: var(--fs-h1);
+    margin-bottom: var(--sp-2);
   }
   .q {
-    max-width: 44rem;
-    margin-bottom: 1.5rem;
+    max-width: 40rem;
+    margin-bottom: var(--sp-3);
   }
   .meta {
     list-style: none;
     padding: 0;
-    margin: 0 0 1.75rem;
+    margin: 0;
     display: flex;
     flex-wrap: wrap;
-    gap: 0.6rem 1.75rem;
+    gap: var(--sp-1) var(--sp-4);
     color: var(--ink-soft);
+    font-size: var(--fs-ui);
   }
   .meta li {
     margin: 0;
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--sp-1);
   }
   .meta b {
     color: var(--ink);
   }
   .effort {
     display: inline-flex;
-    gap: 3px;
-    margin-left: 0.5rem;
+    gap: var(--sp-half);
+    margin-left: var(--sp-1);
     vertical-align: middle;
   }
   .effort i {
-    width: 0.6rem;
-    height: 0.6rem;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
-    border: 1.5px solid var(--ink);
+    border: 2px solid var(--ink);
   }
   .effort i.on {
     background: var(--ink);
   }
-  .two-up {
+  .hr {
     display: grid;
-    gap: 1rem;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+    gap: var(--sp-2);
   }
-  .two-up .callout {
+  .hr .callout {
+    margin: 0;
+    padding: var(--sp-3);
+  }
+  .callout p {
     margin: 0;
   }
   .callout--done {
     background: var(--ink);
     color: #fff;
   }
-  .callout p {
-    margin: 0;
-  }
 
+  /* ---------- Body: main column and a sticky side column ---------- */
   .body {
     display: grid;
-    gap: 2rem 2.5rem;
+    gap: var(--sp-4) var(--sp-5);
     grid-template-columns: minmax(0, 1fr);
-    padding-block: 2rem 4.5rem;
+    padding-block: 0 var(--sp-10);
     align-items: start;
   }
-  @media (min-width: 62rem) {
+  @media (min-width: 72rem) {
     .body {
-      grid-template-columns: 16rem minmax(0, 1fr);
+      grid-template-columns: minmax(0, 1fr) 20rem;
     }
     .side {
-      grid-column: 2;
+      position: sticky;
+      top: calc(var(--strip-h) + var(--sp-3));
     }
   }
-  @media (min-width: 92rem) {
-    .body {
-      grid-template-columns: 16rem minmax(0, 1fr) 19rem;
-    }
-    .side {
-      grid-column: 3;
-      grid-row: 1;
-      position: sticky;
-      top: 1.5rem;
-    }
+  .main {
+    min-width: 0;
   }
   .side {
     display: grid;
-    gap: 1rem;
+    gap: var(--sp-2);
+    padding-top: var(--sp-4);
   }
   .side .card {
-    padding: 1.25rem 1.35rem;
+    padding: var(--sp-3);
   }
   .side-h {
     font-family: var(--font-mono);
-    font-size: 0.72rem;
+    font-size: var(--fs-xs);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     font-weight: 600;
     color: var(--muted);
-    margin: 0 0 0.6rem;
+    margin: 0 0 var(--sp-1);
     display: flex;
     align-items: center;
-    gap: 0.45rem;
+    gap: var(--sp-1);
   }
   .side p {
-    margin: 0 0 1rem;
-    font-size: 0.95rem;
+    margin: 0 0 var(--sp-2);
+    font-size: var(--fs-ui);
   }
   .side p:last-child {
     margin-bottom: 0;
   }
   .end {
-    font-weight: 600;
+    font-weight: 700;
   }
   .dl-list {
     display: grid;
-    gap: 0.5rem;
-    margin-bottom: 0.9rem;
+    gap: var(--sp-1);
+    margin-bottom: var(--sp-2);
   }
   .dl-list:empty {
     display: none;
   }
 
-  .main {
+  /* ---------- Tabs: sticky under the component strip ---------- */
+  .tabbar {
+    position: sticky;
+    top: var(--sticky-top, 72px);
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-3);
+    background: var(--ground);
+    border-bottom: 2px solid var(--line-strong);
+    margin-inline: calc(var(--gutter) * -1);
+    padding-inline: var(--gutter);
+  }
+  @media (min-width: 64rem) {
+    .tabbar {
+      --sticky-top: var(--strip-h);
+    }
+  }
+  @media (min-width: 72rem) {
+    .tabbar {
+      margin-right: 0;
+      padding-right: 0;
+    }
+  }
+  .tabs {
+    flex: 1;
     min-width: 0;
   }
+  .mode {
+    flex: none;
+  }
+  @media (max-width: 48rem) {
+    .mode {
+      display: none;
+    }
+  }
+
   .panel {
-    padding-block: 1.75rem 0.5rem;
-    scroll-margin-top: 1.5rem;
+    padding-block: var(--sp-4) var(--sp-2);
   }
   .panel + .panel {
-    border-top: 1px solid var(--line);
-    margin-top: 1.5rem;
+    border-top: 1px solid var(--line-strong);
+    margin-top: var(--sp-4);
   }
   .panel[hidden] + .panel {
     margin-top: 0;
   }
+  .panel:focus-visible {
+    outline-offset: -3px;
+  }
   .panel-h {
-    font-size: 1.9rem;
-    margin-bottom: 1rem;
+    font-size: var(--fs-h2);
+    margin-bottom: var(--sp-2);
   }
   .sub {
-    font-size: 1.05rem;
+    font-size: var(--fs-sm);
     font-family: var(--font-mono);
     font-weight: 600;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--muted);
-    margin: 2rem 0 0.75rem;
+    margin: var(--sp-4) 0 var(--sp-2);
+  }
+  .g-text > .sub:first-child,
+  .kit-intro .sub:first-child {
+    margin-top: 0;
   }
   .body-p {
-    font-size: 1.1rem;
-    max-width: 44rem;
+    font-size: var(--fs-lead);
+    max-width: var(--measure);
     color: var(--ink-soft);
   }
   .small {
-    font-size: 0.9rem;
+    font-size: var(--fs-ui);
     color: var(--muted);
-    margin: 0.5rem 0 0;
+    margin: var(--sp-1) 0 0;
   }
   .mono {
     font-family: var(--font-mono);
-    font-size: 0.85em;
+    font-size: 0.9em;
     letter-spacing: 0.04em;
   }
 
+  /* Guide: the words on the left, the booklet page alongside */
+  .guide-grid {
+    display: grid;
+    gap: var(--sp-5);
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+  @media (min-width: 64rem) {
+    .guide-grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+    .g-page {
+      position: sticky;
+      top: calc(var(--strip-h) + 56px + var(--sp-3));
+    }
+  }
   .words {
     display: grid;
-    grid-template-columns: minmax(7rem, 11rem) 1fr;
-    gap: 0.5rem 1.5rem;
+    grid-template-columns: minmax(8rem, 12rem) minmax(0, 1fr);
+    gap: var(--sp-1) var(--sp-3);
     margin: 0;
-    max-width: 44rem;
+    max-width: var(--measure);
   }
   .words dt {
     font-weight: 700;
@@ -681,18 +792,18 @@ const crumbs = [
   @media (max-width: 34rem) {
     .words {
       grid-template-columns: 1fr;
-      gap: 0.1rem;
+      gap: 0;
     }
     .words dd {
-      margin-bottom: 0.75rem;
+      margin-bottom: var(--sp-2);
     }
   }
   .plain {
-    margin: 0.25rem 0 0;
-    padding-left: 1.2rem;
+    margin: var(--sp-half) 0 0;
+    padding-left: var(--sp-3);
   }
   .plain li {
-    margin-bottom: 0.4rem;
+    margin-bottom: var(--sp-1);
   }
   .plain em {
     display: block;
@@ -704,119 +815,146 @@ const crumbs = [
     padding: 0;
     margin: 0;
     display: grid;
-    gap: 0.9rem;
-    max-width: 44rem;
+    gap: var(--sp-2);
+    max-width: var(--measure);
   }
   .seven li {
     margin: 0;
   }
-  .iw {
-    margin-top: 0.5rem;
+  .two-up {
+    display: grid;
+    gap: var(--sp-2);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  }
+  .two-up .callout {
+    margin: 0;
   }
 
-  .pagebox {
-    margin-top: 2rem;
-    border: 1px solid var(--line-strong);
-    border-radius: var(--radius);
-    background: var(--surface);
-    padding: 0.9rem 1.1rem;
+  /* Example and Blank: parts side by side when the column is wide enough.
+     Each part checks its own width (a container query): steps beside the page only when
+     that still leaves the page big; otherwise the steps go below it. */
+  .parts {
+    display: grid;
+    gap: var(--sp-6) var(--sp-5);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 40rem), 1fr));
+    align-items: start;
   }
-  .pagebox summary {
-    cursor: pointer;
-    font-weight: 700;
-  }
-  .pagebox[open] summary {
-    margin-bottom: 1rem;
-  }
-
   .part {
-    padding-block: 1.5rem 2rem;
-    scroll-margin-top: 1.5rem;
+    container-type: inline-size;
+    scroll-margin-top: var(--scroll-offset);
   }
-  .part + .part {
-    border-top: 1px dashed var(--line-strong);
+  .part-in {
+    display: grid;
+    gap: var(--sp-2);
   }
-  .part header {
-    margin-bottom: 1.25rem;
+  .part-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--sp-2);
   }
-  .part header .eb {
-    margin-bottom: 0.4rem;
-    color: var(--accent);
+  .part-head .eb {
+    margin-bottom: var(--sp-half);
+    color: var(--accent-deep);
     font-weight: 600;
   }
   .part h3 {
     margin: 0;
-    font-size: clamp(1.6rem, 3vw, 2.1rem);
-  }
-  .split {
-    display: grid;
-    gap: 1.5rem 2rem;
-    grid-template-columns: minmax(0, 1fr);
-    align-items: start;
-  }
-  @media (min-width: 72rem) {
-    .split {
-      grid-template-columns: minmax(0, 1.25fr) minmax(16rem, 1fr);
-    }
+    font-size: clamp(1.5rem, 1.2rem + 0.9vw, 2rem);
   }
   .how h4 {
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: var(--fs-xs);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--muted);
     font-weight: 600;
-    margin-bottom: 0.9rem;
+    margin-bottom: var(--sp-2);
   }
-  .how .kp {
-    margin-top: 1.25rem;
-    white-space: normal;
+  .how .steps-list {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+    gap: var(--sp-2) var(--sp-3);
   }
-  .how .btn {
-    flex-wrap: wrap;
+  @container (min-width: 80rem) {
+    .part-in {
+      grid-template-columns: minmax(0, 1fr) 20rem;
+      column-gap: var(--sp-4);
+    }
+    .part-head {
+      grid-column: 1 / -1;
+    }
+    .how {
+      align-self: start;
+    }
+    .how .steps-list {
+      grid-template-columns: minmax(0, 1fr);
+    }
   }
   .btn-meta {
     font-family: var(--font-mono);
-    font-size: 0.68rem;
+    font-size: var(--fs-xs);
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    opacity: 0.85;
-    margin-left: 0.4rem;
+    opacity: 0.9;
+    margin-left: var(--sp-1);
   }
-  .at-table {
-    max-width: 44rem;
+
+  /* Card kit */
+  .kit-intro {
+    display: grid;
+    gap: var(--sp-4) var(--sp-6);
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+  @media (min-width: 64rem) {
+    .kit-intro {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    }
   }
   .kit-figs {
     display: grid;
-    gap: 1.75rem;
+    gap: var(--sp-4);
+  }
+  .kit-figs--boards {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 52rem), 1fr));
+  }
+  .kit-figs--sheets {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 36rem), 1fr));
+  }
+  .kit-figs--boards .kit-fig {
+    --fig-max: 90rem;
   }
   .kit-fig {
     display: grid;
-    gap: 0.75rem;
-    max-width: 44rem;
-    scroll-margin-top: 1.5rem;
-  }
-  .kit-fig:has(.pg--landscape) {
-    max-width: 62rem;
+    gap: var(--sp-2);
+    align-content: start;
+    scroll-margin-top: var(--scroll-offset);
   }
 
+  /* Previous and next */
   .pn {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
-    gap: 1rem;
-    margin-top: 3rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--line-strong);
+    gap: var(--sp-2);
+    margin-top: var(--sp-8);
+    padding-top: var(--sp-3);
+    border-top: 2px solid var(--line-strong);
   }
   .pn a {
     display: inline-flex;
     align-items: center;
-    gap: 0.8rem;
-    padding: 0.85rem 1.2rem;
-    border: 1.5px solid var(--ink);
+    gap: var(--sp-2);
+    min-height: 64px;
+    padding: var(--sp-1) var(--sp-3);
+    border: 2px solid var(--ink);
     border-radius: 999px;
     color: var(--ink);
     text-decoration: none;
+    transition:
+      background-color var(--t-fast) var(--ease),
+      color var(--t-fast) var(--ease);
   }
   .pn a:hover {
     background: var(--ink);
@@ -825,10 +963,10 @@ const crumbs = [
   .pn small {
     display: block;
     font-family: var(--font-mono);
-    font-size: 0.62rem;
+    font-size: var(--fs-xs);
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    opacity: 0.7;
+    opacity: 0.8;
   }
   .pn b {
     display: block;

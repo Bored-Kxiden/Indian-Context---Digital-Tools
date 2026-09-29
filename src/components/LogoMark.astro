@@ -3,14 +3,12 @@
 interface Props {
   size?: number;
 }
-const { size = 34 } = Astro.props;
+const { size = 40 } = Astro.props;
 ---
 
 <svg viewBox="0 0 40 40" width={size} height={size} aria-hidden="true" style="flex:none">
-  <g style="mix-blend-mode:multiply" opacity="0.92">
-    <circle cx="15" cy="15" r="10" fill="#1e6b52"></circle>
-    <circle cx="25" cy="15" r="10" fill="#e8a92a"></circle>
-    <circle cx="15" cy="25" r="10" fill="#b8492c"></circle>
-    <circle cx="25" cy="25" r="10" fill="#3144a6"></circle>
-  </g>
+  <circle cx="15" cy="15" r="10" fill="#1e6b52" fill-opacity="0.92"></circle>
+  <circle cx="25" cy="15" r="10" fill="#e8a92a" fill-opacity="0.92"></circle>
+  <circle cx="15" cy="25" r="10" fill="#b8492c" fill-opacity="0.92"></circle>
+  <circle cx="25" cy="25" r="10" fill="#3144a6" fill-opacity="0.92"></circle>
 </svg>
