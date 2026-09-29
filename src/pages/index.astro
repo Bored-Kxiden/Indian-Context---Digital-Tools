@@ -1,75 +1,94 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import ProcessFlow from '../components/ProcessFlow.astro';
+import Icon from '../components/Icon.astro';
+import VennHero from '../components/VennHero.astro';
 import GoalIndex from '../components/GoalIndex.astro';
+import ComponentCards from '../components/ComponentCards.astro';
+import { goals } from '../data/goals';
+import { site } from '../data/site';
+import { whyThisExists, howToRead, guideline, meera } from '../data/booklet/shared';
 import { url } from '../utils/url';
-
-const problems = [
-  {
-    title: 'Meaning gets lost in translation',
-    body: 'A phrase can shift with the language, the tone, the region, or the gesture that goes with it. Word-for-word translation keeps the words and drops the rest: rapport, tone, code-switching, and the gap between what someone says and what they mean.',
-  },
-  {
-    title: 'Every finding looks equally certain',
-    body: 'Nothing in a typical research pipeline marks whether a finding is what a person meant or one interpreter’s best guess. It travels with the same authority however many hops of translation or single-source judgment calls produced it.',
-  },
-  {
-    title: 'Generic personas result',
-    body: 'By the time a finding reaches a design team, meaning has quietly become approximation, and the interface gets built for an averaged, invented person rather than anyone real.',
-  },
-];
-
-const applies = [
-  'Public-service and civic platforms in any linguistically diverse country',
-  'Healthcare intake and patient-facing tools used with immigrant or refugee populations',
-  'Financial-inclusion products, banking apps, and lending platforms',
-  'E-commerce, delivery, and logistics across dialect-rich regions',
-  'Humanitarian and NGO field tools in crisis zones with no shared language',
-  'Enterprise software used by distributed teams working in a second or third language',
-  'Voice assistants, IVR systems, and chatbots deployed far outside the dialect they were trained on',
-];
 ---
 
 <BaseLayout>
   <section class="hero">
-    <div class="wrap">
-      <p class="tag">Find your tool</p>
-      <h1>Keep what people mean, not only what the words say.</h1>
-      <p class="lede">
-        Practical tools for capturing emotional and cultural meaning faithfully in cross-language field research, tagging how
-        reliable each finding is, and carrying it through to interface wording that has actually been tested.
-      </p>
-      <p class="built">
-        Built for research on first-generation Indian college students. Reusable for any cross-language qualitative research.
-      </p>
-      <div class="btn-row">
-        <a class="btn" href="#i-want-to">Find your tool</a>
-        <a class="btn btn--ghost" href={url('/downloads/')}>Download the templates</a>
+    <div class="wrap hero-grid">
+      <div>
+        <div class="chip-row tags">
+          <span class="chip chip--quiet">Toolkit</span>
+          <span class="chip chip--quiet">BITSDES 2024–28</span>
+        </div>
+        <h1>Designing for the Indian Context</h1>
+        <p class="lead">{site.tagline}</p>
+        <div class="btn-row">
+          <a class="btn" href="#i-want-to">Find your tool <Icon name="arrow" size={18} /></a>
+          <a class="btn btn--outline" href="#components">Pick a component</a>
+          <a class="btn btn--outline" href={url(site.bookletPdf)} download><Icon name="download" size={18} /> Booklet (PDF)</a>
+        </div>
+        <p class="free">Print it, run it with cards, or work straight from this site.</p>
+      </div>
+      <div class="art">
+        <VennHero />
       </div>
     </div>
   </section>
 
-  <section class="section goals-section" aria-labelledby="i-want-to-heading">
+  <section class="section section--white goals-section" aria-labelledby="i-want-to-heading">
     <div class="wrap">
-      <GoalIndex />
-      <p class="all"><a href={url('/tools/')}>See all six tools</a></p>
+      <GoalIndex
+        groups={goals}
+        lead="Find what you need and go to that tool. Every tool works on its own. Used in order, they build one picture."
+      />
     </div>
   </section>
 
-  <section class="section section--tint" aria-labelledby="problem">
+  <section class="section" id="components" aria-labelledby="components-heading">
+    <div class="wrap">
+      <div class="section-head split">
+        <div>
+          <p class="eb">Components</p>
+          <h2 id="components-heading">Pick a way of reading.</h2>
+        </div>
+        <p>Each component works on its own. Used together, they give you a fuller picture of the person you’re designing for.</p>
+      </div>
+      <ComponentCards />
+    </div>
+  </section>
+
+  <section class="section section--white" aria-labelledby="why-heading">
+    <div class="wrap two">
+      <div>
+        <p class="eb">Why this exists</p>
+        <h2 id="why-heading">{whyThisExists.title}</h2>
+        <p class="bd">{whyThisExists.body}</p>
+        <ul class="chip-row made">
+          {whyThisExists.madeFor.map((m) => <li class="chip chip--quiet">{m}</li>)}
+        </ul>
+      </div>
+      <div class="quotes">
+        <div class="q q--without">
+          <span class="lbl">Without it</span>
+          <p>{whyThisExists.without}</p>
+        </div>
+        <div class="q q--with">
+          <span class="lbl">With it</span>
+          <p>{whyThisExists.with}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="how-heading">
     <div class="wrap">
       <div class="section-head">
-        <p class="eyebrow">The problem</p>
-        <h2 id="problem">Cross-language research loses exactly the thing that matters most.</h2>
-        <p>
-          Run a conversation through a translator or transcriber once and the nuance is gone by the time it reaches a design team.
-          Nobody downstream can tell what was meant from what was guessed.
-        </p>
+        <p class="eb">How every tool works</p>
+        <h2 id="how-heading">Read it, see it, do it.</h2>
       </div>
-      <div class="grid grid--3">
+      <div class="grid grid--3 how">
         {
-          problems.map((p) => (
-            <article class="card">
+          howToRead.everyTool.parts.map((p, i) => (
+            <article class={`how-card how-card--${i}`}>
+              <span class="ico"><Icon name={p.icon} size={30} /></span>
               <h3>{p.title}</h3>
               <p>{p.body}</p>
             </article>
@@ -79,107 +98,274 @@ const applies = [
     </div>
   </section>
 
-  <section class="section" id="process" aria-labelledby="process-heading">
-    <div class="wrap">
-      <div class="section-head">
-        <p class="eyebrow">The process</p>
-        <h2 id="process-heading">Three modules, an entry step, and a loop.</h2>
-        <p>
-          Module 1 builds a picture of the setting. Module 2 captures meaning moments one person at a time. Module 3 turns raw
-          moments into validated meaning, then into a tested design response. The last step feeds new questions back into
-          Module 1, so the process compounds across research cycles.
-        </p>
+  <section class="section section--ink guide" aria-labelledby="guide-heading">
+    <div class="wrap two">
+      <div>
+        <p class="eb on-dark">{guideline.eyebrow}</p>
+        <h2 id="guide-heading">Be specific. <br />One real person, one real thing.</h2>
+        <p class="on-dark-body">{guideline.body}</p>
+        <a class="link-arrow light" href={url('/guideline/')}>Read the guideline <Icon name="arrow" size={18} /></a>
       </div>
-      <ProcessFlow />
-      <p class="funnel">
-        Not every Meaning Card travels all the way to a shipped pattern. Many surface something useful without further action, a
-        smaller number justify a design hypothesis, and fewer still become tested, library-worthy patterns. A “not yet” or a
-        “no” at a decision point is the toolkit doing its job.
-      </p>
+      <div class="gt">
+        <div class="gt-good">
+          <span class="lbl">Good</span>
+          <ul>
+            {guideline.good.map((g) => <li><Icon name="check" size={18} /> {g}</li>)}
+          </ul>
+        </div>
+        <div class="gt-broad">
+          <span class="lbl">Too broad</span>
+          <ul>
+            {guideline.tooBroad.map((g) => <li><Icon name="x" size={18} /> {g}</li>)}
+          </ul>
+        </div>
+      </div>
     </div>
   </section>
 
-  <section class="section section--tint" aria-labelledby="where">
-    <div class="wrap two">
+  <section class="section" aria-labelledby="meera-heading">
+    <div class="wrap two meera">
+      <article class="card persona">
+        <div class="head">
+          <span class="avatar" aria-hidden="true">M</span>
+          <div>
+            <b>{meera.name}</b>
+            <small>{meera.eyebrow}</small>
+          </div>
+        </div>
+        <dl>
+          {meera.facts.map((f) => <><dt>{f.k}</dt><dd>{f.v}</dd></>)}
+        </dl>
+      </article>
       <div>
-        <p class="eyebrow">Where to use it</p>
-        <h2 id="where">Not specific to one sector, or to India.</h2>
-        <p>
-          The condition that makes this toolkit necessary is simple: somewhere between the people building a product and the
-          people using it, there is a language or meaning gap, and someone is bridging it by guesswork rather than a documented
-          method.
-        </p>
-        <p>
-          The common thread is a research or design team on one side of a language boundary and real users on the other, with no
-          method in place for checking whether meaning crossed.
-        </p>
-        <p><a href={url('/about/')}>Read the methodology</a></p>
+        <p class="eb">The running example</p>
+        <h2 id="meera-heading">{meera.note}</h2>
+        <p class="bd">{meera.useYourOwn.body}</p>
+        <a class="btn btn--outline" href={url('/guideline/#meera')}>Read Meera’s story <Icon name="arrow" size={18} /></a>
       </div>
-      <ul class="applies">
-        {applies.map((a) => <li>{a}</li>)}
-      </ul>
     </div>
   </section>
 </BaseLayout>
 
 <style>
   .hero {
-    padding-block: clamp(3rem, 9vw, 5.5rem) clamp(2.5rem, 6vw, 3.5rem);
-    background:
-      radial-gradient(60rem 24rem at 85% -10%, var(--accent-soft), transparent 70%),
-      var(--bg);
+    padding-block: clamp(2.5rem, 7vw, 5.5rem);
+    border-bottom: 1px solid var(--line);
   }
-  .tag {
-    display: inline-block;
-    margin: 0 0 1.25rem;
-    padding: 0.35rem 0.8rem;
-    background: var(--accent);
-    color: var(--accent-ink);
-    font-size: 0.8rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+  .hero-grid {
+    display: grid;
+    gap: 2.5rem;
+    align-items: center;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 62rem) {
+    .hero-grid {
+      grid-template-columns: 1.15fr 1fr;
+    }
+  }
+  .tags {
+    margin-bottom: 1.5rem;
   }
   .hero h1 {
-    max-width: 18ch;
+    margin-bottom: 1.25rem;
+    max-width: 12ch;
   }
-  .built {
-    color: var(--ink-soft);
-    font-size: 0.98rem;
-    margin-bottom: 1.75rem;
+  .hero .lead {
+    margin-bottom: 2rem;
+  }
+  .free {
+    margin: 1.25rem 0 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+  .art {
+    display: flex;
+    justify-content: center;
   }
   .goals-section {
     border-top: 0;
   }
-  .all {
-    margin: 2rem 0 0;
-    font-weight: 600;
+  .split {
+    max-width: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: end;
+    gap: 1rem 3rem;
   }
-  .funnel {
-    max-width: var(--prose);
-    margin: 2rem 0 0;
-    color: var(--ink-soft);
+  .split p {
+    max-width: 26rem;
+    margin: 0;
   }
   .two {
     display: grid;
-    gap: 2rem 3.5rem;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
-    align-items: start;
+    gap: 2.5rem 4rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+    align-items: center;
   }
-  .applies {
+  .bd {
+    font-size: 1.1rem;
+    color: var(--ink-soft);
+    max-width: 32rem;
+  }
+  .made {
     list-style: none;
-    margin: 0;
     padding: 0;
+    margin: 1.5rem 0 0;
+  }
+  .made li {
+    margin: 0;
+  }
+  .quotes {
+    display: grid;
+    gap: 1rem;
+  }
+  .q {
+    border-radius: var(--radius);
+    padding: 1.5rem 1.75rem;
+  }
+  .q p {
+    margin: 0.4rem 0 0;
+    font-size: clamp(1.15rem, 2vw, 1.45rem);
+    line-height: 1.35;
+    font-weight: 600;
+  }
+  .q--without {
+    background: var(--ground);
+    border: 1px solid var(--line-strong);
+  }
+  .q--with {
+    background: var(--c1);
+    color: #fff;
+  }
+  .q--with .lbl {
+    color: rgb(255 255 255 / 0.8);
+  }
+  .q--with p {
+    font-weight: 700;
+  }
+  .how-card {
+    border-radius: var(--radius);
+    padding: 1.75rem;
+    min-height: 15rem;
+  }
+  .how-card--0 { background: var(--ground); border: 1px solid var(--line-strong); }
+  .how-card--1 { background: var(--c2-tint); }
+  .how-card--2 { background: var(--c1-tint); }
+  .how-card h3 {
+    margin: 1.25rem 0 0.5rem;
+  }
+  .how-card p {
+    margin: 0;
+    color: var(--ink-soft);
+  }
+  .ico {
+    display: inline-flex;
+    color: var(--ink);
+  }
+  .how-card--2 .ico {
+    color: var(--c1);
+  }
+
+  .guide h2 {
+    color: #fff;
+  }
+  .on-dark {
+    color: #b9b1a0;
+  }
+  .on-dark-body {
+    color: var(--on-dark);
+    font-size: 1.1rem;
+    max-width: 30rem;
+  }
+  .link-arrow.light {
+    color: #fff;
+  }
+  .gt {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  }
+  .gt-good,
+  .gt-broad {
+    border-radius: var(--radius);
+    padding: 1.25rem 1.4rem;
+  }
+  .gt-good { background: var(--c1); }
+  .gt-broad { background: #2a261e; }
+  .gt .lbl {
+    color: rgb(255 255 255 / 0.75);
+    margin-bottom: 0.6rem;
+  }
+  .gt ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
     display: grid;
     gap: 0.6rem;
   }
-  .applies li {
+  .gt li {
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
     margin: 0;
-    padding: 0.7rem 0.9rem;
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-left: 4px solid var(--accent);
-    border-radius: var(--radius-sm);
-    font-size: 0.97rem;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+  .gt li :global(svg) {
+    flex: none;
+    margin-top: 0.15rem;
+  }
+  .gt-broad li {
+    color: var(--on-dark);
+    font-weight: 500;
+  }
+
+  .persona .head {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+  .avatar {
+    width: 3.4rem;
+    height: 3.4rem;
+    border-radius: 50%;
+    background: var(--c2);
+    color: var(--ink);
+    display: grid;
+    place-items: center;
+    font-weight: 800;
+    font-size: 1.5rem;
+  }
+  .persona b {
+    font-size: 1.35rem;
+    display: block;
+    line-height: 1.1;
+  }
+  .persona small {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .persona dl {
+    display: grid;
+    grid-template-columns: 5rem 1fr;
+    gap: 0.6rem 1rem;
+    margin: 0;
+  }
+  .persona dt {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding-top: 0.3rem;
+  }
+  .persona dd {
+    margin: 0;
+    font-weight: 600;
   }
 </style>

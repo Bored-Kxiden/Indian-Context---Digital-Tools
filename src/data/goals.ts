@@ -1,183 +1,124 @@
-import type { ModuleId } from './modules';
+import type { ComponentColour } from './components';
+import { iWantTo as c4Goals } from './booklet/material-reality';
 
-// The "I want to…" index: the site's main way in. Each group is something a
-// researcher wants to get done, in the order the process happens; each item is a
-// plain-language phrase that finishes the sentence, followed by the tool that
-// does it. The home page, the Tools page, and the footer index all read this.
+// The "I want to…" index: the site's main way in (CONTEXT.md, D6). Goals are grouped by
+// component; each item is a phrase that finishes "I want to…", plus the tool it opens.
 //
-// To add an item: add it to a group below. `href` is a site path, optionally with
-// an anchor (see the ids on the tool pages). Set `index: false` to keep an item
-// out of the footer's A–Z list (used for links that are not tools).
+//  - Component 4 items are the booklet's own list (page 4.03), verbatim.
+//  - Component 1 items are written by us, from each tool's subtitle (not in the booklet).
+//  - Component 3 (Language) items are ours, from the Meaning-to-Interface work.
+//
+// To add an item, add it to a group below. `href` is a site path, optionally with an anchor.
 
-export type GoalIcon = 'compass' | 'listen' | 'translate' | 'lens' | 'library' | 'print';
+export type Tone = 'c1' | 'c2' | 'c3' | 'c4' | 'ink';
 
 export interface GoalItem {
-  /** Finishes "I want to…", e.g. "…by noticing routines and relationships". */
+  /** Finishes "I want to…", e.g. "…see who people depend on to get it done". */
   phrase: string;
-  /** The tool or step this leads to. Shown in capitals. */
-  label: string;
+  /** Short tag shown as a chip: the tool this opens. */
+  tag: string;
+  /** Chip colour. */
+  tone: Tone;
   href: string;
-  index?: boolean;
 }
 
 export interface Goal {
   id: string;
+  component: ComponentColour;
+  /** Shown as a mono label, e.g. "Component 1 · Existing products". */
+  componentLabel: string;
   title: string;
-  icon: GoalIcon;
-  module?: ModuleId;
   items: GoalItem[];
 }
 
+const C1 = '/components/existing-products/';
+const C3 = '/components/language/';
+const C4 = '/components/material-reality/';
+
+const c4Tone: Record<string, Tone> = { build: 'c4', break: 'c3', weigh: 'c2', say: 'ink' };
+
 export const goals: Goal[] = [
   {
-    id: 'setting',
+    id: 'existing-products',
+    component: 'c1',
+    componentLabel: 'Component 1 · Existing products',
+    title: 'Read an existing product',
+    items: [
+      { phrase: '…pick the one product to read', tag: 'Pick a product', tone: 'c1', href: `${C1}pick-a-product/` },
+      { phrase: '…see what a product promises, and what people actually say', tag: '1 · Media & Gossip', tone: 'c1', href: `${C1}media-gossip/` },
+      { phrase: '…find out what the product replaced, and who lost a role', tag: '2 · History', tone: 'c1', href: `${C1}history/` },
+      { phrase: '…see where the ideal story breaks, and who gets blamed', tag: '3 · The Break', tone: 'c1', href: `${C1}the-break/` },
+      { phrase: '…see what the product does to power, and whose unpaid work keeps it running', tag: '4 · Power', tone: 'c1', href: `${C1}power/` },
+      { phrase: '…turn what I found into a design claim', tag: 'Synthesis', tone: 'c1', href: `${C1}synthesis/` },
+    ],
+  },
+  {
+    id: 'language-setting',
+    component: 'c3',
+    componentLabel: 'Component 3 · Language',
     title: 'Understand the setting',
-    icon: 'compass',
-    module: 'context',
     items: [
-      {
-        phrase: '…by noticing routines, relationships, language, and how people communicate.',
-        label: 'Context Cards',
-        href: '/tools/physical-field-kit/#context-cards',
-      },
-      {
-        phrase: '…by writing down where I am coming from, before I begin.',
-        label: 'Researcher Positionality Card',
-        href: '/tools/physical-field-kit/#positionality-card',
-      },
+      { phrase: '…by noticing routines, relationships, language, and how people communicate', tag: 'Context Cards', tone: 'c3', href: `${C3}physical-field-kit/#context-cards` },
+      { phrase: '…by writing down where I am coming from, before I begin', tag: 'Positionality Card', tone: 'c3', href: `${C3}physical-field-kit/#positionality-card` },
     ],
   },
   {
-    id: 'capture',
+    id: 'language-capture',
+    component: 'c3',
+    componentLabel: 'Component 3 · Language',
     title: 'Capture what people mean',
-    icon: 'listen',
-    module: 'person',
     items: [
-      {
-        phrase: '…by running the conversation step by step, from consent to correction.',
-        label: 'Interview Cards',
-        href: '/tools/physical-field-kit/#interview-cards',
-      },
-      {
-        phrase: '…by recording a phrase, gesture, or pause worth a second look.',
-        label: 'Meaning Card',
-        href: '/tools/meaning-card/',
-      },
-      {
-        phrase: '…by carrying blank cards into the field.',
-        label: 'Blank Meaning Cards',
-        href: '/tools/physical-field-kit/#blank-meaning-cards',
-      },
-      {
-        phrase: '…by reflecting on what surprised me, straight after a session.',
-        label: 'Reflection Cards',
-        href: '/tools/physical-field-kit/#reflection-cards',
-      },
+      { phrase: '…by running the conversation step by step, from consent to correction', tag: 'Interview Cards', tone: 'c3', href: `${C3}physical-field-kit/#interview-cards` },
+      { phrase: '…by recording a phrase, gesture, or pause worth a second look', tag: 'Meaning Card', tone: 'c3', href: `${C3}meaning-card/` },
+      { phrase: '…by carrying blank cards into the field', tag: 'Blank Meaning Cards', tone: 'c3', href: `${C3}physical-field-kit/#blank-meaning-cards` },
+      { phrase: '…by reflecting on what surprised me, straight after a session', tag: 'Reflection Cards', tone: 'c3', href: `${C3}physical-field-kit/#reflection-cards` },
     ],
   },
   {
-    id: 'translate',
+    id: 'language-translate',
+    component: 'c3',
+    componentLabel: 'Component 3 · Language',
     title: 'Translate without losing meaning',
-    icon: 'translate',
-    module: 'interpret',
     items: [
-      {
-        phrase: '…by translating what was said literally, in context, and with alternatives.',
-        label: 'Thick translation',
-        href: '/about/#thick',
-      },
-      {
-        phrase: '…by checking my translation with the people it came from, in both directions.',
-        label: 'Bidirectional validation',
-        href: '/about/#bidi',
-      },
-      {
-        phrase: '…by recording who interpreted, how, and whether a second reader agrees.',
-        label: 'Fidelity Protocol',
-        href: '/tools/fidelity-protocol/',
-      },
+      { phrase: '…by translating what was said literally, in context, and with alternatives', tag: 'Thick translation', tone: 'c3', href: `${C3}methodology/#thick` },
+      { phrase: '…by checking my translation with the people it came from, in both directions', tag: 'Bidirectional validation', tone: 'c3', href: `${C3}methodology/#bidi` },
+      { phrase: '…by recording who interpreted, how, and whether a second reader agrees', tag: 'Fidelity Protocol', tone: 'c3', href: `${C3}fidelity-protocol/` },
     ],
   },
   {
-    id: 'wording',
+    id: 'language-wording',
+    component: 'c3',
+    componentLabel: 'Component 3 · Language',
     title: 'Test interface wording',
-    icon: 'lens',
-    module: 'interpret',
     items: [
-      {
-        phrase: '…by checking that someone new to the form understands the words.',
-        label: 'Lens N: Nomenclature',
-        href: '/tools/language-lens-audit/#lens-n',
-      },
-      {
-        phrase: '…by checking it works read aloud and operated by someone else.',
-        label: 'Lens P: Proxy / Audience',
-        href: '/tools/language-lens-audit/#lens-p',
-      },
-      {
-        phrase: '…by checking it reads as official, not as a scam.',
-        label: 'Lens T: Trust',
-        href: '/tools/language-lens-audit/#lens-t',
-      },
-      {
-        phrase: '…by auditing portal or interface copy against all three lenses.',
-        label: 'Language Lens Audit',
-        href: '/tools/language-lens-audit/',
-      },
+      { phrase: '…by checking that someone new to the form understands the words', tag: 'Lens N · Nomenclature', tone: 'c3', href: `${C3}language-lens-audit/#lens-n` },
+      { phrase: '…by checking it works read aloud and operated by someone else', tag: 'Lens P · Proxy', tone: 'c3', href: `${C3}language-lens-audit/#lens-p` },
+      { phrase: '…by checking it reads as official, not as a scam', tag: 'Lens T · Trust', tone: 'c3', href: `${C3}language-lens-audit/#lens-t` },
+      { phrase: '…by auditing portal or interface copy against all three lenses', tag: 'Language Lens Audit', tone: 'c3', href: `${C3}language-lens-audit/` },
     ],
   },
   {
-    id: 'build-on',
+    id: 'language-build-on',
+    component: 'c3',
+    componentLabel: 'Component 3 · Language',
     title: 'Build on what we already know',
-    icon: 'library',
-    module: 'interpret',
     items: [
-      {
-        phrase: '…by searching meanings that have already been validated.',
-        label: 'Expression Library',
-        href: '/tools/expression-library/',
-      },
-      {
-        phrase: '…by reusing wording that has already been tested, with its evidence.',
-        label: 'Design Language Library',
-        href: '/tools/design-language-library/',
-      },
-      {
-        phrase: '…by folding new questions back into the next round of research.',
-        label: 'The process loop',
-        href: '/#process',
-        index: false,
-      },
+      { phrase: '…by searching meanings that have already been validated', tag: 'Expression Library', tone: 'c3', href: `${C3}expression-library/` },
+      { phrase: '…by reusing wording that has already been tested, with its evidence', tag: 'Design Language Library', tone: 'c3', href: `${C3}design-language-library/` },
     ],
   },
   {
-    id: 'files',
-    title: 'Print, fill in, and digitize',
-    icon: 'print',
-    items: [
-      {
-        phrase: '…by printing cards to take into the field.',
-        label: 'Print-ready cards',
-        href: '/downloads/#print',
-        index: false,
-      },
-      {
-        phrase: '…by moving completed cards into a spreadsheet or the library.',
-        label: 'Digital templates',
-        href: '/downloads/#digital',
-        index: false,
-      },
-    ],
+    id: 'material-reality',
+    component: 'c4',
+    componentLabel: 'Component 4 · Material reality',
+    title: 'Read material reality',
+    items: c4Goals.map((g) => ({
+      phrase: g.phrase,
+      tag: g.tag,
+      tone: c4Tone[g.tool],
+      href: `${C4}${g.tool}/${g.anchor}`,
+    })),
   },
 ];
 
-/** Every tool and step, once, A–Z. Used by the footer index. */
-export function toolIndex(): { label: string; href: string }[] {
-  const seen = new Map<string, string>();
-  for (const g of goals) {
-    for (const item of g.items) {
-      if (item.index !== false && !seen.has(item.label)) seen.set(item.label, item.href);
-    }
-  }
-  return [...seen].map(([label, href]) => ({ label, href })).sort((a, b) => a.label.localeCompare(b.label));
-}
+export const goalsByComponent = (c: ComponentColour) => goals.filter((g) => g.component === c);

@@ -60,4 +60,4 @@ export const tools: Tool[] = [
 
 export const toolBySlug = Object.fromEntries(tools.map((t) => [t.slug, t])) as Record<string, Tool>;
 
-export const toolHref = (slug: string) => `/tools/${slug}/`;
+export const toolHref = (slug: string) => `/components/language/${slug}/`;

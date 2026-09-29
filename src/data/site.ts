@@ -1,16 +1,18 @@
 export const site = {
-  name: 'Meaning-to-Interface Toolkit',
-  shortName: 'Meaning-to-Interface',
-  tagline: 'Capture what people mean, not only what the words say.',
+  name: 'Designing for the Indian Context',
+  shortName: 'Designing for the Indian Context',
+  eyebrow: 'Toolkit · BITSDES 2024–28',
+  tagline: 'Tools for reading products, pictures, language and people’s material lives, before you design for them.',
   description:
-    'A toolkit for capturing emotional and cultural meaning faithfully in cross-language field research, and carrying it through to tested interface wording. Built for research with first-generation Indian college students; reusable for any cross-language qualitative work.',
+    'Tools for reading products, pictures, language and people’s material lives, before you design for them. A toolkit for design students, product teams, NGO and public-service teams, and field researchers.',
   repoUrl: 'https://github.com/Bored-Kxiden/Indian-Context---Digital-Tools',
   licenseName: 'MIT',
+  bookletPdf: '/downloads/designing-for-the-indian-context-booklet.pdf',
 };
 
 export const nav = [
-  { href: '/', label: 'Home' },
-  { href: '/tools/', label: 'Tools' },
-  { href: '/downloads/', label: 'Downloads' },
-  { href: '/about/', label: 'Methodology' },
+  { href: '/components/', label: 'Components' },
+  { href: '/card-kit/', label: 'Card kit' },
+  { href: '/guideline/', label: 'The guideline' },
+  { href: '/about/', label: 'About' },
 ];

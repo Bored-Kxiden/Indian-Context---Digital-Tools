@@ -128,6 +128,9 @@ import { url } from '../utils/url';
   .module {
     --mod: var(--m-context);
     --mod-soft: var(--m-context-soft);
+    /* Text and badge colours that stay readable on the module's own colour. */
+    --mod-ink: var(--ink);
+    --mod-text: var(--warn);
     position: relative;
     margin: 0;
     background: var(--surface);
@@ -142,10 +145,14 @@ import { url } from '../utils/url';
   .m-person {
     --mod: var(--m-person);
     --mod-soft: var(--m-person-soft);
+    --mod-ink: #fff;
+    --mod-text: var(--ink);
   }
   .m-interpret {
     --mod: var(--m-interpret);
     --mod-soft: var(--m-interpret-soft);
+    --mod-ink: #fff;
+    --mod-text: var(--c3);
   }
   /* Arrow to the next module: down on phones, right on wide screens. */
   .module:not(:last-child)::after {
@@ -173,7 +180,7 @@ import { url } from '../utils/url';
     height: 2.4rem;
     border-radius: 50%;
     background: var(--mod);
-    color: var(--bg);
+    color: var(--mod-ink);
     font-family: var(--font-head);
     font-weight: 700;
     font-size: 1.2rem;
@@ -184,7 +191,7 @@ import { url } from '../utils/url';
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: var(--mod);
+    color: var(--mod-text);
   }
   h3 {
     margin: 0;
@@ -223,7 +230,7 @@ import { url } from '../utils/url';
     height: 1.35rem;
     border-radius: 50%;
     background: var(--mod-soft);
-    color: var(--mod);
+    color: var(--mod-text);
     font-size: 0.78rem;
     font-weight: 700;
     display: grid;
@@ -249,7 +256,7 @@ import { url } from '../utils/url';
   }
   .gate .q {
     font-weight: 700;
-    color: var(--mod);
+    color: var(--mod-text);
     font-size: 0.97rem;
   }
   .gate .backed {

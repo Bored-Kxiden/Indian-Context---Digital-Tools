@@ -1,0 +1,97 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import ComponentRail from '../components/ComponentRail.astro';
+import { componentById } from '../data/components';
+import { railFor } from '../data/rail';
+
+// Shell for the pages that sit beside the rail in Components 1 and 4: the component's
+// overview, "Pick a product", "Before you start" and "Ask your participants".
+
+interface Props {
+  component: 'existing-products' | 'material-reality';
+  /** "overview", or the slug of the page (matches the rail). */
+  current: string;
+  title: string;
+  heading: string;
+  lead?: string;
+  description?: string;
+  /** Chips above the heading. */
+  chips?: string[];
+  /** Last breadcrumb label. Leave out on the overview. */
+  crumb?: string;
+}
+
+const { component, current, title, heading, lead, description, chips = [], crumb } = Astro.props;
+const comp = componentById[component];
+const rail = railFor(component);
+const compLabel = `${comp.number} · ${comp.short}`;
+const crumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Components', href: '/components/' },
+  crumb ? { label: compLabel, href: comp.href } : { label: compLabel },
+  ...(crumb ? [{ label: crumb }] : []),
+];
+---
+
+<BaseLayout title={title} description={description ?? lead} component={comp.c}>
+  <div class="page-head">
+    <div class="wrap">
+      <Breadcrumb items={crumbs} />
+      {chips.length > 0 && <div class="chip-row chips">{chips.map((c) => <span class="chip chip--quiet">{c}</span>)}</div>}
+      <h1>{heading}</h1>
+      {lead && <p class="lead">{lead}</p>}
+      <slot name="head" />
+    </div>
+  </div>
+
+  <div class="wrap body">
+    <ComponentRail rail={rail} current={current} />
+    <div class="main">
+      <slot />
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .chips {
+    margin-bottom: 1.25rem;
+  }
+  .page-head h1 {
+    font-size: clamp(2.4rem, 6vw, 4.75rem);
+    margin-bottom: 1rem;
+    max-width: 16ch;
+  }
+  .page-head .lead {
+    max-width: 44rem;
+    margin-bottom: 0;
+  }
+  .body {
+    display: grid;
+    gap: 2rem 2.5rem;
+    grid-template-columns: minmax(0, 1fr);
+    padding-block: 2rem 4.5rem;
+    align-items: start;
+  }
+  @media (min-width: 62rem) {
+    .body {
+      grid-template-columns: 16rem minmax(0, 1fr);
+    }
+  }
+  .main {
+    min-width: 0;
+  }
+  .main :global(.block) {
+    padding-block: 1.5rem 2rem;
+  }
+  .main :global(.block + .block) {
+    border-top: 1px solid var(--line);
+  }
+  .main :global(.block > h2) {
+    font-size: clamp(1.7rem, 3.4vw, 2.3rem);
+    margin-bottom: 0.75rem;
+  }
+  .main :global(.block > .eb) {
+    margin-bottom: 0.5rem;
+  }
+</style>

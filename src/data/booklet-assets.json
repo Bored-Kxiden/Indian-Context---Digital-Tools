@@ -1,0 +1,454 @@
+{
+  "booklet": {
+    "02": {
+      "height": 1800,
+      "page": 2,
+      "width": 1273
+    },
+    "03": {
+      "height": 1800,
+      "page": 3,
+      "width": 1273
+    },
+    "04": {
+      "height": 1800,
+      "page": 4,
+      "width": 1273
+    },
+    "05": {
+      "height": 1800,
+      "page": 5,
+      "width": 1273
+    },
+    "06": {
+      "height": 1800,
+      "page": 6,
+      "width": 1273
+    },
+    "1.01": {
+      "height": 1800,
+      "page": 7,
+      "width": 1273
+    },
+    "1.02": {
+      "height": 1800,
+      "page": 8,
+      "width": 1273
+    },
+    "1.03": {
+      "height": 1800,
+      "page": 9,
+      "width": 1273
+    },
+    "1.04": {
+      "height": 1800,
+      "page": 10,
+      "width": 1273
+    },
+    "1.05": {
+      "height": 1800,
+      "page": 11,
+      "width": 1273
+    },
+    "1.06": {
+      "height": 1800,
+      "page": 12,
+      "width": 1273
+    },
+    "1.07": {
+      "height": 1800,
+      "page": 13,
+      "width": 1273
+    },
+    "1.08": {
+      "height": 1800,
+      "page": 14,
+      "width": 1273
+    },
+    "1.09": {
+      "height": 1800,
+      "page": 15,
+      "width": 1273
+    },
+    "1.10": {
+      "height": 1800,
+      "page": 16,
+      "width": 1273
+    },
+    "1.11": {
+      "height": 1800,
+      "page": 17,
+      "width": 1273
+    },
+    "1.12": {
+      "height": 1800,
+      "page": 18,
+      "width": 1273
+    },
+    "1.13": {
+      "height": 1800,
+      "page": 19,
+      "width": 1273
+    },
+    "1.14": {
+      "height": 1800,
+      "page": 20,
+      "width": 1273
+    },
+    "1.15": {
+      "height": 1800,
+      "page": 21,
+      "width": 1273
+    },
+    "1.16": {
+      "height": 1800,
+      "page": 22,
+      "width": 1273
+    },
+    "1.17": {
+      "height": 1800,
+      "page": 23,
+      "width": 1273
+    },
+    "1.18": {
+      "height": 1800,
+      "page": 24,
+      "width": 1273
+    },
+    "1.19": {
+      "height": 1800,
+      "page": 25,
+      "width": 1273
+    },
+    "1.20": {
+      "height": 1800,
+      "page": 26,
+      "width": 1273
+    },
+    "1.21": {
+      "height": 1800,
+      "page": 27,
+      "width": 1273
+    },
+    "1.22": {
+      "height": 1800,
+      "page": 28,
+      "width": 1273
+    },
+    "1.23": {
+      "height": 1800,
+      "page": 29,
+      "width": 1273
+    },
+    "1.24": {
+      "height": 1800,
+      "page": 30,
+      "width": 1273
+    },
+    "4.01": {
+      "height": 1800,
+      "page": 31,
+      "width": 1273
+    },
+    "4.02": {
+      "height": 1800,
+      "page": 32,
+      "width": 1273
+    },
+    "4.03": {
+      "height": 1800,
+      "page": 33,
+      "width": 1273
+    },
+    "4.04": {
+      "height": 1800,
+      "page": 34,
+      "width": 1273
+    },
+    "4.05": {
+      "height": 1800,
+      "page": 35,
+      "width": 1273
+    },
+    "4.06": {
+      "height": 1800,
+      "page": 36,
+      "width": 1273
+    },
+    "4.07": {
+      "height": 1800,
+      "page": 37,
+      "width": 1273
+    },
+    "4.08": {
+      "height": 1800,
+      "page": 38,
+      "width": 1273
+    },
+    "4.09": {
+      "height": 1800,
+      "page": 39,
+      "width": 1273
+    },
+    "4.10": {
+      "height": 1800,
+      "page": 40,
+      "width": 1273
+    },
+    "4.11": {
+      "height": 1800,
+      "page": 41,
+      "width": 1273
+    },
+    "4.12": {
+      "height": 1800,
+      "page": 42,
+      "width": 1273
+    },
+    "4.13": {
+      "height": 1800,
+      "page": 43,
+      "width": 1273
+    },
+    "4.14": {
+      "height": 1800,
+      "page": 44,
+      "width": 1273
+    },
+    "4.15": {
+      "height": 1800,
+      "page": 45,
+      "width": 1273
+    },
+    "4.16": {
+      "height": 1800,
+      "page": 46,
+      "width": 1273
+    },
+    "4.17": {
+      "height": 1800,
+      "page": 47,
+      "width": 1273
+    },
+    "4.18": {
+      "height": 1800,
+      "page": 48,
+      "width": 1273
+    },
+    "4.19": {
+      "height": 1800,
+      "page": 49,
+      "width": 1273
+    },
+    "4.20": {
+      "height": 1800,
+      "page": 50,
+      "width": 1273
+    },
+    "4.21": {
+      "height": 1800,
+      "page": 51,
+      "width": 1273
+    },
+    "4.22": {
+      "height": 1800,
+      "page": 52,
+      "width": 1273
+    },
+    "cover": {
+      "height": 1800,
+      "page": 1,
+      "width": 1273
+    },
+    "end": {
+      "height": 1800,
+      "page": 53,
+      "width": 1273
+    }
+  },
+  "cardKit": {
+    "1.25": {
+      "height": 1800,
+      "page": 1,
+      "width": 1273
+    },
+    "B1": {
+      "height": 1274,
+      "page": 10,
+      "width": 1800
+    },
+    "B2": {
+      "height": 1274,
+      "page": 11,
+      "width": 1800
+    },
+    "B3": {
+      "height": 1274,
+      "page": 12,
+      "width": 1800
+    },
+    "B4": {
+      "height": 1274,
+      "page": 13,
+      "width": 1800
+    },
+    "B5": {
+      "height": 1274,
+      "page": 14,
+      "width": 1800
+    },
+    "B6": {
+      "height": 1274,
+      "page": 15,
+      "width": 1800
+    },
+    "B7": {
+      "height": 1274,
+      "page": 16,
+      "width": 1800
+    },
+    "S1": {
+      "height": 1800,
+      "page": 2,
+      "width": 1273
+    },
+    "S2": {
+      "height": 1800,
+      "page": 3,
+      "width": 1273
+    },
+    "S3": {
+      "height": 1800,
+      "page": 4,
+      "width": 1273
+    },
+    "S4": {
+      "height": 1800,
+      "page": 5,
+      "width": 1273
+    },
+    "S5": {
+      "height": 1800,
+      "page": 6,
+      "width": 1273
+    },
+    "S6": {
+      "height": 1800,
+      "page": 7,
+      "width": 1273
+    },
+    "S7": {
+      "height": 1800,
+      "page": 8,
+      "width": 1273
+    },
+    "S8": {
+      "height": 1800,
+      "page": 9,
+      "width": 1273
+    }
+  },
+  "cardKitPdfs": {
+    "board-b1.pdf": {
+      "id": "B1"
+    },
+    "board-b2.pdf": {
+      "id": "B2"
+    },
+    "board-b3.pdf": {
+      "id": "B3"
+    },
+    "board-b4.pdf": {
+      "id": "B4"
+    },
+    "board-b5.pdf": {
+      "id": "B5"
+    },
+    "board-b6.pdf": {
+      "id": "B6"
+    },
+    "board-b7.pdf": {
+      "id": "B7"
+    },
+    "boards-b1-b7.pdf": {
+      "id": "B1-B7"
+    },
+    "card-sheets-s1-s8.pdf": {
+      "id": "S1-S8"
+    },
+    "sheet-s1.pdf": {
+      "id": "S1"
+    },
+    "sheet-s2.pdf": {
+      "id": "S2"
+    },
+    "sheet-s3.pdf": {
+      "id": "S3"
+    },
+    "sheet-s4.pdf": {
+      "id": "S4"
+    },
+    "sheet-s5.pdf": {
+      "id": "S5"
+    },
+    "sheet-s6.pdf": {
+      "id": "S6"
+    },
+    "sheet-s7.pdf": {
+      "id": "S7"
+    },
+    "sheet-s8.pdf": {
+      "id": "S8"
+    }
+  },
+  "templates": {
+    "c1-break-blame-scale.pdf": {
+      "bookletPage": "1.16"
+    },
+    "c1-break-flow-needs-blank.pdf": {
+      "bookletPage": "1.15"
+    },
+    "c1-break-villain-story-blank.pdf": {
+      "bookletPage": "1.18"
+    },
+    "c1-gossip-venn-blank.pdf": {
+      "bookletPage": "1.09"
+    },
+    "c1-history-timeline-blank.pdf": {
+      "bookletPage": "1.12"
+    },
+    "c1-media-story-blank.pdf": {
+      "bookletPage": "1.07"
+    },
+    "c1-power-lenses-blank.pdf": {
+      "bookletPage": "1.21"
+    },
+    "c1-synthesis-blank.pdf": {
+      "bookletPage": "1.23"
+    },
+    "c4-ask-your-participants.pdf": {
+      "bookletPage": "4.22"
+    },
+    "c4-break-big-players-blank.pdf": {
+      "bookletPage": "4.15"
+    },
+    "c4-break-whisper-blank.pdf": {
+      "bookletPage": "4.13"
+    },
+    "c4-build-ladder-blank.pdf": {
+      "bookletPage": "4.10"
+    },
+    "c4-build-loop-blank.pdf": {
+      "bookletPage": "4.08"
+    },
+    "c4-journey-strip.pdf": {
+      "bookletPage": "4.04"
+    },
+    "c4-say-brief-blank.pdf": {
+      "bookletPage": "4.21"
+    },
+    "c4-weigh-blank.pdf": {
+      "bookletPage": "4.18"
+    }
+  }
+}

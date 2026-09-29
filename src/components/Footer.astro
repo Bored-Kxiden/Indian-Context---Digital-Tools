@@ -1,78 +1,133 @@
 ---
+import LogoMark from './LogoMark.astro';
+import { components } from '../data/components';
 import { site } from '../data/site';
-import { tools, toolHref } from '../data/tools';
-import { toolIndex } from '../data/goals';
 import { url } from '../utils/url';
-
-const index = toolIndex();
 ---
 
 <footer class="site-footer">
-  <div class="wrap cols">
-    <div>
-      <p class="name">{site.name}</p>
-      <p class="small">
-        A framework for capturing emotional and cultural meaning faithfully during cross-language field research.
-        Built for research on first-generation Indian college students; reusable for any cross-language qualitative work.
+  <div class="cols">
+    <div class="brand">
+      <p class="logo">
+        <LogoMark size={30} />
+        <span>
+          {site.name}
+          <small>{site.eyebrow}</small>
+        </span>
       </p>
+      <p class="blurb">{site.tagline}</p>
     </div>
-    <nav aria-label="Tools">
-      <p class="head">Tools</p>
+
+    <nav aria-label="Components">
+      <p class="head">Components</p>
       <ul>
         {
-          tools.map((t) => (
-            <li>
-              <a href={url(toolHref(t.slug))}>{t.name.replace(/^The /, '')}</a>
-            </li>
-          ))
+          components
+            .filter((c) => c.number !== null)
+            .map((c) => (
+              <li>
+                <a href={url(c.href)}>
+                  {c.number} · {c.short}
+                </a>
+                {c.status === 'soon' && <span class="soon"> (soon)</span>}
+              </li>
+            ))
         }
+        <li>
+          <a href={url('/components/reflection/')}>Reflection</a>
+          <span class="soon"> (soon)</span>
+        </li>
       </ul>
     </nav>
-    <nav aria-label="More">
-      <p class="head">More</p>
+
+    <nav aria-label="Use it">
+      <p class="head">Use it</p>
       <ul>
-        <li><a href={url('/downloads/')}>Downloads</a></li>
-        <li><a href={url('/about/')}>Methodology</a></li>
-        <li><a href={site.repoUrl}>Source on GitHub</a></li>
+        <li><a href={url('/guideline/')}>The guideline</a></li>
+        <li><a href={url('/guideline/#how-to-read')}>How to read a tool</a></li>
+        <li><a href={url('/card-kit/')}>Card kit</a></li>
+        <li><a href={url('/guideline/#meera')}>Meet Meera</a></li>
+        <li><a href={url('/about/')}>About</a></li>
+      </ul>
+    </nav>
+
+    <nav aria-label="Download">
+      <p class="head">Download</p>
+      <ul>
+        <li><a href={url(site.bookletPdf)} download>Full booklet (A4)</a></li>
+        <li><a href={url('/downloads/card-kit/card-sheets-s1-s8.pdf')} download>Card sheets (A4)</a></li>
+        <li><a href={url('/downloads/card-kit/boards-b1-b7.pdf')} download>Boards (A2)</a></li>
+        <li><a href={url('/downloads/')}>All downloads</a></li>
       </ul>
     </nav>
   </div>
-  <nav class="wrap az" aria-label="Every tool and step, A to Z">
-    <p class="head">All tools and steps</p>
-    <ul>
-      {index.map((t) => <li><a href={url(t.href)}>{t.label}</a></li>)}
-    </ul>
-  </nav>
-  <div class="wrap legal">
-    <p class="small">Released under the {site.licenseName} License. Sample library entries are illustrative and contain no real participant data.</p>
-  </div>
+  <p class="legal">
+    Examples in the toolkit are illustrative and use no real participant data. Site code:
+    <a href={site.repoUrl}>{site.licenseName} License</a>.
+  </p>
 </footer>
 
 <style>
   .site-footer {
-    border-top: 1px solid var(--line);
-    background: var(--surface-2);
-    margin-top: 3rem;
-    padding-block: 2.5rem 1.5rem;
+    background: var(--ink);
+    color: var(--on-dark);
+    padding: 3.5rem var(--gutter) 2rem;
+    margin-top: 0;
     font-size: 0.95rem;
+    line-height: 1.9;
   }
   .cols {
+    max-width: 90rem;
+    margin-inline: auto;
     display: grid;
-    gap: 2rem;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+    gap: 2.5rem;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
   }
-  .cols > div {
+  @media (max-width: 62rem) {
+    .cols {
+      grid-template-columns: 1fr 1fr;
+    }
+    .brand {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (max-width: 32rem) {
+    .cols {
+      grid-template-columns: 1fr;
+    }
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: #fff;
+    font-weight: 800;
+    line-height: 1.1;
+    margin: 0 0 0.75rem;
+  }
+  .logo small {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #b9b1a0;
+    margin-top: 0.15rem;
+  }
+  .blurb {
     max-width: 26rem;
-  }
-  .name {
-    font-family: var(--font-head);
-    font-weight: 700;
-    font-size: 1.1rem;
-    margin-bottom: 0.4rem;
+    line-height: 1.6;
+    margin: 0;
   }
   .head {
-    font-weight: 700;
-    margin-bottom: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #fff;
+    font-weight: 600;
+    margin: 0 0 0.4rem;
   }
   ul {
     list-style: none;
@@ -80,32 +135,30 @@ const index = toolIndex();
     padding: 0;
   }
   li {
-    margin-bottom: 0.25rem;
-  }
-  .small {
-    color: var(--ink-soft);
-    font-size: 0.9rem;
     margin: 0;
   }
-  .az {
-    margin-top: 2rem;
-    padding-top: 1.25rem;
-    border-top: 1px solid var(--line);
+  a {
+    color: var(--on-dark);
+    text-decoration: none;
   }
-  .az ul {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.35rem 1.25rem;
+  a:hover {
+    color: #fff;
+    text-decoration: underline;
   }
-  .az li {
-    margin: 0;
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
+  .soon {
+    color: #8f8878;
   }
   .legal {
-    margin-top: 2rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--line);
+    max-width: 90rem;
+    margin: 2.5rem auto 0;
+    padding-top: 1.25rem;
+    border-top: 1px solid #2e2a22;
+    font-size: 0.85rem;
+    color: #b9b1a0;
+    line-height: 1.6;
+  }
+  .legal a {
+    color: #fff;
+    text-decoration: underline;
   }
 </style>

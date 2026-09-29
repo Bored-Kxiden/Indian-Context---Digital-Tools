@@ -1,0 +1,210 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../../components/Breadcrumb.astro';
+import GoalIndex from '../../../components/GoalIndex.astro';
+import ProcessFlow from '../../../components/ProcessFlow.astro';
+import ToolCard from '../../../components/ToolCard.astro';
+import Icon from '../../../components/Icon.astro';
+import { tools } from '../../../data/tools';
+import { goalsByComponent } from '../../../data/goals';
+import { componentById } from '../../../data/components';
+import { url } from '../../../utils/url';
+
+const comp = componentById['language'];
+
+const problems = [
+  {
+    title: 'Meaning gets lost in translation',
+    body: 'A phrase can shift with the language, the tone, the region, or the gesture that goes with it. Word-for-word translation keeps the words and drops the rest: rapport, tone, code-switching, and the gap between what someone says and what they mean.',
+  },
+  {
+    title: 'Every finding looks equally certain',
+    body: 'Nothing in a typical research pipeline marks whether a finding is what a person meant or one interpreter’s best guess. It travels with the same authority however many hops of translation or single-source judgment calls produced it.',
+  },
+  {
+    title: 'Generic personas result',
+    body: 'By the time a finding reaches a design team, meaning has quietly become approximation, and the interface gets built for an averaged, invented person rather than anyone real.',
+  },
+];
+
+const applies = [
+  'Public-service and civic platforms in any linguistically diverse country',
+  'Healthcare intake and patient-facing tools used with immigrant or refugee populations',
+  'Financial-inclusion products, banking apps, and lending platforms',
+  'E-commerce, delivery, and logistics across dialect-rich regions',
+  'Humanitarian and NGO field tools in crisis zones with no shared language',
+  'Enterprise software used by distributed teams working in a second or third language',
+  'Voice assistants, IVR systems, and chatbots deployed far outside the dialect they were trained on',
+];
+---
+
+<BaseLayout
+  title={comp.name}
+  description="Practical tools for capturing emotional and cultural meaning faithfully in cross-language field research, tagging how reliable each finding is, and carrying it through to interface wording that has actually been tested."
+  component="c3"
+>
+  <div class="page-head">
+    <div class="wrap">
+      <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Components', href: '/components/' }, { label: '3 · Language' }]} />
+      <div class="chip-row chips">
+        <span class="chip chip--quiet">Component 3</span>
+        <span class="chip chip--quiet">Meaning-to-Interface Toolkit</span>
+      </div>
+      <h1>Keep what people mean, not only what the words say.</h1>
+      <p class="lead">
+        Practical tools for capturing emotional and cultural meaning faithfully in cross-language field research, tagging how
+        reliable each finding is, and carrying it through to interface wording that has actually been tested.
+      </p>
+      <p class="built">
+        Built for research on first-generation Indian college students. Reusable for any cross-language qualitative research.
+      </p>
+      <p class="btns">
+        <a class="btn btn--accent" href="#c3-goals">Find your tool <Icon name="arrow" size={18} /></a>
+        <a class="btn btn--outline" href={url('/components/language/methodology/')}>Read the methodology</a>
+        <a class="btn btn--outline" href={url('/downloads/#language')}><Icon name="download" size={18} /> Templates</a>
+      </p>
+    </div>
+  </div>
+
+  <section class="section section--white" aria-labelledby="c3-goals-h">
+    <div class="wrap">
+      <GoalIndex
+        groups={goalsByComponent('c3')}
+        lead="Start with what you’re doing. Every tool works on its own."
+        search={false}
+        showComponent={false}
+        id="c3-goals"
+        headingId="c3-goals-h"
+      />
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="problem">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eb">The problem</p>
+        <h2 id="problem">Cross-language research loses exactly the thing that matters most.</h2>
+        <p>
+          Run a conversation through a translator or transcriber once and the nuance is gone by the time it reaches a design team.
+          Nobody downstream can tell what was meant from what was guessed.
+        </p>
+      </div>
+      <div class="grid grid--3">
+        {
+          problems.map((p) => (
+            <article class="card">
+              <h3>{p.title}</h3>
+              <p>{p.body}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--white" id="process" aria-labelledby="process-heading">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eb">The process</p>
+        <h2 id="process-heading">Three modules, an entry step, and a loop.</h2>
+        <p>
+          Module 1 builds a picture of the setting. Module 2 captures meaning moments one person at a time. Module 3 turns raw
+          moments into validated meaning, then into a tested design response. The last step feeds new questions back into
+          Module 1, so the process compounds across research cycles.
+        </p>
+      </div>
+      <ProcessFlow />
+      <p class="funnel">
+        Not every Meaning Card travels all the way to a shipped pattern. Many surface something useful without further action, a
+        smaller number justify a design hypothesis, and fewer still become tested, library-worthy patterns. A “not yet” or a
+        “no” at a decision point is the toolkit doing its job.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="all-tools">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eb">Tools</p>
+        <h2 id="all-tools">The six tools, in the order you meet them</h2>
+      </div>
+      <div class="grid grid--3">
+        {tools.map((t, i) => <ToolCard tool={t} index={i + 1} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--white" aria-labelledby="where">
+    <div class="wrap two">
+      <div>
+        <p class="eb">Where to use it</p>
+        <h2 id="where">Not specific to one sector, or to India.</h2>
+        <p>
+          The condition that makes this component necessary is simple: somewhere between the people building a product and the
+          people using it, there is a language or meaning gap, and someone is bridging it by guesswork rather than a documented
+          method.
+        </p>
+        <p>
+          The common thread is a research or design team on one side of a language boundary and real users on the other, with no
+          method in place for checking whether meaning crossed.
+        </p>
+        <p><a class="link-arrow" href={url('/components/language/methodology/')}>Read the methodology <Icon name="arrow" size={18} /></a></p>
+      </div>
+      <ul class="applies">
+        {applies.map((a) => <li>{a}</li>)}
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .chips {
+    margin-bottom: 1.25rem;
+  }
+  .page-head h1 {
+    font-size: clamp(2.4rem, 6vw, 4.5rem);
+    max-width: 20ch;
+    margin-bottom: 1rem;
+  }
+  .page-head .lead {
+    max-width: 46rem;
+  }
+  .built {
+    color: var(--muted);
+    font-size: 0.98rem;
+    max-width: 46rem;
+  }
+  .btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 1.5rem 0 0;
+  }
+  .funnel {
+    max-width: var(--prose);
+    margin: 2rem 0 0;
+    color: var(--ink-soft);
+  }
+  .two {
+    display: grid;
+    gap: 2rem 3.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    align-items: start;
+  }
+  .applies {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.6rem;
+  }
+  .applies li {
+    margin: 0;
+    padding: 0.8rem 1rem;
+    background: var(--ground);
+    border: 1px solid var(--line-strong);
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius-sm);
+    font-size: 0.97rem;
+  }
+</style>

@@ -1,0 +1,302 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../../components/Breadcrumb.astro';
+import { url } from '../../../utils/url';
+
+const directions = [
+  {
+    title: 'Native language to English',
+    body: 'What someone says in their own language, asked in English. Shows what gets lost or changed when their words are pulled into English.',
+  },
+  {
+    title: 'English to native language',
+    body: 'An English phrase, such as one from an app or a form, asked in the person’s own language. Shows how English-based design actually lands on the people using it.',
+  },
+  {
+    title: 'Native language to regional dialect',
+    body: 'The standard version of a language, asked how it changes in a specific region. The same word can mean something different, or sound different, from one place to the next, even within one language.',
+  },
+];
+
+const glossary = [
+  {
+    phrase: 'Arre, fees maangenge kya?',
+    literal: 'Oh, will they ask for fees?',
+    implied: 'Alarm. Money requested inside an official flow reads as a possible scam.',
+  },
+  {
+    phrase: 'Haye, ab phir se sab documents?',
+    literal: 'Oh no, all the documents again?',
+    implied: 'Fatigue and exasperation at repeated requests. Burden, not confusion.',
+  },
+];
+---
+
+<BaseLayout
+  title="Methodology"
+  description="Thick translation and the bidirectional validation survey: the core technique behind confirming that a meaning moment is well supported."
+  component="c3"
+>
+  <div class="page-head">
+    <div class="wrap">
+      <Breadcrumb
+        items={[
+          { label: 'Home', href: '/' },
+          { label: 'Components', href: '/components/' },
+          { label: '3 · Language', href: '/components/language/' },
+          { label: 'Methodology' },
+        ]}
+      />
+      <h1>Thick translation, checked in both directions.</h1>
+      <p class="lede">
+        In India, people rarely mean exactly what the words say. The core technique behind this toolkit is to translate carefully,
+        keeping context and feeling along with the words, and then to check the translation with the people it came from.
+      </p>
+    </div>
+  </div>
+
+  <div class="wrap body">
+    <section class="section" aria-labelledby="thick">
+      <div class="prose">
+        <h2 id="thick">What thick translation is</h2>
+        <p>
+          A phrase can carry a different meaning depending on the language, the tone, the region, or even a gesture that goes with it.
+          Translating word for word loses all of that. Thick translation keeps the context and the feeling along with the words.
+        </p>
+        <p>
+          In the process, it appears as two steps in Module 3. <strong>Thick translation</strong> records the literal meaning, the
+          context, and alternative readings. <strong>Reverse thick translation</strong> tests that result with the audience. Between
+          them, a local language collaborator reviews the work.
+        </p>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="bidi">
+      <div class="section-head">
+        <h2 id="bidi">Bidirectional validation</h2>
+        <p>
+          Once thick translation is done, a survey confirms that it landed correctly. It runs in two directions. In both, it is
+          looking for the gap between what the words literally say and what people actually understand.
+        </p>
+      </div>
+
+      <div class="grid grid--2 dirs">
+        <article class="card dir">
+          <p class="tag">Direction A</p>
+          <div class="flow" aria-hidden="true">
+            <span class="box">English translation<br /><small>or a given target language</small></span>
+            <span class="arrow">→</span>
+            <span class="box out">Implied meaning<br /><small>in the participant’s language</small></span>
+          </div>
+          <p>
+            Participants are shown the English translation (or the language being translated into) and give the implied meaning
+            that they hold in their own language.
+          </p>
+        </article>
+        <article class="card dir">
+          <p class="tag">Direction B: the reverse</p>
+          <div class="flow" aria-hidden="true">
+            <span class="box">Phrase in the participant’s language</span>
+            <span class="arrow">→</span>
+            <span class="box out">Meaning<br /><small>in English</small></span>
+          </div>
+          <p>
+            Participants are shown a phrase in their own language and give what it means in English.
+          </p>
+        </article>
+      </div>
+
+      <div class="prose after">
+        <p>
+          Together these are the technique for confirming that a meaning moment is well supported. When both directions agree, and
+          the four <a href={url('/components/language/fidelity-protocol/')}>Fidelity Protocol</a> tags are recorded, the moment can pass the
+          decision “is the meaning well supported?” and enter the{' '}
+          <a href={url('/components/language/expression-library/')}>Expression Library</a>. When they do not agree, the finding loops back to
+          thick translation for another look.
+        </p>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="directions">
+      <div class="section-head">
+        <h2 id="directions">Three directions of comparison</h2>
+        <p>The survey compares meaning along these three directions. They are separate from the three lenses of the Language Lens Audit.</p>
+      </div>
+      <div class="grid grid--3">
+        {
+          directions.map((d, i) => (
+            <article class="card">
+              <p class="tag">{i + 1}</p>
+              <h3>{d.title}</h3>
+              <p>{d.body}</p>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="signals">
+      <div class="prose">
+        <h2 id="signals">Small signals count</h2>
+        <p>
+          The survey also captures the small signals that ordinary surveys ignore but that carry real meaning in an Indian setting:
+          exclamations such as “arre” (अरे) or “haye”, the tone someone uses, and gestures. These belong on the Meaning Card next to
+          the exact words, not in a footnote.
+        </p>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="glossary">
+      <div class="section-head">
+        <h2 id="glossary">The end product: a linguistic glossary</h2>
+        <p>
+          Everything from the survey goes into a detailed glossary. For each phrase, two things are recorded: the{' '}
+          <strong>literal meaning</strong> (the plain translation of what was said) and the <strong>implied meaning</strong> (the
+          equivalent that captures what the person really meant, including tone and feeling).
+        </p>
+        <p>
+          The gap between the two is the useful part. It shows designers exactly where something can look clear on screen but mean
+          something else to the person reading it.
+        </p>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <caption>Illustrative glossary entries (examples, not real participant data)</caption>
+          <thead>
+            <tr>
+              <th scope="col">Phrase</th>
+              <th scope="col">Literal meaning</th>
+              <th scope="col">Implied meaning</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              glossary.map((g) => (
+                <tr>
+                  <th scope="row" lang="hi-Latn">{g.phrase}</th>
+                  <td>{g.literal}</td>
+                  <td>{g.implied}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="start">
+      <div class="section-head">
+        <h2 id="start">Before you start</h2>
+        <p>Using the toolkit starts with team composition, not process.</p>
+      </div>
+      <div class="grid grid--3">
+        <article class="card">
+          <h3>A lead researcher</h3>
+          <p>Owns the research question and the process, and runs the primary interviews.</p>
+        </article>
+        <article class="card">
+          <h3>A local language collaborator</h3>
+          <p>An interpreter who is not the same person doing the primary interviewing.</p>
+        </article>
+        <article class="card">
+          <h3>A second independent reader</h3>
+          <p>
+            Wherever possible, someone who can confirm or contest a translation before it is trusted. One person’s read, however
+            fluent, is still one person’s read.
+          </p>
+        </article>
+      </div>
+      <div class="prose after">
+        <p>
+          Before any fieldwork starts, name the research question, secure informed consent, and agree on data deletion rules. This
+          step is not optional. Skipping it does not save time, it moves the cost downstream, usually into a re-check that could have
+          been avoided.
+        </p>
+        <p>
+          Budget for at least one full loop before expecting stable, library-ready patterns, and treat both libraries as living
+          references that keep growing for as long as the product keeps shipping to real people.
+        </p>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .body {
+    padding-bottom: 2rem;
+  }
+  .section:first-child {
+    border-top: 0;
+  }
+  .tag {
+    margin: 0 0 0.5rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .after {
+    margin-top: 1.5rem;
+  }
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+  }
+  .box {
+    flex: 1;
+    padding: 0.65rem 0.75rem;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+    font-weight: 600;
+    font-size: 0.95rem;
+    line-height: 1.3;
+  }
+  .box small {
+    font-weight: 400;
+    color: var(--ink-soft);
+  }
+  .box.out {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .arrow {
+    font-size: 1.5rem;
+    color: var(--accent);
+  }
+  .table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+  caption {
+    text-align: left;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    caption-side: bottom;
+  }
+  th,
+  td {
+    text-align: left;
+    vertical-align: top;
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--line);
+    min-width: 12rem;
+  }
+  thead th {
+    background: var(--surface-2);
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  tbody th {
+    font-weight: 600;
+  }
+</style>

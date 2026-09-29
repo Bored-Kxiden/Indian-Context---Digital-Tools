@@ -1,0 +1,197 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import Icon from '../../components/Icon.astro';
+import { afterTheToolkit, whyThisExists } from '../../data/booklet/shared';
+import { site } from '../../data/site';
+import { url } from '../../utils/url';
+---
+
+<BaseLayout title="About" description="Who the toolkit is for, what to do after it, and where it comes from.">
+  <div class="page-head">
+    <div class="wrap">
+      <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'About' }]} />
+      <h1>About</h1>
+      <p class="lead">{site.tagline}</p>
+    </div>
+  </div>
+
+  <section class="section" aria-labelledby="for-h">
+    <div class="wrap two">
+      <div>
+        <p class="eb">Who it’s for</p>
+        <h2 id="for-h">{whyThisExists.title}</h2>
+        <p class="big">{whyThisExists.body}</p>
+        <ul class="chip-row made">
+          {whyThisExists.madeFor.map((m) => <li class="chip chip--quiet">{m}</li>)}
+        </ul>
+      </div>
+      <div class="card from">
+        <p class="eb">Where it comes from</p>
+        <p>
+          {site.name} is a toolkit from <b>BITSDES 2024–28</b>. It is built in components: each one is a different way of reading the
+          world a product will land in. Each works on its own.
+        </p>
+        <p>
+          This site holds the components that are ready, with their guides, filled examples, blank templates and the card kit. More
+          components will be added as they’re finished.
+        </p>
+        <p class="links">
+          <a class="link-arrow" href={url('/components/')}>See the components <Icon name="arrow" size={18} /></a>
+          <a class="link-arrow" href={url('/components/language/methodology/')}>How the language work is built <Icon name="arrow" size={18} /></a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--white" aria-labelledby="after-h">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eb">{afterTheToolkit.eyebrow}</p>
+        <h2 id="after-h">{afterTheToolkit.title}</h2>
+      </div>
+      <ol class="after">
+        {
+          afterTheToolkit.steps.map((s, i) => (
+            <li>
+              <span class="n">{i + 1}</span>
+              <span>{s}</span>
+            </li>
+          ))
+        }
+      </ol>
+      <div class="callout callout--ink principle">
+        <strong>{afterTheToolkit.formPrinciple.label}</strong>
+        <p>{afterTheToolkit.formPrinciple.text}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="read-h">
+    <div class="wrap two">
+      <div>
+        <p class="eb">Further reading</p>
+        <h2 id="read-h">Work this toolkit leans on.</h2>
+      </div>
+      <ul class="reading">
+        {afterTheToolkit.furtherReading.map((r) => <li>{r}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section--white" aria-labelledby="open-h">
+    <div class="wrap two">
+      <div>
+        <p class="eb">Open</p>
+        <h2 id="open-h">The code is open.</h2>
+        <p class="big">
+          The website’s code is on GitHub under the {site.licenseName} licence. The booklet’s closing invitation stands: write your own
+          tool card, and share it back.
+        </p>
+      </div>
+      <p class="btns">
+        <a class="btn btn--outline" href={site.repoUrl} rel="noopener">View on GitHub <Icon name="arrow" size={18} /></a>
+        <a class="btn btn--accent" href={url('/downloads/')}><Icon name="download" size={18} /> Downloads</a>
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-head h1 {
+    font-size: clamp(2.6rem, 7vw, 5rem);
+    margin-bottom: 1rem;
+  }
+  .page-head .lead {
+    max-width: 44rem;
+    margin: 0;
+  }
+  .two {
+    display: grid;
+    gap: 2.5rem 4rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+    align-items: start;
+  }
+  .big {
+    font-size: 1.15rem;
+    color: var(--ink-soft);
+    max-width: 36rem;
+  }
+  .made {
+    list-style: none;
+    padding: 0;
+    margin: 1.5rem 0 0;
+  }
+  .made li {
+    margin: 0;
+  }
+  .from p {
+    color: var(--ink-soft);
+  }
+  .from .eb {
+    color: var(--muted);
+  }
+  .links {
+    display: grid;
+    gap: 0.6rem;
+    margin: 1.25rem 0 0;
+  }
+  .after {
+    list-style: none;
+    margin: 0 0 2rem;
+    padding: 0;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  }
+  .after li {
+    margin: 0;
+    display: flex;
+    gap: 0.9rem;
+    align-items: flex-start;
+    padding: 1.2rem 1.3rem;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    background: var(--ground);
+    font-weight: 600;
+    line-height: 1.4;
+  }
+  .after .n {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: var(--ink);
+    color: #fff;
+    font-weight: 800;
+  }
+  .principle {
+    max-width: 44rem;
+  }
+  .principle p {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+  .reading {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-top: 1px solid var(--line-strong);
+  }
+  .reading li {
+    margin: 0;
+    padding: 0.85rem 0.25rem;
+    border-bottom: 1px solid var(--line-strong);
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+  .btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 0;
+  }
+</style>

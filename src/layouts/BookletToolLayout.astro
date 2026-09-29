@@ -1,0 +1,841 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import ComponentRail from '../components/ComponentRail.astro';
+import PageFigure from '../components/PageFigure.astro';
+import DownloadCard from '../components/DownloadCard.astro';
+import Icon from '../components/Icon.astro';
+import type { Tool } from '../data/booklet/types';
+import { componentById } from '../data/components';
+import { railFor } from '../data/rail';
+import { boardById, sheetById, sheetMeta } from '../data/card-kit';
+import { getDownloadById, getDownloadsForPage } from '../data/downloads';
+import { bookletImage, cardKitImage } from '../utils/assets';
+import { url } from '../utils/url';
+
+// One page per tool in Components 1 and 4. Four tabs, always in the same order:
+// Guide · Example · Blank template · Card kit (Component 1 only).
+// Without JavaScript the panels simply stack; with it they become tabs.
+
+interface Props {
+  tool: Tool;
+}
+
+const { tool } = Astro.props;
+const comp = componentById[tool.component];
+const rail = railFor(tool.component);
+const pagePath = `${comp.href}${tool.slug}/`;
+const idx = rail.items.findIndex((i) => i.slug === tool.slug);
+const prev = idx > 0 ? rail.items[idx - 1] : undefined;
+const next = idx >= 0 && idx < rail.items.length - 1 ? rail.items[idx + 1] : undefined;
+
+const guideImage = bookletImage(tool.guidePage);
+const multi = tool.parts.length > 1;
+const kit = tool.cardKit;
+const templates = getDownloadsForPage(pagePath);
+
+const tabs = [
+  { id: 'guide', label: 'Guide', icon: 'info' },
+  { id: 'example', label: 'Example', icon: 'bulb' },
+  { id: 'blank', label: 'Blank template', icon: 'file' },
+  ...(kit ? [{ id: 'card-kit', label: 'Card kit', icon: 'cards' }] : []),
+] as const;
+
+const eyebrow = [
+  tool.number ? `Tool ${tool.number} of ${tool.of}` : tool.kind ?? 'Closing',
+  tool.worksOnItsOwn ? 'Works on its own' : 'Needs the tools before it',
+];
+const crumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Components', href: '/components/' },
+  { label: `${comp.number} · ${comp.short}`, href: comp.href },
+  { label: tool.short },
+];
+---
+
+<BaseLayout title={`${tool.name}: ${comp.short}`} description={tool.question} component={comp.c}>
+  <div class="page-head">
+    <div class="wrap">
+      <Breadcrumb items={crumbs} />
+      <div class="chip-row eyebrow-row">
+        {eyebrow.map((e) => <span class="chip chip--quiet">{e}</span>)}
+        {tool.kind && tool.number && <span class="chip chip--quiet">{tool.kind}</span>}
+      </div>
+      <h1>{tool.name}</h1>
+      <p class="lead q">{tool.question}</p>
+      <ul class="meta" aria-label="About this tool">
+        <li><Icon name="clock" size={18} /> <span><b>{tool.time}</b></span></li>
+        <li><Icon name="people" size={18} /> <span>{tool.group}</span></li>
+        <li><Icon name="pin" size={18} /> <span>{tool.mode}</span></li>
+        <li>
+          <Icon name="bolt" size={18} />
+          <span>
+            Effort
+            <span class="effort" role="img" aria-label={`${tool.effort} out of 3`}>
+              {[1, 2, 3].map((n) => <i class:list={{ on: n <= tool.effort }}></i>)}
+            </span>
+          </span>
+        </li>
+      </ul>
+      <div class="two-up">
+        <div class="callout"><strong>What it shows you</strong><p>{tool.shows}</p></div>
+        <div class="callout callout--done"><strong>You’re done when</strong><p>{tool.done}</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap body" data-tool>
+    <ComponentRail rail={rail} current={tool.slug} />
+
+    <div class="main">
+      <div class="tabs" data-tabs hidden>
+        {
+          tabs.map((t) => (
+            <button type="button" class="tab" data-tab={t.id} aria-selected="false">
+              <Icon name={t.icon} size={18} /> {t.label}
+            </button>
+          ))
+        }
+      </div>
+
+      <!-- Guide -->
+      <section class="panel" id="guide" data-panel="guide">
+        <h2 class="panel-h">Guide</h2>
+        <h3 class="sub">What is it?</h3>
+        {tool.whatIsIt.map((p) => <p class="body-p">{p}</p>)}
+
+        {
+          tool.sevenSteps && (
+            <>
+              <h3 class="sub">The seven steps</h3>
+              <ol class="seven">
+                {tool.sevenSteps.map((s, i) => (
+                  <li class="stp">
+                    <b>{i + 1}</b>
+                    <span>
+                      <strong>{s.title}.</strong> {s.body}
+                    </span>
+                  </li>
+                ))}
+              </ol>
+            </>
+          )
+        }
+
+        {
+          tool.words.length > 0 && (
+            <>
+              <h3 class="sub">Words you’ll see</h3>
+              <dl class="words">
+                {tool.words.map((w) => (
+                  <>
+                    <dt>{w.term}</dt>
+                    <dd>{w.def}</dd>
+                  </>
+                ))}
+              </dl>
+            </>
+          )
+        }
+
+        {
+          tool.extras.map((e) => (
+            <div class:list={['callout', { 'callout--warn': e.tone === 'care' }]}>
+              <strong>{e.title}</strong>
+              {e.body && <p>{e.body}</p>}
+              {e.list && (
+                <ul class="plain">
+                  {e.list.map((li) => <li>{li}</li>)}
+                </ul>
+              )}
+            </div>
+          ))
+        }
+
+        {
+          tool.isItWorking && (
+            <>
+              <h3 class="sub">Is it working?</h3>
+              <div class="two-up iw">
+                <div class="callout">
+                  <strong>Good signs</strong>
+                  <ul class="plain">
+                    {tool.isItWorking.good.map((g) => <li>{g}</li>)}
+                  </ul>
+                </div>
+                <div class="callout callout--warn">
+                  <strong>Warning signs, and what to do</strong>
+                  <ul class="plain">
+                    {tool.isItWorking.warnings.map((w) => (
+                      <li>
+                        {w.sign} <em>{w.fix}</em>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </>
+          )
+        }
+
+        <details class="pagebox">
+          <summary>See the booklet page <span class="mono">p.{tool.guidePage}</span></summary>
+          <PageFigure image={guideImage} alt={`The booklet’s guide page for ${tool.name}, page ${tool.guidePage}.`} />
+        </details>
+      </section>
+
+      <!-- Example -->
+      <section class="panel" id="example" data-panel="example">
+        <h2 class="panel-h">Example</h2>
+        <p class="sample-banner">
+          <strong>Illustrative example.</strong> Follow the steps beside it, then do the same for your own person. On your table, use real ads, real quotes and real words.
+        </p>
+        {
+          tool.parts.map((p) => (
+            <article class="part" id={`part-${p.id}`}>
+              <header>
+                <p class="eb">{multi ? p.label : tool.name}</p>
+                <h3>{p.title}</h3>
+              </header>
+              <div class="split">
+                <PageFigure image={bookletImage(p.example.page)} alt={p.example.alt} caption={p.example.note} />
+                <div class="how">
+                  <h4>How to use it</h4>
+                  <ol class="steps-list">
+                    {p.steps.map((s, i) => (
+                      <li class="stp">
+                        <b>{i + 1}</b>
+                        <span>{s}</span>
+                      </li>
+                    ))}
+                  </ol>
+                  {p.board && (
+                    <a class="kp" href={url(`/card-kit/#${p.board.toLowerCase()}`)}>
+                      <b>Card kit</b> Board {p.board}
+                    </a>
+                  )}
+                </div>
+              </div>
+            </article>
+          ))
+        }
+      </section>
+
+      <!-- Blank template -->
+      <section class="panel" id="blank" data-panel="blank">
+        <h2 class="panel-h">Blank template</h2>
+        <p class="body-p">Print it on A4, or copy it onto a big sheet. Write on sticky notes.</p>
+        {
+          tool.parts.map((p) => {
+            const dl = getDownloadById(`tpl-${p.blank.pdf.replace(/\.pdf$/, '')}`);
+            return (
+              <article class="part" id={`blank-part-${p.id}`}>
+                <header>
+                  <p class="eb">{multi ? p.label : tool.name}</p>
+                  <h3>{p.title}</h3>
+                </header>
+                <div class="split">
+                  {p.blank.shared ? (
+                    <div class="callout">
+                      <strong>Example and blank share one page.</strong>
+                      <p>
+                        On p.{p.blank.page} of the booklet, the filled example sits above the blank to fill in. The download below is that page.{' '}
+                        <a href={url(`${pagePath}#part-${p.id}`)}>See the example</a>
+                      </p>
+                    </div>
+                  ) : (
+                    <PageFigure image={bookletImage(p.blank.page)} alt={p.blank.alt} caption={p.blank.note} />
+                  )}
+                  <div class="how">
+                    {dl && (
+                      <a class="btn btn--accent" href={url(dl.href)} download>
+                        <Icon name="download" size={18} /> Download blank
+                        <span class="btn-meta">
+                          {dl.format} · {dl.size}
+                        </span>
+                      </a>
+                    )}
+                    <p class="small">Booklet <span class="mono">{p.blank.printed}</span> · A4</p>
+                  </div>
+                </div>
+              </article>
+            );
+          })
+        }
+      </section>
+
+      <!-- Card kit -->
+      {
+        kit && (
+          <section class="panel" id="card-kit" data-panel="card-kit">
+            <h2 class="panel-h">Card kit</h2>
+            <p class="body-p">{kit.intro}</p>
+            <p class="small">
+              Booklet <span class="mono">{kit.page}</span>. {' '}
+              <a href={url('/card-kit/')}>All boards and sheets</a>
+            </p>
+
+            <h3 class="sub">At the table</h3>
+            <ol class="steps-list at-table">
+              {kit.steps.map((s, i) => (
+                <li class="stp">
+                  <b>{i + 1}</b>
+                  <span>{s}</span>
+                </li>
+              ))}
+            </ol>
+
+            <h3 class="sub">{kit.boards.length > 1 ? 'Boards' : 'Board'}</h3>
+            <div class="kit-figs">
+              {kit.boards.map((id) => {
+                const b = boardById[id];
+                const dl = getDownloadById(`board-${id.toLowerCase()}`);
+                return (
+                  <div class="kit-fig" id={`kit-${id.toLowerCase()}`}>
+                    <PageFigure
+                      image={cardKitImage(id)}
+                      alt={`Board ${id}, ${b.name}, from the card kit. Print at A2 landscape.`}
+                      caption={`Board ${id} · ${b.name} · ${b.page}`}
+                    />
+                    {dl && <DownloadCard item={dl} compact />}
+                  </div>
+                );
+              })}
+            </div>
+
+            <h3 class="sub">{kit.sheets.length > 1 ? 'Card sheets' : 'Card sheet'}</h3>
+            <div class="kit-figs">
+              {kit.sheets.map((id) => {
+                const s = sheetById[id];
+                const dl = getDownloadById(`sheet-${id.toLowerCase()}`);
+                return (
+                  <div class="kit-fig" id={`kit-${id.toLowerCase()}`}>
+                    <PageFigure
+                      image={cardKitImage(id)}
+                      alt={`Card sheet ${id}, ${s.name}, from the card kit. Print on A4 card and cut along the dashed lines.`}
+                      caption={`Sheet ${id} · ${s.name} · ${sheetMeta(s)} · ${s.page}`}
+                    />
+                    {dl && <DownloadCard item={dl} compact />}
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        )
+      }
+
+      <nav class="pn" aria-label="Previous and next">
+        {
+          prev ? (
+            <a class="prev" href={url(prev.href)}>
+              <Icon name="arrow-left" size={18} />
+              <span>
+                <small>Before</small>
+                <b>{prev.label}</b>
+              </span>
+            </a>
+          ) : (
+            <span />
+          )
+        }
+        {
+          next ? (
+            <a class="next" href={url(next.href)}>
+              <span>
+                <small>Next</small>
+                <b>{next.label}</b>
+              </span>
+              <Icon name="arrow" size={18} />
+            </a>
+          ) : (
+            <a class="next" href={url(comp.href)}>
+              <span>
+                <small>Back to</small>
+                <b>{comp.name}</b>
+              </span>
+              <Icon name="arrow" size={18} />
+            </a>
+          )
+        }
+      </nav>
+    </div>
+
+    <aside class="side" aria-label="Print and prepare">
+      <div class="card">
+        <h2 class="side-h"><Icon name="print" size={18} /> Print</h2>
+        <div class="dl-list">
+          {templates.map((d) => <DownloadCard item={d} compact />)}
+        </div>
+        {
+          kit && (
+            <p class="small">
+              Playing on the table? <a href={url('/card-kit/')}>Print the boards and card sheets</a>.
+            </p>
+          )
+        }
+      </div>
+      <div class="card">
+        <h2 class="side-h">You need</h2>
+        <p>{tool.need}</p>
+        <h2 class="side-h">You end up with</h2>
+        <p class="end">{tool.endUp}</p>
+      </div>
+    </aside>
+  </div>
+</BaseLayout>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-tool]');
+  if (root) {
+    const tablist = root.querySelector<HTMLElement>('[data-tabs]');
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[data-tab]')];
+    const panels = [...root.querySelectorAll<HTMLElement>('[data-panel]')];
+    const ids = tabs.map((t) => t.dataset.tab ?? '');
+    const modeBox = document.querySelector<HTMLElement>('[data-mode-switch]');
+    const modeBtns = [...document.querySelectorAll<HTMLButtonElement>('[data-mode]')];
+    const KEY = 'toolkit-mode';
+
+    const readMode = () => {
+      try {
+        return localStorage.getItem(KEY) === 'cards' ? 'cards' : 'paper';
+      } catch {
+        return 'paper';
+      }
+    };
+    const saveMode = (m: string) => {
+      try {
+        localStorage.setItem(KEY, m);
+      } catch {
+        /* private window or blocked storage: the switch still works for this visit */
+      }
+    };
+    const paintMode = (m: string) => modeBtns.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.mode === m)));
+
+    let current = '';
+    const show = (id: string) => {
+      current = id;
+      tabs.forEach((t) => {
+        const on = t.dataset.tab === id;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+      });
+      panels.forEach((p) => {
+        p.hidden = p.dataset.panel !== id;
+      });
+    };
+
+    // Turn the stacked sections into tabs.
+    if (tablist && tabs.length) {
+      tablist.hidden = false;
+      tablist.setAttribute('role', 'tablist');
+      tabs.forEach((t) => {
+        const id = t.dataset.tab ?? '';
+        t.setAttribute('role', 'tab');
+        t.id = `tab-${id}`;
+        t.setAttribute('aria-controls', id);
+      });
+      panels.forEach((p) => {
+        p.setAttribute('role', 'tabpanel');
+        p.setAttribute('aria-labelledby', `tab-${p.dataset.panel}`);
+        p.querySelector('.panel-h')?.classList.add('visually-hidden');
+      });
+
+      const fromHash = (scroll: boolean) => {
+        const h = decodeURIComponent(location.hash.slice(1));
+        if (h && ids.includes(h)) {
+          show(h);
+          // Keep the tab bar in view, not just the panel under it.
+          if (scroll) tablist.scrollIntoView();
+          return;
+        }
+        const el = h ? document.getElementById(h) : null;
+        const panel = el?.closest<HTMLElement>('[data-panel]');
+        if (el && panel && panel.dataset.panel) {
+          show(panel.dataset.panel);
+          if (scroll) el.scrollIntoView();
+          return;
+        }
+        if (!current) show(readMode() === 'cards' && ids.includes('card-kit') ? 'card-kit' : 'guide');
+      };
+      fromHash(true);
+      window.addEventListener('hashchange', () => fromHash(true));
+
+      tabs.forEach((t, i) => {
+        t.addEventListener('click', () => {
+          const id = t.dataset.tab ?? 'guide';
+          show(id);
+          history.replaceState(null, '', `#${id}`);
+        });
+        t.addEventListener('keydown', (e) => {
+          const keys: Record<string, number> = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 };
+          if (!(e.key in keys)) return;
+          e.preventDefault();
+          const n = tabs[(keys[e.key] + tabs.length) % tabs.length];
+          n.focus();
+          n.click();
+        });
+      });
+    }
+
+    // Paper | Cards: remembers how you work, and opens the matching tab.
+    if (modeBox) {
+      modeBox.hidden = false;
+      paintMode(readMode());
+      modeBtns.forEach((b) =>
+        b.addEventListener('click', () => {
+          const m = b.dataset.mode ?? 'paper';
+          saveMode(m);
+          paintMode(m);
+          if (!tabs.length) return;
+          if (m === 'cards' && ids.includes('card-kit')) show('card-kit');
+          else if (current === 'card-kit') show('guide');
+          history.replaceState(null, '', `#${current}`);
+        }),
+      );
+    }
+  }
+</script>
+
+<style>
+  .eyebrow-row {
+    margin-bottom: 1.25rem;
+  }
+  .page-head h1 {
+    font-size: clamp(2.4rem, 6vw, 4.5rem);
+    margin-bottom: 0.75rem;
+  }
+  .q {
+    max-width: 44rem;
+    margin-bottom: 1.5rem;
+  }
+  .meta {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1.75rem;
+    color: var(--ink-soft);
+  }
+  .meta li {
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .meta b {
+    color: var(--ink);
+  }
+  .effort {
+    display: inline-flex;
+    gap: 3px;
+    margin-left: 0.5rem;
+    vertical-align: middle;
+  }
+  .effort i {
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 50%;
+    border: 1.5px solid var(--ink);
+  }
+  .effort i.on {
+    background: var(--ink);
+  }
+  .two-up {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  }
+  .two-up .callout {
+    margin: 0;
+  }
+  .callout--done {
+    background: var(--ink);
+    color: #fff;
+  }
+  .callout p {
+    margin: 0;
+  }
+
+  .body {
+    display: grid;
+    gap: 2rem 2.5rem;
+    grid-template-columns: minmax(0, 1fr);
+    padding-block: 2rem 4.5rem;
+    align-items: start;
+  }
+  @media (min-width: 62rem) {
+    .body {
+      grid-template-columns: 16rem minmax(0, 1fr);
+    }
+    .side {
+      grid-column: 2;
+    }
+  }
+  @media (min-width: 92rem) {
+    .body {
+      grid-template-columns: 16rem minmax(0, 1fr) 19rem;
+    }
+    .side {
+      grid-column: 3;
+      grid-row: 1;
+      position: sticky;
+      top: 1.5rem;
+    }
+  }
+  .side {
+    display: grid;
+    gap: 1rem;
+  }
+  .side .card {
+    padding: 1.25rem 1.35rem;
+  }
+  .side-h {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--muted);
+    margin: 0 0 0.6rem;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+  .side p {
+    margin: 0 0 1rem;
+    font-size: 0.95rem;
+  }
+  .side p:last-child {
+    margin-bottom: 0;
+  }
+  .end {
+    font-weight: 600;
+  }
+  .dl-list {
+    display: grid;
+    gap: 0.5rem;
+    margin-bottom: 0.9rem;
+  }
+  .dl-list:empty {
+    display: none;
+  }
+
+  .main {
+    min-width: 0;
+  }
+  .panel {
+    padding-block: 1.75rem 0.5rem;
+    scroll-margin-top: 1.5rem;
+  }
+  .panel + .panel {
+    border-top: 1px solid var(--line);
+    margin-top: 1.5rem;
+  }
+  .panel[hidden] + .panel {
+    margin-top: 0;
+  }
+  .panel-h {
+    font-size: 1.9rem;
+    margin-bottom: 1rem;
+  }
+  .sub {
+    font-size: 1.05rem;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 2rem 0 0.75rem;
+  }
+  .body-p {
+    font-size: 1.1rem;
+    max-width: 44rem;
+    color: var(--ink-soft);
+  }
+  .small {
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin: 0.5rem 0 0;
+  }
+  .mono {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    letter-spacing: 0.04em;
+  }
+
+  .words {
+    display: grid;
+    grid-template-columns: minmax(7rem, 11rem) 1fr;
+    gap: 0.5rem 1.5rem;
+    margin: 0;
+    max-width: 44rem;
+  }
+  .words dt {
+    font-weight: 700;
+  }
+  .words dd {
+    margin: 0;
+    color: var(--ink-soft);
+  }
+  @media (max-width: 34rem) {
+    .words {
+      grid-template-columns: 1fr;
+      gap: 0.1rem;
+    }
+    .words dd {
+      margin-bottom: 0.75rem;
+    }
+  }
+  .plain {
+    margin: 0.25rem 0 0;
+    padding-left: 1.2rem;
+  }
+  .plain li {
+    margin-bottom: 0.4rem;
+  }
+  .plain em {
+    display: block;
+    font-style: normal;
+    color: var(--ink-soft);
+  }
+  .seven {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.9rem;
+    max-width: 44rem;
+  }
+  .seven li {
+    margin: 0;
+  }
+  .iw {
+    margin-top: 0.5rem;
+  }
+
+  .pagebox {
+    margin-top: 2rem;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    background: var(--surface);
+    padding: 0.9rem 1.1rem;
+  }
+  .pagebox summary {
+    cursor: pointer;
+    font-weight: 700;
+  }
+  .pagebox[open] summary {
+    margin-bottom: 1rem;
+  }
+
+  .part {
+    padding-block: 1.5rem 2rem;
+    scroll-margin-top: 1.5rem;
+  }
+  .part + .part {
+    border-top: 1px dashed var(--line-strong);
+  }
+  .part header {
+    margin-bottom: 1.25rem;
+  }
+  .part header .eb {
+    margin-bottom: 0.4rem;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .part h3 {
+    margin: 0;
+    font-size: clamp(1.6rem, 3vw, 2.1rem);
+  }
+  .split {
+    display: grid;
+    gap: 1.5rem 2rem;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+  @media (min-width: 72rem) {
+    .split {
+      grid-template-columns: minmax(0, 1.25fr) minmax(16rem, 1fr);
+    }
+  }
+  .how h4 {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 0.9rem;
+  }
+  .how .kp {
+    margin-top: 1.25rem;
+    white-space: normal;
+  }
+  .how .btn {
+    flex-wrap: wrap;
+  }
+  .btn-meta {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    opacity: 0.85;
+    margin-left: 0.4rem;
+  }
+  .at-table {
+    max-width: 44rem;
+  }
+  .kit-figs {
+    display: grid;
+    gap: 1.75rem;
+  }
+  .kit-fig {
+    display: grid;
+    gap: 0.75rem;
+    max-width: 44rem;
+    scroll-margin-top: 1.5rem;
+  }
+  .kit-fig:has(.pg--landscape) {
+    max-width: 62rem;
+  }
+
+  .pn {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line-strong);
+  }
+  .pn a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.85rem 1.2rem;
+    border: 1.5px solid var(--ink);
+    border-radius: 999px;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .pn a:hover {
+    background: var(--ink);
+    color: #fff;
+  }
+  .pn small {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+  .pn b {
+    display: block;
+    line-height: 1.2;
+  }
+  .pn .next {
+    margin-left: auto;
+    text-align: right;
+  }
+</style>

@@ -1,0 +1,207 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import DownloadCard from '../../components/DownloadCard.astro';
+import { getDownloads, getDownloadsByGroup } from '../../data/downloads';
+import { site } from '../../data/site';
+
+const all = getDownloads();
+const booklet = getDownloadsByGroup('booklet');
+const kit = getDownloadsByGroup('card-kit');
+const kitMain = kit.filter((d) => ['card-kit-full', 'card-sheets', 'boards'].includes(d.id));
+const kitEach = kit.filter((d) => !['card-kit-full', 'card-sheets', 'boards'].includes(d.id));
+const templates = getDownloadsByGroup('templates');
+const c1 = templates.filter((d) => d.component === 'c1');
+const c4 = templates.filter((d) => d.component === 'c4');
+const language = getDownloadsByGroup('language');
+---
+
+<BaseLayout
+  title="Downloads"
+  description="Every file in the toolkit: the booklet, the card kit, the blank templates and the language templates."
+>
+  <div class="page-head">
+    <div class="wrap">
+      <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Downloads' }]} />
+      <h1>Downloads</h1>
+      <p class="lead">
+        {all.length} files to print and fill in. The site’s code is under the {site.licenseName} licence.
+      </p>
+      <ul class="jump" aria-label="On this page">
+        <li><a href="#booklet">Booklet</a></li>
+        <li><a href="#card-kit">Card kit</a></li>
+        <li><a href="#templates">Blank templates</a></li>
+        <li><a href="#language">Language</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="wrap body">
+    <section class="block" id="booklet" aria-labelledby="booklet-h">
+      <p class="eb">The whole toolkit</p>
+      <h2 id="booklet-h">Booklet</h2>
+      <div class="grid grid--2">
+        {booklet.map((d) => <DownloadCard item={d} />)}
+      </div>
+    </section>
+
+    <section class="block" id="card-kit" aria-labelledby="kit-h" data-c="c1">
+      <p class="eb">Component 1 · Reading Existing Products</p>
+      <h2 id="kit-h">Card kit</h2>
+      <p class="sub">Print the sheets on A4 card and the boards at A2, or copy a board onto chart paper.</p>
+      <div class="grid grid--3">
+        {kitMain.map((d) => <DownloadCard item={d} />)}
+      </div>
+      <details class="each">
+        <summary>One sheet or board at a time ({kitEach.length} files)</summary>
+        <div class="rows">
+          {kitEach.map((d) => <DownloadCard item={d} compact />)}
+        </div>
+      </details>
+    </section>
+
+    <section class="block" id="templates" aria-labelledby="tpl-h">
+      <p class="eb">One page each, A4</p>
+      <h2 id="tpl-h">Blank templates</h2>
+      <p class="sub">Print the blank for a tool and fill it in for your person, or copy it onto a big sheet.</p>
+
+      <h3 class="grp" data-c="c1">Component 1 · Reading Existing Products</h3>
+      <div class="grid grid--3">
+        {c1.map((d) => <DownloadCard item={d} />)}
+      </div>
+
+      <h3 class="grp" data-c="c4">Component 4 · Reading Material Reality</h3>
+      <div class="grid grid--3">
+        {c4.map((d) => <DownloadCard item={d} />)}
+      </div>
+    </section>
+
+    <section class="block" id="language" aria-labelledby="lang-h" data-c="c3">
+      <p class="eb">Component 3 · Reading Language</p>
+      <h2 id="lang-h">Language templates</h2>
+      <p class="sub">
+        Print-ready cards for the field, and digital templates for moving validated moments into a spreadsheet or the Expression Library.
+        Every card is 6 × 4 in (152 × 102 mm). Print at 100% (actual size), double-sided.
+      </p>
+      <div class="grid grid--2">
+        {language.map((d) => <DownloadCard item={d} />)}
+      </div>
+
+      <div class="callout callout--warn">
+        <strong>Printing tips for the cards</strong>
+        <ul>
+          <li>Turn off “fit to page” and “scale to fit”. Cards should measure 6 × 4 in on paper.</li>
+          <li>Choose double-sided printing. If the back of a card comes out upside down, switch between “flip on long edge” and “flip on short edge”.</li>
+          <li>Print one card first to check front-to-back alignment. Use 200 to 300 gsm card stock for cards that will be handled in the field.</li>
+          <li>Most print shops can cut or print 6 × 4 in stock, since it is the standard photo-print size.</li>
+        </ul>
+      </div>
+      <div class="callout">
+        <strong>Drafts</strong>
+        <p>
+          Files marked Draft are working versions. Content and layout may change as the toolkit is tested in the field. If you use a
+          draft in research, note the date you downloaded it.
+        </p>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .page-head h1 {
+    font-size: clamp(2.6rem, 7vw, 5rem);
+    margin-bottom: 1rem;
+  }
+  .page-head .lead {
+    max-width: 44rem;
+  }
+  .jump {
+    list-style: none;
+    padding: 0;
+    margin: 1.75rem 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .jump li {
+    margin: 0;
+  }
+  .jump a {
+    display: inline-block;
+    border: 1.5px solid var(--ink);
+    border-radius: 999px;
+    padding: 0.45rem 1rem;
+    color: var(--ink);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+  .jump a:hover {
+    background: var(--ink);
+    color: #fff;
+  }
+  .body {
+    padding-block: 1rem 4rem;
+  }
+  .block {
+    padding-block: 2.5rem 1.5rem;
+    scroll-margin-top: 1.5rem;
+  }
+  .block + .block {
+    border-top: 1px solid var(--line);
+  }
+  .block > h2 {
+    font-size: clamp(1.9rem, 4vw, 2.75rem);
+    margin-bottom: 0.75rem;
+  }
+  .block > .eb {
+    margin-bottom: 0.5rem;
+  }
+  .block[data-c] > .eb {
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .sub {
+    max-width: 44rem;
+    color: var(--ink-soft);
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+  }
+  .grp {
+    font-size: 1.2rem;
+    margin: 2rem 0 1rem;
+    color: var(--ink);
+  }
+  .grp::before {
+    content: '';
+    display: inline-block;
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 50%;
+    background: var(--accent);
+    margin-right: 0.6rem;
+  }
+  .each {
+    margin-top: 1.5rem;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    background: var(--surface);
+    padding: 0.9rem 1.1rem;
+  }
+  .each summary {
+    cursor: pointer;
+    font-weight: 700;
+  }
+  .each[open] summary {
+    margin-bottom: 1rem;
+  }
+  .rows {
+    display: grid;
+    gap: 0.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
+  }
+  .callout ul {
+    margin: 0.4rem 0 0;
+    padding-left: 1.2rem;
+  }
+</style>
