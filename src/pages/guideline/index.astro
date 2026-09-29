@@ -1,0 +1,396 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import Icon from '../../components/Icon.astro';
+import { guideline, howToRead, meera, whyThisExists } from '../../data/booklet/shared';
+import { url } from '../../utils/url';
+---
+
+<BaseLayout title="The guideline" description={guideline.body}>
+  <div class="page-head">
+    <div class="wrap">
+      <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'The guideline' }]} />
+      <p class="eb">{guideline.eyebrow}</p>
+      <h1>{guideline.title}</h1>
+      <p class="lead">{guideline.body}</p>
+      <ul class="jump" aria-label="On this page">
+        <li><a href="#one-real-thing">One real thing</a></li>
+        <li><a href="#how-to-read">How to read a tool</a></li>
+        <li><a href="#meera">Meet Meera</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <section class="section" id="one-real-thing" aria-labelledby="orth-h">
+    <div class="wrap two">
+      <div>
+        <p class="eb">The rule</p>
+        <h2 id="orth-h">{guideline.whatCounts.title}</h2>
+        <p class="big">{guideline.whatCounts.body}</p>
+        <p class="big">{guideline.adapt}</p>
+      </div>
+      <div class="gt">
+        <div class="gt-good">
+          <span class="lbl">Good</span>
+          <ul>
+            {guideline.good.map((g) => <li><Icon name="check" size={18} /> {g}</li>)}
+          </ul>
+        </div>
+        <div class="gt-broad">
+          <span class="lbl">Too broad</span>
+          <ul>
+            {guideline.tooBroad.map((g) => <li><Icon name="x" size={18} /> {g}</li>)}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--white" aria-labelledby="why-h">
+    <div class="wrap two">
+      <div>
+        <p class="eb">Why this exists</p>
+        <h2 id="why-h">{whyThisExists.title}</h2>
+        <p class="big">{whyThisExists.body}</p>
+      </div>
+      <div class="pair">
+        <div class="q q--without">
+          <span class="lbl">Without it</span>
+          <p>{whyThisExists.without}</p>
+        </div>
+        <div class="q q--with">
+          <span class="lbl">With it</span>
+          <p>{whyThisExists.with}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="how-to-read" aria-labelledby="hr-h">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eb">How to read</p>
+        <h2 id="hr-h">{howToRead.title}</h2>
+      </div>
+      <ol class="hr-steps">
+        {
+          howToRead.steps.map((s, i) => (
+            <li>
+              <span class="n">{i + 1}</span>
+              <b>{s.title}</b>
+              <span>{s.body}</span>
+            </li>
+          ))
+        }
+      </ol>
+
+      <div class="section-head every">
+        <h3>{howToRead.everyTool.title}</h3>
+        <p>{howToRead.everyTool.lead}</p>
+      </div>
+      <div class="grid grid--3 how">
+        {
+          howToRead.everyTool.parts.map((p, i) => (
+            <article class={`how-card how-card--${i}`}>
+              <Icon name={p.icon} size={30} />
+              <h3>{p.title}</h3>
+              <p>{p.body}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--white" id="meera" aria-labelledby="meera-h">
+    <div class="wrap two">
+      <article class="card persona">
+        <div class="head">
+          <span class="avatar" aria-hidden="true">M</span>
+          <div>
+            <b>{meera.name}</b>
+            <small>{meera.eyebrow}</small>
+          </div>
+        </div>
+        <dl>
+          {meera.facts.map((f) => <><dt>{f.k}</dt><dd>{f.v}</dd></>)}
+        </dl>
+      </article>
+      <div>
+        <p class="eb">The running example</p>
+        <h2 id="meera-h">{meera.title}</h2>
+        <p class="big">{meera.lead}</p>
+        <div class="screen">
+          <span class="lbl">{meera.screen.label}</span>
+          <p class="quote">{meera.screen.quote}</p>
+          <p>{meera.screen.body}</p>
+        </div>
+        <p class="big"><b>{meera.outcome}</b></p>
+        <div class="callout">
+          <strong>{meera.useYourOwn.title}</strong>
+          <p>{meera.useYourOwn.body}</p>
+        </div>
+        <p class="go">
+          <a class="btn btn--accent" href={url('/#i-want-to')}>Find your tool <Icon name="arrow" size={18} /></a>
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-head h1 {
+    font-size: clamp(2.4rem, 6vw, 4.75rem);
+    max-width: 18ch;
+    margin-bottom: 1rem;
+  }
+  .page-head .lead {
+    max-width: 44rem;
+  }
+  .jump {
+    list-style: none;
+    padding: 0;
+    margin: 1.75rem 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .jump li {
+    margin: 0;
+  }
+  .jump a {
+    display: inline-block;
+    border: 1.5px solid var(--ink);
+    border-radius: 999px;
+    padding: 0.45rem 1rem;
+    color: var(--ink);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+  .jump a:hover {
+    background: var(--ink);
+    color: #fff;
+  }
+  .two {
+    display: grid;
+    gap: 2.5rem 4rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+    align-items: start;
+  }
+  .big {
+    font-size: 1.15rem;
+    color: var(--ink-soft);
+    max-width: 36rem;
+  }
+  .go {
+    margin: 1.75rem 0 0;
+  }
+
+  .gt {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  }
+  .gt-good,
+  .gt-broad {
+    border-radius: var(--radius);
+    padding: 1.25rem 1.4rem;
+  }
+  .gt-good {
+    background: var(--c1);
+    color: #fff;
+  }
+  .gt-broad {
+    background: var(--sand);
+  }
+  .gt .lbl {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.85;
+    margin-bottom: 0.6rem;
+  }
+  .gt ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.6rem;
+  }
+  .gt li {
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+    margin: 0;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+  .gt li :global(svg) {
+    flex: none;
+    margin-top: 0.15rem;
+  }
+
+  .pair {
+    display: grid;
+    gap: 1rem;
+  }
+  .q {
+    border-radius: var(--radius);
+    padding: 1.5rem 1.75rem;
+  }
+  .q p {
+    margin: 0.4rem 0 0;
+    font-size: clamp(1.15rem, 2vw, 1.45rem);
+    line-height: 1.35;
+    font-weight: 600;
+  }
+  .q .lbl {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .q--without {
+    background: var(--ground);
+    border: 1px solid var(--line-strong);
+  }
+  .q--with {
+    background: var(--c1);
+    color: #fff;
+  }
+  .q--with .lbl {
+    opacity: 0.85;
+  }
+
+  .hr-steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+    counter-reset: none;
+  }
+  .hr-steps li {
+    margin: 0;
+    display: grid;
+    gap: 0.35rem;
+    align-content: start;
+    padding: 1.2rem 1.25rem;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+  .hr-steps .n {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: var(--ink);
+    color: #fff;
+    font-weight: 800;
+    margin-bottom: 0.4rem;
+  }
+  .hr-steps li > span:last-child {
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+  }
+  .every {
+    margin-top: 3.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .every h3 {
+    font-size: clamp(1.6rem, 3vw, 2.1rem);
+  }
+  .how-card {
+    border-radius: var(--radius);
+    padding: 1.75rem;
+    min-height: 13rem;
+  }
+  .how-card--0 { background: var(--ground); border: 1px solid var(--line-strong); }
+  .how-card--1 { background: var(--c2-tint); }
+  .how-card--2 { background: var(--c1-tint); color: var(--ink); }
+  .how-card--2 :global(svg) { color: var(--c1); }
+  .how-card h3 {
+    margin: 1rem 0 0.5rem;
+  }
+  .how-card p {
+    margin: 0;
+    color: var(--ink-soft);
+  }
+
+  .persona .head {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+  .avatar {
+    width: 3.4rem;
+    height: 3.4rem;
+    border-radius: 50%;
+    background: var(--c2);
+    color: var(--ink);
+    display: grid;
+    place-items: center;
+    font-weight: 800;
+    font-size: 1.5rem;
+  }
+  .persona b {
+    font-size: 1.35rem;
+    display: block;
+    line-height: 1.1;
+  }
+  .persona small {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .persona dl {
+    display: grid;
+    grid-template-columns: 5rem 1fr;
+    gap: 0.6rem 1rem;
+    margin: 0;
+  }
+  .persona dt {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding-top: 0.3rem;
+  }
+  .persona dd {
+    margin: 0;
+    font-weight: 600;
+  }
+  .screen {
+    background: var(--ground);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0;
+    max-width: 36rem;
+  }
+  .screen .lbl {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .screen p {
+    margin: 0.4rem 0 0;
+    color: var(--ink-soft);
+  }
+  .screen .quote {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--ink);
+  }
+</style>

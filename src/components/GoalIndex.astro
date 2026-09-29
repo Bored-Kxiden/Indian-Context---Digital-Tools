@@ -1,85 +1,105 @@
 ---
-import ModuleChip from './ModuleChip.astro';
-import { goals, type GoalIcon } from '../data/goals';
+import Icon from './Icon.astro';
+import type { Goal } from '../data/goals';
 import { url } from '../utils/url';
 
 interface Props {
-  /** Heading level for the "I want to…" title. */
+  groups: Goal[];
+  /** Small text under the heading. */
+  lead?: string;
+  /** Show a live search box. */
+  search?: boolean;
+  /** Show the component label above each group title. */
+  showComponent?: boolean;
+  /** Put each group's title above its rows instead of beside them (for narrow columns). */
+  stack?: boolean;
+  /** Small mono label above the heading. */
+  eyebrow?: string;
+  id?: string;
   headingId?: string;
 }
 
-const { headingId = 'i-want-to-heading' } = Astro.props;
-
-// Minimal stroke icons, one per kind of goal.
-const icons: Record<GoalIcon, string> = {
-  compass: '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>',
-  listen: '<path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/>',
-  translate: '<path d="M4 8h13l-3-3M20 16H7l3 3"/>',
-  lens: '<circle cx="11" cy="11" r="6"/><path d="M16 16l5 5"/>',
-  library: '<path d="M5 4v16M10 4v16M15 5l4 15"/>',
-  print: '<path d="M7 9V4h10v5M7 17H5v-6h14v6h-2"/><path d="M8 14h8v6H8z"/>',
-};
+const {
+  groups,
+  lead,
+  search = true,
+  showComponent = true,
+  stack = false,
+  eyebrow = 'Start here',
+  id = 'i-want-to',
+  headingId = 'i-want-to-heading',
+} = Astro.props;
 ---
 
-<div class="goals" id="i-want-to">
+<div class="goals" id={id} data-goals>
   <div class="head">
-    <h2 id={headingId}>I want to…</h2>
-    <label class="search">
-      <span class="visually-hidden">Search tools and steps</span>
-      <input type="search" id="goal-q" placeholder="Find a tool or step…" autocomplete="off" />
-    </label>
+    <div>
+      <p class="eb">{eyebrow}</p>
+      <h2 id={headingId}>I want to…</h2>
+      {lead && <p class="lead-sm">{lead}</p>}
+    </div>
+    {
+      search && (
+        <label class="search">
+          <span class="visually-hidden">Search tools and steps</span>
+          <Icon name="search" size={18} />
+          <input type="search" placeholder="Find a tool or step…" autocomplete="off" data-goal-q />
+        </label>
+      )
+    }
   </div>
 
-  <p class="none" id="goal-none" hidden>Nothing matches. Try a broader word, such as “translate”, “interview”, or “trust”.</p>
+  <p class="none" data-goal-none hidden>Nothing matches. Try a broader word, such as “translate”, “blame”, “phone” or “trust”.</p>
 
-  <ol class="groups">
+  <div class="groups">
     {
-      goals.map((g) => (
-        <li class="group" data-group>
+      groups.map((g) => (
+        <section class:list={['group', { stack }]} data-group data-c={g.component}>
           <header>
-            <span class="icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" set:html={icons[g.icon]} />
-            </span>
+            {showComponent && <p class="eb comp">{g.componentLabel}</p>}
             <h3>{g.title}</h3>
-            {g.module && <ModuleChip id={g.module} />}
           </header>
-          <ul class="items">
+          <ul class="rows">
             {g.items.map((item) => (
-              <li class="item" data-item data-text={`${g.title} ${item.phrase} ${item.label}`.toLowerCase()}>
-                <p class="phrase">{item.phrase}</p>
-                <a class="tool" href={url(item.href)}>{item.label}</a>
+              <li data-item data-text={`${g.title} ${g.componentLabel} ${item.phrase} ${item.tag}`.toLowerCase()}>
+                <a class="row" href={url(item.href)}>
+                  <span class="phrase">{item.phrase}</span>
+                  <span class={`tag tag--${item.tone}`}>{item.tag}</span>
+                  <span class="go" aria-hidden="true">
+                    <Icon name="arrow" size={18} />
+                  </span>
+                </a>
               </li>
             ))}
           </ul>
-        </li>
+        </section>
       ))
     }
-  </ol>
+  </div>
 </div>
 
 <script>
-  const q = document.getElementById('goal-q') as HTMLInputElement | null;
-  const none = document.getElementById('goal-none');
-  const groups = [...document.querySelectorAll<HTMLElement>('[data-group]')];
-
-  function apply() {
-    const term = (q?.value ?? '').trim().toLowerCase();
-    let shown = 0;
-    for (const g of groups) {
-      const items = [...g.querySelectorAll<HTMLElement>('[data-item]')];
-      let any = false;
-      for (const el of items) {
-        const ok = !term || (el.dataset.text ?? '').includes(term);
-        el.hidden = !ok;
-        if (ok) any = true;
+  document.querySelectorAll<HTMLElement>('[data-goals]').forEach((root) => {
+    const q = root.querySelector<HTMLInputElement>('[data-goal-q]');
+    const none = root.querySelector<HTMLElement>('[data-goal-none]');
+    const groups = [...root.querySelectorAll<HTMLElement>('[data-group]')];
+    if (!q) return;
+    q.addEventListener('input', () => {
+      const term = q.value.trim().toLowerCase();
+      let shown = 0;
+      for (const g of groups) {
+        let any = false;
+        for (const el of g.querySelectorAll<HTMLElement>('[data-item]')) {
+          const ok = !term || (el.dataset.text ?? '').includes(term);
+          el.hidden = !ok;
+          if (ok) any = true;
+        }
+        g.hidden = !any;
+        if (any) shown += 1;
       }
-      g.hidden = !any;
-      if (any) shown += 1;
-    }
-    if (none) none.hidden = shown !== 0;
-  }
-
-  q?.addEventListener('input', apply);
+      if (none) none.hidden = shown !== 0;
+    });
+  });
 </script>
 
 <style>
@@ -93,93 +113,114 @@ const icons: Record<GoalIcon, string> = {
   }
   .head h2 {
     margin: 0;
-    font-size: clamp(1.9rem, 4vw, 2.6rem);
+    font-size: clamp(2.2rem, 5vw, 3.5rem);
+  }
+  .lead-sm {
+    margin: 0.75rem 0 0;
+    color: var(--ink-soft);
+    max-width: 34rem;
   }
   .search {
-    flex: 1 1 16rem;
-    max-width: 24rem;
+    flex: 1 1 18rem;
+    max-width: 26rem;
+    position: relative;
+    display: block;
   }
-  input {
-    width: 100%;
-    font: inherit;
-    font-size: 1rem;
-    padding: 0.65rem 0.9rem;
-    border: 2px solid var(--line-strong);
-    border-radius: var(--radius-sm);
-    background: var(--surface);
-    color: var(--ink);
+  .search :global(svg) {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    pointer-events: none;
   }
-  input:focus-visible {
-    border-color: var(--accent);
+  .search input {
+    padding-left: 2.6rem;
+    border-radius: 999px;
   }
   .none {
-    color: var(--ink-soft);
+    color: var(--muted);
     padding: 1rem 0;
   }
 
   .groups {
+    display: grid;
+    gap: 0;
+  }
+  .group {
+    display: grid;
+    gap: 0.5rem 3rem;
+    grid-template-columns: 1fr;
+    padding-block: 1.75rem;
+    border-top: 1px solid var(--line-strong);
+  }
+  @media (min-width: 58rem) {
+    .group {
+      grid-template-columns: 17rem minmax(0, 1fr);
+    }
+  }
+  .group header .comp {
+    margin: 0 0 0.4rem;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .group h3 {
+    margin: 0;
+    font-size: 1.55rem;
+  }
+  .group.stack {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .rows {
     list-style: none;
     margin: 0;
     padding: 0;
-    display: grid;
-    gap: 2.25rem;
   }
-  .group {
+  .rows li {
     margin: 0;
+    border-bottom: 1px solid var(--line);
   }
-  .group header {
+  .rows li:last-child {
+    border-bottom: 0;
+  }
+  .row {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.5rem 0.9rem;
-    padding-bottom: 0.6rem;
-    border-bottom: 3px solid var(--accent);
-    margin-bottom: 1rem;
-  }
-  .icon {
-    flex: none;
-    display: grid;
-    place-items: center;
-    width: 2.6rem;
-    height: 2.6rem;
-    border-radius: 50%;
-    border: 2px solid var(--ink);
+    gap: 0.5rem 1rem;
+    padding: 0.95rem 0.25rem;
     color: var(--ink);
-    background: var(--surface);
-  }
-  h3 {
-    margin: 0;
-    font-size: 1.35rem;
-  }
-  .items {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: 1.1rem 2.5rem;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
-  }
-  .item {
-    margin: 0;
+    text-decoration: none;
   }
   .phrase {
-    margin: 0 0 0.15rem;
-    color: var(--ink-soft);
-    font-size: 0.97rem;
-    line-height: 1.45;
+    flex: 1 1 18rem;
+    font-size: 1.15rem;
+    font-weight: 600;
+    line-height: 1.35;
   }
-  .tool {
-    display: inline-block;
-    font-weight: 700;
-    font-size: 0.95rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    text-decoration: none;
-    color: var(--accent);
-    padding-block: 0.2rem;
-  }
-  .tool:hover {
+  .row:hover .phrase {
     text-decoration: underline;
     text-decoration-thickness: 2px;
+    text-underline-offset: 0.2em;
   }
+  .go {
+    display: inline-flex;
+    color: var(--ink);
+  }
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-radius: 999px;
+    padding: 0.35rem 0.75rem;
+    line-height: 1.3;
+    white-space: nowrap;
+  }
+  .tag--c1 { background: var(--c1); color: #fff; }
+  .tag--c2 { background: var(--c2); color: var(--ink); }
+  .tag--c3 { background: var(--c3); color: #fff; }
+  .tag--c4 { background: var(--c4); color: #fff; }
+  .tag--ink { background: var(--ink); color: #fff; }
 </style>

@@ -1,0 +1,381 @@
+---
+import ToolLayout from '../../../layouts/ToolLayout.astro';
+import SampleBanner from '../../../components/SampleBanner.astro';
+import { getPatterns, lensNames, type LensCode, type TestedStatus } from '../../../data/library';
+import { url } from '../../../utils/url';
+
+const entries = getPatterns();
+const hasSample = entries.some((e) => e.sample);
+const audiences = [...new Set(entries.map((e) => e.audience))].sort();
+const statuses: TestedStatus[] = ['Confirmed', 'Partially confirmed', 'Not yet tested'];
+const lensCodes: LensCode[] = ['N', 'P', 'T'];
+
+const statusChip = (s: TestedStatus) =>
+  s === 'Confirmed' ? 'chip--ok' : s === 'Partially confirmed' ? 'chip--warn' : '';
+const resultLabel = { pass: 'Pass', fail: 'Fail', untested: 'Not tested' } as const;
+const resultChip = { pass: 'chip--ok', fail: 'chip--bad', untested: '' } as const;
+
+const haystack = (e: (typeof entries)[number]) =>
+  [e.id, e.title, e.pattern, e.context, e.audience, e.type, ...e.cites].join(' ').toLowerCase();
+---
+
+<ToolLayout
+  slug="design-language-library"
+  intro="Validated wording and interaction patterns. Each one cites the specific Expression Library entries that justify it, carries a tested-status tag, and records pass or fail against Lens N, P, and T."
+>
+  <section class="section" aria-labelledby="what">
+    <div class="prose">
+      <h2 id="what">What goes in it</h2>
+      <p>
+        Entries arrive two ways: as tested responses that passed the decision “does it work for this audience?”, and as early
+        candidate UI copy captured during the thick-translation stage, before the full research cycle is complete. That second route
+        means language patterns surfaced during translation do not have to wait for the end of the cycle to reach the design side.
+      </p>
+      <p>Every entry should trace back to the Expression Library moment or moments that justified it. That is enforced here: the site will not build a pattern that cites nothing.</p>
+
+      <h3>Tested status</h3>
+      <ul class="status-list">
+        <li>
+          <span class="chip chip--ok">Confirmed</span>
+          Tested for the named audience and passed the lenses.
+        </li>
+        <li>
+          <span class="chip chip--warn">Partially confirmed</span>
+          Tested, but not yet passing on every lens, or not yet tested on all of them.
+        </li>
+        <li>
+          <span class="chip">Not yet tested</span>
+          A candidate. It has evidence behind it but has not yet been tried with the audience.
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="browse">
+    <div class="section-head">
+      <h2 id="browse">Browse the library</h2>
+    </div>
+    {hasSample && <SampleBanner />}
+
+    <form class="filters card" role="search" aria-label="Filter Design Language Library entries" onsubmit="return false">
+      <label class="grow">
+        <span>Search</span>
+        <input type="search" id="q" placeholder="Search wording, context, or cited entry (e.g. EX-002)…" />
+      </label>
+      <label>
+        <span>Tested status</span>
+        <select id="f-status">
+          <option value="">Any status</option>
+          {statuses.map((s) => <option value={s}>{s}</option>)}
+        </select>
+      </label>
+      <label>
+        <span>Type</span>
+        <select id="f-type">
+          <option value="">Wording and interaction</option>
+          <option value="Wording">Wording</option>
+          <option value="Interaction">Interaction</option>
+        </select>
+      </label>
+      <label>
+        <span>Audience</span>
+        <select id="f-aud">
+          <option value="">All audiences</option>
+          {audiences.map((a) => <option value={a}>{a}</option>)}
+        </select>
+      </label>
+      <label>
+        <span>Failed lens</span>
+        <select id="f-fail">
+          <option value="">Any</option>
+          {lensCodes.map((c) => <option value={c}>Fails Lens {c} · {lensNames[c]}</option>)}
+        </select>
+      </label>
+    </form>
+
+    <p class="count" id="count" role="status" aria-live="polite">{entries.length} of {entries.length} entries</p>
+
+    <div class="list" id="list">
+      {
+        entries.map((e) => (
+          <article
+            class="card entry"
+            id={e.id}
+            data-search={haystack(e)}
+            data-status={e.status}
+            data-type={e.type}
+            data-aud={e.audience}
+            data-fails={lensCodes.filter((c) => e.lenses[c].result === 'fail').join(' ')}
+          >
+            <header>
+              <div>
+                <p class="id">
+                  {e.id}
+                  <span class="chip">{e.type}</span>
+                  {e.sample && <span class="chip chip--warn">Sample</span>}
+                </p>
+                <h3>{e.title}</h3>
+              </div>
+              <span class:list={['chip', statusChip(e.status)]}>{e.status}</span>
+            </header>
+
+            <blockquote>{e.pattern}</blockquote>
+            <p class="meta">
+              <b>Context</b> {e.context}
+              <span aria-hidden="true"> · </span>
+              <b>Audience</b> {e.audience}
+            </p>
+
+            <div class="lens-row" role="list" aria-label="Lens results">
+              {
+                lensCodes.map((c) => {
+                  const r = e.lenses[c];
+                  return (
+                    <div class="lens" role="listitem">
+                      <span class="lname">Lens {c} · {lensNames[c]}</span>
+                      <span class:list={['chip', resultChip[r.result]]}>{resultLabel[r.result]}</span>
+                      {r.note && <span class="note">{r.note}</span>}
+                    </div>
+                  );
+                })
+              }
+            </div>
+
+            <div class="cites">
+              <span class="lbl">Justified by</span>
+              {
+                e.cites.map((id) => (
+                  <a class="chip" href={url(`/components/language/expression-library/#${id}`)}>
+                    {id}
+                  </a>
+                ))
+              }
+            </div>
+
+            {
+              e.weakEvidence.length > 0 && (
+                <p class="warn">
+                  <strong>Weak evidence.</strong> This pattern rests on {e.weakEvidence.join(', ')}, which still
+                  {e.weakEvidence.length === 1 ? ' needs' : ' need'} a re-check under the{' '}
+                  <a href={url('/components/language/fidelity-protocol/')}>Fidelity Protocol</a>. It should not be marked Confirmed until that is done.
+                </p>
+              )
+            }
+          </article>
+        ))
+      }
+    </div>
+
+    <p class="empty" id="empty" hidden>No entries match. Try clearing a filter.</p>
+  </section>
+
+  <section class="section" aria-labelledby="add">
+    <div class="prose">
+      <h2 id="add">Adding a pattern</h2>
+      <ol>
+        <li>Find the Expression Library entries that justify it. If there are none, the pattern is not ready.</li>
+        <li>Write the candidate wording or interaction and name the audience it is for.</li>
+        <li>Audit it with the <a href={url('/components/language/language-lens-audit/')}>Language Lens Audit</a> and record pass or fail for N, P, and T.</li>
+        <li>Set the tested status from those results, then add the entry (see the README).</li>
+      </ol>
+    </div>
+  </section>
+</ToolLayout>
+
+<script>
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement | HTMLSelectElement;
+  const q = $('q');
+  const status = $('f-status');
+  const type = $('f-type');
+  const aud = $('f-aud');
+  const fail = $('f-fail');
+  const count = document.getElementById('count')!;
+  const empty = document.getElementById('empty')!;
+  const items = [...document.querySelectorAll<HTMLElement>('#list .entry')];
+
+  function apply() {
+    const term = q.value.trim().toLowerCase();
+    let shown = 0;
+    for (const el of items) {
+      const d = el.dataset;
+      const ok =
+        (!term || (d.search ?? '').includes(term)) &&
+        (!status.value || d.status === status.value) &&
+        (!type.value || d.type === type.value) &&
+        (!aud.value || d.aud === aud.value) &&
+        (!fail.value || (d.fails ?? '').split(' ').includes(fail.value));
+      el.hidden = !ok;
+      if (ok) shown += 1;
+    }
+    count.textContent = `${shown} of ${items.length} entries`;
+    empty.hidden = shown !== 0;
+  }
+
+  for (const el of [q, status, type, aud, fail]) el.addEventListener('input', apply);
+
+  // A link like #DL-001 must show its entry even if a filter hides it.
+  function revealHash() {
+    const id = decodeURIComponent(location.hash.slice(1));
+    const target = id && items.find((el) => el.id === id);
+    if (target && target.hidden) {
+      q.value = '';
+      for (const s of [status, type, aud, fail]) s.value = '';
+      apply();
+    }
+    target?.scrollIntoView();
+  }
+  window.addEventListener('hashchange', revealHash);
+  if (location.hash) revealHash();
+</script>
+
+<style>
+  .status-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 0.6rem;
+  }
+  .status-list li {
+    display: flex;
+    gap: 0.75rem;
+    align-items: baseline;
+    margin: 0;
+  }
+  .status-list .chip {
+    flex: none;
+    min-width: 9.5rem;
+    text-align: center;
+  }
+  .filters {
+    display: grid;
+    gap: 0.9rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+    align-items: end;
+    margin-bottom: 1rem;
+  }
+  .filters .grow {
+    grid-column: 1 / -1;
+  }
+  label span {
+    display: block;
+    font-weight: 600;
+    font-size: 0.88rem;
+    margin-bottom: 0.25rem;
+  }
+  input,
+  select {
+    width: 100%;
+    font: inherit;
+    font-size: 1rem;
+    padding: 0.55rem 0.7rem;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    background: var(--bg);
+    color: var(--ink);
+  }
+  .count {
+    margin: 0 0 1rem;
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+  }
+  .list {
+    display: grid;
+    gap: 1.25rem;
+  }
+  .entry[hidden] {
+    display: none;
+  }
+  .entry:target {
+    outline: 3px solid var(--accent);
+    outline-offset: 3px;
+  }
+  .entry header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .id {
+    margin: 0 0 0.25rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--ink-soft);
+  }
+  .entry h3 {
+    margin-bottom: 0.6rem;
+  }
+  blockquote {
+    margin: 0.25rem 0 0.6rem;
+    padding: 0.7rem 1rem;
+    border-left: 4px solid var(--m-interpret);
+    background: var(--m-interpret-soft);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    font-family: var(--font-head);
+    font-size: 1.15rem;
+  }
+  .meta {
+    color: var(--ink-soft);
+    font-size: 0.93rem;
+    margin-bottom: 0.9rem;
+  }
+  .meta b,
+  .lbl {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-right: 0.15rem;
+  }
+  .lens-row {
+    display: grid;
+    gap: 0.6rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+    margin-bottom: 0.9rem;
+  }
+  .lens {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3rem;
+    padding: 0.6rem 0.75rem;
+    background: var(--surface-2);
+    border-radius: var(--radius-sm);
+  }
+  .lname {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--ink-soft);
+  }
+  .note {
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+    line-height: 1.4;
+  }
+  .cites {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .lbl {
+    color: var(--ink-soft);
+  }
+  .warn {
+    margin: 0.9rem 0 0;
+    padding: 0.7rem 0.9rem;
+    border-radius: var(--radius-sm);
+    background: var(--warn-soft);
+    font-size: 0.93rem;
+  }
+  .empty {
+    padding: 1.5rem;
+    text-align: center;
+    color: var(--ink-soft);
+  }
+</style>

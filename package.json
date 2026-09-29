@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Public website for the Meaning-to-Interface Toolkit: capturing emotional and cultural meaning faithfully in cross-language field research.",
+  "description": "Public website for Designing for the Indian Context: a toolkit for reading products, visual culture, language and material reality (BITSDES 2024–28).",
   "license": "MIT",
   "engines": {
     "node": ">=22.12.0"

@@ -1,0 +1,58 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import ComponentCards from '../../components/ComponentCards.astro';
+import Icon from '../../components/Icon.astro';
+import { url } from '../../utils/url';
+---
+
+<BaseLayout title="Components" description="The components of the toolkit. Each one works on its own; used together they give a fuller picture of the person you are designing for.">
+  <div class="page-head">
+    <div class="wrap">
+      <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Components' }]} />
+      <h1>Components</h1>
+      <p class="lead">Each component is a way of reading. Each works on its own. Used together, they give you a fuller picture of the person you’re designing for.</p>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="wrap">
+      <h2 class="visually-hidden">All components</h2>
+      <ComponentCards />
+    </div>
+  </section>
+
+  <section class="section section--white">
+    <div class="wrap not-sure">
+      <div>
+        <p class="eb">Not sure where to start?</p>
+        <h2>Start with what you want to do.</h2>
+        <p>The “I want to…” list on the home page opens the right tool for the job, whichever component it sits in.</p>
+      </div>
+      <a class="btn btn--accent" href={url('/#i-want-to')}>I want to… <Icon name="arrow" size={18} /></a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-head h1 {
+    font-size: clamp(2.6rem, 7vw, 5rem);
+    margin-bottom: 1rem;
+  }
+  .page-head .lead {
+    max-width: 44rem;
+    margin: 0;
+  }
+  .not-sure {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem 3rem;
+  }
+  .not-sure p:last-of-type {
+    color: var(--ink-soft);
+    max-width: 34rem;
+    margin: 0;
+  }
+</style>

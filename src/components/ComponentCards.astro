@@ -1,0 +1,166 @@
+---
+import Icon from './Icon.astro';
+import { liveComponents, soonComponents } from '../data/components';
+import { url } from '../utils/url';
+---
+
+<div class="live">
+  {
+    liveComponents.map((c) => (
+      <a class={`big big--${c.c}`} href={url(c.href)}>
+        <div class="top">
+          <span class="num">{c.number}</span>
+          {c.hours && <span class="pill">{c.hours}</span>}
+        </div>
+        <h3>{c.name}</h3>
+        <p>{c.blurb}</p>
+        <ul class="tags" aria-label="Tools">
+          {c.tags.map((t) => <li>{t}</li>)}
+        </ul>
+        <span class="open">
+          Open component <Icon name="arrow" size={18} />
+        </span>
+      </a>
+    ))
+  }
+</div>
+
+<ul class="soon">
+  {
+    soonComponents.map((c) => (
+      <li>
+        <a href={url(c.href)}>
+          <span class="n">{c.number ?? '↺'}</span>
+          <span>
+            <b>{c.name}</b>
+            <small>Coming next</small>
+          </span>
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .live {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  }
+  .big {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    border-radius: 24px;
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+    color: #fff;
+    text-decoration: none;
+    min-height: 22rem;
+    transition: transform 0.15s ease;
+  }
+  .big:hover {
+    transform: translateY(-3px);
+    text-decoration: none;
+  }
+  .big--c1 { background: var(--c1); }
+  .big--c3 { background: var(--c3); }
+  .big--c4 { background: var(--c4); }
+  .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .num {
+    font-size: clamp(3rem, 6vw, 4.5rem);
+    font-weight: 800;
+    line-height: 0.9;
+  }
+  .pill {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: 1.5px solid rgb(255 255 255 / 0.7);
+    border-radius: 999px;
+    padding: 0.5rem 0.9rem;
+  }
+  h3 {
+    margin: 0.5rem 0 0;
+    font-size: clamp(1.7rem, 3vw, 2.25rem);
+    color: #fff;
+  }
+  p {
+    margin: 0;
+    color: rgb(255 255 255 / 0.92);
+    max-width: 30rem;
+  }
+  .tags {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .tags li {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border: 1.5px solid rgb(255 255 255 / 0.65);
+    border-radius: 999px;
+    padding: 0.28rem 0.65rem;
+  }
+  .open {
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 700;
+    padding-top: 1rem;
+  }
+
+  .soon {
+    list-style: none;
+    padding: 0;
+    margin: 1.25rem 0 0;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  }
+  .soon li {
+    margin: 0;
+  }
+  .soon a {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.1rem 1.4rem;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    background: var(--ground);
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .soon a:hover {
+    background: var(--surface);
+  }
+  .n {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--line-strong);
+    min-width: 1.6rem;
+  }
+  .soon b {
+    display: block;
+    line-height: 1.2;
+  }
+  .soon small {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+</style>

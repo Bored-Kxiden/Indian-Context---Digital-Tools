@@ -8,9 +8,11 @@ import { url } from '../utils/url';
 interface Props {
   title?: string;
   description?: string;
+  /** Sets the accent colour: which component the visitor is in. */
+  component?: 'c1' | 'c2' | 'c3' | 'c4';
 }
 
-const { title, description = site.description } = Astro.props;
+const { title, description = site.description, component } = Astro.props;
 const pageTitle = title ? `${title} · ${site.name}` : `${site.name}: ${site.tagline}`;
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
 ---
@@ -22,15 +24,16 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : un
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#0b5c63" />
+    <meta name="theme-color" content="#faf7f0" />
     {canonical && <link rel="canonical" href={canonical} />}
     <link rel="icon" type="image/svg+xml" href={url('/favicon.svg')} />
+    <link rel="preload" href={url('/fonts/BricolageGrotesque-Variable.woff2')} as="font" type="font/woff2" crossorigin />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     {canonical && <meta property="og:url" content={canonical} />}
   </head>
-  <body>
+  <body data-c={component}>
     <a class="skip-link" href="#main">Skip to content</a>
     <Header />
     <main id="main">

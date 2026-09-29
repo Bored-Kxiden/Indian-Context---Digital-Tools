@@ -1,0 +1,124 @@
+---
+import ComponentLayout from '../../../layouts/ComponentLayout.astro';
+import Icon from '../../../components/Icon.astro';
+import { overview } from '../../../data/booklet/existing-products';
+import { url } from '../../../utils/url';
+
+const p = overview.pickAProduct;
+---
+
+<ComponentLayout
+  component="existing-products"
+  current="pick-a-product"
+  title="Pick a product"
+  heading="Pick a product"
+  lead={p.lead}
+  chips={['Before Tool 1', '5 minutes']}
+  crumb="Pick a product"
+>
+  <section class="block" aria-labelledby="good-h">
+    <p class="eb">One product, not a category</p>
+    <h2 id="good-h">Specific enough to open.</h2>
+    <div class="cmp">
+      <div class="col col--good">
+        <span class="lbl">Good</span>
+        <ul>
+          {p.good.map((g) => <li><Icon name="check" size={18} /> {g}</li>)}
+        </ul>
+      </div>
+      <div class="col col--broad">
+        <span class="lbl">Too broad</span>
+        <ul>
+          {p.tooBroad.map((g) => <li><Icon name="x" size={18} /> {g}</li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="do-h">
+    <p class="eb">What to do</p>
+    <h2 id="do-h">Write it on an orange note.</h2>
+    <p class="big">{p.instruction}</p>
+    <div class="note note--orange sample">
+      <b>Your product</b>
+      <span>National Scholarship Portal</span>
+    </div>
+    <p class="small">{p.note}</p>
+    <a class="btn btn--accent" href={url('/components/existing-products/media-gossip/')}>
+      Start Tool 1 · Media &amp; Gossip <Icon name="arrow" size={18} />
+    </a>
+  </section>
+</ComponentLayout>
+
+<style>
+  .big {
+    font-size: 1.15rem;
+    color: var(--ink-soft);
+    max-width: 44rem;
+  }
+  .small {
+    font-size: 0.92rem;
+    color: var(--muted);
+    max-width: 44rem;
+    margin: 1rem 0 1.5rem;
+  }
+  .cmp {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    max-width: 44rem;
+  }
+  .col {
+    border-radius: var(--radius);
+    padding: 1.25rem 1.4rem;
+  }
+  .col--good {
+    background: var(--c1);
+    color: #fff;
+  }
+  .col--broad {
+    background: var(--sand);
+  }
+  .col .lbl {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+    opacity: 0.85;
+  }
+  .col ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.6rem;
+  }
+  .col li {
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+    margin: 0;
+    font-weight: 600;
+  }
+  .col li :global(svg) {
+    flex: none;
+    margin-top: 0.15rem;
+  }
+  .sample {
+    display: grid;
+    gap: 0.2rem;
+    max-width: 18rem;
+    margin-top: 1.25rem;
+  }
+  .sample b {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .sample span {
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
+</style>

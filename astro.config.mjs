@@ -11,6 +11,16 @@ import { defineConfig } from 'astro/config';
 const site = process.env.SITE_URL || undefined;
 const base = process.env.BASE_PATH || '/';
 
+const prefix = base.replace(/\/+$/, '');
+const languageTools = [
+  'meaning-card',
+  'physical-field-kit',
+  'fidelity-protocol',
+  'language-lens-audit',
+  'expression-library',
+  'design-language-library',
+];
+
 export default defineConfig({
   site,
   base,
@@ -18,5 +28,12 @@ export default defineConfig({
   trailingSlash: 'always',
   build: {
     format: 'directory',
+  },
+  // The six Meaning-to-Interface tools used to live under /tools/. They are now
+  // Component 3 · Reading Language. Keep old links working.
+  // (Astro does not add the base path to a redirect's destination, so it is added here.)
+  redirects: {
+    '/tools': `${prefix}/components/language/`,
+    ...Object.fromEntries(languageTools.map((slug) => [`/tools/${slug}`, `${prefix}/components/language/${slug}/`])),
   },
 });

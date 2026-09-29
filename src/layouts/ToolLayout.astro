@@ -1,10 +1,15 @@
 ---
 import BaseLayout from './BaseLayout.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
 import ModuleChip from '../components/ModuleChip.astro';
 import DownloadCard from '../components/DownloadCard.astro';
-import { getDownloadsForTool } from '../data/downloads';
+import Icon from '../components/Icon.astro';
+import { getDownloadsForPage } from '../data/downloads';
 import { toolBySlug, toolHref, tools } from '../data/tools';
 import { url } from '../utils/url';
+
+// Shell for the six tool pages in Component 3 · Reading Language (the
+// Meaning-to-Interface Toolkit). The page content goes in the slot.
 
 interface Props {
   slug: string;
@@ -14,21 +19,29 @@ interface Props {
 
 const { slug, intro } = Astro.props;
 const tool = toolBySlug[slug];
-const downloads = getDownloadsForTool(slug);
+const downloads = getDownloadsForPage(toolHref(slug));
 const i = tools.findIndex((t) => t.slug === slug);
 const prev = tools[i - 1];
 const next = tools[i + 1];
 ---
 
-<BaseLayout title={tool.name} description={tool.blurb}>
+<BaseLayout title={`${tool.name}: Language`} description={tool.blurb} component="c3">
   <div class="page-head">
     <div class="wrap">
-      <p class="crumbs">
-        <a href={url('/tools/')}>Tools</a><span aria-hidden="true">/</span>{tool.name}
-      </p>
-      <p class="eyebrow">Tool {i + 1} of {tools.length} · {tool.kind}</p>
+      <Breadcrumb
+        items={[
+          { label: 'Home', href: '/' },
+          { label: 'Components', href: '/components/' },
+          { label: '3 · Language', href: '/components/language/' },
+          { label: tool.name },
+        ]}
+      />
+      <div class="chip-row eyebrow-row">
+        <span class="chip chip--quiet">Tool {i + 1} of {tools.length}</span>
+        <span class="chip chip--quiet">{tool.kind}</span>
+      </div>
       <h1>{tool.name}</h1>
-      <p class="lede">{intro ?? tool.blurb}</p>
+      <p class="lead">{intro ?? tool.blurb}</p>
       <div class="chip-row">
         <span class="where">Used in</span>
         {tool.modules.map((m) => <ModuleChip id={m} full />)}
@@ -44,29 +57,41 @@ const next = tools[i + 1];
         <section class="section" aria-labelledby="dl-heading">
           <h2 id="dl-heading">Download</h2>
           <div class="grid grid--2">
-            {downloads.map((d) => <DownloadCard item={d} hideTool />)}
+            {downloads.map((d) => <DownloadCard item={d} />)}
           </div>
-          <p class="more"><a href={url('/downloads/')}>All downloads</a></p>
+          <p class="more"><a href={url('/downloads/#language')}>All downloads</a></p>
         </section>
       )
     }
 
-    <nav class="pager" aria-label="Other tools">
+    <nav class="pager" aria-label="Other tools in this component">
       {
         prev ? (
           <a class="prev" href={url(toolHref(prev.slug))}>
-            <span>Previous</span>
-            {prev.name}
+            <Icon name="arrow-left" size={18} />
+            <span>
+              <small>Before</small>
+              <b>{prev.name}</b>
+            </span>
           </a>
         ) : (
-          <span />
+          <a class="prev" href={url('/components/language/')}>
+            <Icon name="arrow-left" size={18} />
+            <span>
+              <small>Back to</small>
+              <b>Reading Language</b>
+            </span>
+          </a>
         )
       }
       {
         next && (
           <a class="next" href={url(toolHref(next.slug))}>
-            <span>Next</span>
-            {next.name}
+            <span>
+              <small>Next</small>
+              <b>{next.name}</b>
+            </span>
+            <Icon name="arrow" size={18} />
           </a>
         )
       }
@@ -75,12 +100,22 @@ const next = tools[i + 1];
 </BaseLayout>
 
 <style>
+  .eyebrow-row {
+    margin-bottom: 1.25rem;
+  }
+  .page-head h1 {
+    font-size: clamp(2.4rem, 6vw, 4.5rem);
+    margin-bottom: 1rem;
+  }
+  .page-head .lead {
+    max-width: 44rem;
+  }
   .where {
-    font-size: 0.78rem;
-    font-weight: 700;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--ink-soft);
+    color: var(--muted);
     align-self: center;
     margin-right: 0.3rem;
   }
@@ -95,29 +130,39 @@ const next = tools[i + 1];
     justify-content: space-between;
     gap: 1rem;
     flex-wrap: wrap;
-    padding-block: 2rem;
-    border-top: 1px solid var(--line);
+    padding-block: 2rem 3rem;
+    border-top: 1px solid var(--line-strong);
     margin-top: 2rem;
   }
   .pager a {
-    display: block;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.85rem 1.2rem;
+    border: 1.5px solid var(--ink);
+    border-radius: 999px;
+    color: var(--ink);
     text-decoration: none;
-    font-family: var(--font-head);
-    font-weight: 700;
-    font-size: 1.1rem;
-    max-width: 22rem;
+    max-width: 24rem;
   }
-  .pager a span {
+  .pager a:hover {
+    background: var(--ink);
+    color: #fff;
+  }
+  .pager small {
     display: block;
-    font-family: var(--font-body);
-    font-size: 0.8rem;
-    font-weight: 600;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--ink-soft);
+    opacity: 0.7;
+  }
+  .pager b {
+    display: block;
+    line-height: 1.2;
   }
   .pager .next {
-    text-align: right;
     margin-left: auto;
+    text-align: right;
   }
 </style>

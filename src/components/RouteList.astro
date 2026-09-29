@@ -1,0 +1,103 @@
+---
+import Icon from './Icon.astro';
+import { url } from '../utils/url';
+
+interface Item {
+  label: string;
+  href: string;
+  blurb: string;
+  time?: string;
+}
+interface Props {
+  items: Item[];
+  /** Show 1, 2, 3… in a circle. */
+  numbered?: boolean;
+}
+
+const { items, numbered = false } = Astro.props;
+---
+
+<ol class="route">
+  {
+    items.map((i, n) => (
+      <li>
+        <a href={url(i.href)}>
+          {numbered && <span class="n">{n + 1}</span>}
+          <span class="body">
+            <b>{i.label}</b>
+            <span>{i.blurb}</span>
+          </span>
+          {i.time && <span class="time">{i.time}</span>}
+          <Icon name="arrow" size={18} />
+        </a>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .route {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--line-strong);
+  }
+  .route li {
+    margin: 0;
+    border-bottom: 1px solid var(--line-strong);
+  }
+  a {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0.25rem;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  a:hover {
+    background: var(--ground);
+  }
+  a:hover b {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  .n {
+    display: grid;
+    place-items: center;
+    width: 2.2rem;
+    height: 2.2rem;
+    flex: none;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-weight: 800;
+  }
+  .body {
+    flex: 1;
+    display: grid;
+    gap: 0.1rem;
+  }
+  .body b {
+    font-size: 1.15rem;
+    line-height: 1.25;
+  }
+  .body span {
+    color: var(--ink-soft);
+  }
+  .time {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border: 1.5px solid var(--line-strong);
+    border-radius: 999px;
+    padding: 0.3rem 0.7rem;
+    white-space: nowrap;
+    color: var(--muted);
+  }
+  @media (max-width: 36rem) {
+    .time {
+      display: none;
+    }
+  }
+</style>

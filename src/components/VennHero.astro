@@ -1,0 +1,44 @@
+---
+// Four overlapping circles: one per component. Decorative.
+---
+
+<svg viewBox="0 0 520 470" role="img" aria-label="Four overlapping circles for the four components: existing products, visual culture, language, and material reality, with “you” in the middle." class="venn">
+  <g style="isolation:isolate">
+    <circle cx="205" cy="190" r="125" fill="#1e6b52" style="mix-blend-mode:multiply"></circle>
+    <circle cx="315" cy="190" r="125" fill="#e8a92a" style="mix-blend-mode:multiply"></circle>
+    <circle cx="205" cy="300" r="125" fill="#b8492c" style="mix-blend-mode:multiply"></circle>
+    <circle cx="315" cy="300" r="125" fill="#3144a6" style="mix-blend-mode:multiply"></circle>
+  </g>
+  <circle cx="260" cy="245" r="28" fill="#faf7f0"></circle>
+  <text x="260" y="250" text-anchor="middle" class="you">YOU</text>
+  <g class="lab" fill="#fff">
+    <text x="150" y="150" text-anchor="middle">1 · EXISTING</text>
+    <text x="150" y="166" text-anchor="middle">PRODUCTS</text>
+    <text x="370" y="150" text-anchor="middle" fill="#16140f">2 · VISUAL</text>
+    <text x="370" y="166" text-anchor="middle" fill="#16140f">CULTURE</text>
+    <text x="150" y="338" text-anchor="middle">3 · LANGUAGE</text>
+    <text x="370" y="338" text-anchor="middle">4 · MATERIAL</text>
+    <text x="370" y="354" text-anchor="middle">REALITY</text>
+  </g>
+</svg>
+
+<style>
+  .venn {
+    width: 100%;
+    max-width: 30rem;
+    height: auto;
+  }
+  .lab text {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+  }
+  .you {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    fill: #16140f;
+  }
+</style>
