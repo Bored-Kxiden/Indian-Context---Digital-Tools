@@ -137,7 +137,7 @@ Fuller wireframes, a simplified wireframe, and task flows are in the owner's Fig
 | Q6 | Supabase: does anything need a database? |
 | Q7 | Custom domain, or stay on the vercel.app address? |
 | Q8 | GitHub's default branch is still the feature branch; switch it to `main`. |
-| Q9 | The Vercel connection used in build sessions is not the owner's original Vercel project; confirm which account should own the site. |
+| Q9 | The Vercel connection used in build sessions is not the owner's original Vercel project; confirm which account should own the site. **Update:** three Vercel projects are now linked to this repo. On the first push of the restructure (PR 1), two built successfully and one, in the owner's own Vercel account, failed. Its build log is not readable from the build sessions (403 on that scope). The same commit builds cleanly under Vercel defaults in the other two, so the cause is probably a setting on the failing project (Node version, framework preset or output directory). Needs the log from that project. |
 | Q10 | Wording check: the About page's "Where it comes from" paragraph and the connecting copy on Home and the component overviews are ours. Confirm, and say who is credited (see Q3). |
 | Q11 | Where should "Print" and "You need" sit on a tool page? Now: a right-hand column on very wide screens (92rem+), otherwise below the tabs. |
 
@@ -179,6 +179,8 @@ The site is now the whole toolkit, not only the Meaning-to-Interface Toolkit.
 - `npm run build`: 30 pages. A second build with `BASE_PATH=/Indian-Context---Digital-Tools` (the GitHub Pages URL): 1,418 internal links, images, downloads and `#anchors` resolve, `@font-face` URLs carry the base path, and the redirect pages carry it too.
 - Browser checks (Chromium): no console errors or failed requests on 20 pages (the only 404 is the browser asking for `/favicon.ico` on Astro's generated redirect pages); no horizontal scroll at 390 px or 1440 px; tabs, arrow keys, `#part-b` and `#card-kit` deep links, the Paper | Cards switch (remembered across reload), the goal search, and the no-JavaScript fallback all work; old `/tools/meaning-card/` lands on the new address.
 - One `h1` per page, no skipped heading levels, no duplicate ids, every image has alt text.
+
+**Pull request**: PR 1 (`claude/charming-hypatia-j6hsyh` into `main`). Vercel previews: two of three linked projects built; see Q9.
 
 **Not done / to confirm**: see open questions Q1, Q2, Q10, Q11 and the backlog. FigJam sections 13–15 still show the earlier six-tool site.
 
