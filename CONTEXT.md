@@ -75,6 +75,7 @@ Status: **Confirmed** by the owner, or **Assumed** (made to keep moving; needs c
 | D15 | Home page order: hero, then **"I want to…" straight away**, then components, why this exists, how every tool works, the guideline, Meera. The goal-first flow is the first thing after the hero. | Assumed |
 | D16 | Tool-page tabs are progressive enhancement: without JavaScript the four panels stack under their headings; with it they become tabs (ARIA roles added by script, keyboard arrows, `#guide`, `#example`, `#blank`, `#card-kit` and `#part-b` deep links). The Paper / Cards choice is remembered in `localStorage` and only decides which tab opens first. | Assumed |
 | D17 | Redirects for old `/tools/*` are explicit per slug in `astro.config.mjs` (Astro's dynamic redirects need a matching dynamic route). The destinations carry the base path, because Astro does not add it. | Assumed |
+| D18 | `vercel.json` pins the framework to Astro (`npm run build`, output `dist`), so a Vercel project with the wrong preset still builds. It matches what Vercel auto-detects, so projects that were already right are unaffected. | Assumed |
 
 ### Earlier decisions that still apply (Language component)
 
@@ -137,7 +138,7 @@ Fuller wireframes, a simplified wireframe, and task flows are in the owner's Fig
 | Q6 | Supabase: does anything need a database? |
 | Q7 | Custom domain, or stay on the vercel.app address? |
 | Q8 | GitHub's default branch is still the feature branch; switch it to `main`. |
-| Q9 | The Vercel connection used in build sessions is not the owner's original Vercel project; confirm which account should own the site. **Update:** three Vercel projects are now linked to this repo. On the first push of the restructure (PR 1), two built successfully and one failed. The one that failed is the project the owner originally supplied (its ID was given at the start of the work), so it is the one to fix; it failed again on the next push. Its build log is not readable from the build sessions (403 on that scope). The same commit builds cleanly under Vercel defaults in the other two, so the cause is probably a setting on the failing project (Node version, framework preset or output directory). Needs the log from that project. |
+| Q9 | The Vercel connection used in build sessions is not the owner's original Vercel project; confirm which account should own the site. **Update:** three Vercel projects are linked to this repo. Two built the restructure; the owner's original one failed on every push with "No Next.js version detected": its Framework Preset was set to Next.js. Fixed in the repo with `vercel.json` (D18), which pins Astro. Setting the preset to Astro in that project's dashboard is still the cleaner fix. Confirm the next build there is green. |
 | Q10 | Wording check: the About page's "Where it comes from" paragraph and the connecting copy on Home and the component overviews are ours. Confirm, and say who is credited (see Q3). |
 | Q11 | Where should "Print" and "You need" sit on a tool page? Now: a right-hand column on very wide screens (92rem+), otherwise below the tabs. |
 
@@ -180,7 +181,7 @@ The site is now the whole toolkit, not only the Meaning-to-Interface Toolkit.
 - Browser checks (Chromium): no console errors or failed requests on 20 pages (the only 404 is the browser asking for `/favicon.ico` on Astro's generated redirect pages); no horizontal scroll at 390 px or 1440 px; tabs, arrow keys, `#part-b` and `#card-kit` deep links, the Paper | Cards switch (remembered across reload), the goal search, and the no-JavaScript fallback all work; old `/tools/meaning-card/` lands on the new address.
 - One `h1` per page, no skipped heading levels, no duplicate ids, every image has alt text.
 
-**Pull request**: PR 1 (`claude/charming-hypatia-j6hsyh` into `main`). Vercel previews: two of three linked projects built; see Q9.
+**Pull request**: PR 1 (`claude/charming-hypatia-j6hsyh` into `main`). Vercel previews: two of three linked projects built. The third failed because its Framework Preset was Next.js; `vercel.json` now pins Astro (D18, Q9).
 
 **Not done / to confirm**: see open questions Q1, Q2, Q10, Q11 and the backlog. FigJam sections 13–15 still show the earlier six-tool site.
 

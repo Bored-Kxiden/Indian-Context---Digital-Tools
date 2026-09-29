@@ -107,7 +107,7 @@ Where the site is served from is controlled by two environment variables, read i
 
 The workflow sets both for the GitHub Pages project URL. Internal links go through the `url()` helper in `src/utils/url.ts`, so they respect the base path. The redirects from the old `/tools/…` addresses are prefixed with the base path in `astro.config.mjs` for the same reason.
 
-**Vercel.** [Import this repository](https://vercel.com/new/import?s=https%3A%2F%2Fgithub.com%2FBored-Kxiden%2FIndian-Context---Digital-Tools). Vercel detects Astro and the defaults work as they are: build command `npm run build`, output directory `dist`, no environment variables. Pushes to a branch get a preview URL; the production branch is `main`.
+**Vercel.** [Import this repository](https://vercel.com/new/import?s=https%3A%2F%2Fgithub.com%2FBored-Kxiden%2FIndian-Context---Digital-Tools). Vercel detects Astro and the defaults work as they are: build command `npm run build`, output directory `dist`, no environment variables. `vercel.json` pins the same settings and the Astro framework, so a project whose Framework Preset was set wrongly (for example to Next.js) still builds. Pushes to a branch get a preview URL; the production branch is `main`.
 
 **Custom domain or other hosts.** Set `BASE_PATH: /` and `SITE_URL: https://your-domain` in the workflow, add `public/CNAME` with the domain, and configure it under **Settings → Pages**. Netlify and Cloudflare Pages use the same settings as Vercel.
 
