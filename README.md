@@ -54,6 +54,7 @@ npm run build:templates  # regenerate the PDFs and CSV (see below)
     ├── components/                Header, Footer, ProcessFlow, cards, banners
     ├── data/
     │   ├── modules.ts             the process flow (entry, 3 modules, gates, loop)
+    │   ├── goals.ts               the "I want to…" index (home, Tools page, footer)
     │   ├── tools.ts               the six tools
     │   ├── downloads.ts           the list of downloadable assets
     │   ├── expressions.json       Expression Library entries
@@ -131,6 +132,12 @@ This renders the PDFs with headless Chromium through `playwright-core` (a dev de
 If you have final, designed PDFs, skip the generator: put them in `public/downloads/` under the same filenames.
 
 Cards are 6 × 4 in (152.4 × 102 mm). To change the size, edit `W_MM` and `H_MM` at the top of `scripts/build-templates.mjs`.
+
+## The "I want to…" index
+
+The home page and Tools page lead with an "I want to…" index: goals in the order the research happens, each with plain-language phrases that link to a tool. The footer's A–Z list is generated from the same data.
+
+To add or change an item, edit `src/data/goals.ts`. Each item has a `phrase` (finishing "I want to…"), a `label` (the tool, shown in capitals), and an `href` (a site path, optionally with an anchor such as `/tools/language-lens-audit/#lens-t`). Set `index: false` to keep an item out of the footer list.
 
 ## Adding to the libraries
 

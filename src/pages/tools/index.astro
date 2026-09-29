@@ -1,42 +1,40 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import GoalIndex from '../../components/GoalIndex.astro';
 import ToolCard from '../../components/ToolCard.astro';
-import { toolBySlug, toolGroups, tools } from '../../data/tools';
+import { tools } from '../../data/tools';
 import { url } from '../../utils/url';
-
-const number = (slug: string) => tools.findIndex((t) => t.slug === slug) + 1;
 ---
 
 <BaseLayout
   title="Tools"
-  description="The six tools of the Meaning-to-Interface Toolkit: Meaning Card, Physical Field Kit, Fidelity Protocol, Language Lens Audit, Expression Library, and Design Language Library."
+  description="Practical tools for cross-language field research: Meaning Card, Physical Field Kit, Fidelity Protocol, Language Lens Audit, Expression Library, and Design Language Library."
 >
   <div class="page-head">
     <div class="wrap">
       <p class="eyebrow">Tools</p>
-      <h1>Six tools that pass meaning from the field to the interface.</h1>
+      <h1>Find the tool for what you are doing.</h1>
       <p class="lede">
-        Meaning Cards are the raw material. The Fidelity Protocol decides which meanings are trustworthy enough to enter the
-        Expression Library. Patterns in the Design Language Library cite those entries, and pass the Language Lens before they are
-        trusted.
+        Six tools pass meaning from the field to the interface. Meaning Cards are the raw material. The Fidelity Protocol decides
+        which meanings are trustworthy enough to enter the Expression Library. Patterns in the Design Language Library cite those
+        entries, and pass the Language Lens before they are trusted.
       </p>
     </div>
   </div>
 
   <div class="wrap body">
-    {
-      toolGroups.map((g) => (
-        <section class="section group" aria-labelledby={`g-${g.title.replace(/\W+/g, '-').toLowerCase()}`}>
-          <div class="section-head">
-            <h2 id={`g-${g.title.replace(/\W+/g, '-').toLowerCase()}`}>{g.title}</h2>
-            <p>{g.note}</p>
-          </div>
-          <div class="grid grid--2">
-            {g.slugs.map((s) => <ToolCard tool={toolBySlug[s]} index={number(s)} />)}
-          </div>
-        </section>
-      ))
-    }
+    <section class="section first" aria-labelledby="i-want-to-heading">
+      <GoalIndex />
+    </section>
+
+    <section class="section" aria-labelledby="all-tools">
+      <div class="section-head">
+        <h2 id="all-tools">The six tools, in the order you meet them</h2>
+      </div>
+      <div class="grid grid--3">
+        {tools.map((t, i) => <ToolCard tool={t} index={i + 1} />)}
+      </div>
+    </section>
 
     <section class="section">
       <div class="callout">
@@ -54,10 +52,7 @@ const number = (slug: string) => tools.findIndex((t) => t.slug === slug) + 1;
   .body {
     padding-bottom: 2rem;
   }
-  .group:first-child {
+  .first {
     border-top: 0;
-  }
-  .section-head {
-    margin-bottom: 1.25rem;
   }
 </style>

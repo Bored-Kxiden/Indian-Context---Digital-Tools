@@ -1,8 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProcessFlow from '../components/ProcessFlow.astro';
-import ToolCard from '../components/ToolCard.astro';
-import { tools } from '../data/tools';
+import GoalIndex from '../components/GoalIndex.astro';
 import { url } from '../utils/url';
 
 const problems = [
@@ -20,29 +19,6 @@ const problems = [
   },
 ];
 
-const answers = [
-  {
-    title: 'Capture faithfully',
-    body: 'Meaning Cards and a printable field kit keep what was said, what was observed, and what the researcher infers apart, in the language it was spoken.',
-    slug: 'meaning-card',
-  },
-  {
-    title: 'Tag how reliable it is',
-    body: 'The Fidelity Protocol records the source language, who interpreted, how it was rendered, and whether a second reader agrees. Missing any of these means no full confidence.',
-    slug: 'fidelity-protocol',
-  },
-  {
-    title: 'Test before it ships',
-    body: 'The Language Lens Audit checks interface copy for wording, for proxy use, and for trust, with the people who will actually meet it.',
-    slug: 'language-lens-audit',
-  },
-  {
-    title: 'Build a record that compounds',
-    body: 'Validated moments and tested patterns go into two libraries. Each design pattern cites the evidence behind it, so the next project does not start from zero.',
-    slug: 'expression-library',
-  },
-];
-
 const applies = [
   'Public-service and civic platforms in any linguistically diverse country',
   'Healthcare intake and patient-facing tools used with immigrant or refugee populations',
@@ -57,23 +33,30 @@ const applies = [
 <BaseLayout>
   <section class="hero">
     <div class="wrap">
-      <p class="eyebrow">A toolkit for cross-language field research</p>
+      <p class="tag">Find your tool</p>
       <h1>Keep what people mean, not only what the words say.</h1>
       <p class="lede">
-        The Meaning-to-Interface Toolkit helps research teams capture emotional and cultural meaning faithfully across
-        languages, tag how reliable each finding is, and carry it through to interface wording that has actually been tested.
+        Practical tools for capturing emotional and cultural meaning faithfully in cross-language field research, tagging how
+        reliable each finding is, and carrying it through to interface wording that has actually been tested.
       </p>
       <p class="built">
         Built for research on first-generation Indian college students. Reusable for any cross-language qualitative research.
       </p>
       <div class="btn-row">
-        <a class="btn" href="#process">See the process</a>
+        <a class="btn" href="#i-want-to">Find your tool</a>
         <a class="btn btn--ghost" href={url('/downloads/')}>Download the templates</a>
       </div>
     </div>
   </section>
 
-  <section class="section" aria-labelledby="problem">
+  <section class="section goals-section" aria-labelledby="i-want-to-heading">
+    <div class="wrap">
+      <GoalIndex />
+      <p class="all"><a href={url('/tools/')}>See all six tools</a></p>
+    </div>
+  </section>
+
+  <section class="section section--tint" aria-labelledby="problem">
     <div class="wrap">
       <div class="section-head">
         <p class="eyebrow">The problem</p>
@@ -89,32 +72,6 @@ const applies = [
             <article class="card">
               <h3>{p.title}</h3>
               <p>{p.body}</p>
-            </article>
-          ))
-        }
-      </div>
-    </div>
-  </section>
-
-  <section class="section section--tint" aria-labelledby="answer">
-    <div class="wrap">
-      <div class="section-head">
-        <p class="eyebrow">What the toolkit does</p>
-        <h2 id="answer">Make the attrition of meaning visible, then stop it.</h2>
-        <p>
-          Every finding is tagged with how much it was translated, by whom, and whether it was confirmed by a second reader. Every
-          design pattern traces back to the exact moment that justified it.
-        </p>
-      </div>
-      <div class="grid grid--4">
-        {
-          answers.map((a) => (
-            <article class="card">
-              <h3>{a.title}</h3>
-              <p>{a.body}</p>
-              <p class="more">
-                <a href={url(`/tools/${a.slug}/`)}>Learn more</a>
-              </p>
             </article>
           ))
         }
@@ -142,21 +99,7 @@ const applies = [
     </div>
   </section>
 
-  <section class="section section--tint" aria-labelledby="tools-heading">
-    <div class="wrap">
-      <div class="section-head">
-        <p class="eyebrow">The toolkit</p>
-        <h2 id="tools-heading">Six tools, one thread of evidence.</h2>
-        <p>Each tool has its own page, with the printable and digital templates you can download.</p>
-      </div>
-      <div class="grid grid--3">
-        {tools.map((t, i) => <ToolCard tool={t} index={i + 1} />)}
-      </div>
-      <p class="more-row"><a class="btn btn--ghost" href={url('/tools/')}>Tools overview</a></p>
-    </div>
-  </section>
-
-  <section class="section" aria-labelledby="where">
+  <section class="section section--tint" aria-labelledby="where">
     <div class="wrap two">
       <div>
         <p class="eyebrow">Where to use it</p>
@@ -181,10 +124,21 @@ const applies = [
 
 <style>
   .hero {
-    padding-block: clamp(3rem, 9vw, 6rem) clamp(2.5rem, 6vw, 4rem);
+    padding-block: clamp(3rem, 9vw, 5.5rem) clamp(2.5rem, 6vw, 3.5rem);
     background:
       radial-gradient(60rem 24rem at 85% -10%, var(--accent-soft), transparent 70%),
       var(--bg);
+  }
+  .tag {
+    display: inline-block;
+    margin: 0 0 1.25rem;
+    padding: 0.35rem 0.8rem;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
   }
   .hero h1 {
     max-width: 18ch;
@@ -194,16 +148,17 @@ const applies = [
     font-size: 0.98rem;
     margin-bottom: 1.75rem;
   }
-  .more {
-    margin: 0.5rem 0 0;
+  .goals-section {
+    border-top: 0;
+  }
+  .all {
+    margin: 2rem 0 0;
+    font-weight: 600;
   }
   .funnel {
     max-width: var(--prose);
     margin: 2rem 0 0;
     color: var(--ink-soft);
-  }
-  .more-row {
-    margin: 2rem 0 0;
   }
   .two {
     display: grid;

@@ -1,7 +1,10 @@
 ---
 import { site } from '../data/site';
 import { tools, toolHref } from '../data/tools';
+import { toolIndex } from '../data/goals';
 import { url } from '../utils/url';
+
+const index = toolIndex();
 ---
 
 <footer class="site-footer">
@@ -34,6 +37,12 @@ import { url } from '../utils/url';
       </ul>
     </nav>
   </div>
+  <nav class="wrap az" aria-label="Every tool and step, A to Z">
+    <p class="head">All tools and steps</p>
+    <ul>
+      {index.map((t) => <li><a href={url(t.href)}>{t.label}</a></li>)}
+    </ul>
+  </nav>
   <div class="wrap legal">
     <p class="small">Released under the {site.licenseName} License. Sample library entries are illustrative and contain no real participant data.</p>
   </div>
@@ -77,6 +86,22 @@ import { url } from '../utils/url';
     color: var(--ink-soft);
     font-size: 0.9rem;
     margin: 0;
+  }
+  .az {
+    margin-top: 2rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--line);
+  }
+  .az ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 1.25rem;
+  }
+  .az li {
+    margin: 0;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
   }
   .legal {
     margin-top: 2rem;

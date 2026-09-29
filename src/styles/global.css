@@ -307,6 +307,14 @@ table {
 .card > :last-child {
   margin-bottom: 0;
 }
+/* A card reached by a link with an anchor (e.g. #lens-n) is highlighted. */
+.card:target {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+[hidden] {
+  display: none !important;
+}
 
 .chip {
   display: inline-block;

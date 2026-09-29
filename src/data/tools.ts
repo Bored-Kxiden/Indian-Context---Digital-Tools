@@ -61,26 +61,3 @@ export const tools: Tool[] = [
 export const toolBySlug = Object.fromEntries(tools.map((t) => [t.slug, t])) as Record<string, Tool>;
 
 export const toolHref = (slug: string) => `/tools/${slug}/`;
-
-export const toolGroups: { title: string; note: string; slugs: string[] }[] = [
-  {
-    title: 'In the field',
-    note: 'Capture meaning as it happens, on paper, in the language it was spoken.',
-    slugs: ['meaning-card', 'physical-field-kit'],
-  },
-  {
-    title: 'Before you trust a finding',
-    note: 'Decide whether a meaning is well supported or still a single interpreter’s guess.',
-    slugs: ['fidelity-protocol'],
-  },
-  {
-    title: 'Before wording ships',
-    note: 'Check candidate interface copy against the people who will actually meet it.',
-    slugs: ['language-lens-audit'],
-  },
-  {
-    title: 'What builds up over time',
-    note: 'Two living libraries, so the next project does not start from zero.',
-    slugs: ['expression-library', 'design-language-library'],
-  },
-];

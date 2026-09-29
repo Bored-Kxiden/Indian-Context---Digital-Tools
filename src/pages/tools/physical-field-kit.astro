@@ -36,7 +36,7 @@ const total = decks.reduce((n, d) => n + d.cards.length, 0) + 1 + kit.blankMeani
     <div class="grid grid--2 decks">
       {
         decks.map((d) => (
-          <article class="card">
+          <article class="card" id={`${d.id}-cards`}>
             <div class="chip-row head">
               <ModuleChip id={d.module} />
               <span class="chip">{d.cards.length} cards</span>
@@ -65,7 +65,7 @@ const total = decks.reduce((n, d) => n + d.cards.length, 0) + 1 + kit.blankMeani
         ))
       }
 
-      <article class="card">
+      <article class="card" id="positionality-card">
         <div class="chip-row head">
           <ModuleChip id="context" />
           <span class="chip">1 card</span>
@@ -84,7 +84,7 @@ const total = decks.reduce((n, d) => n + d.cards.length, 0) + 1 + kit.blankMeani
         </details>
       </article>
 
-      <article class="card">
+      <article class="card" id="blank-meaning-cards">
         <div class="chip-row head">
           <ModuleChip id="person" />
           <span class="chip">{kit.blankMeaningCardCopies} cards</span>

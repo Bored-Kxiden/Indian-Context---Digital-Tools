@@ -108,7 +108,7 @@ const lensOrder: LensCode[] = ['N', 'P', 'T'];
     <div class="lenses">
       {
         lenses.map((l) => (
-          <article class="card lens">
+          <article class="card lens" id={`lens-${l.code.toLowerCase()}`}>
             <header>
               <span class="code" aria-hidden="true">{l.code}</span>
               <div>
