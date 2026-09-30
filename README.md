@@ -14,7 +14,7 @@ The toolkit is built in **components**. Each is a different way of reading the w
 | **4 · Reading Material Reality** | Live | What people have around them, what it costs, and who they lean on. Build, Break, Weigh, Say. |
 | **Claim & Reflection** | Live | Runs through all four: a Before and After page in each component, and three Look back pages at the end. |
 
-Every tool page has the same tabs, in the same order: **Guide · Example · Template** (Component 1: **Guide · Template · Card kit**). Two tools add a tab of their own: **The six missions** (Component 2 · Show) and **Reverse thick translation** (Component 3 · Translate). The home page leads with an **"I want to…"** index, one card per component, that opens the right tool for the job. A sticky strip keeps every component one click away, and **Find a tool** (press `/`) searches every tool, step, page and term. **Ask the toolkit** (`/ask/`) answers questions from the toolkit's own content, without an AI model, and the **Glossary** (`/glossary/`) lists every term the toolkit uses.
+Every tool page has the same tabs, in the same order: **Guide · Example · Template** (Component 1: **Guide · Template · Card kit**). Two tools add a tab of their own: **The six missions** (Component 2 · Show) and **Reverse thick translation** (Component 3 · Translate). The home page leads with an **"I want to…"** index, one card per component, that opens the right tool for the job. A sticky strip keeps every component one click away, and **Find a tool** (press `/`) searches every tool, step, page and term. **Ask the toolkit** answers questions from the toolkit's own content, without an AI model: from the **Ask** button at the bottom right of every page, or on its own page (`/ask/`). The **Glossary** (`/glossary/`) lists every term the toolkit uses.
 
 > **Working on this repo?** Read [`CONTEXT.md`](CONTEXT.md) first. It records the project's context, decisions, open questions and a change log, and it is updated with every change. [`CLAUDE.md`](CLAUDE.md) has the working rules for AI assistants.
 
@@ -93,7 +93,8 @@ python3 scripts/extract-booklet-assets.py   # regenerate page images and split P
     │   └── library.ts, *.json     Component 3 Expression and Design Language libraries
     ├── layouts/                   BaseLayout, ComponentLayout, BookletToolLayout, ToolLayout (Language), ComingNextLayout
     ├── pages/                     index, components/*, card-kit, guideline, downloads, about, glossary, ask, ask-data.json
-    ├── scripts/ask/engine.ts      the Ask answer engine (no language model)
+    ├── scripts/ask/engine.ts      the Ask answer engine (no language model); ui.ts, the conversation (page and chat panel)
+    ├── components/ChatWidget.astro   the Ask button and chat panel on every page
     ├── styles/global.css          design tokens and shared styles
     └── utils/                     url helper, page-image lookup, Fidelity Protocol rule
 ```

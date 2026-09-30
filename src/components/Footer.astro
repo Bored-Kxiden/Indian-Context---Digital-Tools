@@ -82,7 +82,8 @@ const cols = (['existing-products', 'visual-culture', 'language', 'material-real
   .site-footer {
     background: var(--ink);
     color: var(--on-dark);
-    padding-block: var(--sp-8) var(--sp-4);
+    /* The bottom leaves room for the "Ask" button, which floats over the bottom-right corner of every page. */
+    padding-block: var(--sp-8) calc(var(--sp-4) + 72px);
     font-size: var(--fs-ui);
     line-height: 1.5;
   }
