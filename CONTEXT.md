@@ -13,7 +13,7 @@ This file is the running record of **why the site is the way it is** and **what 
 
 ## 1. What this project is
 
-A public website for the **Designing for the Indian Context** toolkit (BITSDES 2024–28): tools for reading products, pictures, language, and people's material lives before you design for them.
+A public website for **Beyond the Edge Case** (BITSDES 2024–28), a toolkit for designing in Indian contexts by questioning the universal assumptions behind what gets treated as an exception. Its central line: *what gets classified as an edge case depends on the baseline we design from* (D30). It began as "Designing for the Indian Context"; the booklets, card kit and printed cards still carry that title (Q17).
 
 The toolkit is organised as **components**. Each component works on its own and reads a design problem from a different side:
 
@@ -62,7 +62,7 @@ Status: **Confirmed** by the owner, or **Assumed** (made to keep moving; needs c
 | --- | --- | --- |
 | D1 | Static Astro site, no backend. Simplest to maintain for content-heavy pages with downloadable files. | Confirmed (stack left to us) |
 | D2 | Hosting on Vercel, with a GitHub Pages workflow kept as a fallback. Base path comes from `BASE_PATH`/`SITE_URL` env vars. | Confirmed |
-| D3 | The site is the whole **Designing for the Indian Context** toolkit. The Meaning-to-Interface work becomes **Component 3 · Reading Language**. | Assumed. Based on the Language write-up calling itself "the Language component" and the concept site listing Language as component 3. |
+| D3 | The site is the whole toolkit (then titled **Designing for the Indian Context**, now **Beyond the Edge Case**, D30). The Meaning-to-Interface work becomes **Component 3 · Reading Language**. | Assumed. Based on the Language write-up calling itself "the Language component" and the concept site listing Language as component 3. |
 | D4 | Visual language comes from the concept website: Bricolage Grotesque + IBM Plex Mono, ground `#FAF7F0`, white surfaces, ink `#16140F`, pill buttons, mono uppercase labels, dark footer. Fonts are self-hosted (both are SIL OFL). | Confirmed |
 | D5 | Component colours follow the concept: **1 green `#1E6B52`**, **2 turmeric `#E8A92A`** (ink text), **3 terracotta `#B8492C`**, **4 indigo `#3144A6`**. | Confirmed for 1, 4 (concept style page). 2, 3 taken from the concept's overlapping-circles logo. |
 | D6 | The **"I want to…" flow stays** as the main way in: on the home page (across components), and on each component overview. Component 4 uses the booklet's own six items. | Confirmed |
@@ -89,6 +89,8 @@ Status: **Confirmed** by the owner, or **Assumed** (made to keep moving; needs c
 | D27 | **One vocabulary for Language: Before you start + Tools 1 to 5.** The booklet's route (Listen, Translate, Test, Library, Kahavat Relay) replaces the earlier Modules 1 to 3, the "six tools" count and the process-flow diagram. Each earlier page stays at its address and now hangs under the tool it belongs to as a "Go deeper" link: Meaning Card and Field Kit under Listen, Fidelity Protocol under Translate, Lens Audit under Test, the two libraries under Library. On those pages the step bar keeps the parent tool lit and the breadcrumb and button lead back to it. The booklet's Meaning Card (short: said, observed, inferred, what it meant, correction) and the site's full card are the same card at two levels of detail, and the Meaning Card page now says so with a line-by-line table. New questions loop back to Tool 1 · Listen, as the booklet says. Lens N is "New (the form's own words: nomenclature)" and Lens P is "Proxy". The positionality prompts are the union of the site's five and the booklet's five (seven), written once in `templates/kit-cards.json` and shown on Before you start. | Assumed: how the request was met. Confirm |
 | D28 | **Reverse thick translation is the centre of Language and is easy to find.** The booklet only touches it lightly, so the site gives it a tab of its own on Translate (three directions with their questions, the reading of the result, small signals, the glossary entry), a feature section on the Language overview, a marked row in the route, its own lines in "I want to…" and search, and a redirect from the old methodology page. The two-direction and three-direction sections of the old methodology page are one set of three directions now. The three directions are kept apart from the three lenses (N, P, T) in Test. | Confirmed (asked for) |
 | D29 | **Colour stays with the component, also in Components 2 and 3.** The booklet colours each tool's guide page differently (indigo, terracotta, turmeric), which would put Component 4's indigo on a Component 2 page (D20). So in Components 2 and 3 the guide page image sits under the text, one click away, and the text uses the two columns. Components 1 and 4 keep the page beside the text. Component 2 takes turmeric, Component 3 terracotta. The printable Language cards now use two depths of terracotta too. | Assumed: follows D20. Confirm (Q14) |
+
+| D30 | **The toolkit is titled "Beyond the Edge Case" and says one thing first.** Title: *Beyond the Edge Case*. Description (also the meta description and the tagline under the title): *A toolkit for designing in Indian contexts by questioning the universal assumptions behind what gets treated as an exception.* The owner's introductory statement sits straight under the hero (`EdgeIntro`): the four opening sentences, "unusual to the system does not necessarily mean unusual to the person", "Beyond the Edge Case is a toolkit for finding and investigating these situations before they are reduced to exceptions", and the move from "How do I accommodate this edge case?" to "What made this an edge case in the first place?". The central line, **"What gets classified as an edge case depends on the baseline we design from."**, is the next block on the home page, set large on ink with the larger idea beside it ("The goal is not to replace one universal with another…"), and the same band opens About (`CentralLine`). All of it is written once, in `intro` in `src/data/site.ts`. The section heading over the introduction ("Start from the situation, not the default.") is ours. | Confirmed (asked for). The heading is ours: confirm |
 
 ### Earlier decisions that still apply (Language component)
 
@@ -168,6 +170,7 @@ Fuller wireframes, a simplified wireframe, and task flows are in the owner's Fig
 | Q12 | Reflection has no colour of its own yet, so it uses neutral ink (D20). Does it get one? Turmeric is Component 2's. |
 | Q14 | The booklet colours each Component 2 and 3 tool page differently (indigo, terracotta, turmeric). The site keeps colour = component (D29). Should the booklet be recoloured to match, so the page images agree with the site? |
 | Q15 | Wording check for Components 2 and 3: the connecting copy (section headings such as "Start with their world", "Then hand it on", "Six things to do first"), the "I want to…" lines we added, and the way the Meaning Card page maps the short card to the full card are ours. Confirm, and see Q10. |
+| Q17 | The booklets (`designing-for-the-indian-context-booklet.pdf`, `components-2-3-booklet.pdf`), the card kit and the printed Language cards still say "Designing for the Indian Context". The site says Beyond the Edge Case (D30). The final booklet was promised in the same message as the rename but was not attached, so the PDFs, their file names and the page images are unchanged until it arrives. | 
 | Q16 | The six-page Component 02 draft repeated the booklet. Anything in it that should stay out? Everything it added is folded in (D26). |
 | Q13 | **Resolved (D25):** the filled examples are native HTML. Still open: the Journey Strip (p.4.04), the Visual Toolkit photos (p.4.05) and the participant field cards (p.4.22) are page images, and so are the blank templates. Rebuild them the same way? |
 
@@ -182,6 +185,13 @@ Fuller wireframes, a simplified wireframe, and task flows are in the owner's Fig
 - Decide what a Component 1 tool page shows in Cards mode beyond opening the Card kit tab first.
 
 ## 9. Change log (newest first)
+
+### 2026-09-30 · Retitled "Beyond the Edge Case" (D30)
+Requested: new title and description, the owner's introductory statement, the central line as one of the toolkit's central statements, and the "one universal for another" idea after it.
+
+- Title and description updated in `site.ts` (header, footer, page titles, meta, README, `package.json`, CSS header comment). The home page title now reads "Beyond the Edge Case: a toolkit for designing in Indian contexts".
+- New home sections: **Introduction** (`EdgeIntro`) and **The central idea** (`CentralLine`, on ink); **About** opens with the central line. The words live once in `intro` in `src/data/site.ts`.
+- Not changed: the booklet PDFs and the card kit (see Q17).
 
 ### 2026-09-30 · Components 2 and 3 built from the new booklet
 Requested: use the two new PDFs (the 36-page Components 2 + 3 booklet as the main process, and the six-page Component 02 draft) to build out Visual culture and Language on the site, fix the gaps and inconsistencies, leave nothing out and repeat nothing, and give reverse thick translation real emphasis in Language.

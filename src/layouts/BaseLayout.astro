@@ -15,7 +15,7 @@ interface Props {
 }
 
 const { title, description = site.description, component } = Astro.props;
-const pageTitle = title ? `${title} · ${site.name}` : `${site.name}: ${site.tagline}`;
+const pageTitle = title ? `${title} · ${site.name}` : `${site.name}: a toolkit for designing in Indian contexts`;
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
 ---
 

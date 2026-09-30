@@ -1,6 +1,8 @@
-# Designing for the Indian Context
+# Beyond the Edge Case
 
-A public website for **Designing for the Indian Context**, a toolkit from BITSDES 2024–28: tools for reading products, pictures, language and people's material lives, before you design for them. It is for design students, product teams, NGO and public-service teams, and field researchers.
+A public website for **Beyond the Edge Case**, a toolkit from BITSDES 2024–28 for designing in Indian contexts by questioning the universal assumptions behind what gets treated as an exception. It is for design students, product teams, NGO and public-service teams, and field researchers.
+
+> What gets classified as an edge case depends on the baseline we design from.
 
 The toolkit is built in **components**. Each is a different way of reading the world a product will land in, and each works on its own.
 
