@@ -12,7 +12,7 @@ The toolkit is built in **components**. Each is a different way of reading the w
 | **4 · Reading Material Reality** | Live | What people have around them, what it costs, and who they lean on. Build, Break, Weigh, Say. |
 | **Reflection** | Coming next | Placeholder page only. |
 
-Every tool page has four tabs, in the same order: **Guide · Example · Blank template · Card kit** (the card kit is Component 1 only). The home page leads with an **"I want to…"** index that opens the right tool for the job.
+Every tool page has four tabs, in the same order: **Guide · Example · Blank template · Card kit** (the card kit is Component 1 only). The home page leads with an **"I want to…"** index, one card per component, that opens the right tool for the job. A sticky strip keeps every component one click away, and **Find a tool** (press `/`) searches every tool, step and page.
 
 > **Working on this repo?** Read [`CONTEXT.md`](CONTEXT.md) first. It records the project's context, decisions, open questions and a change log, and it is updated with every change. [`CLAUDE.md`](CLAUDE.md) has the working rules for AI assistants.
 
@@ -61,7 +61,10 @@ python3 scripts/extract-booklet-assets.py   # regenerate page images and split P
 │   └── build-templates.mjs        Component 3 PDFs and CSV from /templates
 ├── templates/                     source definitions for the Component 3 printable cards
 └── src/
-    ├── components/                Header, Footer, GoalIndex, ComponentRail, PageFigure, DownloadCard, …
+    ├── components/                Header, ComponentNav (sticky strip), Finder (search), ComponentStepper, Section, PageHead,
+    │                              GoalIndex, PageFigure, DownloadCard, Footer, …
+    │   └── examples/              the 14 filled examples as HTML (Ex106, Ex108, … Ex420), ExFrame (frame + "compare with the
+    │                              booklet page"), Tag, Lines, and index.ts (booklet page id → component)
     ├── data/
     │   ├── components.ts          the components (order, colour, status, blurb)
     │   ├── goals.ts               the "I want to…" index, all components
@@ -69,7 +72,8 @@ python3 scripts/extract-booklet-assets.py   # regenerate page images and split P
     │   ├── booklet/               Components 1 and 4: tools, parts, steps, words, examples (from the booklet)
     │   ├── card-kit.ts            card sheets S1–S8 and boards B1–B7
     │   ├── downloads.ts           every downloadable file
-    │   ├── rail.ts                the left rail on component pages
+    │   ├── rail.ts                the step bar on component pages (Components 1, 3 and 4)
+    │   ├── finder.ts              everything the "Find a tool" search can open
     │   ├── tools.ts, modules.ts   Component 3 tools and process flow
     │   └── library.ts, *.json     Component 3 Expression and Design Language libraries
     ├── layouts/                   BaseLayout, ComponentLayout, BookletToolLayout, ToolLayout (Language), ComingNextLayout
@@ -77,6 +81,15 @@ python3 scripts/extract-booklet-assets.py   # regenerate page images and split P
     ├── styles/global.css          design tokens and shared styles
     └── utils/                     url helper, page-image lookup, Fidelity Protocol rule
 ```
+
+## Design system
+
+Everything visual is a token in `src/styles/global.css`; components use the tokens, not raw numbers.
+
+- **Spacing** is a multiple of 8 px (`--sp-1` = 8 px … `--sp-16` = 128 px; `--sp-half` = 4 px for hairlines). **Type** follows a fixed scale (`--fs-xs` 12 px … `--fs-display`). **Radii** are 8, 16 and 24 px.
+- **Colour means the component and nothing else**: `--c1` green, `--c2` turmeric, `--c3` terracotta, `--c4` indigo, each with a `-tint` and a text-safe `-deep`. Set `data-c="c1"` (and so on) on any element and `--accent`, `--accent-deep`, `--accent-tint` and `--accent-ink` follow. Status and warnings are deliberately colour-neutral. Do not use one component's colour for another idea.
+- **Layout**: `.wrap` is fluid up to 1920 px. Use `Section` (with `split` for a heading-left, content-right layout) and `PageHead` so pages share one structure.
+- **Accessibility** is checked with axe-core (WCAG 2.2 AA) at 1440, 390 and 320 px. Keep it that way: 4.5:1 text contrast, a visible focus ring (`:focus-visible` is set globally, never remove it), 44 px targets for primary controls, and words or glyphs alongside any colour.
 
 ## Pages
 
@@ -116,11 +129,21 @@ The workflow sets both for the GitHub Pages project URL. Internal links go throu
 Components 1 and 4 come from the **Toolkit Booklet** and the **Component 1 Card Kit** (two PDFs in `public/downloads/`).
 
 - **Words are copied from the booklet**, not paraphrased, and live in `src/data/booklet/`. Where the site adds text (a few card-kit intros, the Component 1 "I want to…" phrases, UI labels), `CONTEXT.md` says so.
-- **Examples and blanks are the booklet's own pages**, shown as images with a text alternative and the steps beside them. Filled examples are illustrative, as the booklet says. Never invent quotes or data on the site.
+- **Examples are rebuilt as HTML** from the booklet's own geometry and text (see `src/components/examples/` and D25 in `CONTEXT.md`), with the original page one click away under "Compare with the booklet page". **Blank templates are the booklet's own pages**, shown as images with a text alternative and the steps beside them. Filled examples are illustrative, as the booklet says. Never invent quotes or data on the site.
 - **`scripts/extract-booklet-assets.py`** renders every booklet and card-kit page to WebP, cuts the blank templates and card-kit sheets and boards into their own PDFs, and writes `src/data/booklet-assets.json`. Run it only when the source PDFs change (`pip install pymupdf pillow`); commit the outputs.
 - **Page ids** follow the printed page numbers: `1.06` is the Media Story example, `4.12` is in Component 4. Card-kit ids are `S1`…`S8` and `B1`…`B7`.
 
 To change a tool's wording, edit `src/data/booklet/existing-products.ts` or `material-reality.ts`. The tool page, the rail, the "I want to…" index (Component 4) and the download list all read from those files.
+
+## Adding or changing a native example
+
+Each filled example is one Astro component in `src/components/examples/`, wrapped in `ExFrame` and registered in `index.ts` under its booklet page id. A page id with no entry falls back to the page image, so examples can be added one at a time.
+
+- Size everything with `calc(var(--u) * N)` where N is points on the printed A4 page (511.5 pt content width). Read the numbers from the PDF (text lines with position, size and colour; shapes with fill and stroke).
+- Keep the printed line breaks with `Lines.astro` and `white-space: nowrap`; they switch off below 45 rem so text can wrap.
+- Use real tables for grids, hide decorative SVG from assistive technology, and give every diagram a text list.
+- Compare with a crop of the PDF page at the same width before committing.
+
 
 ## Adding a new downloadable file
 

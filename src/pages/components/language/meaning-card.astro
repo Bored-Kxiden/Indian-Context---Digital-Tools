@@ -139,7 +139,7 @@ const steps = [
 <style>
   .split {
     display: grid;
-    gap: 1.5rem 2.5rem;
+    gap: var(--sp-3) var(--sp-5);
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
     align-items: start;
   }
@@ -148,7 +148,7 @@ const steps = [
     margin: 0;
     padding: 0;
     display: grid;
-    gap: 1rem;
+    gap: var(--sp-2);
     counter-reset: step;
     max-width: var(--prose);
   }
@@ -156,7 +156,7 @@ const steps = [
     counter-increment: step;
     position: relative;
     margin: 0;
-    padding-left: 3rem;
+    padding-left: var(--sp-6);
   }
   .steps li::before {
     content: counter(step);
@@ -175,14 +175,14 @@ const steps = [
   .steps b {
     display: block;
     font-family: var(--font-head);
-    font-size: 1.1rem;
+    font-size: var(--fs-body);
   }
   .steps p {
-    margin: 0.15rem 0 0;
+    margin: var(--sp-half) 0 0;
     color: var(--ink-soft);
   }
   .after {
     max-width: var(--prose);
-    margin-top: 1.5rem;
+    margin-top: var(--sp-3);
   }
 </style>

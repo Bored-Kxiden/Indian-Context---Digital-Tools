@@ -1,0 +1,167 @@
+---
+import PageFigure from '../PageFigure.astro';
+import { bookletImage } from '../../utils/assets';
+
+// The frame around every native example: the booklet page's filled example, rebuilt as HTML.
+//
+// Exactness: the example is laid out from the booklet's own geometry (an A4 page, 511.5 pt of
+// content width). Everything is sized in --u, one point of that page, so proportions, gaps and
+// line breaks match the printed page at any width. Below a small floor, type stops shrinking
+// and the layout reflows instead (see the container queries in each example).
+//
+// The booklet page itself stays one click away, to check the two against each other.
+interface Props {
+  /** Booklet page id, e.g. "1.06". */
+  page: string;
+  /** Alt text of the booklet page image, also used as the description of diagrams. */
+  alt: string;
+  /** The illustrative-example note printed under the page. */
+  caption: string;
+}
+const { page, alt, caption } = Astro.props;
+---
+
+<figure class="exf">
+  <div class="exf-box">
+    <div class="ex">
+      <slot />
+    </div>
+  </div>
+  <figcaption>{caption}</figcaption>
+  <details class="exf-compare">
+    <summary>Compare with the booklet page <span>p.{page}</span></summary>
+    <PageFigure image={bookletImage(page)} alt={alt} />
+  </details>
+</figure>
+
+<style is:global>
+  .exf {
+    margin: 0;
+    max-width: 72rem;
+  }
+  .exf-box {
+    container-type: inline-size;
+    background: #f5f0e6;
+    border: 2px solid var(--line-strong);
+    border-radius: var(--r-md);
+    padding: clamp(12px, 3cqw, 28px);
+  }
+  .exf figcaption {
+    margin-top: var(--sp-1);
+    font-size: var(--fs-sm);
+    color: var(--muted);
+  }
+  .exf-compare {
+    margin-top: var(--sp-2);
+    border: 2px solid var(--line-strong);
+    border-radius: var(--r-md);
+    background: var(--surface);
+    padding: var(--sp-1) var(--sp-2);
+  }
+  .exf-compare summary {
+    cursor: pointer;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    gap: var(--sp-1);
+    font-weight: 700;
+    font-size: var(--fs-ui);
+  }
+  .exf-compare summary span {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    font-weight: 400;
+    color: var(--muted);
+  }
+  .exf-compare[open] summary {
+    margin-bottom: var(--sp-2);
+  }
+
+  /* ---- The booklet's page vocabulary, in points ---- */
+  /* Scroll regions and the example itself contain the visually-hidden helper text, so it can
+     never add to the page's own scroll width. */
+  .ex [role='region'] {
+    position: relative;
+  }
+  .ex {
+    position: relative;
+    --u: calc(100cqw / 511.5);
+    /* the booklet's own colours */
+    --bk-ink: #1c1a17;
+    --bk-muted: #5a544b;
+    --bk-indigo: #283a7a;
+    --bk-green: #2e5e4e;
+    --bk-yellow: #fbf1c6;
+    --bk-yellow-dot: #f2d14b;
+    --bk-teal: #d8eeec;
+    --bk-teal-dot: #3fa7a0;
+    --bk-lav: #dde1ee;
+    /* text never drops below a readable size; the layout reflows first */
+    --t-body: max(14px, calc(var(--u) * 10.5));
+    --t-lead: max(15px, calc(var(--u) * 11.2));
+    --t-head: max(16px, calc(var(--u) * 12));
+    --t-lbl: max(11px, calc(var(--u) * 7.1));
+    --t-tag: max(11px, calc(var(--u) * 6.8));
+    color: var(--bk-ink);
+    font-size: var(--t-body);
+    line-height: 1.35;
+    /* Bricolage's optical-size axis widens the letters at small sizes. The booklet was set at
+       print size, so pin each style to its print size (px = pt × 4/3) or text scales too narrow. */
+    font-optical-sizing: none;
+    font-variation-settings: 'opsz' 14;
+  }
+  /* Undo the site's running-text defaults (margins, balanced wrapping): the example wraps
+     exactly as the printed page does. */
+  .ex :is(p, ul, ol, li, dl, dd, dt, h3, h4, figure, blockquote) {
+    margin: 0;
+    text-wrap: wrap;
+    /* `text-wrap` also resets the wrap mode, so hand it back to the parent: an example that
+       sets `white-space: nowrap` (to keep the printed line breaks) must stay nowrap inside. */
+    text-wrap-mode: inherit;
+    text-wrap-style: auto;
+  }
+  .ex :is(ul, ol) {
+    padding: 0;
+    list-style: none;
+  }
+  .ex .lbl {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--t-lbl);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--bk-muted);
+    font-weight: 400;
+    line-height: 1.3;
+    margin: 0 0 calc(var(--u) * 1.5);
+  }
+  .ex .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: calc(var(--u) * 3);
+    height: calc(var(--u) * 13.4);
+    min-height: 1.7em;
+    padding: 0 calc(var(--u) * 5.5);
+    border-radius: calc(var(--u) * 3.5);
+    background: var(--bk-green);
+    color: #fff;
+    font-family: var(--font-mono);
+    font-size: var(--t-tag);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    line-height: 1;
+  }
+  .ex .tag svg {
+    width: 0.85em;
+    height: 1.05em;
+    flex: none;
+  }
+  /* Narrow: the printed line breaks give way to normal wrapping. */
+  @container (max-width: 45rem) {
+    .ex .b {
+      display: none;
+    }
+  }
+</style>

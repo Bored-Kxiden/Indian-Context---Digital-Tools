@@ -1,0 +1,55 @@
+---
+import Breadcrumb from './Breadcrumb.astro';
+
+// The heading block shared by every page that is not inside a component: breadcrumb,
+// optional chips, the title, an intro, and an optional right-hand column (`aside` slot).
+interface Props {
+  crumbs: { label: string; href?: string }[];
+  heading: string;
+  lead?: string;
+  chips?: string[];
+  eyebrow?: string;
+}
+
+const { crumbs, heading, lead, chips = [], eyebrow } = Astro.props;
+const hasAside = Astro.slots.has('aside');
+---
+
+<div class="page-head">
+  <div class:list={['wrap', 'head-grid', { 'has-aside': hasAside }]}>
+    <div class="hl">
+      <Breadcrumb items={crumbs} />
+      {eyebrow && <p class="eb">{eyebrow}</p>}
+      {chips.length > 0 && <div class="chip-row chips">{chips.map((c) => <span class="chip chip--quiet">{c}</span>)}</div>}
+      <h1>{heading}</h1>
+      {lead && <p class="lead">{lead}</p>}
+      <slot name="below" />
+    </div>
+    {hasAside && <div class="ha"><slot name="aside" /></div>}
+  </div>
+</div>
+
+<style>
+  .head-grid {
+    display: grid;
+    gap: var(--sp-4) var(--sp-8);
+    grid-template-columns: minmax(0, 1fr);
+    align-items: end;
+  }
+  @media (min-width: 64rem) {
+    .head-grid.has-aside {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    }
+  }
+  .chips {
+    margin-bottom: var(--sp-3);
+  }
+  h1 {
+    margin-bottom: var(--sp-2);
+    max-width: 18ch;
+  }
+  .lead {
+    margin-bottom: 0;
+    max-width: 44rem;
+  }
+</style>

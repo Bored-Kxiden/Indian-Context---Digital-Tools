@@ -1,0 +1,320 @@
+---
+import ExFrame from './ExFrame.astro';
+import Lines from './Lines.astro';
+
+// Booklet p.4.14 · Tool 2 Break, Part B: big players and the Cut (filled example).
+interface Props {
+  alt: string;
+  caption: string;
+}
+const { alt, caption } = Astro.props;
+
+// Who Meera depended on, and which need they carried (the diagram, as text).
+const players = [
+  { who: 'Father · 2 breaks', via: 'OTP + certificate', hot: true },
+  { who: 'Cybercafé owner · 1', via: 'PDF know-how' },
+  { who: 'Her own data pack · 1', via: 'Hostel Wi-Fi' },
+  { who: 'Nobody', via: 'Data runs out', hot: true },
+];
+---
+
+<ExFrame page="4.14" alt={alt} caption={caption}>
+  <div class="cb">
+    <figure class="map">
+      <svg viewBox="42.4 85.1 510.7 209.3" aria-hidden="true" focusable="false">
+        <g fill="none" stroke-linecap="butt">
+          <line x1="297.8" y1="189.8" x2="171.1" y2="142.4" stroke="#1c1a17" stroke-width="5.09" />
+          <line x1="297.8" y1="189.8" x2="425.8" y2="142.4" stroke="#1c1a17" stroke-width="1.82" />
+          <line x1="297.8" y1="189.8" x2="425.8" y2="240.7" stroke="#1c1a17" stroke-width="1.82" />
+          <line x1="297.8" y1="189.8" x2="171" y2="240.7" stroke="#a8432a" stroke-width="2" stroke-dasharray="4.4 3.4" />
+          <circle cx="171.15" cy="142.45" r="21" stroke="#a8432a" stroke-width="2.2" stroke-dasharray="3.55 2.48" />
+        </g>
+        <circle cx="171.15" cy="142.45" r="14.55" fill="#1c1a17" />
+        <circle cx="297.75" cy="189.75" r="20.35" fill="#283a7a" />
+        <polygon points="425.8,127.9 409.8,155.5 441.8,155.5" fill="#1c1a17" />
+        <rect x="414.2" y="229" width="23.3" height="23.3" fill="#1c1a17" />
+        <path d="M162.8 233.2 L179.4 249.6 M179.4 233.2 L162.8 249.6" stroke="#a8432a" stroke-width="3.4" fill="none" />
+        <g class="t">
+          <text x="297.75" y="193.9" class="m" text-anchor="middle">M</text>
+          <text x="171.3" y="179" class="b" text-anchor="middle">Father · 2 breaks</text>
+          <text x="425.75" y="171.7" class="b" text-anchor="middle">Cybercafé owner · 1</text>
+          <text x="171.15" y="268" class="b red" text-anchor="middle">Nobody</text>
+          <text x="425.7" y="267.7" class="b" text-anchor="middle">Her own data pack · 1</text>
+          <text x="190.1" y="154.6" class="e">OTP + CERTIFICATE</text>
+          <text x="337.4" y="154.6" class="e">PDF KNOW-HOW</text>
+          <text x="199.6" y="236.1" class="e red">DATA RUNS OUT</text>
+          <text x="337.4" y="236.1" class="e">HOSTEL WI-FI</text>
+        </g>
+      </svg>
+      <figcaption class="visually-hidden-wide">
+        <ul>
+          {players.map((p) => <li class:list={{ hot: p.hot }}><b>{p.who}</b> <span>{p.via}</span></li>)}
+        </ul>
+      </figcaption>
+    </figure>
+
+    <section class="cut">
+      <h4><svg viewBox="0 0 9 9" aria-hidden="true"><path d="M0.6 0.6 L8.4 8.4 M8.4 0.6 L0.6 8.4" stroke="currentColor" stroke-width="2.25" fill="none" /></svg>Cut: Father isn’t available</h4>
+      <div class="tw" tabindex="0" role="region" aria-label="The Cut: what depends on Father, the fallback and the outcome">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Depends on him</th>
+              <th scope="col">Fallback</th>
+              <th scope="col">Outcome</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">OTP on his phone</th>
+              <td>Waits till evening, retries next day</td>
+              <td class="ok"><b><span aria-hidden="true">✓</span> Done, a day late</b></td>
+            </tr>
+            <tr>
+              <th scope="row"><Lines lines={['Trip for the income', 'certificate']} /></th>
+              <td>No one else in the family can go</td>
+              <td class="bad"><b><span aria-hidden="true">✕</span> Application incomplete</b></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="share">
+      <p class="lbl">How could the product share his load?</p>
+      <p><Lines lines={['Let Meera choose her own number for the OTP. Let the certificate be requested online, so no', 'one has to travel.']} /></p>
+    </section>
+  </div>
+</ExFrame>
+
+<style is:global>
+  .cb {
+    --bk-terra: #a8432a;
+    display: grid;
+    gap: calc(var(--u) * 11.4);
+  }
+  .cb .map {
+    margin: 0;
+    background: #fff;
+    border: calc(var(--u) * 0.75) solid var(--bk-ink);
+    border-radius: calc(var(--u) * 12);
+    overflow: hidden;
+  }
+  .cb .map svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .cb .map text {
+    font-family: var(--font-body);
+    fill: var(--bk-ink);
+    paint-order: stroke;
+    stroke: #fff;
+    stroke-width: 2.4px;
+    stroke-linejoin: round;
+  }
+  .cb .map .b {
+    font-size: 10.2px;
+    font-weight: 700;
+    font-variation-settings: 'opsz' 13.6;
+  }
+  .cb .map .m {
+    font-size: 11.6px;
+    font-weight: 700;
+    font-variation-settings: 'opsz' 15.5;
+    fill: #fff;
+    stroke: none;
+  }
+  .cb .map .e {
+    font-family: var(--font-mono);
+    font-size: 7.3px;
+    letter-spacing: 0.08em;
+    fill: var(--bk-muted);
+  }
+  .cb .map .red {
+    fill: var(--bk-terra);
+  }
+  /* The picture carries the map; this list carries the same words for everyone else. */
+  .cb .visually-hidden-wide {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .cb .visually-hidden-wide ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .cb .cut {
+    background: #fff;
+    border: calc(var(--u) * 1.5) solid var(--bk-terra);
+    border-radius: calc(var(--u) * 12);
+    overflow: hidden;
+  }
+  .cb .cut h4 {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--u) * 9.8);
+    padding: calc(var(--u) * 7) calc(var(--u) * 12.7) calc(var(--u) * 10.5);
+    font-size: max(17px, calc(var(--u) * 13.5));
+    font-variation-settings: 'opsz' 18;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0;
+  }
+  .cb .cut h4 svg {
+    flex: none;
+    width: max(11px, calc(var(--u) * 9));
+    height: max(11px, calc(var(--u) * 9));
+    color: var(--bk-terra);
+  }
+  .cb .cut table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    font-size: max(14px, calc(var(--u) * 10.5));
+    line-height: 1.36;
+  }
+  .cb .cut col,
+  .cb .cut th:nth-child(1) {
+    width: auto;
+  }
+  .cb .cut th,
+  .cb .cut td {
+    text-align: left;
+    font-weight: 400;
+    vertical-align: middle;
+    padding: 0 0 0 calc(var(--u) * 9.7);
+    white-space: nowrap;
+  }
+  .cb .cut thead th {
+    height: calc(var(--u) * 26.2);
+    background: #f1ddd6;
+    border-top: calc(var(--u) * 0.8) solid var(--bk-ink);
+    border-bottom: calc(var(--u) * 0.7) solid var(--bk-ink);
+    font-family: var(--font-mono);
+    font-size: max(11px, calc(var(--u) * 7.5));
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--bk-ink);
+  }
+  .cb .cut tbody tr:first-child > * {
+    height: calc(var(--u) * 28.6);
+    border-bottom: calc(var(--u) * 0.7) solid var(--bk-ink);
+  }
+  .cb .cut tbody tr:last-child > * {
+    height: calc(var(--u) * 43.5);
+  }
+  .cb .cut td:nth-child(2) {
+    width: calc(var(--u) * 181.6);
+  }
+  .cb .cut th:nth-child(2) {
+    width: calc(var(--u) * 181.6);
+  }
+  .cb .cut th:nth-child(3),
+  .cb .cut td:nth-child(3) {
+    width: calc(var(--u) * 158.9);
+  }
+  .cb .cut td b {
+    font-weight: 700;
+  }
+  .cb .cut td.bad {
+    background: var(--bk-terra);
+    color: #fff;
+  }
+
+  .cb .share {
+    background: var(--bk-ink);
+    color: var(--bk-cream, #f5f0e6);
+    border-radius: calc(var(--u) * 12);
+    padding: calc(var(--u) * 9.6) calc(var(--u) * 12) calc(var(--u) * 12.3);
+  }
+  .cb .share .lbl {
+    margin: 0 0 calc(var(--u) * 3.5);
+    color: #e3a72f;
+    font-size: max(11px, calc(var(--u) * 8.2));
+  }
+  .cb .share p:last-child {
+    font-size: max(14px, calc(var(--u) * 10.9));
+    font-variation-settings: 'opsz' 14.5;
+    line-height: 1.375;
+    white-space: nowrap;
+  }
+
+  @container (max-width: 45rem) {
+    .cb .map {
+      border-radius: var(--r-md);
+      display: grid;
+    }
+    .cb .map svg text {
+      display: none;
+    }
+    .cb .map svg {
+      max-width: 22rem;
+      margin-inline: auto;
+    }
+    .cb .visually-hidden-wide {
+      position: static;
+      width: auto;
+      height: auto;
+      overflow: visible;
+      clip-path: none;
+      white-space: normal;
+      padding: 0 var(--sp-2) var(--sp-2);
+    }
+    .cb .visually-hidden-wide ul {
+      display: grid;
+      gap: var(--sp-1);
+    }
+    .cb .visually-hidden-wide li {
+      margin: 0;
+      padding: var(--sp-1) var(--sp-2);
+      border: 1.5px solid var(--bk-ink);
+      border-radius: var(--r-sm);
+      display: grid;
+      gap: 2px;
+      font-size: 15px;
+    }
+    .cb .visually-hidden-wide li.hot {
+      border-color: var(--bk-terra);
+    }
+    .cb .visually-hidden-wide li.hot b {
+      color: var(--bk-terra);
+    }
+    .cb .visually-hidden-wide li span {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--bk-muted);
+    }
+    .cb .cut {
+      border-radius: var(--r-md);
+    }
+    .cb .cut th,
+    .cb .cut td {
+      width: auto !important;
+      white-space: normal;
+      padding: 8px 10px;
+      height: auto !important;
+    }
+    .cb .cut thead th {
+      font-size: 11px;
+      letter-spacing: 0.04em;
+    }
+    .cb .cut h4 {
+      padding: 12px 10px;
+    }
+    .cb .share {
+      padding: var(--sp-2);
+      border-radius: var(--r-md);
+    }
+    .cb .share p:last-child {
+      white-space: normal;
+    }
+  }
+</style>

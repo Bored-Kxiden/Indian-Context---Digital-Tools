@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Breadcrumb from '../../components/Breadcrumb.astro';
+import PageHead from '../../components/PageHead.astro';
+import Section from '../../components/Section.astro';
 import Icon from '../../components/Icon.astro';
 import { afterTheToolkit, whyThisExists } from '../../data/booklet/shared';
 import { site } from '../../data/site';
@@ -8,122 +9,81 @@ import { url } from '../../utils/url';
 ---
 
 <BaseLayout title="About" description="Who the toolkit is for, what to do after it, and where it comes from.">
-  <div class="page-head">
-    <div class="wrap">
-      <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'About' }]} />
-      <h1>About</h1>
-      <p class="lead">{site.tagline}</p>
-    </div>
-  </div>
+  <PageHead crumbs={[{ label: 'Home', href: '/' }, { label: 'About' }]} heading="About" lead={site.tagline} />
 
-  <section class="section" aria-labelledby="for-h">
-    <div class="wrap two">
-      <div>
-        <p class="eb">Who it’s for</p>
-        <h2 id="for-h">{whyThisExists.title}</h2>
-        <p class="big">{whyThisExists.body}</p>
-        <ul class="chip-row made">
-          {whyThisExists.madeFor.map((m) => <li class="chip chip--quiet">{m}</li>)}
-        </ul>
-      </div>
-      <div class="card from">
-        <p class="eb">Where it comes from</p>
-        <p>
-          {site.name} is a toolkit from <b>BITSDES 2024–28</b>. It is built in components: each one is a different way of reading the
-          world a product will land in. Each works on its own.
-        </p>
-        <p>
-          This site holds the components that are ready, with their guides, filled examples, blank templates and the card kit. More
-          components will be added as they’re finished.
-        </p>
-        <p class="links">
-          <a class="link-arrow" href={url('/components/')}>See the components <Icon name="arrow" size={18} /></a>
-          <a class="link-arrow" href={url('/components/language/methodology/')}>How the language work is built <Icon name="arrow" size={18} /></a>
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <section class="section section--white" aria-labelledby="after-h">
-    <div class="wrap">
-      <div class="section-head">
-        <p class="eb">{afterTheToolkit.eyebrow}</p>
-        <h2 id="after-h">{afterTheToolkit.title}</h2>
-      </div>
-      <ol class="after">
-        {
-          afterTheToolkit.steps.map((s, i) => (
-            <li>
-              <span class="n">{i + 1}</span>
-              <span>{s}</span>
-            </li>
-          ))
-        }
-      </ol>
-      <div class="callout callout--ink principle">
-        <strong>{afterTheToolkit.formPrinciple.label}</strong>
-        <p>{afterTheToolkit.formPrinciple.text}</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" aria-labelledby="read-h">
-    <div class="wrap two">
-      <div>
-        <p class="eb">Further reading</p>
-        <h2 id="read-h">Work this toolkit leans on.</h2>
-      </div>
-      <ul class="reading">
-        {afterTheToolkit.furtherReading.map((r) => <li>{r}</li>)}
-      </ul>
-    </div>
-  </section>
-
-  <section class="section section--white" aria-labelledby="open-h">
-    <div class="wrap two">
-      <div>
-        <p class="eb">Open</p>
-        <h2 id="open-h">The code is open.</h2>
-        <p class="big">
-          The website’s code is on GitHub under the {site.licenseName} licence. The booklet’s closing invitation stands: write your own
-          tool card, and share it back.
-        </p>
-      </div>
-      <p class="btns">
-        <a class="btn btn--outline" href={site.repoUrl} rel="noopener">View on GitHub <Icon name="arrow" size={18} /></a>
-        <a class="btn btn--accent" href={url('/downloads/')}><Icon name="download" size={18} /> Downloads</a>
+  <Section id="for" eyebrow="Who it’s for" title={whyThisExists.title} split>
+    <p class="big">{whyThisExists.body}</p>
+    <ul class="chip-row made" aria-label="Made for">
+      {whyThisExists.madeFor.map((m) => <li class="chip chip--quiet">{m}</li>)}
+    </ul>
+    <div class="card from">
+      <p class="eb">Where it comes from</p>
+      <p>
+        {site.name} is a toolkit from <b>BITSDES 2024–28</b>. It is built in components: each one is a different way of reading the
+        world a product will land in. Each works on its own.
+      </p>
+      <p>
+        This site holds the components that are ready, with their guides, filled examples, blank templates and the card kit. More
+        components will be added as they’re finished.
+      </p>
+      <p class="links">
+        <a class="link-arrow" href={url('/components/')}>See the components <Icon name="arrow" size={20} /></a>
+        <a class="link-arrow" href={url('/components/language/methodology/')}>How the language work is built <Icon name="arrow" size={20} /></a>
       </p>
     </div>
-  </section>
+  </Section>
+
+  <Section id="after" eyebrow={afterTheToolkit.eyebrow} title={afterTheToolkit.title} tone="white" split>
+    <ol class="after">
+      {
+        afterTheToolkit.steps.map((s, i) => (
+          <li>
+            <span class="n" aria-hidden="true">{i + 1}</span>
+            <span>{s}</span>
+          </li>
+        ))
+      }
+    </ol>
+    <div class="callout callout--ink principle">
+      <strong>{afterTheToolkit.formPrinciple.label}</strong>
+      <p>{afterTheToolkit.formPrinciple.text}</p>
+    </div>
+  </Section>
+
+  <Section id="read" eyebrow="Further reading" title="Work this toolkit leans on." split>
+    <ul class="reading">
+      {afterTheToolkit.furtherReading.map((r) => <li>{r}</li>)}
+    </ul>
+  </Section>
+
+  <Section id="open" eyebrow="Open" title="The code is open." tone="white" split>
+    <p class="big">
+      The website’s code is on GitHub under the {site.licenseName} licence. The booklet’s closing invitation stands: write your own tool
+      card, and share it back.
+    </p>
+    <p class="btns">
+      <a class="btn btn--outline" href={site.repoUrl} rel="noopener">View on GitHub <Icon name="arrow" size={20} /></a>
+      <a class="btn btn--accent" href={url('/downloads/')}><Icon name="download" size={20} /> Downloads</a>
+    </p>
+  </Section>
 </BaseLayout>
 
 <style>
-  .page-head h1 {
-    font-size: clamp(2.6rem, 7vw, 5rem);
-    margin-bottom: 1rem;
-  }
-  .page-head .lead {
-    max-width: 44rem;
-    margin: 0;
-  }
-  .two {
-    display: grid;
-    gap: 2.5rem 4rem;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
-    align-items: start;
-  }
   .big {
-    font-size: 1.15rem;
+    font-size: var(--fs-lead);
     color: var(--ink-soft);
-    max-width: 36rem;
+    max-width: var(--measure);
   }
   .made {
     list-style: none;
     padding: 0;
-    margin: 1.5rem 0 0;
+    margin: var(--sp-3) 0 var(--sp-4);
   }
   .made li {
     margin: 0;
+  }
+  .from {
+    max-width: 44rem;
   }
   .from p {
     color: var(--ink-soft);
@@ -133,35 +93,36 @@ import { url } from '../../utils/url';
   }
   .links {
     display: grid;
-    gap: 0.6rem;
-    margin: 1.25rem 0 0;
+    gap: var(--sp-1);
+    margin: var(--sp-2) 0 0;
   }
   .after {
     list-style: none;
-    margin: 0 0 2rem;
+    margin: 0 0 var(--sp-4);
     padding: 0;
     display: grid;
-    gap: 1rem;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: var(--sp-2);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
   }
   .after li {
     margin: 0;
     display: flex;
-    gap: 0.9rem;
+    gap: var(--sp-2);
     align-items: flex-start;
-    padding: 1.2rem 1.3rem;
-    border: 1px solid var(--line-strong);
-    border-radius: var(--radius);
+    padding: var(--sp-3);
+    border: 2px solid var(--line-strong);
+    border-radius: var(--r-md);
     background: var(--ground);
     font-weight: 600;
+    font-size: var(--fs-body);
     line-height: 1.4;
   }
   .after .n {
     flex: none;
     display: grid;
     place-items: center;
-    width: 2rem;
-    height: 2rem;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     background: var(--ink);
     color: #fff;
@@ -172,26 +133,28 @@ import { url } from '../../utils/url';
   }
   .principle p {
     margin: 0;
-    font-size: 1.25rem;
-    font-weight: 600;
+    font-size: var(--fs-h3);
+    font-weight: 700;
+    line-height: 1.3;
   }
   .reading {
     list-style: none;
     padding: 0;
     margin: 0;
-    border-top: 1px solid var(--line-strong);
+    border-top: 2px solid var(--line-strong);
+    max-width: 44rem;
   }
   .reading li {
     margin: 0;
-    padding: 0.85rem 0.25rem;
+    padding: var(--sp-2) var(--sp-1);
     border-bottom: 1px solid var(--line-strong);
-    font-size: 1.1rem;
+    font-size: var(--fs-lead);
     font-weight: 600;
   }
   .btns {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.75rem;
-    margin: 0;
+    gap: var(--sp-2);
+    margin: var(--sp-3) 0 0;
   }
 </style>

@@ -157,7 +157,7 @@ const lensOrder: LensCode[] = ['N', 'P', 'T'];
       <p class="tag">{example.id} · {example.type} · Sample</p>
       <p class="pattern">“{example.pattern}”</p>
       <p class="meta">{example.context} · Audience: {example.audience}</p>
-      <div class="table-wrap">
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Table: scroll sideways to see every column">
         <table>
           <thead>
             <tr>
@@ -199,14 +199,14 @@ const lensOrder: LensCode[] = ['N', 'P', 'T'];
 <style>
   .lenses {
     display: grid;
-    gap: 1.25rem;
+    gap: var(--sp-3);
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
   }
   .lens header {
     display: flex;
     align-items: center;
-    gap: 0.85rem;
-    margin-bottom: 0.75rem;
+    gap: var(--sp-2);
+    margin-bottom: var(--sp-2);
   }
   .code {
     flex: none;
@@ -223,7 +223,7 @@ const lensOrder: LensCode[] = ['N', 'P', 'T'];
   }
   .lname {
     margin: 0;
-    font-size: 0.78rem;
+    font-size: var(--fs-xs);
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -233,16 +233,16 @@ const lensOrder: LensCode[] = ['N', 'P', 'T'];
     margin: 0;
   }
   .lens h4 {
-    margin: 1rem 0 0.3rem;
+    margin: var(--sp-2) 0 var(--sp-half);
     font-family: var(--font-body);
-    font-size: 0.8rem;
+    font-size: var(--fs-sm);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--ink-soft);
   }
   .lens ul {
     margin-bottom: 0;
-    font-size: 0.95rem;
+    font-size: var(--fs-ui);
   }
   .question {
     font-weight: 600;
@@ -252,7 +252,7 @@ const lensOrder: LensCode[] = ['N', 'P', 'T'];
     margin: 0;
     padding: 0;
     display: grid;
-    gap: 1rem;
+    gap: var(--sp-2);
     counter-reset: step;
     max-width: var(--prose);
   }
@@ -260,7 +260,7 @@ const lensOrder: LensCode[] = ['N', 'P', 'T'];
     counter-increment: step;
     position: relative;
     margin: 0;
-    padding-left: 3rem;
+    padding-left: var(--sp-6);
   }
   .steps li::before {
     content: counter(step);
@@ -279,18 +279,18 @@ const lensOrder: LensCode[] = ['N', 'P', 'T'];
   .steps b {
     display: block;
     font-family: var(--font-head);
-    font-size: 1.1rem;
+    font-size: var(--fs-body);
   }
   .steps p {
-    margin: 0.15rem 0 0;
+    margin: var(--sp-half) 0 0;
     color: var(--ink-soft);
   }
   .record {
     max-width: 52rem;
   }
   .tag {
-    margin: 0 0 0.4rem;
-    font-size: 0.78rem;
+    margin: 0 0 var(--sp-1);
+    font-size: var(--fs-xs);
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -298,12 +298,12 @@ const lensOrder: LensCode[] = ['N', 'P', 'T'];
   }
   .pattern {
     font-family: var(--font-head);
-    font-size: 1.2rem;
-    margin-bottom: 0.3rem;
+    font-size: var(--fs-lead);
+    margin-bottom: var(--sp-half);
   }
   .meta {
     color: var(--ink-soft);
-    font-size: 0.92rem;
+    font-size: var(--fs-ui);
   }
   .table-wrap {
     overflow-x: auto;
@@ -312,18 +312,18 @@ const lensOrder: LensCode[] = ['N', 'P', 'T'];
   td {
     text-align: left;
     vertical-align: top;
-    padding: 0.65rem 0.75rem;
+    padding: var(--sp-1) var(--sp-2);
     border-bottom: 1px solid var(--line);
-    font-size: 0.95rem;
+    font-size: var(--fs-ui);
   }
   thead th {
-    font-size: 0.78rem;
+    font-size: var(--fs-xs);
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--ink-soft);
   }
   .after {
-    margin: 1rem 0 0;
-    font-size: 0.95rem;
+    margin: var(--sp-2) 0 0;
+    font-size: var(--fs-ui);
   }
 </style>

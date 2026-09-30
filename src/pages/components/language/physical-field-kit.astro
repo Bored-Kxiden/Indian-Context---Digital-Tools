@@ -122,16 +122,16 @@ const total = decks.reduce((n, d) => n + d.cards.length, 0) + 1 + kit.blankMeani
 
 <style>
   .head {
-    margin-bottom: 0.6rem;
+    margin-bottom: var(--sp-1);
   }
   .when {
-    margin: 0 0 0.6rem;
-    font-size: 0.85rem;
+    margin: 0 0 var(--sp-1);
+    font-size: var(--fs-sm);
     font-weight: 600;
     color: var(--ink-soft);
   }
   details {
-    margin-top: 0.5rem;
+    margin-top: var(--sp-1);
   }
   summary {
     cursor: pointer;
@@ -139,12 +139,12 @@ const total = decks.reduce((n, d) => n + d.cards.length, 0) + 1 + kit.blankMeani
     color: var(--accent);
   }
   .titles {
-    margin: 0.75rem 0 0;
-    padding-left: 1.2rem;
-    font-size: 0.95rem;
+    margin: var(--sp-2) 0 0;
+    padding-left: var(--sp-2);
+    font-size: var(--fs-ui);
   }
   .titles ul {
-    margin: 0.2rem 0 0.6rem;
+    margin: var(--sp-half) 0 var(--sp-1);
     color: var(--ink-soft);
   }
 </style>

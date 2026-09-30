@@ -1,5 +1,6 @@
 ---
 import ComponentLayout from '../../../layouts/ComponentLayout.astro';
+import Section from '../../../components/Section.astro';
 import Icon from '../../../components/Icon.astro';
 import { overview } from '../../../data/booklet/existing-products';
 import { url } from '../../../utils/url';
@@ -16,28 +17,24 @@ const p = overview.pickAProduct;
   chips={['Before Tool 1', '5 minutes']}
   crumb="Pick a product"
 >
-  <section class="block" aria-labelledby="good-h">
-    <p class="eb">One product, not a category</p>
-    <h2 id="good-h">Specific enough to open.</h2>
+  <Section id="good" eyebrow="One product, not a category" title="Specific enough to open." split>
     <div class="cmp">
       <div class="col col--good">
         <span class="lbl">Good</span>
         <ul>
-          {p.good.map((g) => <li><Icon name="check" size={18} /> {g}</li>)}
+          {p.good.map((g) => <li><Icon name="check" size={22} /> {g}</li>)}
         </ul>
       </div>
       <div class="col col--broad">
         <span class="lbl">Too broad</span>
         <ul>
-          {p.tooBroad.map((g) => <li><Icon name="x" size={18} /> {g}</li>)}
+          {p.tooBroad.map((g) => <li><Icon name="x" size={22} /> {g}</li>)}
         </ul>
       </div>
     </div>
-  </section>
+  </Section>
 
-  <section class="block" aria-labelledby="do-h">
-    <p class="eb">What to do</p>
-    <h2 id="do-h">Write it on an orange note.</h2>
+  <Section id="do" eyebrow="What to do" title="Write it on an orange note." tone="white" split>
     <p class="big">{p.instruction}</p>
     <div class="note note--orange sample">
       <b>Your product</b>
@@ -45,32 +42,32 @@ const p = overview.pickAProduct;
     </div>
     <p class="small">{p.note}</p>
     <a class="btn btn--accent" href={url('/components/existing-products/media-gossip/')}>
-      Start Tool 1 · Media &amp; Gossip <Icon name="arrow" size={18} />
+      Start Tool 1 · Media &amp; Gossip <Icon name="arrow" size={20} />
     </a>
-  </section>
+  </Section>
 </ComponentLayout>
 
 <style>
   .big {
-    font-size: 1.15rem;
+    font-size: var(--fs-lead);
     color: var(--ink-soft);
-    max-width: 44rem;
+    max-width: var(--measure);
   }
   .small {
-    font-size: 0.92rem;
+    font-size: var(--fs-ui);
     color: var(--muted);
-    max-width: 44rem;
-    margin: 1rem 0 1.5rem;
+    max-width: var(--measure);
+    margin: var(--sp-2) 0 var(--sp-3);
   }
   .cmp {
     display: grid;
-    gap: 1rem;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
-    max-width: 44rem;
+    gap: var(--sp-2);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+    max-width: 56rem;
   }
   .col {
-    border-radius: var(--radius);
-    padding: 1.25rem 1.4rem;
+    border-radius: var(--r-lg);
+    padding: var(--sp-3);
   }
   .col--good {
     background: var(--c1);
@@ -80,45 +77,44 @@ const p = overview.pickAProduct;
     background: var(--sand);
   }
   .col .lbl {
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-bottom: 0.6rem;
-    opacity: 0.85;
+    color: inherit;
+    opacity: 0.9;
+    margin-bottom: var(--sp-2);
   }
   .col ul {
     list-style: none;
     margin: 0;
     padding: 0;
     display: grid;
-    gap: 0.6rem;
+    gap: var(--sp-2);
   }
   .col li {
     display: flex;
-    gap: 0.6rem;
+    gap: var(--sp-1);
     align-items: flex-start;
     margin: 0;
     font-weight: 600;
+    font-size: var(--fs-lead);
+    line-height: 1.35;
   }
   .col li :global(svg) {
     flex: none;
-    margin-top: 0.15rem;
+    margin-top: 4px;
   }
   .sample {
     display: grid;
-    gap: 0.2rem;
-    max-width: 18rem;
-    margin-top: 1.25rem;
+    gap: var(--sp-half);
+    max-width: 24rem;
+    margin-top: var(--sp-3);
   }
   .sample b {
     font-family: var(--font-mono);
-    font-size: 0.7rem;
+    font-size: var(--fs-xs);
     letter-spacing: 0.08em;
     text-transform: uppercase;
   }
   .sample span {
-    font-size: 1.2rem;
+    font-size: var(--fs-h3);
     font-weight: 700;
   }
 </style>

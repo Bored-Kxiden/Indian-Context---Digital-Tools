@@ -1,0 +1,333 @@
+---
+import ExFrame from './ExFrame.astro';
+import Tag from './Tag.astro';
+import Lines from './Lines.astro';
+
+// Booklet p.1.20 · Tool 4 Power: three lenses + findings (filled example).
+interface Props {
+  alt: string;
+  caption: string;
+}
+const { alt, caption } = Astro.props;
+
+const lenses = [
+  { h: 'Creator', lines: ['Built to a desktop checklist. No', 'screen that says “upload', 'worked”. Errors written for', 'engineers: “File size exceeds', 'limit.”'] },
+  { h: 'Authority', lines: ['Most friction sits at document', 'checks: it guards against fraud,', 'not against students failing.', 'Complaints go to an email form', 'with no timeline.'] },
+  { h: 'Political', lines: ['Students end up more', 'dependent on helpers, not less.', 'It asks for income, bank and', 'identity details before giving', 'anything back.'] },
+];
+const labour = [
+  { who: 'Cybercafé owner', seen: false, paid: ['By the', 'student'], load: 'Yes' },
+  { who: 'Father, who holds the phone', seen: false, paid: false, load: 'Yes' },
+  { who: 'College admin, now tech support', seen: false, paid: false, load: 'Yes' },
+  { who: 'Form-filling agent', seen: false, paid: ['By the', 'student'], load: 'Partly' },
+];
+const friction = [
+  ['OTP goes to someone else’s phone', 'Critical'],
+  ['No way to make a PDF on a phone', 'Critical'],
+  ['Status stuck on “pending”', 'Major'],
+];
+const tension = [
+  ['Built for fraud checks, not completion', 'Critical'],
+  ['Grievance path has no timeline', 'Major'],
+  ['Errors written for engineers', 'Minor'],
+];
+---
+
+<ExFrame page="1.20" alt={alt} caption={caption}>
+  <div class="pw">
+    <div class="lenses">
+      {
+        lenses.map((l) => (
+          <section>
+            <header>
+              <h4>{l.h}</h4>
+              <Tag>S7 Lens</Tag>
+            </header>
+            <p><Lines lines={l.lines} /></p>
+          </section>
+        ))
+      }
+    </div>
+
+    <section class="box lab">
+      <header>
+        <h4>Invisible labour</h4>
+        <Tag>S3 People · Tick each card</Tag>
+        <span class="lbl isit">Is it…</span>
+      </header>
+      <table>
+        <colgroup>
+          <col />
+          <col class="c" />
+          <col class="c" />
+          <col class="c" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th scope="col">Who</th>
+            <th scope="col">Seen?</th>
+            <th scope="col">Paid?</th>
+            <th scope="col">Load-bearing?</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            labour.map((r) => (
+              <tr>
+                <th scope="row">{r.who}</th>
+                <td>{r.seen ? 'Yes' : <><span aria-hidden="true">✕</span><span class="visually-hidden">No</span></>}</td>
+                <td>{r.paid ? <Lines lines={r.paid} /> : <><span aria-hidden="true">✕</span><span class="visually-hidden">No</span></>}</td>
+                <td>{r.load}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </section>
+
+    <section class="box fnd">
+      <header>
+        <h4>Findings sheet</h4>
+        <Tag>S7 Finding · Place by severity</Tag>
+      </header>
+      <div class="cols">
+        <div>
+          <p class="lbl">Friction users hit</p>
+          <ul>
+            {friction.map(([t, s]) => <li><span>{t}</span><b class={`sev sev--${s.toLowerCase()}`}>{s}</b></li>)}
+          </ul>
+        </div>
+        <div>
+          <p class="lbl">Tensions inside the system</p>
+          <ul>
+            {tension.map(([t, s]) => <li><span>{t}</span><b class={`sev sev--${s.toLowerCase()}`}>{s}</b></li>)}
+          </ul>
+        </div>
+      </div>
+    </section>
+  </div>
+</ExFrame>
+
+<style is:global>
+  .pw {
+    --bk-terra: #a8432a;
+    display: grid;
+    gap: calc(var(--u) * 11);
+  }
+  .pw .lenses {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: calc(var(--u) * 7.4);
+  }
+  .pw .lenses section {
+    background: var(--bk-teal);
+    padding: calc(var(--u) * 9.4) calc(var(--u) * 10.5) calc(var(--u) * 11.2);
+    min-height: calc(var(--u) * 108.7);
+    white-space: nowrap;
+  }
+  .pw header {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--u) * 6);
+  }
+  .pw .lenses header {
+    justify-content: space-between;
+    margin-bottom: calc(var(--u) * 6.4);
+  }
+  .pw h4 {
+    font-size: var(--t-head);
+    font-variation-settings: 'opsz' 16;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0;
+  }
+  .pw .lenses p {
+    font-size: max(13px, calc(var(--u) * 9.8));
+    font-variation-settings: 'opsz' 13;
+    line-height: 1.38;
+  }
+
+  .pw .box {
+    background: #fff;
+    border: calc(var(--u) * 0.75) solid var(--bk-ink);
+    border-radius: calc(var(--u) * 16);
+    overflow: hidden;
+  }
+  .pw .lab header {
+    padding: calc(var(--u) * 6.4) calc(var(--u) * 9.15) calc(var(--u) * 8.2) calc(var(--u) * 8.65);
+  }
+  .pw .lab h4,
+  .pw .fnd h4 {
+    font-size: var(--t-lead);
+    font-variation-settings: 'opsz' 15;
+  }
+  .pw .isit {
+    margin: 0 0 0 auto;
+    font-size: max(11px, calc(var(--u) * 7.1));
+  }
+  .pw table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    font-size: max(13px, calc(var(--u) * 10.1));
+    font-variation-settings: 'opsz' 13.5;
+    line-height: 1.27;
+  }
+  .pw col.c:nth-child(2),
+  .pw col.c:nth-child(3) {
+    width: calc(var(--u) * 73.5);
+  }
+  .pw col.c:nth-child(4) {
+    width: calc(var(--u) * 76.2);
+  }
+  .pw th,
+  .pw td {
+    text-align: left;
+    font-weight: 400;
+    vertical-align: middle;
+    padding: calc(var(--u) * 5.8) 0;
+    white-space: nowrap;
+  }
+  .pw th:first-child {
+    padding-left: calc(var(--u) * 8.65);
+  }
+  .pw thead th {
+    background: var(--bk-cream, #f5f0e6);
+    border-top: calc(var(--u) * 0.8) solid var(--bk-ink);
+    border-bottom: calc(var(--u) * 0.7) solid #cfc8ba;
+    padding: calc(var(--u) * 6.2) 0 calc(var(--u) * 6.4);
+    font-family: var(--font-mono);
+    font-size: max(11px, calc(var(--u) * 7.1));
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--bk-muted);
+    line-height: 1.3;
+  }
+  .pw thead th:first-child {
+    padding-left: calc(var(--u) * 8.65);
+  }
+  .pw tbody tr {
+    border-bottom: calc(var(--u) * 0.7) solid #cfc8ba;
+  }
+  .pw tbody tr:last-child {
+    border-bottom: 0;
+  }
+
+  .pw .fnd header {
+    padding: calc(var(--u) * 7.2) calc(var(--u) * 11.55) 0 calc(var(--u) * 11.65);
+    justify-content: space-between;
+  }
+  .pw .cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: calc(var(--u) * 16.5);
+    padding: calc(var(--u) * 8) calc(var(--u) * 11.55) calc(var(--u) * 10.3) calc(var(--u) * 11.65);
+  }
+  .pw .cols .lbl {
+    margin: 0 0 calc(var(--u) * 3.4);
+    font-size: max(11px, calc(var(--u) * 7.1));
+  }
+  .pw .cols li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: calc(var(--u) * 8);
+    min-height: calc(var(--u) * 25.4);
+    border-bottom: calc(var(--u) * 0.7) solid #cfc8ba;
+    font-size: max(13px, calc(var(--u) * 9.8));
+    font-variation-settings: 'opsz' 13;
+    line-height: 1.27;
+    white-space: nowrap;
+  }
+  .pw .cols li:last-child {
+    border-bottom: 0;
+  }
+  .pw .sev {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: calc(var(--u) * 14.3);
+    min-height: 1.75em;
+    padding: 0 calc(var(--u) * 8);
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: max(11px, calc(var(--u) * 7.1));
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  .pw .sev--critical {
+    background: var(--bk-terra);
+    color: #fff;
+  }
+  .pw .sev--major {
+    background: #e3a72f;
+    color: var(--bk-ink);
+  }
+  .pw .sev--minor {
+    border: calc(var(--u) * 0.75) solid var(--bk-ink);
+    color: var(--bk-ink);
+  }
+
+  @container (max-width: 45rem) {
+    .pw .lenses {
+      grid-template-columns: 1fr;
+      gap: var(--sp-2);
+    }
+    .pw .lenses section {
+      min-height: 0;
+      padding: var(--sp-2);
+      white-space: normal;
+    }
+    .pw .box {
+      border-radius: var(--r-md);
+    }
+    .pw .lab header,
+    .pw .fnd header {
+      flex-wrap: wrap;
+      padding: var(--sp-2) var(--sp-2) var(--sp-1);
+    }
+    .pw .lab header {
+      padding-bottom: var(--sp-2);
+    }
+    .pw .isit {
+      display: none;
+    }
+    .pw table {
+      font-size: 14px;
+    }
+    .pw col.c:nth-child(2) {
+      width: 3.5rem;
+    }
+    .pw col.c:nth-child(n + 3) {
+      width: 4.25rem;
+    }
+    .pw th,
+    .pw td {
+      white-space: normal;
+      padding-block: var(--sp-1);
+      padding-right: var(--sp-half);
+    }
+    .pw th:first-child,
+    .pw thead th:first-child {
+      padding-left: var(--sp-2);
+    }
+    .pw thead th {
+      font-size: 11px;
+      letter-spacing: 0.04em;
+    }
+    .pw .cols {
+      grid-template-columns: 1fr;
+      gap: var(--sp-2);
+      padding: var(--sp-1) var(--sp-2) var(--sp-2);
+    }
+    .pw .cols li {
+      white-space: normal;
+      min-height: 0;
+      padding-block: var(--sp-1);
+      font-size: 14px;
+    }
+  }
+</style>

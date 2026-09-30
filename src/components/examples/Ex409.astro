@@ -1,0 +1,347 @@
+---
+import ExFrame from './ExFrame.astro';
+import Lines from './Lines.astro';
+
+// Booklet p.4.09 · Tool 1 Build, Part B: the Access Ladder (filled example).
+interface Props {
+  alt: string;
+  caption: string;
+}
+const { alt, caption } = Astro.props;
+
+const things = [
+  { lines: ['PDF know-', 'how'], pri: 'High' },
+  { lines: ['Father’s', 'phone (OTP)'], pri: 'High' },
+  { lines: ['Hostel Wi-', 'Fi'], pri: 'Med' },
+  { lines: ['Data pack'], pri: 'Med' },
+  { lines: ['Income', 'cert.'], pri: 'Low' },
+  { lines: ['Own phone'], pri: 'Low' },
+];
+// ok · dash · fail (a red cell with words) · note (red words on the quadrant colour)
+type Cell = { k: 'ok' } | { k: 'dash' } | { k: 'fail'; t: string } | { k: 'note'; t: string };
+const ok: Cell = { k: 'ok' };
+const dash: Cell = { k: 'dash' };
+const rungs: { n: string; name: string; ask: string; cells: Cell[] }[] = [
+  { n: '1', name: 'Exists', ask: 'Is it in their world?', cells: [ok, ok, ok, ok, ok, ok] },
+  { n: '2', name: 'Reachable', ask: 'Can they get to it?', cells: [ok, ok, ok, ok, { k: 'fail', t: 'back home' }, ok] },
+  { n: '3', name: 'Affordable', ask: 'Can they pay once?', cells: [dash, ok, ok, ok, ok, ok] },
+  { n: '4', name: 'Sustainable', ask: 'Does it keep working?', cells: [dash, ok, { k: 'fail', t: 'drops' }, { k: 'fail', t: 'runs out' }, dash, ok] },
+  { n: '5', name: 'Theirs', ask: 'Owned or borrowed?', cells: [dash, { k: 'fail', t: 'his, not hers' }, { k: 'note', t: 'shared' }, ok, dash, ok] },
+  { n: '6', name: 'Usable', ask: 'Do they know how?', cells: [{ k: 'fail', t: 'what’s a PDF?' }, ok, ok, ok, dash, ok] },
+  { n: '7', name: 'Permitted', ask: 'Allowed to use it?', cells: [dash, { k: 'note', t: 'asks first' }, ok, ok, dash, ok] },
+];
+const key = [
+  ['q1', 'Focus first.', 'Basic access, and the designer can change it.'],
+  ['q2', 'Push for change.', 'Basic access, but outside the product.'],
+  ['q3', 'Design for next.', 'Everyday use, and the designer can change it.'],
+  ['q4', 'Keep an eye on.', 'Everyday use, outside the product.'],
+];
+const quad = (row: number, col: number) => (row < 3 ? (col < 3 ? 'q1' : 'q2') : col < 3 ? 'q3' : 'q4');
+---
+
+<ExFrame page="4.09" alt={alt} caption={caption}>
+  <div class="al">
+    <p class="dir"><span>← Designer can change more</span><span>Designer can change less →</span></p>
+
+    <div class="tw" tabindex="0" role="region" aria-label="Access Ladder: seven questions for each key thing">
+      <table>
+        <caption class="visually-hidden">Access Ladder for Meera: each key thing checked against seven questions</caption>
+        <colgroup>
+          <col class="k0" />
+          {things.map(() => <col />)}
+        </colgroup>
+        <thead>
+          <tr class="hdr">
+            <th scope="col" class="corner">Key things →</th>
+            {things.map((t, i) => <th scope="col" class:list={{ cut: i === 3 }}><Lines lines={t.lines} /></th>)}
+          </tr>
+          <tr class="pri">
+            <th scope="row"><Lines lines={['Priority: designer', 'influence']} /></th>
+            {things.map((t, i) => <td class:list={{ cut: i === 3 }}><span class={`pill pill--${t.pri.toLowerCase()}`}>{t.pri}</span></td>)}
+          </tr>
+        </thead>
+        <tbody>
+          {
+            rungs.map((r, ri) => (
+              <tr class:list={{ split: ri === 2 }}>
+                <th scope="row"><b>{r.n} {r.name}</b><span>{r.ask}</span></th>
+                {
+                  r.cells.map((c, ci) => (
+                    <td class:list={[quad(ri, ci), { cut: ci === 3, x: c.k === 'fail' }]}>
+                      {c.k === 'ok' && <><span class="mk" aria-hidden="true">✓</span><span class="visually-hidden">Yes</span></>}
+                      {c.k === 'dash' && <span class="mk">—</span>}
+                      {c.k === 'fail' && <span class="fail"><span aria-hidden="true">✕</span> {c.t}</span>}
+                      {c.k === 'note' && <span class="nx">{c.t}</span>}
+                    </td>
+                  ))
+                }
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <ul class="key">
+      {key.map(([q, b, t]) => <li><i class={q} aria-hidden="true"></i><p><b>{b}</b> {t}</p></li>)}
+    </ul>
+
+    <p class="meera"><b>Meera:</b> her top-left corner is empty, so her team started bottom-left: PDF know-how, the OTP and Wi-Fi. All three are things the product can fix.</p>
+  </div>
+</ExFrame>
+
+<style is:global>
+  .al {
+    --bk-terra: #a8432a;
+    --bk-grid: #b9b3a6;
+    display: grid;
+    gap: calc(var(--u) * 10.8);
+  }
+  .al .dir {
+    display: flex;
+    justify-content: space-between;
+    gap: calc(var(--u) * 8);
+    margin: 0 0 calc(var(--u) * 1) calc(var(--u) * 104.6);
+    font-family: var(--font-mono);
+    font-size: max(11px, calc(var(--u) * 7.5));
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #3f3a33;
+    white-space: nowrap;
+  }
+  .al .tw {
+    border: calc(var(--u) * 0.75) solid var(--bk-ink);
+    border-radius: calc(var(--u) * 12);
+    overflow: hidden;
+    background: #fff;
+  }
+  .al table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    font-size: max(13px, calc(var(--u) * 9.8));
+    font-variation-settings: 'opsz' 13;
+    line-height: 1.24;
+  }
+  .al col.k0 {
+    width: calc(var(--u) * 97.4);
+  }
+  .al th,
+  .al td {
+    padding: 0 calc(var(--u) * 3);
+    border-right: calc(var(--u) * 0.7) solid var(--bk-grid);
+    border-bottom: calc(var(--u) * 0.7) solid var(--bk-grid);
+    text-align: center;
+    vertical-align: middle;
+    font-weight: 400;
+    height: calc(var(--u) * 39);
+    white-space: nowrap;
+  }
+  .al tr > :last-child {
+    border-right: 0;
+  }
+  .al tbody tr:last-child > * {
+    border-bottom: 0;
+  }
+  .al .cut {
+    border-left: calc(var(--u) * 1.5) solid var(--bk-ink);
+  }
+  .al tr.split > * {
+    border-bottom: calc(var(--u) * 1.4) solid var(--bk-ink);
+  }
+  .al thead .hdr th {
+    font-weight: 700;
+    background: #fff;
+  }
+  .al thead .hdr .corner,
+  .al tbody th {
+    text-align: left;
+    padding-left: calc(var(--u) * 7.8);
+    background: #fff;
+  }
+  .al thead .hdr .corner {
+    font-size: max(13px, calc(var(--u) * 10.1));
+    font-variation-settings: 'opsz' 13.5;
+  }
+  .al .pri > * {
+    height: calc(var(--u) * 25.4);
+    background: #fff;
+  }
+  .al .pri th {
+    font-size: max(12px, calc(var(--u) * 8.2));
+    font-variation-settings: 'opsz' 12;
+    font-weight: 400;
+    text-align: center;
+    padding-left: calc(var(--u) * 3);
+  }
+  .al .pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: calc(var(--u) * 14.2);
+    min-height: 1.75em;
+    padding: 0 calc(var(--u) * 5.7);
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: max(11px, calc(var(--u) * 7.1));
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  .al .pill--high {
+    background: var(--bk-indigo);
+    color: #fff;
+  }
+  .al .pill--med {
+    background: #aeb7d6;
+    color: var(--bk-ink);
+  }
+  .al .pill--low {
+    border: calc(var(--u) * 0.75) solid var(--bk-ink);
+    background: #fff;
+    color: var(--bk-ink);
+  }
+  .al tbody th {
+    vertical-align: top;
+    padding-top: calc(var(--u) * 1.9);
+  }
+  .al tbody th b {
+    display: block;
+    font-size: max(13px, calc(var(--u) * 10.1));
+    font-variation-settings: 'opsz' 13.5;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .al tbody th span {
+    display: block;
+    color: var(--bk-muted);
+    font-size: max(12px, calc(var(--u) * 8.2));
+    font-variation-settings: 'opsz' 12;
+    font-weight: 400;
+    line-height: 1.3;
+  }
+  .al .q1 {
+    background: #d3dbf0;
+  }
+  .al .q2 {
+    background: #efe8da;
+  }
+  .al .q3 {
+    background: #e6ebf6;
+  }
+  .al .q4 {
+    background: #f7f3eb;
+  }
+  .al td.x {
+    background: var(--bk-terra);
+    color: #fff;
+  }
+  .al .mk {
+    color: #6f695e;
+    font-size: max(15px, calc(var(--u) * 12));
+    line-height: 1;
+  }
+  .al .fail {
+    display: block;
+    font-size: max(12px, calc(var(--u) * 8.6));
+    font-variation-settings: 'opsz' 12;
+    font-weight: 700;
+    line-height: 1.32;
+  }
+  .al .fail > span:first-child {
+    display: block;
+  }
+  .al .nx {
+    color: var(--bk-terra);
+    font-size: max(12px, calc(var(--u) * 9));
+    font-variation-settings: 'opsz' 12;
+    font-weight: 600;
+  }
+
+  .al .key {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: calc(var(--u) * 263.2) minmax(0, 1fr);
+    gap: calc(var(--u) * 5) calc(var(--u) * 0);
+    grid-auto-flow: row;
+  }
+  .al .key li {
+    display: grid;
+    grid-template-columns: calc(var(--u) * 14.2) 1fr;
+    gap: calc(var(--u) * 6.4);
+    align-items: start;
+    min-height: calc(var(--u) * 27);
+    margin: 0;
+  }
+  .al .key li:nth-child(2n) {
+    grid-column: 2;
+  }
+  .al .key li:nth-child(2n + 1) {
+    grid-column: 1;
+    padding-right: calc(var(--u) * 12);
+  }
+  .al .key i {
+    width: max(14px, calc(var(--u) * 14.2));
+    height: max(14px, calc(var(--u) * 14.2));
+    border: calc(var(--u) * 0.75) solid var(--bk-grid);
+    border-radius: calc(var(--u) * 3.5);
+    margin-top: calc(var(--u) * 0.5);
+  }
+  .al .key p {
+    font-size: max(13px, calc(var(--u) * 9.8));
+    font-variation-settings: 'opsz' 13;
+    line-height: 1.38;
+  }
+  .al .key b {
+    font-weight: 700;
+  }
+  .al .meera {
+    background: var(--bk-indigo);
+    color: #fff;
+    border-radius: calc(var(--u) * 12);
+    padding: calc(var(--u) * 8.1) calc(var(--u) * 13.5) calc(var(--u) * 10.1);
+    font-size: var(--t-lead);
+    font-variation-settings: 'opsz' 15;
+    line-height: 1.6;
+  }
+  .al .meera b {
+    font-weight: 700;
+  }
+
+  /* The ladder needs about 44rem to keep its cells readable; narrower, it scrolls inside its
+     own region. */
+  @container (max-width: 45rem) {
+    .al .tw {
+      overflow-x: auto;
+      border-radius: var(--r-md);
+    }
+    .al table {
+      --u: calc(44rem / 511.5);
+      width: 44rem;
+    }
+    .al .tw:focus-visible {
+      outline-offset: 2px;
+    }
+    .al .dir {
+      margin-left: 0;
+      white-space: normal;
+      flex-wrap: wrap;
+    }
+    .al .key {
+      grid-template-columns: 1fr;
+    }
+    .al .key li:nth-child(n) {
+      grid-column: 1;
+      padding-right: 0;
+    }
+    .al .key li {
+      gap: var(--sp-1);
+    }
+    .al .meera {
+      padding: var(--sp-2);
+      border-radius: var(--r-md);
+    }
+  }
+</style>

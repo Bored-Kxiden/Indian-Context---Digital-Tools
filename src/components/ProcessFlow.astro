@@ -80,17 +80,17 @@ import { url } from '../utils/url';
 <style>
   .flow {
     display: grid;
-    gap: 1rem;
+    gap: var(--sp-2);
   }
   .entry {
     background: var(--surface);
     border: 2px solid var(--ink);
-    border-radius: var(--radius);
-    padding: 1rem 1.25rem;
+    border-radius: var(--r-md);
+    padding: var(--sp-2) var(--sp-3);
   }
   .tag {
-    margin: 0 0 0.25rem;
-    font-size: 0.78rem;
+    margin: 0 0 var(--sp-half);
+    font-size: var(--fs-xs);
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -122,7 +122,7 @@ import { url } from '../utils/url';
     margin: 0;
     padding: 0;
     display: grid;
-    gap: 2.25rem;
+    gap: var(--sp-5);
     counter-reset: none;
   }
   .module {
@@ -130,14 +130,14 @@ import { url } from '../utils/url';
     --mod-soft: var(--m-context-soft);
     /* Text and badge colours that stay readable on the module's own colour. */
     --mod-ink: var(--ink);
-    --mod-text: var(--warn);
+    --mod-text: var(--c3-deep);
     position: relative;
     margin: 0;
     background: var(--surface);
     border: 1px solid var(--line);
     border-top: 5px solid var(--mod);
-    border-radius: var(--radius);
-    padding: 1.25rem 1.25rem 1.1rem;
+    border-radius: var(--r-md);
+    padding: var(--sp-3);
     display: flex;
     flex-direction: column;
     box-shadow: var(--shadow);
@@ -145,14 +145,14 @@ import { url } from '../utils/url';
   .m-person {
     --mod: var(--m-person);
     --mod-soft: var(--m-person-soft);
-    --mod-ink: #fff;
-    --mod-text: var(--ink);
+    --mod-ink: var(--ink);
+    --mod-text: var(--c3-deep);
   }
   .m-interpret {
     --mod: var(--m-interpret);
     --mod-soft: var(--m-interpret-soft);
     --mod-ink: #fff;
-    --mod-text: var(--c3);
+    --mod-text: var(--c3-deep);
   }
   /* Arrow to the next module: down on phones, right on wide screens. */
   .module:not(:last-child)::after {
@@ -168,9 +168,9 @@ import { url } from '../utils/url';
 
   .module header {
     display: flex;
-    gap: 0.8rem;
+    gap: var(--sp-2);
     align-items: center;
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--sp-1);
   }
   .badge {
     flex: none;
@@ -183,11 +183,11 @@ import { url } from '../utils/url';
     color: var(--mod-ink);
     font-family: var(--font-head);
     font-weight: 700;
-    font-size: 1.2rem;
+    font-size: var(--fs-lead);
   }
   .cadence {
     margin: 0;
-    font-size: 0.78rem;
+    font-size: var(--fs-xs);
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -195,30 +195,30 @@ import { url } from '../utils/url';
   }
   h3 {
     margin: 0;
-    font-size: 1.25rem;
+    font-size: var(--fs-lead);
   }
   .purpose {
     color: var(--ink-soft);
-    font-size: 0.98rem;
+    font-size: var(--fs-ui);
   }
 
   .steps {
     list-style: none;
-    margin: 0 0 1rem;
+    margin: 0 0 var(--sp-2);
     padding: 0;
     display: grid;
-    gap: 0.5rem;
+    gap: var(--sp-1);
     flex: 1;
     align-content: start;
   }
   .steps li {
     margin: 0;
-    font-size: 0.97rem;
+    font-size: var(--fs-ui);
     line-height: 1.45;
   }
   .step {
     position: relative;
-    padding-left: 2rem;
+    padding-left: var(--sp-4);
     counter-increment: none;
   }
   .step::before {
@@ -231,63 +231,63 @@ import { url } from '../utils/url';
     border-radius: 50%;
     background: var(--mod-soft);
     color: var(--mod-text);
-    font-size: 0.78rem;
+    font-size: var(--fs-xs);
     font-weight: 700;
     display: grid;
     place-items: center;
   }
   .note {
-    margin-left: 2rem;
-    padding: 0.5rem 0.7rem;
+    margin-left: var(--sp-4);
+    padding: var(--sp-1) var(--sp-1);
     border-radius: var(--radius-sm);
     background: var(--surface-2);
     color: var(--ink-soft);
-    font-size: 0.9rem;
+    font-size: var(--fs-ui);
   }
   .gate {
     border: 2px solid var(--mod);
     border-radius: var(--radius-sm);
-    padding: 0.7rem 0.85rem;
+    padding: var(--sp-1) var(--sp-2);
     background: var(--mod-soft);
   }
   .gate p {
-    margin: 0 0 0.3rem;
-    font-size: 0.92rem;
+    margin: 0 0 var(--sp-half);
+    font-size: var(--fs-ui);
   }
   .gate .q {
     font-weight: 700;
     color: var(--mod-text);
-    font-size: 0.97rem;
+    font-size: var(--fs-ui);
   }
   .gate .backed {
-    margin: 0.4rem 0 0;
-    font-size: 0.88rem;
+    margin: var(--sp-1) 0 0;
+    font-size: var(--fs-ui);
   }
   .used {
     margin: 0;
-    padding-top: 0.75rem;
+    padding-top: var(--sp-2);
     border-top: 1px solid var(--line);
     display: flex;
     flex-wrap: wrap;
-    gap: 0.4rem;
+    gap: var(--sp-1);
     align-items: center;
   }
   .used span {
-    font-size: 0.78rem;
+    font-size: var(--fs-xs);
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--ink-soft);
-    margin-right: 0.2rem;
+    margin-right: var(--sp-half);
   }
 
   .loop {
     display: flex;
-    gap: 0.9rem;
+    gap: var(--sp-2);
     align-items: center;
-    padding: 1rem 1.25rem;
+    padding: var(--sp-2) var(--sp-3);
     border: 2px dashed var(--line-strong);
-    border-radius: var(--radius);
+    border-radius: var(--r-md);
     background: var(--surface);
   }
   .loop p {
@@ -302,7 +302,7 @@ import { url } from '../utils/url';
   @media (min-width: 62rem) {
     .modules {
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 2.25rem;
+      gap: var(--sp-5);
       align-items: stretch;
     }
     .module:not(:last-child)::after {

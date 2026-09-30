@@ -1,149 +1,338 @@
 ---
 import BaseLayout from './BaseLayout.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
+import ComponentStepper from '../components/ComponentStepper.astro';
 import ModuleChip from '../components/ModuleChip.astro';
 import DownloadCard from '../components/DownloadCard.astro';
 import Icon from '../components/Icon.astro';
 import { getDownloadsForPage } from '../data/downloads';
 import { toolBySlug, toolHref, tools } from '../data/tools';
+import { railFor } from '../data/rail';
+import { componentById } from '../data/components';
 import { url } from '../utils/url';
 
-// Shell for the six tool pages in Component 3 · Reading Language (the
-// Meaning-to-Interface Toolkit). The page content goes in the slot.
+// Shell for the pages of Component 3 · Reading Language (the Meaning-to-Interface Toolkit):
+// its six tools and the methodology. The page content goes in the slot. The step bar
+// lists the pages in order; a side column holds "On this page" (built from the headings)
+// and the downloads, so the text column never stands alone in a wide window.
 
 interface Props {
+  /** A tool slug, or "methodology". */
   slug: string;
   /** Overrides the tool blurb as the page intro. */
   intro?: string;
+  /** Page heading, for pages that are not one of the six tools. */
+  heading?: string;
 }
 
-const { slug, intro } = Astro.props;
+const { slug, intro, heading } = Astro.props;
+const comp = componentById['language'];
+const rail = railFor('language');
 const tool = toolBySlug[slug];
-const downloads = getDownloadsForPage(toolHref(slug));
-const i = tools.findIndex((t) => t.slug === slug);
-const prev = tools[i - 1];
-const next = tools[i + 1];
+const name = heading ?? tool?.name ?? '';
+const lead = intro ?? tool?.blurb ?? '';
+const n = tool ? tools.findIndex((t) => t.slug === slug) : -1;
+const pagePath = tool ? toolHref(slug) : `${comp.href}${slug}/`;
+const downloads = getDownloadsForPage(pagePath);
+const at = rail.items.findIndex((i) => i.slug === slug);
+const prev = at > 0 ? rail.items[at - 1] : undefined;
+const next = at >= 0 && at < rail.items.length - 1 ? rail.items[at + 1] : undefined;
 ---
 
-<BaseLayout title={`${tool.name}: Language`} description={tool.blurb} component="c3">
+<BaseLayout title={`${tool?.name ?? name}: Language`} description={lead || tool?.blurb} component="c3">
   <div class="page-head">
-    <div class="wrap">
-      <Breadcrumb
-        items={[
-          { label: 'Home', href: '/' },
-          { label: 'Components', href: '/components/' },
-          { label: '3 · Language', href: '/components/language/' },
-          { label: tool.name },
-        ]}
-      />
-      <div class="chip-row eyebrow-row">
-        <span class="chip chip--quiet">Tool {i + 1} of {tools.length}</span>
-        <span class="chip chip--quiet">{tool.kind}</span>
+    <div class="wrap head-grid">
+      <div class="hl">
+        <Breadcrumb
+          items={[
+            { label: 'Home', href: '/' },
+            { label: 'Components', href: '/components/' },
+            { label: '3 · Language', href: '/components/language/' },
+            { label: tool?.name ?? 'Methodology' },
+          ]}
+        />
+        <div class="chip-row eyebrow-row">
+          {
+            tool ? (
+              <>
+                <span class="chip chip--quiet">Tool {n + 1} of {tools.length}</span>
+                <span class="chip chip--quiet">{tool.kind}</span>
+              </>
+            ) : (
+              <span class="chip chip--quiet">Technique</span>
+            )
+          }
+        </div>
+        <h1>{name}</h1>
+        <p class="lead">{lead}</p>
+        {
+          tool && (
+            <div class="chip-row used">
+              <span class="where">Used in</span>
+              {tool.modules.map((m) => <ModuleChip id={m} full />)}
+            </div>
+          )
+        }
       </div>
-      <h1>{tool.name}</h1>
-      <p class="lead">{intro ?? tool.blurb}</p>
-      <div class="chip-row">
-        <span class="where">Used in</span>
-        {tool.modules.map((m) => <ModuleChip id={m} full />)}
-      </div>
+      <span class="bignum" aria-hidden="true">3</span>
     </div>
   </div>
 
+  <ComponentStepper rail={rail} current={slug} />
+
   <div class="wrap body">
-    <slot />
+    <div class="main">
+      <slot />
 
-    {
-      downloads.length > 0 && (
-        <section class="section" aria-labelledby="dl-heading">
-          <h2 id="dl-heading">Download</h2>
-          <div class="grid grid--2">
-            {downloads.map((d) => <DownloadCard item={d} />)}
+      <nav class="pager" aria-label="Other pages in this component">
+        {
+          prev ? (
+            <a class="prev" href={url(prev.href)}>
+              <Icon name="arrow-left" size={20} />
+              <span>
+                <small>Before</small>
+                <b>{prev.label}</b>
+              </span>
+            </a>
+          ) : (
+            <a class="prev" href={url(comp.href)}>
+              <Icon name="arrow-left" size={20} />
+              <span>
+                <small>Back to</small>
+                <b>Reading Language</b>
+              </span>
+            </a>
+          )
+        }
+        {
+          next && (
+            <a class="next" href={url(next.href)}>
+              <span>
+                <small>Next</small>
+                <b>{next.label}</b>
+              </span>
+              <Icon name="arrow" size={20} />
+            </a>
+          )
+        }
+      </nav>
+    </div>
+
+    <aside class="side" aria-label="On this page and downloads">
+      <nav class="card toc" aria-labelledby="toc-h" data-toc hidden>
+        <h2 class="side-h" id="toc-h">On this page</h2>
+        <ol data-toc-list></ol>
+      </nav>
+      {
+        downloads.length > 0 && (
+          <div class="card">
+            <h2 class="side-h"><Icon name="print" size={20} /> Download</h2>
+            <div class="dl-list">
+              {downloads.map((d) => <DownloadCard item={d} compact />)}
+            </div>
+            <a class="link-arrow" href={url('/downloads/#language')}>All downloads</a>
           </div>
-          <p class="more"><a href={url('/downloads/#language')}>All downloads</a></p>
-        </section>
-      )
-    }
-
-    <nav class="pager" aria-label="Other tools in this component">
-      {
-        prev ? (
-          <a class="prev" href={url(toolHref(prev.slug))}>
-            <Icon name="arrow-left" size={18} />
-            <span>
-              <small>Before</small>
-              <b>{prev.name}</b>
-            </span>
-          </a>
-        ) : (
-          <a class="prev" href={url('/components/language/')}>
-            <Icon name="arrow-left" size={18} />
-            <span>
-              <small>Back to</small>
-              <b>Reading Language</b>
-            </span>
-          </a>
         )
       }
-      {
-        next && (
-          <a class="next" href={url(toolHref(next.slug))}>
-            <span>
-              <small>Next</small>
-              <b>{next.name}</b>
-            </span>
-            <Icon name="arrow" size={18} />
-          </a>
-        )
-      }
-    </nav>
+    </aside>
   </div>
 </BaseLayout>
 
+<script>
+  // "On this page": built from the h2 headings that have an id. Without JavaScript the
+  // card stays hidden and the page reads top to bottom as usual.
+  const toc = document.querySelector<HTMLElement>('[data-toc]');
+  const list = document.querySelector<HTMLOListElement>('[data-toc-list]');
+  const main = document.querySelector<HTMLElement>('.body .main');
+  if (toc && list && main) {
+    const heads = [...main.querySelectorAll<HTMLElement>('h2[id]')].filter((h) => !h.classList.contains('visually-hidden'));
+    if (heads.length >= 3) {
+      const links = heads.map((h) => {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = `#${h.id}`;
+        a.textContent = h.textContent?.trim() ?? h.id;
+        li.append(a);
+        list.append(li);
+        return a;
+      });
+      toc.hidden = false;
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const e of entries) {
+              if (!e.isIntersecting) continue;
+              links.forEach((a) => a.removeAttribute('aria-current'));
+              links[heads.indexOf(e.target as HTMLElement)]?.setAttribute('aria-current', 'location');
+            }
+          },
+          { rootMargin: '-96px 0px -70% 0px' },
+        );
+        heads.forEach((h) => io.observe(h));
+      }
+    }
+  }
+</script>
+
 <style>
+  .head-grid {
+    display: grid;
+    gap: var(--sp-4);
+    grid-template-columns: minmax(0, 1fr);
+    align-items: end;
+  }
+  @media (min-width: 64rem) {
+    .head-grid {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: var(--sp-8);
+    }
+  }
   .eyebrow-row {
-    margin-bottom: 1.25rem;
+    margin-bottom: var(--sp-3);
   }
   .page-head h1 {
-    font-size: clamp(2.4rem, 6vw, 4.5rem);
-    margin-bottom: 1rem;
+    margin-bottom: var(--sp-2);
+    max-width: 20ch;
   }
   .page-head .lead {
     max-width: 44rem;
+    margin-bottom: var(--sp-3);
+  }
+  .used {
+    align-items: center;
   }
   .where {
     font-family: var(--font-mono);
-    font-size: 0.72rem;
+    font-size: var(--fs-xs);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--muted);
-    align-self: center;
-    margin-right: 0.3rem;
+    margin-right: var(--sp-1);
   }
+  .bignum {
+    display: none;
+    font-size: clamp(9rem, 16vw, 16rem);
+    line-height: 0.75;
+    font-weight: 800;
+    letter-spacing: -0.06em;
+    color: var(--accent);
+    user-select: none;
+  }
+  @media (min-width: 64rem) {
+    .bignum {
+      display: block;
+    }
+  }
+
   .body {
-    padding-bottom: 1rem;
+    display: grid;
+    gap: var(--sp-4) var(--sp-6);
+    grid-template-columns: minmax(0, 1fr);
+    padding-block: var(--sp-2) var(--sp-10);
+    align-items: start;
   }
-  .more {
-    margin: 1rem 0 0;
+  @media (min-width: 72rem) {
+    .body {
+      grid-template-columns: minmax(0, 1fr) 20rem;
+    }
+    .side {
+      position: sticky;
+      top: calc(var(--strip-h) + var(--sp-3));
+      order: 2;
+    }
   }
+  .main {
+    min-width: 0;
+  }
+  /* The page bodies were written as stacked .section blocks: keep them, tighter. */
+  .main :global(.section) {
+    padding-block: var(--sp-6);
+  }
+  .main :global(.section:first-child) {
+    padding-top: var(--sp-4);
+  }
+  .main :global(.prose) {
+    max-width: var(--measure);
+  }
+  .side {
+    display: grid;
+    gap: var(--sp-2);
+    padding-top: var(--sp-4);
+  }
+  .side .card {
+    padding: var(--sp-3);
+  }
+  .side-h {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--muted);
+    margin: 0 0 var(--sp-2);
+    display: flex;
+    align-items: center;
+    gap: var(--sp-1);
+  }
+  .toc ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--sp-half);
+  }
+  .toc li {
+    margin: 0;
+  }
+  .toc a {
+    display: block;
+    padding: var(--sp-1) var(--sp-2);
+    margin-inline: calc(var(--sp-2) * -1);
+    border-left: 4px solid transparent;
+    color: var(--ink-soft);
+    font-size: var(--fs-ui);
+    font-weight: 600;
+    line-height: 1.3;
+    text-decoration: none;
+  }
+  .toc a:hover {
+    background: var(--accent-tint);
+    color: var(--ink);
+  }
+  .toc a[aria-current='location'] {
+    border-left-color: var(--accent);
+    color: var(--ink);
+    background: var(--accent-tint);
+  }
+  .dl-list {
+    display: grid;
+    gap: var(--sp-1);
+    margin-bottom: var(--sp-2);
+  }
+
   .pager {
     display: flex;
     justify-content: space-between;
-    gap: 1rem;
+    gap: var(--sp-2);
     flex-wrap: wrap;
-    padding-block: 2rem 3rem;
-    border-top: 1px solid var(--line-strong);
-    margin-top: 2rem;
+    padding-top: var(--sp-3);
+    margin-top: var(--sp-6);
+    border-top: 2px solid var(--line-strong);
   }
   .pager a {
     display: inline-flex;
     align-items: center;
-    gap: 0.8rem;
-    padding: 0.85rem 1.2rem;
-    border: 1.5px solid var(--ink);
+    gap: var(--sp-2);
+    min-height: 64px;
+    padding: var(--sp-1) var(--sp-3);
+    border: 2px solid var(--ink);
     border-radius: 999px;
     color: var(--ink);
     text-decoration: none;
-    max-width: 24rem;
+    max-width: 26rem;
+    transition:
+      background-color var(--t-fast) var(--ease),
+      color var(--t-fast) var(--ease);
   }
   .pager a:hover {
     background: var(--ink);
@@ -152,10 +341,10 @@ const next = tools[i + 1];
   .pager small {
     display: block;
     font-family: var(--font-mono);
-    font-size: 0.62rem;
+    font-size: var(--fs-xs);
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    opacity: 0.7;
+    opacity: 0.8;
   }
   .pager b {
     display: block;

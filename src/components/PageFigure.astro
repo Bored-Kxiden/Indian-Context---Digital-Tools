@@ -2,22 +2,21 @@
 import { url } from '../utils/url';
 import type { PageImage } from '../utils/assets';
 
+// A booklet or card-kit page shown at the full width of its column, with a link to the
+// full-size image. Width and height are set so the page never jumps while it loads.
 interface Props {
   image: PageImage;
   alt: string;
   caption?: string;
-  /** Widest the picture gets on screen. Portrait pages default to a narrower measure. */
-  wide?: boolean;
   /** Lazy-load (default). Turn off for the first image on a page. */
   eager?: boolean;
   id?: string;
 }
 
-const { image, alt, caption, wide = false, eager = false, id } = Astro.props;
-const landscape = image.width > image.height;
+const { image, alt, caption, eager = false, id } = Astro.props;
 ---
 
-<figure class:list={['pg', { 'pg--landscape': landscape || wide }]} id={id}>
+<figure class="pg" id={id}>
   <a class="zoom" href={url(image.src)} target="_blank" rel="noopener">
     <img
       src={url(image.src)}
@@ -35,22 +34,25 @@ const landscape = image.width > image.height;
 <style>
   .pg {
     margin: 0;
-    max-width: 44rem;
-  }
-  .pg--landscape {
-    max-width: 62rem;
+    max-width: var(--fig-max, 60rem);
   }
   .zoom {
     display: block;
-    border: 1px solid var(--line-strong);
-    border-radius: var(--radius);
+    border: 2px solid var(--line-strong);
+    border-radius: var(--r-md);
     overflow: hidden;
     background: #fff;
     cursor: zoom-in;
+    transition:
+      border-color var(--t-fast) var(--ease),
+      box-shadow var(--t-med) var(--ease);
+  }
+  .zoom:hover {
+    border-color: var(--ink);
+    box-shadow: 0 16px 32px -20px rgb(22 20 15 / 0.45);
   }
   .zoom:focus-visible {
-    outline: 3px solid var(--accent, var(--ink));
-    outline-offset: 3px;
+    outline-offset: 4px;
   }
   img {
     display: block;
@@ -58,8 +60,8 @@ const landscape = image.width > image.height;
     height: auto;
   }
   figcaption {
-    margin-top: 0.6rem;
-    font-size: 0.9rem;
+    margin-top: var(--sp-1);
+    font-size: var(--fs-sm);
     color: var(--muted);
   }
 </style>

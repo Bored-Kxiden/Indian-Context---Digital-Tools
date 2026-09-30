@@ -3,7 +3,7 @@
 // the header/footer lists, and the "I want to…" index (if it has goals).
 
 export type ComponentId = 'existing-products' | 'visual-culture' | 'language' | 'material-reality' | 'reflection';
-export type ComponentColour = 'c1' | 'c2' | 'c3' | 'c4';
+export type ComponentColour = 'c1' | 'c2' | 'c3' | 'c4' | 'ink';
 
 export interface ToolkitComponent {
   id: ComponentId;
@@ -72,7 +72,7 @@ export const components: ToolkitComponent[] = [
   {
     id: 'reflection',
     number: null,
-    c: 'c2',
+    c: 'ink',
     name: 'Reflection',
     short: 'Reflection',
     blurb: 'Looking back at what you made and what it changed.',

@@ -1,5 +1,6 @@
 ---
 import ComponentLayout from '../../../layouts/ComponentLayout.astro';
+import Section from '../../../components/Section.astro';
 import GoalIndex from '../../../components/GoalIndex.astro';
 import RouteList from '../../../components/RouteList.astro';
 import Icon from '../../../components/Icon.astro';
@@ -20,43 +21,28 @@ const items = route.map((r) => ({ ...r, href: `${comp.href}${r.href}/` }));
   lead={comp.blurb}
   chips={['Component 1', '3–4 hours', 'Paper or card kit']}
 >
-  <section class="block" aria-labelledby="idea">
-    <p class="eb">The idea</p>
-    <h2 id="idea">Every product has a user built into it.</h2>
+  <Section id="idea" eyebrow="The idea" title="Every product has a user built into it." split>
     {overview.intro.map((p) => <p class="big">{p}</p>)}
     <div class="callout">
       <strong>{overview.notAnAudit.title}</strong>
       <p>{overview.notAnAudit.body}</p>
     </div>
-  </section>
+  </Section>
 
-  <section class="block" aria-labelledby="c1-goals-h">
-    <GoalIndex
-      groups={goalsByComponent('c1')}
-      lead="Start with what you want to find out. Every tool works on its own."
-      search={false}
-      showComponent={false}
-      stack
-      eyebrow="Start here"
-      id="c1-goals"
-      headingId="c1-goals-h"
-    />
-  </section>
+  <Section id="goals" eyebrow="Start here" title="I want to…" tone="white">
+    <p slot="lead" class="lead-text">Start with what you want to find out. Every tool works on its own.</p>
+    <GoalIndex groups={goalsByComponent('c1')} variant="list" search={false} />
+  </Section>
 
-  <section class="block" aria-labelledby="route-h">
-    <p class="eb">The route</p>
-    <h2 id="route-h">Four tools, then one claim.</h2>
+  <Section id="route" eyebrow="The route" title="Four tools, then one claim." split>
     <p class="big">Do them in order for the full picture, or pick the one you need.</p>
-    <RouteList items={items} numbered />
-  </section>
+    <RouteList items={items} />
+  </Section>
 
-  <section class="block" aria-labelledby="need-h">
-    <p class="eb">Before you start</p>
-    <h2 id="need-h">You need</h2>
+  <Section id="need" eyebrow="Before you start" title="You need" tone="white" split>
     <ul class="need">
-      {overview.youNeed.map((n) => <li><Icon name="check" size={18} /> {n}</li>)}
+      {overview.youNeed.map((n) => <li><Icon name="check" size={22} /> {n}</li>)}
     </ul>
-
     <h3 class="h3">Three colours of sticky note</h3>
     <ul class="notes">
       {
@@ -68,14 +54,12 @@ const items = route.map((r) => ({ ...r, href: `${comp.href}${r.href}/` }));
         ))
       }
     </ul>
-  </section>
+  </Section>
 
-  <section class="block" aria-labelledby="ways-h">
-    <p class="eb">Two ways to work</p>
-    <h2 id="ways-h">On paper, or with cards.</h2>
+  <Section id="ways" eyebrow="Two ways to work" title="On paper, or with cards." split>
     <div class="ways">
       <article class="card way">
-        <Icon name="print" size={28} />
+        <Icon name="print" size={32} />
         <h3>{overview.twoWays.paper.title}</h3>
         <p>{overview.twoWays.paper.body}</p>
         <dl>
@@ -86,7 +70,7 @@ const items = route.map((r) => ({ ...r, href: `${comp.href}${r.href}/` }));
         </dl>
       </article>
       <article class="card way way--cards">
-        <Icon name="cards" size={28} />
+        <Icon name="cards" size={32} />
         <h3>{overview.twoWays.cards.title}</h3>
         <p>{overview.twoWays.cards.body}</p>
         <dl>
@@ -95,53 +79,51 @@ const items = route.map((r) => ({ ...r, href: `${comp.href}${r.href}/` }));
           <dt>You need</dt>
           <dd>{overview.twoWays.cards.youNeed}</dd>
         </dl>
-        <a class="link-arrow" href={url('/card-kit/')}>See the card kit <Icon name="arrow" size={18} /></a>
+        <a class="link-arrow" href={url('/card-kit/')}>See the card kit <Icon name="arrow" size={20} /></a>
       </article>
     </div>
     <p class="small">{overview.twoWays.note}</p>
-  </section>
+  </Section>
 
-  <section class="block" aria-labelledby="claim-h">
-    <p class="eb">Where it ends</p>
-    <h2 id="claim-h">One design claim.</h2>
+  <Section id="claim" eyebrow="Where it ends" title="One design claim." tone="c1" split>
     <p class="claim">{overview.claim}</p>
     <p class="small">{overview.claimNote}</p>
-  </section>
+  </Section>
 </ComponentLayout>
 
 <style>
   .big {
-    font-size: 1.15rem;
+    font-size: var(--fs-lead);
     color: var(--ink-soft);
-    max-width: 44rem;
+    max-width: var(--measure);
   }
   .h3 {
     font-family: var(--font-mono);
-    font-size: 0.8rem;
+    font-size: var(--fs-sm);
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--muted);
-    margin: 2rem 0 0.9rem;
+    margin: var(--sp-5) 0 var(--sp-2);
   }
   .need {
     list-style: none;
     padding: 0;
     margin: 0;
     display: grid;
-    gap: 0.7rem;
-    max-width: 44rem;
+    gap: var(--sp-2);
+    max-width: var(--measure);
   }
   .need li {
     display: flex;
-    gap: 0.7rem;
+    gap: var(--sp-2);
     align-items: flex-start;
     margin: 0;
-    font-size: 1.05rem;
+    font-size: var(--fs-lead);
   }
   .need :global(svg) {
     flex: none;
-    margin-top: 0.2rem;
+    margin-top: 4px;
     color: var(--c1);
   }
   .notes {
@@ -149,33 +131,34 @@ const items = route.map((r) => ({ ...r, href: `${comp.href}${r.href}/` }));
     padding: 0;
     margin: 0;
     display: grid;
-    gap: 0.9rem;
+    gap: var(--sp-2);
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
   }
   .notes li {
     margin: 0;
     display: grid;
-    gap: 0.25rem;
-    min-height: 6.5rem;
+    gap: var(--sp-half);
+    min-height: 112px;
+    align-content: start;
   }
   .notes b {
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: var(--fs-xs);
     letter-spacing: 0.08em;
     text-transform: uppercase;
   }
   .ways {
     display: grid;
-    gap: 1.25rem;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+    gap: var(--sp-3);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
   }
   .way {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: var(--sp-1);
   }
   .way h3 {
-    margin: 0.5rem 0 0;
+    margin: var(--sp-1) 0 0;
   }
   .way p {
     margin: 0;
@@ -183,43 +166,44 @@ const items = route.map((r) => ({ ...r, href: `${comp.href}${r.href}/` }));
   }
   .way dl {
     display: grid;
-    gap: 0.15rem;
-    margin: 0.75rem 0 0;
+    gap: var(--sp-half);
+    margin: var(--sp-2) 0 0;
   }
   .way dt {
     font-family: var(--font-mono);
-    font-size: 0.68rem;
+    font-size: var(--fs-xs);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--muted);
-    margin-top: 0.5rem;
+    margin-top: var(--sp-1);
   }
   .way dd {
     margin: 0;
   }
   .way .link-arrow {
     margin-top: auto;
-    padding-top: 1rem;
+    padding-top: var(--sp-2);
   }
   .way--cards {
     background: var(--c1-tint);
     border-color: transparent;
   }
   .small {
-    font-size: 0.92rem;
+    font-size: var(--fs-ui);
     color: var(--muted);
-    max-width: 44rem;
-    margin-top: 1rem;
+    max-width: var(--measure);
+    margin-top: var(--sp-2);
   }
   .claim {
-    font-size: clamp(1.3rem, 2.6vw, 1.85rem);
+    font-size: clamp(1.5rem, 1rem + 1.6vw, 2.5rem);
     font-weight: 700;
-    line-height: 1.3;
-    background: var(--c1);
-    color: #fff;
-    border-radius: var(--radius);
-    padding: 1.5rem 1.75rem;
-    max-width: 44rem;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
     margin: 0;
+    max-width: 40rem;
+  }
+  :global(.sec--c1) .small {
+    color: inherit;
+    opacity: 0.9;
   }
 </style>

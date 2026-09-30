@@ -1,0 +1,112 @@
+---
+// One heading structure for every page: an eyebrow and a title, then the content.
+// `split` puts the heading in a left column (sticky on wide screens) and the content in a
+// wider right column, so long pages use the whole width instead of leaving one narrow strip.
+interface Props {
+  id: string;
+  title: string;
+  eyebrow?: string;
+  /** plain (page ground) · white · sand · ink · c1 · c3 · c4 */
+  tone?: 'plain' | 'white' | 'sand' | 'ink' | 'c1' | 'c3' | 'c4';
+  split?: boolean;
+  /** Heading level. Pages start at h1, so sections are h2 unless they sit inside another section. */
+  level?: 2 | 3;
+  /** Put the section's padding on or off (off inside a card that already has padding). */
+  flush?: boolean;
+}
+
+const { id, title, eyebrow, tone = 'plain', split = false, level = 2, flush = false } = Astro.props;
+const Tag = level === 2 ? 'h2' : 'h3';
+const dark = tone === 'ink';
+---
+
+<section
+  class:list={['sec', `sec--${tone}`, { 'sec--split': split, 'sec--flush': flush, 'on-dark': dark }]}
+  id={id}
+  aria-labelledby={`${id}-h`}
+  data-c={tone === 'c1' || tone === 'c3' || tone === 'c4' ? tone : undefined}
+>
+  <div class="wrap inner">
+    <header class="head">
+      {eyebrow && <p class="eb">{eyebrow}</p>}
+      <Tag id={`${id}-h`}>{title}</Tag>
+      <slot name="lead" />
+    </header>
+    <div class="body">
+      <slot />
+    </div>
+  </div>
+</section>
+
+<style>
+  .sec {
+    padding-block: clamp(var(--sp-6), 5vw, var(--sp-10));
+  }
+  .sec--flush {
+    padding-block: 0;
+  }
+  .sec + .sec {
+    border-top: 1px solid var(--line);
+  }
+  .sec--white {
+    background: var(--surface);
+  }
+  .sec--sand {
+    background: var(--sand);
+  }
+  .sec--ink {
+    background: var(--ink);
+    color: #fff;
+    border-top: 0;
+  }
+  .sec--ink .eb {
+    color: #b9b1a0;
+  }
+  .sec--c1,
+  .sec--c3,
+  .sec--c4 {
+    background: var(--accent);
+    color: var(--accent-ink);
+    border-top: 0;
+  }
+  .sec--c1 .eb,
+  .sec--c3 .eb,
+  .sec--c4 .eb {
+    color: inherit;
+  }
+
+  .head {
+    margin-bottom: var(--sp-4);
+    max-width: 48rem;
+  }
+  .head :global(h2),
+  .head :global(h3) {
+    margin-bottom: var(--sp-2);
+  }
+  .head :global(.lead-text) {
+    font-size: var(--fs-lead);
+    color: var(--ink-soft);
+    margin: 0;
+  }
+  .sec--ink .head :global(.lead-text),
+  .sec--c1 .head :global(.lead-text),
+  .sec--c3 .head :global(.lead-text),
+  .sec--c4 .head :global(.lead-text) {
+    color: inherit;
+    opacity: 0.92;
+  }
+
+  @media (min-width: 64rem) {
+    .sec--split .inner {
+      display: grid;
+      grid-template-columns: minmax(16rem, 4fr) minmax(0, 8fr);
+      gap: var(--sp-8);
+      align-items: start;
+    }
+    .sec--split .head {
+      position: sticky;
+      top: calc(var(--strip-h) + var(--sp-4));
+      margin-bottom: 0;
+    }
+  }
+</style>

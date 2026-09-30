@@ -1,0 +1,283 @@
+---
+import ExFrame from './ExFrame.astro';
+import Lines from './Lines.astro';
+
+// Booklet p.4.17 · Tool 3 Weigh, co-creation: what gets compromised first? (filled example).
+interface Props {
+  alt: string;
+  caption: string;
+}
+const { alt, caption } = Astro.props;
+
+// [label lines, look, ringed?]  Ranked from "compromised first" to "protected last".
+const cards: [string[], 'first' | 'plain' | 'last', boolean][] = [
+  [['Savings'], 'first', false],
+  [['Education'], 'plain', true],
+  [['Phone &', 'data'], 'plain', true],
+  [['Travel'], 'plain', true],
+  [['Family &', 'festivals'], 'plain', false],
+  [['Bills'], 'plain', false],
+  [['Rent &', 'home'], 'plain', false],
+  [['Health'], 'plain', false],
+  [['Food'], 'last', false],
+];
+---
+
+<ExFrame page="4.17" alt={alt} caption={caption}>
+  <div class="wg">
+    <section class="frame">
+      <p class="lbl">Meera’s family</p>
+      <h4>“When money or time is short, what gets compromised first?”</h4>
+      <ol class="cards">
+        {
+          cards.map(([l, look, ring], i) => (
+            <li class:list={[look, { ring }]}>
+              <span class="visually-hidden">{i + 1}. </span><Lines lines={l} />
+            </li>
+          ))
+        }
+      </ol>
+      <p class="scale"><span class="first">← Compromised first</span><span>Protected last →</span></p>
+      <div class="notes">
+        <p><span class="k">Costs land on</span> <Lines lines={['Education (₹50 cybercafé), Phone & data (the lost upload), Travel (the family', 'trip). All near the front of the line.']} /></p>
+        <p><span class="k">What moves it</span> A medical bill pushes Health up and Education further down.</p>
+      </div>
+    </section>
+
+    <div class="count">
+      <p class="lbl">Count card · one finding</p>
+      <div class="pair">
+        <section class="front">
+          <p class="lbl">Front · the story</p>
+          <p class="q"><Lines lines={['“The OTP goes to my father’s', 'phone. He’s in the field till', 'evening.”']} /></p>
+          <p class="src"><Lines lines={['Tool 1: breaks at step 5 · Tool 2: Father is a big', 'player']} /></p>
+        </section>
+        <section class="back">
+          <p class="lbl">Back · the count</p>
+          <dl>
+            <div><dt>How many</dt><dd><Lines lines={['[Women in (state) with a phone of their own] —', 'NFHS-5']} /></dd></div>
+            <div class="tall"><dt>In their money</dt><dd><Lines lines={['₹50 = [__]% of monthly spending per person —', 'HCES 2022–23']} /></dd></div>
+            <div><dt>Explains</dt><dd>Why OTPs so often go through a father’s phone.</dd></div>
+          </dl>
+        </section>
+      </div>
+    </div>
+
+    <p class="foot">[Brackets]: fill with the real figure and its source. Never estimate.</p>
+  </div>
+</ExFrame>
+
+<style is:global>
+  .wg {
+    --bk-terra: #a8432a;
+    --bk-amber: #e3a72f;
+    display: grid;
+    gap: calc(var(--u) * 10.2);
+  }
+  .wg .frame {
+    background: #fff;
+    border: calc(var(--u) * 0.75) solid var(--bk-ink);
+    border-radius: calc(var(--u) * 12);
+    padding: calc(var(--u) * 12.5) calc(var(--u) * 14.2) calc(var(--u) * 14.15) calc(var(--u) * 13.8);
+  }
+  .wg .lbl {
+    margin: 0;
+    font-size: max(11px, calc(var(--u) * 8.2));
+  }
+  .wg .frame h4 {
+    margin: calc(var(--u) * 4.5) 0 0;
+    font-size: max(17px, calc(var(--u) * 14.2));
+    font-variation-settings: 'opsz' 19;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0;
+  }
+  .wg .cards {
+    display: grid;
+    grid-template-columns: repeat(9, minmax(0, 1fr));
+    gap: calc(var(--u) * 5.2);
+    margin-top: calc(var(--u) * 10.1);
+  }
+  .wg .cards li {
+    display: grid;
+    place-items: center;
+    min-height: calc(var(--u) * 57.8);
+    padding: calc(var(--u) * 4) calc(var(--u) * 0.6);
+    background: #fff;
+    border: calc(var(--u) * 0.75) solid var(--bk-ink);
+    border-radius: calc(var(--u) * 9);
+    text-align: center;
+    font-size: max(12px, calc(var(--u) * 9.4));
+    font-variation-settings: 'opsz' 12.5;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .wg .cards li.first {
+    background: var(--bk-terra);
+    border-color: var(--bk-terra);
+    color: #fff;
+  }
+  .wg .cards li.last {
+    background: var(--bk-ink);
+    color: var(--bk-cream, #f5f0e6);
+  }
+  .wg .cards li.ring {
+    outline: calc(var(--u) * 2.25) solid var(--bk-amber);
+    outline-offset: calc(var(--u) * 1.9);
+  }
+  .wg .scale {
+    display: flex;
+    justify-content: space-between;
+    gap: calc(var(--u) * 8);
+    margin: calc(var(--u) * 7) 0 0;
+    font-family: var(--font-mono);
+    font-size: max(11px, calc(var(--u) * 8.2));
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    line-height: 1.3;
+  }
+  .wg .scale .first {
+    color: var(--bk-terra);
+  }
+  .wg .notes {
+    margin-top: calc(var(--u) * 11.1);
+    padding-top: calc(var(--u) * 8);
+    border-top: calc(var(--u) * 0.8) solid var(--bk-ink);
+    font-size: max(14px, calc(var(--u) * 10.9));
+    font-variation-settings: 'opsz' 14.5;
+    line-height: 1.376;
+    white-space: nowrap;
+  }
+  .wg .notes p + p {
+    margin-top: calc(var(--u) * 5.2);
+  }
+  .wg .k {
+    font-family: var(--font-mono);
+    font-size: max(11px, calc(var(--u) * 7.5));
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-right: 0.15em;
+  }
+
+  .wg .count > .lbl {
+    color: var(--bk-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: calc(var(--u) * 6.9);
+  }
+  .wg .pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: calc(var(--u) * 9.3);
+  }
+  .wg .front,
+  .wg .back {
+    border-radius: calc(var(--u) * 14);
+    min-height: calc(var(--u) * 163.2);
+    padding: calc(var(--u) * 13) calc(var(--u) * 13.7) calc(var(--u) * 12.9);
+    white-space: nowrap;
+  }
+  .wg .front {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border: calc(var(--u) * 0.75) solid var(--bk-ink);
+  }
+  .wg .front .lbl,
+  .wg .back .lbl {
+    font-size: max(11px, calc(var(--u) * 7.5));
+  }
+  .wg .front .q {
+    margin-top: calc(var(--u) * 7.7);
+    font-size: max(18px, calc(var(--u) * 15.8));
+    font-variation-settings: 'opsz' 21;
+    font-weight: 700;
+    line-height: 1.23;
+  }
+  .wg .front .src {
+    margin-top: auto;
+    color: var(--bk-muted);
+    font-size: max(13px, calc(var(--u) * 9.4));
+    font-variation-settings: 'opsz' 12.5;
+    line-height: 1.2;
+  }
+  .wg .back {
+    background: var(--bk-ink);
+    color: var(--bk-cream, #f5f0e6);
+  }
+  .wg .back .lbl {
+    color: var(--bk-cream, #f5f0e6);
+  }
+  .wg .back dl {
+    margin: calc(var(--u) * 8.5) 0 0;
+  }
+  .wg .back dl > div + div {
+    margin-top: calc(var(--u) * 7.5);
+  }
+  .wg .back dt {
+    font-family: var(--font-mono);
+    font-size: max(11px, calc(var(--u) * 7.5));
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--bk-amber);
+    line-height: 1.3;
+  }
+  .wg .back dd {
+    margin: calc(var(--u) * 2.2) 0 0;
+    font-size: max(14px, calc(var(--u) * 10.1));
+    font-variation-settings: 'opsz' 13.5;
+    line-height: 1.34;
+  }
+  .wg .back .tall dd {
+    line-height: 1.53;
+  }
+  .wg .foot {
+    margin: calc(var(--u) * -5.7) 0 0;
+    color: var(--bk-muted);
+    font-size: max(13px, calc(var(--u) * 9));
+    font-variation-settings: 'opsz' 12;
+    line-height: 1.2;
+  }
+
+  @container (max-width: 45rem) {
+    .wg .frame {
+      border-radius: var(--r-md);
+      padding: var(--sp-2);
+    }
+    .wg .cards {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--sp-1);
+    }
+    .wg .cards li {
+      min-height: 4rem;
+    }
+    .wg .cards li.ring {
+      outline-width: 2px;
+      outline-offset: 2px;
+    }
+    .wg .scale {
+      flex-wrap: wrap;
+    }
+    .wg .notes,
+    .wg .front,
+    .wg .back {
+      white-space: normal;
+    }
+    .wg .pair {
+      grid-template-columns: 1fr;
+      gap: var(--sp-2);
+    }
+    .wg .front,
+    .wg .back {
+      min-height: 0;
+      border-radius: var(--r-md);
+      padding: var(--sp-2);
+    }
+    .wg .front .src {
+      margin-top: var(--sp-3);
+    }
+    .wg .foot {
+      margin-top: 0;
+    }
+  }
+</style>

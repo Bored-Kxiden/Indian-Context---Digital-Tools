@@ -67,7 +67,7 @@ const filled = Object.keys(values).length > 0;
     background: var(--surface);
     border: 2px solid var(--ink);
     border-radius: 12px;
-    padding: 0.9rem 1rem 1rem;
+    padding: var(--sp-2) var(--sp-2) var(--sp-2);
     box-shadow: var(--shadow);
     container-type: inline-size;
   }
@@ -75,27 +75,27 @@ const filled = Object.keys(values).length > 0;
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    font-size: 0.72rem;
+    font-size: var(--fs-xs);
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--ink-soft);
-    padding-bottom: 0.5rem;
-    margin-bottom: 0.6rem;
+    padding-bottom: var(--sp-1);
+    margin-bottom: var(--sp-1);
     border-bottom: 1px solid var(--line-strong);
   }
   .cap b {
-    color: var(--m-person);
+    color: var(--c3-deep);
   }
   .fields {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.5rem;
+    gap: var(--sp-1);
   }
   .field {
     grid-column: 1 / -1;
     border: 1px solid var(--line-strong);
     border-radius: 6px;
-    padding: 0.35rem 0.55rem 0.45rem;
+    padding: var(--sp-half) var(--sp-1) var(--sp-1);
     min-height: 3.6rem;
     background: var(--bg);
   }
@@ -114,12 +114,12 @@ const filled = Object.keys(values).length > 0;
   }
   .label {
     display: block;
-    font-size: 0.7rem;
+    font-size: var(--fs-xs);
     font-weight: 700;
     letter-spacing: 0.05em;
     text-transform: uppercase;
     color: var(--ink-soft);
-    margin-bottom: 0.15rem;
+    margin-bottom: var(--sp-half);
   }
   .label em {
     font-weight: 400;
@@ -129,7 +129,7 @@ const filled = Object.keys(values).length > 0;
   }
   .val {
     display: block;
-    font-size: 0.92rem;
+    font-size: var(--fs-ui);
     line-height: 1.4;
   }
   .filled .val {
@@ -138,10 +138,10 @@ const filled = Object.keys(values).length > 0;
   .opts {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.25rem 1rem;
+    gap: var(--sp-half) var(--sp-2);
   }
   .opt {
-    font-size: 0.9rem;
+    font-size: var(--fs-sm);
     color: var(--ink-soft);
   }
   .opt.on {

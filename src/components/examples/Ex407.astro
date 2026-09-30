@@ -1,0 +1,364 @@
+---
+import ExFrame from './ExFrame.astro';
+
+// Booklet p.4.07 · Tool 1 Build, Part A: the Loop (filled example).
+// The drawing is the booklet's own geometry, in points. A list under it carries the same
+// tokens and lines as text (visible on small screens, read out on all).
+interface Props {
+  alt: string;
+  caption: string;
+}
+const { alt, caption } = Astro.props;
+
+const cx = 297.75;
+const cy = 278.28;
+const K = 0.8; // baseline = top of the printed line + K × size
+
+// [text, x, top y, size]
+const names: [string, number, number][] = [
+  ['Class WhatsApp', 106.0, 129.2],
+  ['Father’s phone (OTP)', 413.3, 123.6],
+  ['Senior', 216.0, 172.9],
+  ['Father', 365.7, 200.4],
+  ['Tehsildar', 467.7, 198.3],
+  ['office', 475.2, 209.5],
+  ['Hostel Wi-Fi', 126.9, 253.9],
+  ['Phone', 214.3, 289.2],
+  ['Data pack', 352.7, 289.2],
+  ['Meera · upload docs', 253.5, 306.1],
+  ['Charging point', 416.1, 331.4],
+  ['Cybercafé · ₹30–50', 220.1, 379.6],
+  ['Scanner?', 141.3, 391.3],
+];
+const verbs: [string, number, number][] = [
+  ['borrows', 411.9, 156.9],
+  ['asks how', 169.5, 196.4],
+  ['travels', 431.6, 192.2],
+  ['asks for OTP', 355.5, 241.5],
+  ['uploads on', 203.3, 242.9],
+  ['charges at', 351.3, 313.4],
+  ['pays to make PDF', 303.4, 333.1],
+];
+const rings: [string, number, number][] = [
+  ['THROUGH SOMEONE', 260.5, 99.8],
+  ['A TRIP AWAY', 270.4, 144.9],
+  ['WHERE THEY LIVE', 260.5, 190.0],
+  ['IN HAND', 280.4, 233.7],
+];
+const chips: [string, number, number][] = [
+  ['P1', 178.0, 229.6],
+  ['P2', 276.6, 361.4],
+  ['P3', 471.8, 139.5],
+  ['P4', 238.6, 269.1],
+  ['P5', 500.7, 177.5],
+  ['P6', 196.3, 160.6],
+];
+// Dashed lines: the printed dashes' first and last centres (dash 4.35, gap 3.42).
+const dashed: [number, number, number, number][] = [
+  [295.0, 277.7, 196.2, 257.9],
+  [300.2, 279.6, 402.4, 334.1],
+  [295.8, 276.2, 206.2, 183.2],
+  [203.7, 181.8, 143.4, 149.6],
+  [299.9, 276.4, 401.1, 192.1],
+  [405.6, 188.4, 459.2, 145.6],
+  [406.2, 189.9, 483.5, 183.5],
+].map(([x1, y1, x2, y2]) => {
+  const L = Math.hypot(x2 - x1, y2 - y1);
+  const ux = (x2 - x1) / L;
+  const uy = (y2 - y1) / L;
+  const r = 2.18;
+  return [x1 - ux * r, y1 - uy * r, x2 + ux * r, y2 + uy * r] as [number, number, number, number];
+});
+
+// The same picture as text. Marks: solid = seen, half = told, outline = assumed.
+const tokens = [
+  { name: 'Phone', kind: 'thing', mark: 'seen' },
+  { name: 'Data pack', kind: 'thing', mark: 'seen' },
+  { name: 'Hostel Wi-Fi', kind: 'thing', mark: 'seen' },
+  { name: 'Charging point', kind: 'thing', mark: 'told' },
+  { name: 'Cybercafé · ₹30–50', kind: 'place', mark: 'seen' },
+  { name: 'Senior', kind: 'person', mark: 'seen' },
+  { name: 'Father', kind: 'person', mark: 'seen' },
+  { name: 'Father’s phone (OTP)', kind: 'thing', mark: 'told' },
+  { name: 'Class WhatsApp', kind: 'person', mark: 'told' },
+  { name: 'Tehsildar office', kind: 'place', mark: 'assumed' },
+  { name: 'Scanner?', kind: 'thing', mark: 'assumed' },
+];
+const actions = [
+  ['uploads on', 'Hostel Wi-Fi'],
+  ['asks how', 'Senior'],
+  ['asks for OTP', 'Father'],
+  ['borrows', 'Father’s phone (OTP)'],
+  ['travels', 'Tehsildar office'],
+  ['charges at', 'Charging point'],
+  ['pays to make PDF', 'Cybercafé'],
+];
+---
+
+<ExFrame page="4.07" alt={alt} caption={caption}>
+  <div class="lp">
+    <figure class="pic">
+      <svg viewBox="42.4 85.1 510.7 386.3" aria-hidden="true" focusable="false">
+        <g fill="none" stroke="#283a7a" stroke-width="1.06">
+          <circle cx={cx} cy={cy} r="45.97" />
+          <circle cx={cx} cy={cy} r="91.02" />
+          <circle cx={cx} cy={cy} r="136.12" />
+          <circle cx={cx} cy={cy} r="181.77" stroke-dasharray="4.35 3.42" />
+        </g>
+        <g fill="none" stroke="#1c1a17" stroke-width="1.41">
+          {dashed.map(([x1, y1, x2, y2]) => <line x1={x1} y1={y1} x2={x2} y2={y2} stroke-dasharray="4.35 3.4" />)}
+          <line x1="297.8" y1="278.2" x2="255.5" y2="292.3" />
+          <line x1="297.8" y1="278.2" x2="340" y2="292.3" />
+          <polyline points="297.8,278.2 287.9,292.3 299.2,302.2 280.8,314.9 290.7,324.8 271,337.4 279.4,344.5 265.3,355.7" stroke-linejoin="miter" />
+        </g>
+        <circle cx={cx} cy={cy} r="21.15" fill="#283a7a" />
+
+        <g fill="#1c1a17">
+          <rect x="183.6" y="250.1" width="15.5" height="15.5" />
+          <rect x="247" y="285.3" width="15.5" height="15.5" />
+          <rect x="333" y="285.3" width="15.5" height="15.5" />
+          <polygon points="262.5,355.7 273.8,375.5 251.2,375.5" />
+          <circle cx="206.15" cy="183.15" r="7.75" />
+          <circle cx="403.45" cy="190.15" r="7.75" />
+          <polygon points="396.4,327.6 411.9,327.6 396.4,343.1" />
+          <polygon points="452,137.3 467.5,137.3 452,152.8" />
+          <path d="M135 149.35 A7.75 7.75 0 0 1 150.5 149.35 Z" />
+        </g>
+        <g fill="none" stroke="#1c1a17" stroke-width="1.41">
+          <rect x="396.39" y="327.57" width="15.5" height="15.5" />
+          <rect x="452.05" y="137.34" width="15.5" height="15.5" />
+          <circle cx="142.75" cy="149.35" r="7.05" />
+          <polygon points="488,174.7 497.8,191.6 478.1,191.6" />
+          <rect x="121.61" y="387.45" width="15.5" height="15.5" />
+        </g>
+
+        {chips.map(([t, x, y]) => <rect x={x} y={y} width="19.7" height="12.7" rx="3.5" fill="#e3a72f" />)}
+
+        <g class="t">
+          <text x="292.9" y={271.9 + 10.6 * K} class="m">M</text>
+          {names.map(([t, x, y]) => <text x={x} y={y + 9.2 * K} class="n">{t}</text>)}
+          {verbs.map(([t, x, y]) => <text x={x} y={y + 8.1 * K} class="v">{t}</text>)}
+          {rings.map(([t, x, y]) => <text x={x} y={y + 7.7 * K} class="r">{t}</text>)}
+          {chips.map(([t, x, y]) => <text x={x + 9.85} y={y + 9.3} class="c" text-anchor="middle">{t}</text>)}
+          <text x="77.9" y={446.4 + 7.7 * K} class="f">RINGS · EASY TO REACH (CENTRE) → HARD TO REACH (OUTSIDE)</text>
+        </g>
+      </svg>
+
+      <figcaption class="txt">
+        <h4>Tokens and lines</h4>
+        <p>Centre: Meera, upload docs.</p>
+        <ul class="toks">
+          {tokens.map((t) => <li><b>{t.name}</b> <span>{t.kind} · {t.mark}</span></li>)}
+        </ul>
+        <ul class="acts">
+          {actions.map(([v, o]) => <li><i>{v}</i> {o}</li>)}
+        </ul>
+      </figcaption>
+    </figure>
+
+    <div class="key">
+      <p class="k1">
+        <svg viewBox="0 0 31.4 9" aria-hidden="true"><circle cx="4.5" cy="4.5" r="4.5" /><rect x="11.2" width="9" height="9" /><polygon points="27,0 31.4,9 22.4,9" /></svg>
+        <span>person · thing · place</span>
+        <svg viewBox="0 0 18 11.5" aria-hidden="true" class="ph"><rect width="18" height="11.5" rx="3" fill="#e3a72f" /></svg>
+        <span>photo</span>
+        <svg viewBox="0 0 22.5 3" aria-hidden="true" class="dl"><line x1="0" y1="1.5" x2="22.5" y2="1.5" stroke="#1c1a17" stroke-width="1.5" stroke-dasharray="3.9 2.85" /></svg>
+        <span>line = one action, <i>verb</i> on it</span>
+      </p>
+      <p class="k2">solid / half / outline = seen / told / assumed</p>
+    </div>
+  </div>
+</ExFrame>
+
+<style is:global>
+  .lp {
+    --bk-terra: #a8432a;
+    display: grid;
+    gap: calc(var(--u) * 6);
+  }
+  .lp .pic {
+    margin: 0;
+    background: #fff;
+    border: calc(var(--u) * 0.75) solid var(--bk-ink);
+    border-radius: calc(var(--u) * 12);
+    overflow: hidden;
+  }
+  .lp .pic > svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .lp .pic text {
+    fill: var(--bk-ink);
+    paint-order: stroke;
+    stroke: #fff;
+    stroke-width: 2.6px;
+    stroke-linejoin: round;
+  }
+  .lp .pic .n {
+    font-family: var(--font-body);
+    font-size: 9.2px;
+    font-weight: 600;
+    font-variation-settings: 'opsz' 12.3;
+  }
+  .lp .pic .v {
+    font-family: var(--font-body);
+    font-size: 8.1px;
+    font-style: italic;
+    font-weight: 500;
+    font-variation-settings: 'opsz' 12;
+    fill: var(--bk-terra);
+  }
+  .lp .pic .m {
+    font-family: var(--font-body);
+    font-size: 10.6px;
+    font-weight: 700;
+    font-variation-settings: 'opsz' 14;
+    fill: #fff;
+    stroke: none;
+  }
+  .lp .pic .r,
+  .lp .pic .c,
+  .lp .pic .f {
+    font-family: var(--font-mono);
+    letter-spacing: 0.1em;
+  }
+  .lp .pic .r {
+    font-size: 7.7px;
+    fill: var(--bk-indigo);
+  }
+  .lp .pic .c {
+    font-size: 7px;
+    letter-spacing: 0.04em;
+    stroke: none;
+  }
+  .lp .pic .f {
+    font-size: 7.7px;
+    fill: var(--bk-muted);
+  }
+
+  /* The list is the same picture as words: read out everywhere, shown on small screens. */
+  .lp .txt {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .lp .txt h4,
+  .lp .txt p {
+    margin: 0;
+  }
+  .lp .txt ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .lp .key {
+    display: grid;
+    gap: calc(var(--u) * 6);
+    padding-left: calc(var(--u) * 3);
+    font-size: max(13px, calc(var(--u) * 9.8));
+    font-variation-settings: 'opsz' 13;
+    line-height: 1.3;
+  }
+  .lp .key p {
+    margin: 0;
+  }
+  .lp .k1 {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: calc(var(--u) * 6) calc(var(--u) * 6.4);
+    white-space: nowrap;
+  }
+  .lp .k1 svg {
+    flex: none;
+    height: max(9px, calc(var(--u) * 9));
+    width: auto;
+  }
+  .lp .k1 svg:first-child {
+    fill: var(--bk-ink);
+    margin-right: calc(var(--u) * 6);
+  }
+  .lp .k1 .ph {
+    height: max(11px, calc(var(--u) * 11.5));
+    margin-left: calc(var(--u) * 8.3);
+  }
+  .lp .k1 .dl {
+    height: max(3px, calc(var(--u) * 3));
+    width: calc(var(--u) * 22.5);
+    margin-left: calc(var(--u) * 8.7);
+  }
+  .lp .k1 i {
+    color: var(--bk-terra);
+  }
+
+  @container (max-width: 45rem) {
+    .lp .pic {
+      border-radius: var(--r-md);
+      display: grid;
+    }
+    .lp .pic > svg {
+      max-width: 26rem;
+      margin-inline: auto;
+    }
+    .lp .pic svg text {
+      display: none;
+    }
+    .lp .txt {
+      position: static;
+      width: auto;
+      height: auto;
+      overflow: visible;
+      clip-path: none;
+      white-space: normal;
+      padding: var(--sp-1) var(--sp-2) var(--sp-2);
+      display: grid;
+      gap: var(--sp-1);
+      font-size: 15px;
+    }
+    .lp .txt h4 {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--bk-indigo);
+    }
+    .lp .toks {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--sp-1);
+    }
+    .lp .toks li {
+      margin: 0;
+      padding: 4px 12px;
+      border: 1.5px solid var(--bk-ink);
+      border-radius: 999px;
+      display: grid;
+    }
+    .lp .toks li span {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--bk-muted);
+    }
+    .lp .acts {
+      display: grid;
+      gap: 4px;
+    }
+    .lp .acts li {
+      margin: 0;
+    }
+    .lp .acts i {
+      color: var(--bk-terra);
+      font-weight: 600;
+    }
+    .lp .k1 {
+      white-space: normal;
+    }
+  }
+</style>

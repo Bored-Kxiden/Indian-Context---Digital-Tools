@@ -187,11 +187,11 @@ const tags = [
 
 <style>
   .big {
-    font-size: 1.15rem;
+    font-size: var(--fs-body);
   }
   .big strong {
     font-family: var(--font-head);
-    font-size: 1.3rem;
+    font-size: var(--fs-lead);
     line-height: 1.25;
   }
   .num {
@@ -199,7 +199,7 @@ const tags = [
     place-items: center;
     width: 1.9rem;
     height: 1.9rem;
-    margin: 0 0 0.5rem;
+    margin: 0 0 var(--sp-1);
     border-radius: 50%;
     background: var(--m-interpret);
     color: var(--bg);
@@ -210,8 +210,8 @@ const tags = [
     color: var(--ink-soft);
   }
   .vals-label {
-    margin: 0.75rem 0 0.25rem;
-    font-size: 0.78rem;
+    margin: var(--sp-2) 0 var(--sp-half);
+    font-size: var(--fs-xs);
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -219,7 +219,7 @@ const tags = [
   }
   .vals {
     margin: 0;
-    font-size: 0.93rem;
+    font-size: var(--fs-ui);
     color: var(--ink-soft);
   }
 
@@ -228,35 +228,35 @@ const tags = [
   }
   .form-grid {
     display: grid;
-    gap: 1rem;
+    gap: var(--sp-2);
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
   }
   label span {
     display: block;
     font-weight: 600;
-    font-size: 0.92rem;
-    margin-bottom: 0.25rem;
+    font-size: var(--fs-ui);
+    margin-bottom: var(--sp-half);
   }
   input,
   select {
     width: 100%;
     font: inherit;
-    font-size: 1rem;
-    padding: 0.55rem 0.7rem;
+    font-size: var(--fs-ui);
+    padding: var(--sp-1) var(--sp-1);
     border: 1px solid var(--line-strong);
     border-radius: var(--radius-sm);
     background: var(--bg);
     color: var(--ink);
   }
   .result {
-    margin-top: 1.25rem;
-    padding-top: 1rem;
+    margin-top: var(--sp-3);
+    padding-top: var(--sp-2);
     border-top: 1px solid var(--line);
   }
   .verdict {
-    font-size: 0.95rem;
-    padding: 0.5rem 0.8rem;
-    margin: 0 0 0.75rem;
+    font-size: var(--fs-ui);
+    padding: var(--sp-1) var(--sp-2);
+    margin: 0 0 var(--sp-2);
   }
   #gaps {
     margin: 0;

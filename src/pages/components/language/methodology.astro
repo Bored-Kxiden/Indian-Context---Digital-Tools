@@ -1,6 +1,5 @@
 ---
-import BaseLayout from '../../../layouts/BaseLayout.astro';
-import Breadcrumb from '../../../components/Breadcrumb.astro';
+import ToolLayout from '../../../layouts/ToolLayout.astro';
 import { url } from '../../../utils/url';
 
 const directions = [
@@ -32,30 +31,12 @@ const glossary = [
 ];
 ---
 
-<BaseLayout
-  title="Methodology"
-  description="Thick translation and the bidirectional validation survey: the core technique behind confirming that a meaning moment is well supported."
-  component="c3"
+<ToolLayout
+  slug="methodology"
+  heading="Thick translation, checked in both directions."
+  intro="In India, people rarely mean exactly what the words say. The core technique behind this toolkit is to translate carefully, keeping context and feeling along with the words, and then to check the translation with the people it came from."
 >
-  <div class="page-head">
-    <div class="wrap">
-      <Breadcrumb
-        items={[
-          { label: 'Home', href: '/' },
-          { label: 'Components', href: '/components/' },
-          { label: '3 · Language', href: '/components/language/' },
-          { label: 'Methodology' },
-        ]}
-      />
-      <h1>Thick translation, checked in both directions.</h1>
-      <p class="lede">
-        In India, people rarely mean exactly what the words say. The core technique behind this toolkit is to translate carefully,
-        keeping context and feeling along with the words, and then to check the translation with the people it came from.
-      </p>
-    </div>
-  </div>
-
-  <div class="wrap body">
+  <div class="mbody">
     <section class="section" aria-labelledby="thick">
       <div class="prose">
         <h2 id="thick">What thick translation is</h2>
@@ -160,7 +141,7 @@ const glossary = [
         </p>
       </div>
 
-      <div class="table-wrap">
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Table: scroll sideways to see every column">
         <table>
           <caption>Illustrative glossary entries (examples, not real participant data)</caption>
           <thead>
@@ -220,40 +201,40 @@ const glossary = [
       </div>
     </section>
   </div>
-</BaseLayout>
+</ToolLayout>
 
 <style>
   .body {
-    padding-bottom: 2rem;
+    padding-bottom: var(--sp-4);
   }
   .section:first-child {
     border-top: 0;
   }
   .tag {
-    margin: 0 0 0.5rem;
-    font-size: 0.78rem;
+    margin: 0 0 var(--sp-1);
+    font-size: var(--fs-xs);
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--accent);
   }
   .after {
-    margin-top: 1.5rem;
+    margin-top: var(--sp-3);
   }
   .flow {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
-    margin-bottom: 1rem;
+    gap: var(--sp-1);
+    margin-bottom: var(--sp-2);
   }
   .box {
     flex: 1;
-    padding: 0.65rem 0.75rem;
+    padding: var(--sp-1) var(--sp-2);
     border: 1px solid var(--line-strong);
     border-radius: var(--radius-sm);
     background: var(--surface-2);
     font-weight: 600;
-    font-size: 0.95rem;
+    font-size: var(--fs-ui);
     line-height: 1.3;
   }
   .box small {
@@ -276,8 +257,8 @@ const glossary = [
   }
   caption {
     text-align: left;
-    padding: 0.75rem 1rem;
-    font-size: 0.9rem;
+    padding: var(--sp-2) var(--sp-2);
+    font-size: var(--fs-sm);
     color: var(--ink-soft);
     caption-side: bottom;
   }
@@ -285,13 +266,13 @@ const glossary = [
   td {
     text-align: left;
     vertical-align: top;
-    padding: 0.8rem 1rem;
+    padding: var(--sp-2) var(--sp-2);
     border-bottom: 1px solid var(--line);
     min-width: 12rem;
   }
   thead th {
     background: var(--surface-2);
-    font-size: 0.85rem;
+    font-size: var(--fs-sm);
     letter-spacing: 0.04em;
     text-transform: uppercase;
     color: var(--ink-soft);

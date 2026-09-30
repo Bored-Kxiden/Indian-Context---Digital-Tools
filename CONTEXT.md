@@ -69,13 +69,20 @@ Status: **Confirmed** by the owner, or **Assumed** (made to keep moving; needs c
 | D9 | The booklet and card-kit PDFs are hosted as downloads, and split into per-template PDFs, card sheets (A4) and boards (A2). | Assumed |
 | D10 | Library entries (Expression Library, Design Language Library) are illustrative samples and say so on the page. | Confirmed |
 | D11 | Old `/tools/*` and `/about/` (methodology) URLs move under `/components/language/`; old `/tools/*` URLs redirect. | Assumed |
-| D12 | Language-component module chips use the concept's tool palette: Module 1 turmeric (ink text), Module 2 ink (white text), Module 3 terracotta (white text). | Assumed |
+| D12 | ~~Language module chips use turmeric, ink and terracotta.~~ *Superseded by D20 (three depths of terracotta).* | Superseded |
 | D13 | The six Language tool pages keep their long-form layout (no tabs, no left rail) inside the new shell: terracotta accent, breadcrumb `Home › Components › 3 · Language › tool`, prev/next. They are prose-and-interactive pages, not booklet pages. | Assumed |
 | D14 | **No licence claims about the booklet or card kit.** The repository code is MIT and the site says only that. The booklet states no licence, so the site does not say its content is free to adapt or share (see Q2). | Confirmed by the source (nothing stated) |
 | D15 | Home page order: hero, then **"I want to…" straight away**, then components, why this exists, how every tool works, the guideline, Meera. The goal-first flow is the first thing after the hero. | Assumed |
 | D16 | Tool-page tabs are progressive enhancement: without JavaScript the four panels stack under their headings; with it they become tabs (ARIA roles added by script, keyboard arrows, `#guide`, `#example`, `#blank`, `#card-kit` and `#part-b` deep links). The Paper / Cards choice is remembered in `localStorage` and only decides which tab opens first. | Assumed |
 | D17 | Redirects for old `/tools/*` are explicit per slug in `astro.config.mjs` (Astro's dynamic redirects need a matching dynamic route). The destinations carry the base path, because Astro does not add it. | Assumed |
 | D18 | `vercel.json` pins the framework to Astro (`npm run build`, output `dist`), so a Vercel project with the wrong preset still builds. It matches what Vercel auto-detects, so projects that were already right are unaffected. | Assumed |
+| D19 | **Design system.** Spacing steps are multiples of 8 px (4 px for hairlines): `--sp-half … --sp-16`. Type scale is 12 · 14 · 16 · 18 · 20 · 24 · 32 · 40 · 48–72. Radii are 8 / 16 / 24 px. Body text is 18 px. Small mono labels are never below 12 px. All of it lives as tokens in `src/styles/global.css`. Every component has a text-safe `-deep` colour for small type on light and tinted grounds. | Confirmed (asked for: rule of 8, hierarchy, consistency, contrast) |
+| D20 | **Colour means the component, and nothing else.** Chips, tags, buttons, dots and headers take their own component's colour: 1 green, 2 turmeric, 3 terracotta, 4 indigo. Component 4's Break is indigo, not terracotta. Reflection is neutral ink, not turmeric. Language's three modules are three depths of terracotta. Status chips (confirmed, needs re-check, sensitive) and warnings are colour-neutral: a glyph and a border style carry the meaning, so green, amber and red never suggest a component. Decorative blocks (how a tool works, "with it", "good") use ink and sand. Supersedes D12. | Confirmed (asked for) |
+| D21 | **End-to-end layout.** The content container runs to 1920 px with a fluid 16–48 px gutter, and pages are built in columns: split sections (heading left, content right), examples side by side, and each example decides with a container query whether its steps sit beside or below the page so the page stays large. Reading text stays at about 68 characters. | Confirmed (asked for) |
+| D22 | **Navigation.** A sticky component strip on wide screens (all components one click away, current one filled in), a "Find a tool" search over every tool, step and page (opens with `/` or Ctrl+K; on phones a search button), a Menu on phones, a step bar under every component heading (replaces the old left rail, so Components 1, 3 and 4 navigate the same way), and a sticky tab bar on tool pages. Language pages get an "On this page" column. | Confirmed (asked for) |
+| D23 | **"I want to…" is one card per component.** Language's five groups are sub-headings inside one Component 3 card, so no component looks bigger than it is. Home shows the cards as a board (1 and 4 stacked beside the longer 3, with a Visual culture placeholder). Component overviews show their own card as a full-width list. | Confirmed (asked for) |
+| D24 | **Accessibility bar: WCAG 2.2 AA, checked, not assumed.** axe-core (WCAG 2 A/AA, 2.1, 2.2 AA and best practice) reports no violations on every page, every tab, the search dialog and the phone menu, at 1440, 390 and 320 px (and, for the pages with examples, 1024 px). Keyboard: every focus stop has a visible ring and is never hidden under a sticky bar. Targets are at least 44 px where they are primary controls. Reduced motion and forced colours are handled. | Confirmed (asked for) |
+| D25 | **Filled examples are real HTML, drawn from the booklet's own geometry.** Each of the 14 filled examples (1.06, 1.08, 1.11, 1.14, 1.16, 1.17, 1.20, 1.22, 4.07, 4.09, 4.12, 4.14, 4.17, 4.20) is rebuilt as HTML/CSS/SVG in `src/components/examples/`, so text is sharp, searchable, selectable and translatable. Positions, sizes, gaps, colours and line breaks come from a PDF extraction (PyMuPDF): one unit `--u` is one point of the A4 page (511.5 pt content width), so the example scales exactly with its column. Type pins Bricolage's optical size to the printed size (`opsz` = pt × 4/3), which is what makes line breaks match the print. Inside an example the booklet's own colours apply (indigo #283a7a, green #2e5e4e, terracotta #a8432a, amber #e3a72f, note yellow and teal), an intentional exception to the site's component colours (D20), because the example is the printed page. Below about 45 rem the printed layout gives way to a reflowed one (stacked cards, tables that scroll in a keyboard-reachable region, diagrams with a text list). Every example keeps its text alternative and a "Compare with the booklet page" disclosure showing the original page image. Blank templates stay page images. | Confirmed (asked for) |
 
 ### Earlier decisions that still apply (Language component)
 
@@ -109,7 +116,7 @@ Status: **Confirmed** by the owner, or **Assumed** (made to keep moving; needs c
 /tools/…                            redirects to /components/language/…
 ```
 
-Component pages share a left **rail** (the component's tools in order, sub-parts under the current tool, Paper | Cards switch for Component 1). On a phone the rail folds into a menu above the page.
+Every component page has a **step bar** under its heading (overview, then the tools in order; it scrolls sideways on a phone and fades where more steps continue). Tool pages add a sticky tab bar with the Paper | Cards switch for Component 1. Language pages add an "On this page" column built from their headings. Site-wide: a sticky component strip and "Find a tool" search (D22).
 
 Fuller wireframes, a simplified wireframe, and task flows are in the owner's FigJam board (sections 13 to 15). Those describe the earlier six-tool site and need refreshing for this structure (see backlog).
 
@@ -120,7 +127,8 @@ Fuller wireframes, a simplified wireframe, and task flows are in the owner's Fig
 | Component 1 and 4 guide text, steps, words, "I want to…" (C4) | Copied from the booklet (light editing for the web) |
 | Component 1 cross-component "I want to…" phrases | **Written by us** from each tool's subtitle. Not in the booklet |
 | Component 3 (Language) content | From the Language write-up; card prompts drafted by us |
-| Examples and blanks | Booklet pages as images (v1) |
+| Examples | Rebuilt as HTML from the booklet's own geometry and text (D25); the original page stays one click away |
+| Blank templates | Booklet pages as images |
 | Guideline, "how to read", Meera, "after the toolkit", further reading | Copied from the booklet's front and back matter |
 | Home, About and component-overview framing text | **Written by us** (short connecting copy; "Where it comes from" on About) |
 | Card-kit page: sheet and board blurbs, per-tool "Play it on the table" intros | From the card kit and booklet; a few intros composed by us from booklet phrases |
@@ -134,26 +142,66 @@ Fuller wireframes, a simplified wireframe, and task flows are in the owner's Fig
 | Q2 | Licence for the booklet and card-kit content. The repository code is MIT, but the toolkit content is not covered by that automatically. |
 | Q3 | Credits and partners: who is named, and where? (Nothing on the site yet.) |
 | Q4 | Define India 1 / 2 / 3 for the Language Lens? |
-| Q5 | Rebuild the examples natively in HTML, and add fill-on-screen templates and the interactive Synthesis builder? |
+| Q5 | The examples are now native HTML (D25). Still open: fill-on-screen templates and the interactive Synthesis builder? |
 | Q6 | Supabase: does anything need a database? |
 | Q7 | Custom domain, or stay on the vercel.app address? |
 | Q8 | GitHub's default branch is still the feature branch; switch it to `main`. |
 | Q9 | The Vercel connection used in build sessions is not the owner's original Vercel project; confirm which account should own the site. **Update:** three Vercel projects are linked to this repo. Two built the restructure; the owner's original one failed on every push with "No Next.js version detected": its Framework Preset was set to Next.js. Fixed in the repo with `vercel.json` (D18), which pins Astro. **Confirmed:** after `vercel.json` all three projects built green on PR 1. Setting the preset to Astro in that project's dashboard is still the cleaner fix. Still open: which project and account should be the production site. |
 | Q10 | Wording check: the About page's "Where it comes from" paragraph and the connecting copy on Home and the component overviews are ours. Confirm, and say who is credited (see Q3). |
 | Q11 | Where should "Print" and "You need" sit on a tool page? Now: a right-hand column on very wide screens (92rem+), otherwise below the tabs. |
+| Q12 | Reflection has no colour of its own yet, so it uses neutral ink (D20). Does it get one? Turmeric is Component 2's. |
+| Q13 | **Resolved (D25):** the filled examples are native HTML. Still open: the Journey Strip (p.4.04), the Visual Toolkit photos (p.4.05) and the participant field cards (p.4.22) are page images, and so are the blank templates. Rebuild them the same way? |
 
 ## 8. Backlog
 
-- Native HTML examples (the concept's version) instead of page images.
+- Native HTML for the remaining page images: blank templates, Journey Strip (4.04), Visual Toolkit (4.05), field cards (4.22).
 - Fill-on-screen blank templates, and the interactive **Synthesis builder** with "Save as PDF".
 - Refresh FigJam sections 13 to 15 for the multi-component structure.
 - Visual culture and Reflection components when their content exists.
 - A print stylesheet check for tool pages.
-- Give the Language tool pages the left rail and, where it fits, the same tabs (D13).
+- Language tool pages could take the same tabs as Components 1 and 4 where it fits (D13); they already share the step bar.
 - "Visited" progress in the rail.
 - Decide what a Component 1 tool page shows in Cards mode beyond opening the Card kit tab first.
 
 ## 9. Change log (newest first)
+
+### 2026-09-30 · Filled examples rebuilt as native HTML
+Requested: build the examples as exact HTML (Reflection's colour can wait), then open a pull request into `main`.
+
+- **14 examples rebuilt** (D25): Media Story, Gossip Venn, Timeline, Ideal flow + needs, Blame Scale, Villain Story, Three lenses + findings, Synthesis (Component 1); Loop, Access Ladder, Whisper, Big players & the Cut, What gets compromised first?, Brief pad (Component 4). Each lives in `src/components/examples/Ex<page>.astro`, registered in `index.ts` by booklet page id. A page with no entry still falls back to its page image.
+- **Method:** text, shapes and colours extracted from the PDF with PyMuPDF; layout in points (`--u`); diagrams (Venn, Loop, Cut) in inline SVG with the printed dash pattern; text set at the printed optical size so lines break where the print breaks. Compared against a crop of the PDF page for each example.
+- **Responsive:** exact layout above about 45 rem; below it, cards stack, tables (Ladder, Whisper, Villain Story, Ideal flow) scroll inside a focusable region, and diagrams add a list of the same tokens and lines as text. `<br>` line breaks (`Lines.astro`) apply only in the exact layout.
+- **Accessibility:** real tables with headers and captions; marks (✓, ✕, dots) carry hidden text; SVG drawings are hidden from assistive technology and replaced by a text list; the page image stays available under "Compare with the booklet page".
+- **Layout:** examples may be up to 72 rem wide; two parts sit side by side only when each gets 50 rem, so the exact layout applies on wide screens too. The duplicate "Card kit" pill inside each example was dropped (the part header already links it).
+- Typographic apostrophes replace the booklet's straight ones. Card-kit board references are not repeated inside examples.
+- **Checked:** `npm run build`; axe-core (WCAG 2 A/AA, 2.1, 2.2 AA, best practice) clean on all 191 scans of the previous pass plus the nine tool pages with examples at 1440, 1024, 390 and 320 px (with the "Compare" disclosures open); no horizontal scroll on those pages at 320, 360, 768, 1024, 1280 and 1920 px; keyboard pass; base-path build with 4,233 links all resolving. Two fixes on the way: an example's hidden helper text was widening the page (scroll regions are now positioned), and the "Find a tool" button had no accessible name between 1024 and 1280 px (it now has an `aria-label`).
+- **Not changed:** Reflection stays neutral ink (Q12); blank templates stay page images.
+
+### 2026-09-29 · Redesign: layout, colour, navigation and accessibility pass
+Requested: better layout, the rule of 8, hierarchy, consistency and contrast; better accessibility; consistent colour (Break in Component 4 must not look like Language); no dead side margins, with examples as large as possible; closer to the reference and less generic; easier navigation.
+
+**Layout and system (D19, D21)**
+- `global.css` rewritten as a system: 8 px spacing tokens, a fixed type scale, radii, text-safe `-deep` colours, one focus ring, reduced-motion and forced-colours support, 48 px buttons and 44 px links.
+- Container widened to 1920 px with a fluid gutter. New `Section` (eyebrow, title, optional split heading with content beside it) and `PageHead` give every page the same structure.
+- Tool pages: two-column head, full-width step bar, sticky tab bar, and a sticky side column (Print, You need, You end up with). Examples and blanks sit **side by side** on wide screens and each stays as large as its column allows; steps go beside the page only when the column is 1280 px or wider. The Guide tab shows the booklet page next to the text instead of hiding it.
+- Card kit boards render at up to 1500 px wide.
+- Asymmetric compositions instead of three equal cards: component tiles (1 tall, 3 and 4 beside it), "How every tool works" as three rows, split sections.
+
+**Colour (D20)**
+- Component 4 chips no longer borrow other components' colours; Reflection is ink; Language modules are terracotta in three depths; status chips and warnings are colour-neutral with a glyph and border style; decorative blocks use ink and sand. Venn circles and logo no longer multiply into muddy overlaps.
+
+**Navigation (D22, D23)**
+- Sticky component strip, "Find a tool" search dialog (`/`, Ctrl+K), phone menu, step bar on Components 1, 3 and 4, "On this page" on Language pages, a footer sitemap listing every tool.
+- "I want to…" is one card per component; Home shows them as a board with a Visual culture placeholder.
+- `ComponentRail` removed; `ComponentStepper`, `ComponentNav`, `Finder`, `Section`, `PageHead` and `src/data/finder.ts` added. Language joined `railFor`.
+
+**Accessibility (D24)**
+- axe-core: no violations across 191 scans (30 pages, every tab, search dialog, phone menu) at 1440, 390 and 320 px. Fixed on the way: small text on terracotta and tinted grounds under 4.5:1, and scrollable tables that keyboards could not reach.
+- Keyboard: every focus stop has a ring and is never covered by a sticky bar.
+- No horizontal scroll at 320, 360, 768, 1024, 1280, 1920 and 2560 px (two overflows found and fixed: a long chip and the previous/next pills).
+- Hash jumps no longer leave a heavy frame around a whole tab panel.
+
+**Checked**: `npm run build`; a base-path build with 4,233 links, images, downloads and anchors all resolving; tabs, arrow keys, deep links, Paper | Cards, filter, no-JavaScript fallback and the redirect all behave as before.
 
 ### 2026-09-29 · Restructure into "Designing for the Indian Context"
 The site is now the whole toolkit, not only the Meaning-to-Interface Toolkit.

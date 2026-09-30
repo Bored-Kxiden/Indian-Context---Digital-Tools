@@ -1,5 +1,6 @@
 ---
 import ComponentLayout from '../../../layouts/ComponentLayout.astro';
+import Section from '../../../components/Section.astro';
 import GoalIndex from '../../../components/GoalIndex.astro';
 import RouteList from '../../../components/RouteList.astro';
 import Icon from '../../../components/Icon.astro';
@@ -26,55 +27,41 @@ const routes = [overview.routes.quick, overview.routes.deep];
   lead={comp.blurb}
   chips={['Component 4', '2–4 hours', 'Paper']}
 >
-  <section class="block" aria-labelledby="idea">
-    <p class="eb">The idea</p>
-    <h2 id="idea">Material reality.</h2>
+  <Section id="idea" eyebrow="The idea" title="Material reality." split>
     <p class="big">{overview.ideaLead}</p>
     <div class="callout">
       <strong>{overview.simpleUpload.title}</strong>
-      <ul class="chip-row up">
+      <ul class="chip-row up" aria-label={overview.simpleUpload.title}>
         {overview.simpleUpload.items.map((i) => <li class="chip">{i}</li>)}
       </ul>
     </div>
     <p class="look">
       <span>{overview.lookPast.from}</span>
-      <Icon name="arrow" size={22} />
+      <Icon name="arrow" size={24} />
       <b>{overview.lookPast.to}</b>
     </p>
-  </section>
+  </Section>
 
-  <section class="block" aria-labelledby="c4-goals-h">
-    <GoalIndex
-      groups={goalsByComponent('c4')}
-      lead="Start with what you want to find out. Every tool works on its own."
-      search={false}
-      showComponent={false}
-      stack
-      eyebrow="Start here"
-      id="c4-goals"
-      headingId="c4-goals-h"
-    />
-  </section>
+  <Section id="goals" eyebrow="Start here" title="I want to…" tone="white">
+    <p slot="lead" class="lead-text">Start with what you want to find out. Every tool works on its own.</p>
+    <GoalIndex groups={goalsByComponent('c4')} variant="list" search={false} />
+  </Section>
 
-  <section class="block" aria-labelledby="layers-h">
-    <p class="eb">What to look for</p>
-    <h2 id="layers-h">Nine layers around the screen.</h2>
+  <Section id="layers" eyebrow="What to look for" title="Nine layers around the screen." split>
     <ul class="layers">
       {
         overview.layers.map((l) => (
           <li>
-            <span class="ic"><Icon name={l.icon} size={26} /></span>
+            <span class="ic"><Icon name={l.icon} size={28} /></span>
             <b>{l.name}</b>
             <span>{l.blurb}</span>
           </li>
         ))
       }
     </ul>
-  </section>
+  </Section>
 
-  <section class="block" aria-labelledby="route-h">
-    <p class="eb">The route</p>
-    <h2 id="route-h">Four tools, in order.</h2>
+  <Section id="route" eyebrow="The route" title="Four tools, in order." tone="white" split>
     <p class="big">Start by mapping the journey. Then build, break, weigh and say.</p>
     <RouteList
       items={[
@@ -95,21 +82,21 @@ const routes = [overview.routes.quick, overview.routes.deep];
     </div>
     <p class="small">The whole toolkit, in order: {overview.routes.all}</p>
     <a class="btn btn--accent" href={url(`${comp.href}before-you-start/`)}>
-      Start with the Journey Strip <Icon name="arrow" size={18} />
+      Start with the Journey Strip <Icon name="arrow" size={20} />
     </a>
-  </section>
+  </Section>
 </ComponentLayout>
 
 <style>
   .big {
-    font-size: 1.15rem;
+    font-size: var(--fs-lead);
     color: var(--ink-soft);
-    max-width: 44rem;
+    max-width: var(--measure);
   }
   .up {
     list-style: none;
     padding: 0;
-    margin: 0.75rem 0 0;
+    margin: var(--sp-2) 0 0;
   }
   .up li {
     margin: 0;
@@ -118,61 +105,60 @@ const routes = [overview.routes.quick, overview.routes.deep];
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.75rem 1rem;
-    font-size: clamp(1.2rem, 2.4vw, 1.6rem);
-    margin: 1.5rem 0 0;
+    gap: var(--sp-1) var(--sp-2);
+    font-size: var(--fs-h3);
+    margin: var(--sp-4) 0 0;
   }
   .look span {
     color: var(--muted);
     text-decoration: line-through;
-    text-decoration-thickness: 1.5px;
+    text-decoration-thickness: 2px;
   }
   .look b {
-    color: var(--c4);
+    color: var(--c4-deep);
   }
   .layers {
     list-style: none;
     margin: 0;
     padding: 0;
     display: grid;
-    gap: 0.9rem;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
+    gap: var(--sp-2);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
   }
   .layers li {
     margin: 0;
     display: grid;
-    gap: 0.35rem;
+    gap: var(--sp-1);
     align-content: start;
-    padding: 1.1rem 1.2rem;
-    border-radius: var(--radius);
+    padding: var(--sp-3);
+    border-radius: var(--r-md);
     background: var(--c4-tint);
   }
   .layers .ic {
     display: inline-flex;
-    color: var(--c4);
-    margin-bottom: 0.25rem;
+    color: var(--c4-deep);
   }
   .layers b {
-    font-size: 1.1rem;
+    font-size: var(--fs-h4);
   }
   .layers li > span:last-child {
     color: var(--ink-soft);
-    font-size: 0.93rem;
-    line-height: 1.4;
+    font-size: var(--fs-ui);
+    line-height: 1.45;
   }
   .routes {
     display: grid;
-    gap: 1rem;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
-    margin: 1.5rem 0 0;
+    gap: var(--sp-2);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    margin: var(--sp-4) 0 0;
   }
   .routes p {
-    margin: 0.25rem 0 0;
+    margin: var(--sp-half) 0 0;
     color: var(--ink-soft);
   }
   .small {
-    font-size: 0.92rem;
+    font-size: var(--fs-ui);
     color: var(--muted);
-    margin: 1rem 0 1.5rem;
+    margin: var(--sp-2) 0 var(--sp-3);
   }
 </style>
