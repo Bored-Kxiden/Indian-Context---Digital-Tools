@@ -1,0 +1,94 @@
+---
+import ComponentLayout from '../../../layouts/ComponentLayout.astro';
+import Section from '../../../components/Section.astro';
+import StepCard from '../../../components/reflection/StepCard.astro';
+import ReflectFlow from '../../../components/reflection/ReflectFlow.astro';
+import ReflectPrint from '../../../components/reflection/ReflectPrint.astro';
+import ReflectionWheel from '../../../components/reflection/ReflectionWheel.astro';
+import Icon from '../../../components/Icon.astro';
+import { lookBack, lookBackWhen, wheel } from '../../../data/reflection';
+import { url } from '../../../utils/url';
+
+const page = lookBack[1];
+---
+
+<ComponentLayout
+  component="reflection"
+  current="wheel"
+  title={page.title}
+  heading={page.title}
+  lead={page.opening.join(' ')}
+  chips={['Claim & Reflection', 'Step 5', 'Look back 2 of 3', page.code]}
+  crumb={page.title}
+>
+  <Section id="where" eyebrow="Where it goes" title="Map what you could actually reach." split>
+    <ReflectFlow prev={{ label: 'R·E1 · Summarise', href: '/components/reflection/summarise/' }} here={`${page.code} · ${page.short}`} next={{ label: 'R·E3 · Consequences', href: '/components/reflection/consequences/' }} when={lookBackWhen} />
+  </Section>
+
+  <Section id="wheel" eyebrow="The wheel" title="Shade each wedge as far in as you went." tone="white">
+    <div class="cols">
+      <ReflectionWheel />
+      <div class="side">
+        <p class="how">{wheel.how}</p>
+        <StepCard n={wheel.question.n} name={wheel.question.name} tone="tint">
+          <p class="ask">{wheel.question.ask}</p>
+          <p>{wheel.question.then}</p>
+        </StepCard>
+        <div class="sug">
+          <p class="lbl">Suggested wedges to pick from</p>
+          <ul class="chip-row" aria-label="Suggested wedges">
+            {wheel.suggested.map((w) => <li class="chip">{w}</li>)}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <Section id="print" eyebrow="Print it" title="Draw it on paper." split>
+    <ReflectPrint id={`reflection-${page.image}`} image={page.image} code={page.code} title={page.title}>
+      The wheel is drawn on the page. Write one dimension on each wedge.
+    </ReflectPrint>
+  </Section>
+
+  <Section id="next" eyebrow="Look back 3 of 3" title="Next: push the method further." tone="white" split>
+    <p class="go"><a class="btn btn--accent" href={url('/components/reflection/consequences/')}>R·E3 · Consequences <Icon name="arrow" size={20} /></a></p>
+  </Section>
+</ComponentLayout>
+
+<style>
+  .cols {
+    display: grid;
+    gap: var(--sp-4);
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+  @media (min-width: 64rem) {
+    .cols {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      gap: var(--sp-6);
+    }
+  }
+  .side {
+    display: grid;
+    gap: var(--sp-3);
+  }
+  .how {
+    font-size: var(--fs-lead);
+    margin: 0;
+    max-width: 36rem;
+  }
+  .sug .lbl {
+    margin: 0 0 var(--sp-1);
+  }
+  .sug ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .sug li {
+    margin: 0;
+  }
+  .go {
+    margin: 0;
+  }
+</style>

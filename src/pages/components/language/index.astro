@@ -11,7 +11,16 @@ import { url } from '../../../utils/url';
 
 const comp = componentById['language'];
 const routeItems = [
-  ...route.map((r) => ({
+  ...route.slice(0, 1).map((r) => ({
+    label: r.label,
+    sub: r.sub,
+    href: `${comp.href}${r.slug}/`,
+    blurb: r.blurb,
+    time: r.time,
+    tag: undefined,
+  })),
+  { label: 'Reflect: before (R·3A)', href: `${comp.href}reflect-before/`, blurb: 'Say where you stand and what you expect to find, before Tool 1 · Listen.' },
+  ...route.slice(1).map((r) => ({
     label: r.label,
     sub: r.sub,
     href: `${comp.href}${r.slug}/`,
@@ -20,6 +29,7 @@ const routeItems = [
     tag: r.slug === 'translate' ? 'Reverse thick translation' : undefined,
   })),
   { label: 'Is it working?', href: `${comp.href}is-it-working/`, blurb: 'Good signs and warning signs, before you rely on what you found.' },
+  { label: 'Reflect: after (R·3B)', href: `${comp.href}reflect-after/`, blurb: 'Say what the process actually gave you, then check it against your own bias.' },
 ];
 ---
 

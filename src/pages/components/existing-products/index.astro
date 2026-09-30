@@ -10,7 +10,11 @@ import { componentById } from '../../../data/components';
 import { url } from '../../../utils/url';
 
 const comp = componentById['existing-products'];
-const items = route.map((r) => ({ ...r, href: `${comp.href}${r.href}/` }));
+const items = [
+  { label: 'Reflect: before (R·1A)', href: `${comp.href}reflect-before/`, blurb: 'Say where you stand and what you expect to find, before Tool 1.' },
+  ...route.map((r) => ({ ...r, href: `${comp.href}${r.href}/` })),
+  { label: 'Reflect: after (R·1B)', href: `${comp.href}reflect-after/`, blurb: 'Say what the process actually gave you, then check it against your own bias.' },
+];
 ---
 
 <ComponentLayout

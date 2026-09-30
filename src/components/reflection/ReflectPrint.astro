@@ -1,0 +1,85 @@
+---
+import Icon from '../Icon.astro';
+import { getDownloadById } from '../../data/downloads';
+import { overview } from '../../data/reflection';
+import { url } from '../../utils/url';
+
+// The printable page: a preview of it, a download of just this page, and one of all twelve.
+interface Props {
+  /** Download id, e.g. "reflection-r1a". */
+  id: string;
+  image: string;
+  code: string;
+  title: string;
+}
+const { id, image, code, title } = Astro.props;
+const dl = getDownloadById(id);
+const all = getDownloadById('reflection-all');
+if (!dl || !all) throw new Error(`Reflection download "${id}" is not listed in src/data/downloads.ts`);
+---
+
+<div class="print">
+  <div class="txt">
+    <p class="big">Print this page and write on it. It is one A4 sheet ({code}).</p>
+    <p class="btns">
+      <a class="btn btn--accent" href={url(dl.href)} download>
+        <Icon name="download" size={20} /> This page (PDF, {dl.size})
+        <span class="visually-hidden">: {title}</span>
+      </a>
+      <a class="btn btn--outline" href={url(all.href)} download>
+        <Icon name="download" size={20} /> All twelve pages (PDF, {all.size})
+      </a>
+    </p>
+    <p class="small"><slot /></p>
+  </div>
+  <figure>
+    <a href={url(`/reflection/${image}.webp`)} target="_blank" rel="noopener">
+      <img src={url(`/reflection/${image}.webp`)} width="1240" height="1754" loading="lazy" decoding="async" alt={`The blank printable page ${code}, ${title}. Every question on this page is listed above.`} />
+      <span class="visually-hidden"> (opens full size in a new tab)</span>
+    </a>
+  </figure>
+</div>
+
+<style>
+  .print {
+    display: grid;
+    gap: var(--sp-4);
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+  .big {
+    font-size: var(--fs-lead);
+    color: var(--ink-soft);
+    max-width: 32rem;
+  }
+  .btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-1);
+    margin: var(--sp-3) 0;
+  }
+  .small {
+    font-size: var(--fs-ui);
+    color: var(--muted);
+    max-width: 32rem;
+  }
+  figure {
+    margin: 0;
+    max-width: 30rem;
+    border: 2px solid var(--line-strong);
+    border-radius: var(--r-md);
+    overflow: hidden;
+    background: var(--surface);
+  }
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  @media (min-width: 48rem) {
+    .print {
+      grid-template-columns: minmax(0, 1fr) minmax(16rem, 26rem);
+      gap: var(--sp-6);
+    }
+  }
+</style>

@@ -39,6 +39,7 @@ Other commands:
 npm run build            # static site into ./dist
 npm run preview          # serve ./dist locally
 npm run build:templates  # regenerate the Component 3 PDFs and CSV (see below)
+npm run build:reflection  # regenerate the twelve Claim & Reflection sheets and previews from templates/reflection/
 python3 scripts/extract-booklet-assets.py   # regenerate page images and split PDFs from the booklet (see below)
 ```
 

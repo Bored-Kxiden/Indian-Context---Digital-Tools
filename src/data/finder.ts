@@ -5,6 +5,7 @@ import { tools as c2Tools } from './booklet/visual-culture';
 import { tools as c3Tools } from './booklet/language';
 import { tools as c4Tools } from './booklet/material-reality';
 import { referencePages, referenceHref, parentLabel } from './tools';
+import { lookBack, stops as reflectStops } from './reflection';
 
 // Everything the "Find a tool" search can open, built from the same data as the pages.
 // Order = order of the result groups.
@@ -80,10 +81,19 @@ const tools: FinderItem[] = [
   })),
 ];
 
+// Reflection: the Before and After page in every component, and the three Look back pages.
+const reflect: FinderItem[] = [
+  ...reflectStops.flatMap((s) => [
+    { title: `Before Component ${s.n} · ${s.before.code}`, hint: `Reflection · position and prediction, before ${s.short}`, href: `${s.href}reflect-before/`, c: 'ink' as const },
+    { title: `After Component ${s.n} · ${s.after.code}`, hint: `Reflection · claim and redaction, after ${s.short}`, href: `${s.href}reflect-after/`, c: 'ink' as const },
+  ]),
+  ...lookBack.map((p) => ({ title: `${p.title} · ${p.code}`, hint: `Reflection · ${p.sub.replace(/^Step 5 · /, '')}`, href: `/components/reflection/${p.slug}/`, c: 'ink' as const })),
+];
+
 const pages: FinderItem[] = [
   ...components.map((c) => ({
     title: c.number ? `${c.number} · ${c.name}` : c.name,
-    hint: c.status === 'soon' ? 'Coming next' : c.blurb,
+    hint: c.blurb,
     href: c.href,
     c: c.c,
   })),
@@ -97,6 +107,6 @@ const pages: FinderItem[] = [
 
 export const finderGroups: FinderGroup[] = [
   { id: 'want', title: 'I want to…', items: iWantTo },
-  { id: 'tools', title: 'Tools', items: tools },
+  { id: 'tools', title: 'Tools', items: [...tools, ...reflect] },
   { id: 'pages', title: 'Pages', items: pages },
 ];

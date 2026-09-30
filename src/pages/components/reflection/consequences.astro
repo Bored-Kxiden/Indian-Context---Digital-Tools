@@ -1,0 +1,78 @@
+---
+import ComponentLayout from '../../../layouts/ComponentLayout.astro';
+import Section from '../../../components/Section.astro';
+import StepCard from '../../../components/reflection/StepCard.astro';
+import ReflectFlow from '../../../components/reflection/ReflectFlow.astro';
+import ReflectPrint from '../../../components/reflection/ReflectPrint.astro';
+import Icon from '../../../components/Icon.astro';
+import { lookBack, lookBackWhen, consequences } from '../../../data/reflection';
+import { url } from '../../../utils/url';
+
+const page = lookBack[2];
+---
+
+<ComponentLayout
+  component="reflection"
+  current="consequences"
+  title={page.title}
+  heading={page.title}
+  lead={page.opening.join(' ')}
+  chips={['Claim & Reflection', 'Step 5', 'Look back 3 of 3', page.code]}
+  crumb={page.title}
+>
+  <Section id="where" eyebrow="Where it goes" title="Push the method further." split>
+    <ReflectFlow prev={{ label: 'R·E2 · Wheel', href: '/components/reflection/wheel/' }} here={`${page.code} · ${page.short}`} next={{ label: 'It doesn’t end here', href: '/about/#after' }} when={lookBackWhen} />
+  </Section>
+
+  <Section id="steps" eyebrow="Three prompts" title="What it prevented, and what it could still do." tone="white">
+    <div class="three">
+      <StepCard n={consequences.skipped.n} name={consequences.skipped.name}>
+        <p class="ask">{consequences.skipped.ask}</p>
+      </StepCard>
+      <StepCard n={consequences.again.n} name={consequences.again.name}>
+        <p class="ask">{consequences.again.ask}</p>
+        <ul class="write" aria-label="Write down">
+          {consequences.again.write.map((l) => <li>{l}</li>)}
+        </ul>
+      </StepCard>
+      <StepCard n={consequences.pluriverse.n} name={consequences.pluriverse.name} tone="tint">
+        <p class="ask">{consequences.pluriverse.lead}</p>
+        {consequences.pluriverse.asks.map((a) => <p>{a}</p>)}
+      </StepCard>
+    </div>
+    <div class="callout callout--ink final">
+      <strong>{consequences.finalCheck.lead}</strong>
+      <p>{consequences.finalCheck.ask}</p>
+    </div>
+  </Section>
+
+  <Section id="print" eyebrow="Print it" title="Fill it on paper." split>
+    <ReflectPrint id={`reflection-${page.image}`} image={page.image} code={page.code} title={page.title}>
+      Do this last, with all your Before and After pages in front of you.
+    </ReflectPrint>
+  </Section>
+
+  <Section id="next" eyebrow="After the toolkit" title="It doesn’t end here." tone="white" split>
+    <p class="go"><a class="btn btn--accent" href={url('/about/#after')}>What to do next <Icon name="arrow" size={20} /></a></p>
+  </Section>
+</ComponentLayout>
+
+<style>
+  .three {
+    display: grid;
+    gap: var(--sp-3);
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+  @media (min-width: 64rem) {
+    .three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .final {
+    margin-top: var(--sp-3);
+  }
+  .go {
+    margin: 0;
+  }
+</style>

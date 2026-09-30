@@ -17,6 +17,7 @@ const c2 = templates.filter((d) => d.component === 'c2');
 const c3 = templates.filter((d) => d.component === 'c3');
 const c4 = templates.filter((d) => d.component === 'c4');
 const language = getDownloadsByGroup('language');
+const reflection = getDownloadsByGroup('reflection');
 ---
 
 <BaseLayout
@@ -32,6 +33,7 @@ const language = getDownloadsByGroup('language');
       <a href="#booklet">Booklet</a>
       <a href="#card-kit">Card kit</a>
       <a href="#templates">Blank templates</a>
+      <a href="#reflection">Claim &amp; Reflection</a>
       <a href="#language">Language field kit</a>
     </nav>
   </PageHead>
@@ -72,6 +74,16 @@ const language = getDownloadsByGroup('language');
     <h3 class="grp" data-c="c4">Component 4 · Reading Material Reality</h3>
     <div class="grid grid--3">
       {c4.map((d) => <DownloadCard item={d} />)}
+    </div>
+  </Section>
+
+  <Section id="reflection" eyebrow="Runs through every component" title="Claim & Reflection" tone="white">
+    <p slot="lead" class="lead-text">
+      Twelve A4 pages: a Before and After page for each component (they sit with that component’s blank templates above), and three
+      Look back pages for the end.
+    </p>
+    <div class="grid grid--3" data-c="ink">
+      {reflection.map((d) => <DownloadCard item={d} />)}
     </div>
   </Section>
 

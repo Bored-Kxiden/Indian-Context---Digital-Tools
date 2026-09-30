@@ -1,0 +1,104 @@
+---
+import Icon from '../Icon.astro';
+import { url } from '../../utils/url';
+
+// "Where it goes": the page before, this page, the page after, and when to fill it.
+interface Link {
+  label: string;
+  href?: string;
+}
+interface Props {
+  prev: Link;
+  here: string;
+  next: Link;
+  when: string;
+}
+const { prev, here, next, when } = Astro.props;
+---
+
+<div class="flow-wrap">
+  <ol class="flow" aria-label="Where this page sits">
+    <li>
+      {prev.href ? <a class="stop" href={url(prev.href)}><small>Before</small><b>{prev.label}</b></a> : <span class="stop"><small>Before</small><b>{prev.label}</b></span>}
+    </li>
+    <li class="ar" aria-hidden="true"><Icon name="arrow" size={20} /></li>
+    <li><span class="stop me" aria-current="page"><small>You are here</small><b>{here}</b></span></li>
+    <li class="ar" aria-hidden="true"><Icon name="arrow" size={20} /></li>
+    <li>
+      {next.href ? <a class="stop" href={url(next.href)}><small>Next</small><b>{next.label}</b></a> : <span class="stop"><small>Next</small><b>{next.label}</b></span>}
+    </li>
+  </ol>
+  <p class="when"><b>When:</b> {when}</p>
+</div>
+
+<style>
+  .flow {
+    list-style: none;
+    margin: 0 0 var(--sp-2);
+    padding: 0;
+    display: grid;
+    gap: var(--sp-1);
+    grid-template-columns: minmax(0, 1fr);
+    align-items: stretch;
+  }
+  .flow li {
+    margin: 0;
+    display: flex;
+  }
+  .ar {
+    display: none;
+    align-items: center;
+    color: var(--muted);
+  }
+  .stop {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: var(--sp-2);
+    border: 2px dashed var(--line-strong);
+    border-radius: var(--r-md);
+    color: var(--ink);
+    text-decoration: none;
+    background: var(--surface);
+    min-width: 0;
+  }
+  a.stop:hover {
+    border-style: solid;
+    border-color: var(--ink);
+  }
+  .stop small {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .stop b {
+    font-weight: 700;
+    line-height: 1.25;
+  }
+  .stop.me {
+    border-style: solid;
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+  .stop.me small {
+    color: inherit;
+  }
+  .when {
+    margin: 0;
+    max-width: 44rem;
+    color: var(--ink-soft);
+  }
+  @media (min-width: 48rem) {
+    .flow {
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr);
+      gap: var(--sp-1);
+    }
+    .ar {
+      display: flex;
+    }
+  }
+</style>

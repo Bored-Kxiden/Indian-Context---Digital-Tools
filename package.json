@@ -12,7 +12,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "build:templates": "node scripts/build-templates.mjs"
+    "build:templates": "node scripts/build-templates.mjs",
+    "build:reflection": "node scripts/build-reflection-pdfs.mjs"
   },
   "dependencies": {
     "astro": "^7.3.5"

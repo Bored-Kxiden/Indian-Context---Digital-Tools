@@ -23,7 +23,7 @@ The toolkit is organised as **components**. Each component works on its own and 
 | 2 | Reading Visual Culture (Show, Read, Build, Hand off) | Live |
 | 3 | Reading Language (Before you start, then Listen, Translate, Test, Library, Kahavat Relay). Includes the earlier Meaning-to-Interface pages | Live |
 | 4 | Reading Material Reality (4 tools, 1 guideline, 1 map) | Live |
-| – | Reflection | Placeholder ("coming next") |
+| – | Claim & Reflection (a Before and After page inside each component, three Look back pages at the end) | Live |
 
 The site does three jobs: explain each tool, show a worked example (the running persona is **Meera**), and let visitors download the blank templates and the print-ready card kit.
 
@@ -92,6 +92,8 @@ Status: **Confirmed** by the owner, or **Assumed** (made to keep moving; needs c
 
 | D30 | **The toolkit is titled "Beyond the Edge Case" and says one thing first.** Title: *Beyond the Edge Case*. Description (also the meta description and the tagline under the title): *A toolkit for designing in Indian contexts by questioning the universal assumptions behind what gets treated as an exception.* The owner's introductory statement sits straight under the hero (`EdgeIntro`): the four opening sentences, "unusual to the system does not necessarily mean unusual to the person", "Beyond the Edge Case is a toolkit for finding and investigating these situations before they are reduced to exceptions", and the move from "How do I accommodate this edge case?" to "What made this an edge case in the first place?". The central line, **"What gets classified as an edge case depends on the baseline we design from."**, is the next block on the home page, set large on ink with the larger idea beside it ("The goal is not to replace one universal with another…"), and the same band opens About (`CentralLine`). All of it is written once, in `intro` in `src/data/site.ts`. The section heading over the introduction ("Start from the situation, not the default.") is ours. | Confirmed (asked for). The heading is ours: confirm |
 
+| D31 | **Reflection is live as "Claim & Reflection" and runs through the other four components.** Content is from the owner's reference HTML (twelve A4 pages, codes R·1A … R·E3). Five steps: 1 Position and 2 Prediction on a **Before** page, 3 Claim (the stanza) and 4 Redaction on an **After** page, 5 Summarise in three **Look back** pages (Summarise, Wheel, Consequences). Every component has its own `reflect-before/` and `reflect-after/` page (8 in all) with the step bar item "Reflect: before" after its opening page and "Reflect: after" at its end, and a row in its route; the pages keep their component's colour. Placement follows the reference: Component 1 before Tool 1 (after Pick a product) and after Synthesis (where its "Is it working?" sits); Component 2 before Show and after Is it working?; Component 3 after Before you start and after Is it working?; Component 4 before Before you start (the reference puts it before "Map the journey", which is the Journey Strip) and after Ask your participants. The Reflection overview and the three Look back pages are neutral ink (D20, Q12). On screen each page is a reading version in the site's theme (the questions, where it goes, what to do next); the printable page is a blank A4 sheet, built by `npm run build:reflection` from `templates/reflection/claim-and-reflection.html` (the reference layout with its fonts pointed at the site's own) into `public/downloads/templates/reflection-*.pdf`, `public/downloads/claim-and-reflection.pdf` and previews in `public/reflection/`. Those sheets and previews keep the reference's blue page, like the booklet's page images (D25): it is the printed page. Toolkit name in the sheets follows D30 ("DFIC 07" became "07"). Their footers still cite the reference's booklet numbers ("after 1.02", "fill before 1.03 Media Story"), which belong to the final booklet; the site pages use tool names instead (Q18). "I want to…" gets a fifth, full-width Reflection card (five broad goals, written by us). The Wheel is drawn as SVG from the printed geometry; it is an illustration, not a fill-in tool (backlog). | Assumed: the site layout and the placement on C4. Confirm |
+
 ### Earlier decisions that still apply (Language component)
 
 - **Fidelity rule:** a finding missing any of the four tags (source language, who interpreted, rendering type, single-source flag) cannot carry full confidence until re-checked. A single-source finding stays provisional until a second reader agrees. *(Assumed reading of the write-up.)*
@@ -105,7 +107,7 @@ Status: **Confirmed** by the owner, or **Assumed** (made to keep moving; needs c
 
 ```
 /                                   Home: hero, "I want to…" (all components), components, why, how every tool works, guideline, Meera
-/components/                        the five components (Reflection is a placeholder)
+/components/                        the five components (Reflection sits under the four as a band)
   existing-products/                1 · overview + "I want to…", route, two ways to work, design claim
     pick-a-product/                   one specific product, before Tool 1
     media-gossip/ history/ the-break/ power/ synthesis/     4 tabs each: Guide · Example · Blank template · Card kit
@@ -122,7 +124,9 @@ Status: **Confirmed** by the owner, or **Assumed** (made to keep moving; needs c
     before-you-start/                 Journey Strip, Visual Toolkit photos
     build/ break/ weigh/ say/         3 tabs each: Guide · Example · Blank template
     ask-your-participants/            field cards: questions, consent, care
-  reflection/                       "coming next" placeholder
+  reflection/                       Claim & Reflection: overview (idea, five steps, where the pages are, print) + central line
+    summarise/ wheel/ consequences/   the three Look back pages (R·E1–E3)
+  (each of the four components)     reflect-before/ reflect-after/   R·nA, R·nB: position and prediction, claim and redaction
 /card-kit/                          boards B1–B7, sheets S1–S8, print and set-up
 /guideline/                         one real thing (#one-real-thing), how to read (#how-to-read), Meera (#meera)
 /downloads/                         booklet, card kit, blank templates, Language templates
@@ -150,7 +154,7 @@ Fuller wireframes, a simplified wireframe, and task flows are in the owner's Fig
 | Guideline, "how to read", Meera, "after the toolkit", further reading | Copied from the booklet's front and back matter |
 | Home, About and component-overview framing text | **Written by us** (short connecting copy; "Where it comes from" on About) |
 | Card-kit page: sheet and board blurbs, per-tool "Play it on the table" intros | From the card kit and booklet; a few intros composed by us from booklet phrases |
-| Placeholder: Reflection | Minimal "coming next" page. No invented content |
+| Reflection (overview, eight Before and After pages, three Look back pages, printable sheets) | From the owner's reference HTML, lightly edited for the web (D31). Framing headings, the "I want to…" lines and the "what next" lines are **written by us** |
 
 ## 7. Open questions
 
@@ -167,10 +171,11 @@ Fuller wireframes, a simplified wireframe, and task flows are in the owner's Fig
 | Q9 | The Vercel connection used in build sessions is not the owner's original Vercel project; confirm which account should own the site. **Update:** three Vercel projects are linked to this repo. Two built the restructure; the owner's original one failed on every push with "No Next.js version detected": its Framework Preset was set to Next.js. Fixed in the repo with `vercel.json` (D18), which pins Astro. **Confirmed:** after `vercel.json` all three projects built green on PR 1. Setting the preset to Astro in that project's dashboard is still the cleaner fix. Still open: which project and account should be the production site. |
 | Q10 | Wording check: the About page's "Where it comes from" paragraph and the connecting copy on Home and the component overviews are ours. Confirm, and say who is credited (see Q3). |
 | Q11 | Where should "Print" and "You need" sit on a tool page? Now: a right-hand column on very wide screens (92rem+), otherwise below the tabs. |
-| Q12 | Reflection has no colour of its own yet, so it uses neutral ink (D20). Does it get one? Turmeric is Component 2's. |
+| Q12 | Reflection has no colour of its own yet, so it uses neutral ink (D20). Does it get one? Turmeric is Component 2's. The reference HTML draws Reflection in blue (`#2A6FD1` on `#CFE0F0`), which sits close to Component 4's indigo (`#3144A6`), so the site has not adopted it. The printable sheets are still blue. |
 | Q14 | The booklet colours each Component 2 and 3 tool page differently (indigo, terracotta, turmeric). The site keeps colour = component (D29). Should the booklet be recoloured to match, so the page images agree with the site? |
 | Q15 | Wording check for Components 2 and 3: the connecting copy (section headings such as "Start with their world", "Then hand it on", "Six things to do first"), the "I want to…" lines we added, and the way the Meaning Card page maps the short card to the full card are ours. Confirm, and see Q10. |
 | Q17 | The booklets (`designing-for-the-indian-context-booklet.pdf`, `components-2-3-booklet.pdf`), the card kit and the printed Language cards still say "Designing for the Indian Context". The site says Beyond the Edge Case (D30). The final booklet was promised in the same message as the rename but was not attached, so the PDFs, their file names and the page images are unchanged until it arrives. | 
+| Q18 | The reference Reflection pages cite page numbers from a booklet that is not here ("after 1.02", "1.10 Is it working?", "3.24 Is it working?", "fill before 1.03 Media Story", "Tool 1A · Media Story"). They differ from the booklets on the site (for example, the site's Tool 1 is "Media & Gossip"). The printed sheets keep them as given; the site pages use tool names. Do the printed sheets need re-checking against the final booklet? |
 | Q16 | The six-page Component 02 draft repeated the booklet. Anything in it that should stay out? Everything it added is folded in (D26). |
 | Q13 | **Resolved (D25):** the filled examples are native HTML. Still open: the Journey Strip (p.4.04), the Visual Toolkit photos (p.4.05) and the participant field cards (p.4.22) are page images, and so are the blank templates. Rebuild them the same way? |
 
@@ -179,12 +184,19 @@ Fuller wireframes, a simplified wireframe, and task flows are in the owner's Fig
 - Native HTML for the remaining page images: blank templates, Journey Strip (4.04), Visual Toolkit (4.05), field cards (4.22).
 - Fill-on-screen blank templates, and the interactive **Synthesis builder** with "Save as PDF".
 - Refresh FigJam sections 13 to 15 for the multi-component structure.
-- Reflection component when its content exists.
+- Fill-on-screen Reflection pages (saved only in the visitor's browser) and an interactive Wheel. Today the Wheel is an illustration and the pages are read, then printed.
 - A print stylesheet check for tool pages.
 - "Visited" progress in the rail.
 - Decide what a Component 1 tool page shows in Cards mode beyond opening the Card kit tab first.
 
 ## 9. Change log (newest first)
+
+### 2026-09-30 · Reflection built (D31)
+Requested: use the reference HTML to build the Reflection component, and add the reflection pages that sit inside the other components, in the website's theme.
+
+- **Claim & Reflection is live:** overview, three Look back pages, and a Before and After page in each of Components 1 to 4 (`ReflectSheetLayout`), wired into the step bars ("Reflect: before", "Reflect: after"), the component routes, "I want to…" (a fifth, full-width card), search, the footer, and Downloads (a Claim & Reflection section; each component's pair sits with its blank templates). The home and components pages show Reflection as one wide band under the four tiles.
+- **Printable pages:** `scripts/build-reflection-pdfs.mjs` (`npm run build:reflection`) renders the twelve A4 pages one by one, plus all twelve as one file, plus WebP previews. Verified against the reference render.
+- **Layout fixes:** `ComponentLayout` and the step bar no longer assume a component number (Reflection has none; the mark is "R").
 
 ### 2026-09-30 · Retitled "Beyond the Edge Case" (D30)
 Requested: new title and description, the owner's introductory statement, the central line as one of the toolkit's central statements, and the "one universal for another" idea after it.
