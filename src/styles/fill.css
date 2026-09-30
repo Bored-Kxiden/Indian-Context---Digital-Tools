@@ -1,0 +1,302 @@
+/* "Fill on screen" forms (src/components/fill/). Global because the script adds repeat items and a print copy. */
+
+.fill {
+  display: grid;
+  gap: var(--sp-2);
+  background: var(--surface);
+  border: 1.5px solid var(--ink);
+  border-top: 8px solid var(--accent, var(--ink));
+  border-radius: var(--r-md);
+  padding: clamp(var(--sp-2), 2.4vw, var(--sp-4));
+  max-width: 64rem;
+}
+.fill + .fill {
+  margin-top: var(--sp-4);
+}
+.fbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2) var(--sp-4);
+  align-items: end;
+  justify-content: space-between;
+}
+.fbar .eb {
+  margin: 0 0 var(--sp-half);
+}
+.fh {
+  font-size: var(--fs-h3);
+  margin: 0;
+}
+.fproj {
+  display: grid;
+  gap: var(--sp-half);
+  min-width: min(100%, 16rem);
+}
+.fproj label {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.fsaved {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--muted);
+}
+.fprivacy {
+  margin: 0;
+  display: flex;
+  gap: var(--sp-1);
+  align-items: flex-start;
+  font-size: var(--fs-sm);
+  background: var(--sand);
+  border-radius: var(--r-sm);
+  padding: var(--sp-1) var(--sp-2);
+}
+.fprivacy svg {
+  flex: none;
+  margin-top: 2px;
+}
+
+.fsec {
+  margin: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-md);
+  padding: var(--sp-2) var(--sp-3) var(--sp-3);
+  display: grid;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+.fsec > legend {
+  font-weight: 700;
+  font-size: var(--fs-lead);
+  padding: 0 var(--sp-1);
+}
+.flead {
+  margin: 0;
+  color: var(--ink-soft);
+}
+.fsteps ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--sp-1);
+}
+
+.ff {
+  display: grid;
+  gap: var(--sp-half);
+  min-width: 0;
+}
+.ff > label,
+.ff > legend,
+.flabel {
+  font-weight: 600;
+}
+.fhint {
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--muted);
+}
+.fnote {
+  margin: var(--sp-1) 0 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.fill input[type='text'],
+.fill textarea {
+  width: 100%;
+  font: inherit;
+  font-size: var(--fs-ui);
+  color: var(--ink);
+  background: var(--surface);
+  border: 1.5px solid var(--field);
+  border-radius: var(--r-sm);
+  padding: var(--sp-1) var(--sp-2);
+  min-height: 44px;
+}
+.fill textarea {
+  resize: vertical;
+  line-height: 1.5;
+  overflow: hidden;
+}
+.fill input::placeholder,
+.fill textarea::placeholder {
+  color: #7b7466; /* 4.6:1 on white */
+}
+.fill input:focus-visible,
+.fill textarea:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 1px;
+}
+
+/* A sentence with blanks reads as a sentence */
+.stext {
+  margin: 0;
+  min-width: 0;
+  font-size: var(--fs-lead);
+  line-height: 2.4;
+}
+/* Higher than `.fill input[type='text']` so a blank stays inline in its sentence. */
+.fill input[type='text'].blank {
+  display: inline-block;
+  /* --w is set from the example's length, and grows as the reader types (store.ts). */
+  width: min(var(--w, 12rem), 100%);
+  max-width: 100%;
+  min-width: min(8rem, 100%);
+  min-height: 40px;
+  padding: 0 var(--sp-1);
+  border: 0;
+  border-bottom: 2px dashed var(--field);
+  border-radius: 0;
+  background: var(--accent-tint, var(--sand));
+  vertical-align: baseline;
+  font-size: var(--fs-ui);
+}
+.fill input[type='text'].blank--s {
+  min-width: min(5rem, 100%);
+}
+.fill input[type='text'].blank--l {
+  min-width: min(20rem, 100%);
+}
+
+.choice {
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+.opts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+}
+.opt {
+  display: inline-flex;
+  gap: var(--sp-1);
+  align-items: flex-start;
+  min-height: 44px;
+  padding: var(--sp-1) var(--sp-2) var(--sp-1) var(--sp-1);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  cursor: pointer;
+}
+.fsteps .opt,
+.flag .opt {
+  display: flex;
+}
+.opt input {
+  width: 20px;
+  height: 20px;
+  margin: 2px 0 0;
+  accent-color: var(--ink);
+  flex: none;
+}
+.opt:has(input:checked) {
+  border-color: var(--ink);
+  background: var(--accent-tint, var(--sand));
+}
+
+.repeat .items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--sp-2);
+}
+.repeat .item {
+  border: 1px dashed var(--field);
+  border-radius: var(--r-md);
+  padding: var(--sp-2);
+  display: grid;
+  gap: var(--sp-1);
+}
+.repeat .ih {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 700;
+}
+.repeat .ib {
+  display: grid;
+  gap: var(--sp-2);
+}
+.repeat .add {
+  justify-self: start;
+}
+
+.factions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1) var(--sp-2);
+  align-items: center;
+  padding-top: var(--sp-1);
+}
+.fload {
+  cursor: pointer;
+}
+.fload:focus-within {
+  outline: 3px solid var(--ink);
+  outline-offset: 2px;
+}
+.fill .linkish {
+  font: inherit;
+  font-size: var(--fs-sm);
+  background: none;
+  border: 0;
+  padding: 0;
+  color: var(--ink);
+  text-decoration: underline;
+  cursor: pointer;
+  min-height: 24px;
+}
+
+/* Print: only the copy the script builds, with the answers written in. */
+.fill-print {
+  display: none;
+}
+@media print {
+  html.printing-fill body > :not(.fill-print) {
+    display: none !important;
+  }
+  html.printing-fill .fill-print {
+    display: block;
+  }
+  .fill-print .fill {
+    border: 0;
+    padding: 0;
+    max-width: none;
+  }
+  .fill-print .fproj label::after {
+    content: ':';
+  }
+  .fill-print .fsec {
+    break-inside: avoid;
+    border-color: #999;
+  }
+  .fill-print .pv {
+    display: block;
+    min-height: 1.6em;
+    border-bottom: 1px solid #999;
+    white-space: pre-wrap;
+  }
+  .fill-print .pv--blank {
+    display: inline;
+    border-bottom: 1px solid #333;
+    padding: 0 0.3em;
+  }
+  .fill-print .opt {
+    border: 0;
+    min-height: 0;
+    padding: 0;
+  }
+  .fill-print .pv-box {
+    font-size: 1.1em;
+  }
+}

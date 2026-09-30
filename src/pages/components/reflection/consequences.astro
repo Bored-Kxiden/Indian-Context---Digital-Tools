@@ -7,6 +7,8 @@ import ReflectPrint from '../../../components/reflection/ReflectPrint.astro';
 import Icon from '../../../components/Icon.astro';
 import { lookBack, lookBackWhen, consequences } from '../../../data/reflection';
 import { url } from '../../../utils/url';
+import FillForm from '../../../components/fill/FillForm.astro';
+import { fillById } from '../../../data/fill/templates';
 
 const page = lookBack[2];
 ---
@@ -44,6 +46,10 @@ const page = lookBack[2];
       <strong>{consequences.finalCheck.lead}</strong>
       <p>{consequences.finalCheck.ask}</p>
     </div>
+  </Section>
+
+  <Section id="fill" eyebrow="Or fill it on screen" title="Fill it here." tone="white">
+    <FillForm t={fillById['reflection/look-back/consequences']} />
   </Section>
 
   <Section id="print" eyebrow="Print it" title="Fill it on paper." split>

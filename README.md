@@ -14,7 +14,7 @@ The toolkit is built in **components**. Each is a different way of reading the w
 | **4 · Reading Material Reality** | Live | What people have around them, what it costs, and who they lean on. Build, Break, Weigh, Say. |
 | **Claim & Reflection** | Live | Runs through all four: a Before and After page in each component, and three Look back pages at the end. |
 
-Every tool page has the same tabs, in the same order: **Guide · Example · Template** (Component 1: **Guide · Template · Card kit**). Two tools add a tab of their own: **The six missions** (Component 2 · Show) and **Reverse thick translation** (Component 3 · Translate). The home page leads with an **"I want to…"** index, one card per component, that opens the right tool for the job. A sticky strip keeps every component one click away, and **Find a tool** (press `/`) searches every tool, step, page and term. **Ask the toolkit** answers questions from the toolkit's own content, without an AI model: from the **Ask** button at the bottom right of every page, or on its own page (`/ask/`). The **Glossary** (`/glossary/`) lists every term the toolkit uses.
+Every tool page has the same tabs, in the same order: **Guide · Example · Template** (Component 1: **Guide · Template · Card kit**). Two tools add a tab of their own: **The six missions** (Component 2 · Show) and **Reverse thick translation** (Component 3 · Translate). The home page leads with an **"I want to…"** index, one card per component, that opens the right tool for the job. A sticky strip keeps every component one click away, and **Find a tool** (press `/`) searches every tool, step, page and term. **Ask the toolkit** answers questions from the toolkit's own content, without an AI model: from the **Ask** button at the bottom right of every page, or on its own page (`/ask/`). The **Glossary** (`/glossary/`) lists every term the toolkit uses. Every template can also be **filled on screen** (the **Fill on screen** tab on each tool page, and the Reflection and Meaning Card pages), saved only in the visitor's browser, then printed, saved as PDF or downloaded; **My work** (`/my-work/`) lists what has been filled.
 
 > **Working on this repo?** Read [`CONTEXT.md`](CONTEXT.md) first. It records the project's context, decisions, open questions and a change log, and it is updated with every change. [`CLAUDE.md`](CLAUDE.md) has the working rules for AI assistants.
 
@@ -89,12 +89,14 @@ python3 scripts/extract-booklet-assets.py   # regenerate page images and split P
     │   ├── finder.ts              everything the "Find a tool" search can open
     │   ├── glossary.ts            every term: read from the page data, plus toolkit concepts and labelled general terms
     │   ├── backend.ts             the Supabase address the site calls (PUBLIC_SUPABASE_URL, or "off")
+    │   ├── fill/                  Fill on screen: each template as fields (types.ts, templates.ts)
     │   ├── tools.ts               Component 3 deeper pages (Meaning Card, Field Kit, …) and the tool each belongs to
     │   └── library.ts, *.json     Component 3 Expression and Design Language libraries
     ├── layouts/                   BaseLayout, ComponentLayout, BookletToolLayout, ToolLayout (Language), ComingNextLayout
-    ├── pages/                     index, components/*, card-kit, guideline, downloads, about, glossary, ask, ask-data.json
+    ├── pages/                     index, components/*, card-kit, guideline, downloads, about, glossary, ask, my-work, ask-data.json
     ├── scripts/ask/engine.ts      the Ask answer engine (no language model); ui.ts, the conversation (page and chat panel)
     ├── components/ChatWidget.astro   the Ask button and chat panel on every page
+    ├── components/fill/           FillForm and FillField: a template as a form; scripts/fill/store.ts saves, prints and exports it
     ├── styles/global.css          design tokens and shared styles
     └── utils/                     url helper, page-image lookup, Fidelity Protocol rule
 ```
@@ -125,6 +127,7 @@ Everything visual is a token in `src/styles/global.css`; components use the toke
 | `/about/` | Who it is for, what comes after, further reading |
 | `/glossary/` | Every term, A–Z, with a filter; each term has its own anchor (`/glossary/#reverse-thick-translation`) |
 | `/ask/` | Ask the toolkit. `?q=` asks straight away |
+| `/my-work/` | Everything filled on screen in this browser, per project: open it, download it all, load a copy, delete a project |
 | `/tools/…`, `/components/language/methodology/` | Old Component 3 addresses. Redirect to `/components/language/…` (the methodology is now the **Reverse thick translation** tab of `translate/`) |
 
 ## Deploying
@@ -151,6 +154,15 @@ There is **no language model**. `src/scripts/ask/engine.ts` reads the kind of qu
 - **Terms** come from `src/data/glossary.ts`. Most are read from the page data (each tool's `words`, the tools, card sheets and boards, tags, structures, layers), so they follow the pages. To add a term the data does not have, add an entry there. General terms (OTP, code-switching…) must be marked `General` and carry a source.
 - **Passages** come from `dist/chat-index.json`, built by `npm run build` (every page's main text, split at its headings). The Supabase `ask` function searches them by meaning and keywords; if it cannot be reached the page searches them in the browser by keywords.
 - **After content changes**, refresh the Supabase index once the site is deployed: call `index-sync` with `{"mode":"sync"}` (it reads `/chat-index.json` from the production site), then `{"mode":"embed","batch":8}` until `remaining` is 0.
+
+## Filling templates on screen
+
+Every template can be filled on screen as well as on paper. A template is described once as fields in `src/data/fill/templates.ts` (types in `types.ts`): single lines, longer answers, sentences with blanks ("The product claims ___, but ___ revealed ___"), choices, tick boxes, and groups that repeat (one Meaning Card per moment). The booklet's [bracketed] example shows as each empty field's placeholder, as on paper. `src/components/fill/FillForm.astro` draws it; `src/scripts/fill/store.ts` does the rest.
+
+- **Where it shows:** a **Fill on screen** tab on every tool page (one form per part), "Fill it here" on the eight Before and After pages and the three Look back pages, and on the Meaning Card page.
+- **Saving:** in the visitor's browser only (`localStorage`, keys `bte-fill:v1:<project>:<template id>`), as they type, under the name of what they are working on ("NSP · Meera"). Nothing is sent to a server. Template ids are the keys answers are saved under: never rename one that has shipped.
+- **Getting it out:** Print or save as PDF (a plain copy with the answers written in, empty lines left for handwriting), Download a copy (JSON, which Load a copy reads back, here or on another device), and a spreadsheet (CSV) for repeating groups such as Meaning Cards. `/my-work/` lists everything per project and downloads or loads it all at once.
+- **Status:** 15 forms have all of their page's fields: Synthesis (1.09), the thick translation table (3.10), the brief pad (4.21), the Meaning Card, and the eleven Reflection pages. The other 22 template parts have the part's steps as a checklist and a notes box for now (marked "steps and notes" in My work). To model one, add its sections under its id in `full` in `templates.ts`.
 
 ## Backend (Supabase)
 
