@@ -12,10 +12,11 @@ import { boardById, sheetById, sheetMeta } from '../data/card-kit';
 import { getDownloadById, getDownloadsForPage } from '../data/downloads';
 import { bookletImage, cardKitImage } from '../utils/assets';
 import { nativeExamples } from '../components/examples';
+import { toolPanels } from '../components/panels';
 import { url } from '../utils/url';
 
-// One page per tool in Components 1 and 4. Four tabs, always in the same order:
-// Guide · Example · Blank template · Card kit (Component 1 only).
+// One page per tool in Components 1 to 4. Tabs, always in the same order:
+// Guide · (extra tabs a tool asks for) · Example · Blank template · Card kit (Component 1 only).
 // Without JavaScript the panels simply stack; with it they become tabs.
 // The layout uses the whole width: examples sit side by side when there is room, and
 // each one puts its steps beside the page or below it, whichever leaves the page larger.
@@ -33,16 +34,31 @@ const prev = idx > 0 ? rail.items[idx - 1] : undefined;
 const next = idx >= 0 && idx < rail.items.length - 1 ? rail.items[idx + 1] : undefined;
 
 const guideImage = bookletImage(tool.guidePage);
+// Components 1 and 4 show the booklet's guide page beside the text. In Components 2 and 3 the
+// booklet colours each tool's page differently (indigo, terracotta, turmeric), which would clash
+// with the site's one-colour-per-component rule, and the page repeats the text. So there it sits
+// under the text, one click away, and the text uses the width.
+const pageBeside = tool.component === 'existing-products' || tool.component === 'material-reality';
 const multi = tool.parts.length > 1;
 const kit = tool.cardKit;
 const templates = getDownloadsForPage(pagePath);
 
+const panels = (tool.panels ?? []).filter((p) => toolPanels[`${tool.component}/${tool.slug}/${p.id}`]);
+const afterGuide = panels.filter((p) => (p.after ?? 'guide') === 'guide');
+const atEnd = panels.filter((p) => p.after === 'end');
 const tabs = [
   { id: 'guide', label: 'Guide', icon: 'info' },
+  ...afterGuide.map((p) => ({ id: p.id, label: p.label, icon: p.icon })),
   { id: 'example', label: 'Example', icon: 'bulb' },
   { id: 'blank', label: 'Blank template', icon: 'file' },
+  ...atEnd.map((p) => ({ id: p.id, label: p.label, icon: p.icon })),
   ...(kit ? [{ id: 'card-kit', label: 'Card kit', icon: 'cards' }] : []),
-] as const;
+];
+const blankParts = tool.parts.filter((p) => !p.blank.skip);
+const sampleNote =
+  tool.sampleNote ??
+  'Follow the steps, then do the same for your own person. On your table, use real ads, real quotes and real words.';
+const blankNote = tool.blankNote ?? 'Print it on A4, or copy it onto a big sheet. Write on sticky notes.';
 
 const eyebrow = [
   tool.number ? `Tool ${tool.number} of ${tool.of}` : (tool.kind ?? 'Closing'),
@@ -98,7 +114,7 @@ const crumbs = [
           {
             tabs.map((t) => (
               <button type="button" class="tab" data-tab={t.id} aria-selected="false">
-                <Icon name={t.icon} size={20} /> {t.label}
+                <Icon name={t.icon as any} size={20} /> {t.label}
               </button>
             ))
           }
@@ -122,8 +138,9 @@ const crumbs = [
       <!-- Guide -->
       <section class="panel" id="guide" data-panel="guide">
         <h2 class="panel-h">Guide</h2>
-        <div class="guide-grid">
+        <div class="guide-grid" data-beside={String(pageBeside)}>
           <div class="g-text">
+           <div class="g-a">
             <h3 class="sub">What is it?</h3>
             {tool.whatIsIt.map((p) => <p class="body-p">{p}</p>)}
 
@@ -161,18 +178,44 @@ const crumbs = [
               )
             }
 
+           </div>
+           <div class="g-b">
             {
               tool.extras.map((e) => (
                 <div class:list={['callout', { 'callout--warn': e.tone === 'care' }]}>
                   <strong>{e.title}</strong>
                   {e.body && <p>{e.body}</p>}
-                  {e.list && (
+                  {e.list && e.chips && (
+                    <ul class="chip-row chips-in">
+                      {e.list.map((li) => <li class="chip">{li}</li>)}
+                    </ul>
+                  )}
+                  {e.list && !e.chips && (
                     <ul class="plain">
                       {e.list.map((li) => <li>{li}</li>)}
                     </ul>
                   )}
                 </div>
               ))
+            }
+
+            {
+              tool.refs && tool.refs.length > 0 && (
+                <>
+                  <h3 class="sub">Go deeper</h3>
+                  <ul class="refs">
+                    {tool.refs.map((r) => (
+                      <li>
+                        <a href={url(r.href)}>
+                          <b>{r.label}</b>
+                          <span>{r.blurb}</span>
+                          <Icon name="arrow" size={20} />
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )
             }
 
             {
@@ -200,23 +243,51 @@ const crumbs = [
                 </>
               )
             }
+           </div>
           </div>
 
-          <div class="g-page">
-            <PageFigure
-              image={guideImage}
-              alt={`The booklet’s guide page for ${tool.name}, page ${tool.guidePage}.`}
-              caption={`The booklet page, p.${tool.guidePage}`}
-            />
-          </div>
+          {
+            pageBeside ? (
+              <div class="g-page">
+                <PageFigure
+                  image={guideImage}
+                  alt={`The booklet’s guide page for ${tool.name}, page ${tool.guidePage}.`}
+                  caption={`The booklet page, p.${tool.guidePage}`}
+                />
+              </div>
+            ) : (
+              <details class="g-compare">
+                <summary>
+                  Compare with the booklet page <span>p.{tool.guidePage}</span>
+                </summary>
+                <PageFigure
+                  image={guideImage}
+                  alt={`The booklet’s guide page for ${tool.name}, page ${tool.guidePage}.`}
+                  caption="The booklet colours each tool’s page differently. On this site the colour stays with the component."
+                />
+              </details>
+            )
+          }
         </div>
       </section>
+
+      {
+        afterGuide.map((pd) => {
+          const Panel = toolPanels[`${tool.component}/${tool.slug}/${pd.id}`];
+          return (
+            <section class="panel" id={pd.id} data-panel={pd.id}>
+              <h2 class="panel-h">{pd.label}</h2>
+              <Panel tool={tool} />
+            </section>
+          );
+        })
+      }
 
       <!-- Example -->
       <section class="panel" id="example" data-panel="example">
         <h2 class="panel-h">Example</h2>
         <p class="sample-banner">
-          <strong>Illustrative example.</strong> Follow the steps, then do the same for your own person. On your table, use real ads, real quotes and real words.
+          <strong>Illustrative example.</strong> {sampleNote}
         </p>
         <div class="parts">
           {
@@ -259,10 +330,10 @@ const crumbs = [
       <!-- Blank template -->
       <section class="panel" id="blank" data-panel="blank">
         <h2 class="panel-h">Blank template</h2>
-        <p class="body-p">Print it on A4, or copy it onto a big sheet. Write on sticky notes.</p>
+        <p class="body-p">{blankNote}</p>
         <div class="parts">
           {
-            tool.parts.map((p) => {
+            blankParts.map((p) => {
               const dl = getDownloadById(`tpl-${p.blank.pdf.replace(/\.pdf$/, '')}`);
               return (
                 <article class="part" id={`blank-part-${p.id}`}>
@@ -285,7 +356,7 @@ const crumbs = [
                       <div class="callout">
                         <strong>Example and blank share one page.</strong>
                         <p>
-                          On p.{p.blank.page} of the booklet, the filled example sits above the blank to fill in. The download is that page.{' '}
+                          {p.blank.sharedNote ?? `On p.${p.blank.page} of the booklet, the filled example sits above the blank to fill in. The download is that page.`}{' '}
                           <a href={url(`${pagePath}#part-${p.id}`)}>See the example</a>
                         </p>
                       </div>
@@ -300,6 +371,18 @@ const crumbs = [
           }
         </div>
       </section>
+
+      {
+        atEnd.map((pd) => {
+          const Panel = toolPanels[`${tool.component}/${tool.slug}/${pd.id}`];
+          return (
+            <section class="panel" id={pd.id} data-panel={pd.id}>
+              <h2 class="panel-h">{pd.label}</h2>
+              <Panel tool={tool} />
+            </section>
+          );
+        })
+      }
 
       <!-- Card kit -->
       {
@@ -743,7 +826,8 @@ const crumbs = [
     color: var(--muted);
     margin: var(--sp-4) 0 var(--sp-2);
   }
-  .g-text > .sub:first-child,
+  .g-a > .sub:first-child,
+  .g-b > .sub:first-child,
   .kit-intro .sub:first-child {
     margin-top: 0;
   }
@@ -770,8 +854,52 @@ const crumbs = [
     grid-template-columns: minmax(0, 1fr);
     align-items: start;
   }
+  /* Page beside the text: the two blocks read as one column. */
+  .guide-grid[data-beside='true'] .g-text > div {
+    display: contents;
+  }
+  /* Page under the text: the text uses the width, in two columns. */
+  .guide-grid[data-beside='false'] .g-text {
+    display: grid;
+    gap: var(--sp-5);
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+  .guide-grid[data-beside='false'] .g-b > .callout:first-child {
+    margin-top: 0;
+  }
+  .g-compare {
+    grid-column: 1 / -1;
+    max-width: 44rem;
+    border: 2px solid var(--line-strong);
+    border-radius: var(--r-md);
+    background: var(--surface);
+    padding: var(--sp-1) var(--sp-2);
+  }
+  .g-compare summary {
+    cursor: pointer;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    gap: var(--sp-1);
+    font-weight: 700;
+    font-size: var(--fs-ui);
+  }
+  .g-compare summary span {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    font-weight: 400;
+    color: var(--muted);
+  }
+  .g-compare[open] summary {
+    margin-bottom: var(--sp-2);
+  }
   @media (min-width: 64rem) {
-    .guide-grid {
+    .guide-grid[data-beside='false'] .g-text {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: var(--sp-6);
+    }
+    .guide-grid[data-beside='true'] {
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     }
     .g-page {
@@ -979,5 +1107,57 @@ const crumbs = [
   .pn .next {
     margin-left: auto;
     text-align: right;
+  }
+  /* "Go deeper": pages that belong to this tool */
+  .chips-in {
+    list-style: none;
+    padding: 0;
+    margin: var(--sp-1) 0 0;
+  }
+  .chips-in li {
+    margin: 0;
+  }
+  .refs {
+    list-style: none;
+    margin: 0 0 var(--sp-3);
+    padding: 0;
+    display: grid;
+    gap: var(--sp-1);
+  }
+  .refs li {
+    margin: 0;
+  }
+  .refs a {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 2px var(--sp-2);
+    align-items: center;
+    padding: var(--sp-2);
+    border: 2px solid var(--line-strong);
+    border-radius: var(--r-md);
+    background: var(--surface);
+    color: var(--ink);
+    text-decoration: none;
+    transition:
+      background-color var(--t-fast) var(--ease),
+      border-color var(--t-fast) var(--ease);
+  }
+  .refs a:hover {
+    background: var(--accent-tint);
+    border-color: var(--accent);
+  }
+  .refs b {
+    grid-column: 1;
+    font-size: var(--fs-lead);
+    line-height: 1.25;
+  }
+  .refs span {
+    grid-column: 1;
+    color: var(--ink-soft);
+    font-size: var(--fs-ui);
+  }
+  .refs a > :global(svg) {
+    grid-row: 1 / span 2;
+    grid-column: 2;
   }
 </style>

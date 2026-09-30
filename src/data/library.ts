@@ -11,8 +11,8 @@ export type LensResult = 'pass' | 'fail' | 'untested';
 export type TestedStatus = 'Confirmed' | 'Partially confirmed' | 'Not yet tested';
 
 export const lensNames: Record<LensCode, string> = {
-  N: 'Nomenclature',
-  P: 'Proxy / Audience',
+  N: 'New',
+  P: 'Proxy',
   T: 'Trust',
 };
 

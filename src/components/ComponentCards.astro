@@ -3,8 +3,8 @@ import Icon from './Icon.astro';
 import { liveComponents, soonComponents } from '../data/components';
 import { url } from '../utils/url';
 
-// Component 1 is the tallest tile, 3 and 4 stack beside it: one colour per component,
-// and the biggest block goes to the component with the most in it.
+// Component 1 is the tallest tile, then 3 (the second tallest). 2 and 4 are the short ones:
+// one colour per component, and the biggest block goes to the component with the most in it.
 ---
 
 <div class="bento">
@@ -59,11 +59,15 @@ import { url } from '../utils/url';
     .bento {
       grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
       grid-template-areas:
+        'c1 c2'
         'c1 c3'
-        'c1 c4';
+        'c4 c3';
     }
     [data-tile='c1'] {
       grid-area: c1;
+    }
+    [data-tile='c2'] {
+      grid-area: c2;
     }
     [data-tile='c3'] {
       grid-area: c3;
@@ -112,6 +116,7 @@ import { url } from '../utils/url';
   .big--c1 {
     min-height: 32rem;
   }
+  .big--c2,
   .big--c3,
   .big--c4 {
     min-height: 15rem;

@@ -28,9 +28,11 @@ const kit = readJson('templates/kit-cards.json');
 // Card size: 6 × 4 in landscape, a standard index-card and photo-print size.
 const W_MM = 152.4;
 const H_MM = 101.6;
-const VERSION = 'Draft v0.1';
+const VERSION = 'Draft v0.2';
 
-const MODULE_COLOR = { context: '#a24a06', person: '#0b6b73', interpret: '#4338ca' };
+// Card colours: Component 3's own hue (terracotta), in two depths, like the site. Nothing here borrows
+// another component's colour.
+const MODULE_COLOR = { context: '#7d2c14', person: '#b8492c', interpret: '#8f331a' };
 
 const LINES = '<i></i>'.repeat(16);
 
@@ -160,7 +162,7 @@ body {
 `;
 
 // ---------- Card builders ----------
-const footer = (text) => `<div class="ft">Meaning-to-Interface Toolkit · ${esc(VERSION)} · ${esc(text)}</div>`;
+const footer = (text) => `<div class="ft">Reading Language · ${esc(VERSION)} · ${esc(text)}</div>`;
 
 function header(deck, side, color) {
   return `<div class="hd" style="--c:${color}"><span>${esc(deck)}</span><b>${esc(side)}</b></div>`;
@@ -261,22 +263,22 @@ function guide() {
   const g = kit.guide;
   const color = '#1d2230';
   const rows = [
-    ['Context Cards', `${kit.decks[0].cards.length} cards · Module 1`],
-    ['Interview Cards', `${kit.decks[1].cards.length} cards · Module 2`],
-    ['Reflection Cards', `${kit.decks[2].cards.length} cards · after each session`],
-    ['Researcher Positionality Card', '1 card · Module 1'],
-    ['Blank Meaning Cards', `${kit.blankMeaningCardCopies} cards · Module 2`],
+    ['Context Cards', `${kit.decks[0].cards.length} cards · ${kit.decks[0].moduleLabel}`],
+    ['Interview Cards', `${kit.decks[1].cards.length} cards · ${kit.decks[1].moduleLabel}`],
+    ['Reflection Cards', `${kit.decks[2].cards.length} cards · ${kit.decks[2].moduleLabel.toLowerCase()}`],
+    ['Researcher Positionality Card', `1 card · ${kit.positionality.moduleLabel}`],
+    ['Blank Meaning Cards', `${kit.blankMeaningCardCopies} cards · ${kit.blankMeaningCardLabel}`],
   ];
   return [
     `<section class="card" style="--c:${color}">
-      ${header('Meaning-to-Interface Toolkit', 'Kit guide', color)}
+      ${header('Reading Language', 'Kit guide', color)}
       <h2 class="title" style="font-size:17pt">${esc(g.frontTitle)}</h2>
       <p class="kicker">${esc(g.frontIntro)}</p>
       <ul class="guide-list">${rows.map(([a, b]) => `<li><b>${esc(a)}</b><span>${esc(b)}</span></li>`).join('')}</ul>
       ${footer('Kit guide')}
     </section>`,
     `<section class="card" style="--c:${color}">
-      ${header('Meaning-to-Interface Toolkit', 'Kit guide · back', color)}
+      ${header('Reading Language', 'Kit guide · back', color)}
       <h2 class="title" style="font-size:13pt">${esc(g.backTitle)}</h2>
       <ul class="prompts" style="margin-top:2.5mm">${g.backPoints.map((p) => `<li>${esc(p)}</li>`).join('')}</ul>
       ${footer('Kit guide')}

@@ -6,6 +6,7 @@ import { url } from '../../../utils/url';
 const lenses: {
   code: LensCode;
   name: string;
+  aka?: string;
   question: string;
   detail: string;
   lookFor: string[];
@@ -13,7 +14,8 @@ const lenses: {
 }[] = [
   {
     code: 'N',
-    name: 'Nomenclature',
+    name: 'New',
+    aka: 'The form’s own words: nomenclature',
     question: 'Would someone who has never filled in this exact form before understand the wording without asking anyone?',
     detail:
       'Being comfortable with WhatsApp or UPI is not the same as knowing this form’s own terms. Familiarity with everyday apps does not carry over to the vocabulary of one particular portal.',
@@ -26,7 +28,7 @@ const lenses: {
   },
   {
     code: 'P',
-    name: 'Proxy / Audience',
+    name: 'Proxy',
     question:
       'Does the wording still work when it is read aloud and operated by a CSC operator or a family member, not only by the named applicant reading it themselves?',
     detail:
@@ -83,7 +85,7 @@ const lensOrder: LensCode[] = ['N', 'P', 'T'];
 
 <ToolLayout
   slug="language-lens-audit"
-  intro="Three lenses for auditing portal or interface copy before it ships: Nomenclature, Proxy/Audience, and Trust. Wording is cleared by being tested on people, not by someone’s sense that it sounds right."
+  intro="Three lenses for auditing portal or interface copy before it ships: New, Proxy, and Trust. Wording is cleared by being tested on people, not by someone’s sense that it sounds right."
 >
   <section class="section" aria-labelledby="why">
     <div class="prose">
@@ -94,7 +96,7 @@ const lensOrder: LensCode[] = ['N', 'P', 'T'];
         operator instead of the named user, and by someone primed to distrust the source.
       </p>
       <p>
-        It is the check behind the second decision in Module 3: <em>does it work for this audience?</em> A “no” sends the candidate
+        It is the check behind <a href={url('/components/language/test/')}>Tool 3 · Test</a>: <em>does it work for this audience?</em> A “no” sends the candidate
         back to be revised. A “yes” stores the tested response in the{' '}
         <a href={url('/components/language/design-language-library/')}>Design Language Library</a>.
       </p>
@@ -114,6 +116,7 @@ const lensOrder: LensCode[] = ['N', 'P', 'T'];
               <div>
                 <p class="lname">Lens {l.code}</p>
                 <h3>{l.name}</h3>
+                {l.aka && <p class="aka">{l.aka}</p>}
               </div>
             </header>
             <p class="question">{l.question}</p>
@@ -215,7 +218,7 @@ const lensOrder: LensCode[] = ['N', 'P', 'T'];
     width: 2.8rem;
     height: 2.8rem;
     border-radius: 10px;
-    background: var(--m-interpret);
+    background: var(--accent);
     color: var(--bg);
     font-family: var(--font-head);
     font-size: 1.5rem;
@@ -231,6 +234,11 @@ const lensOrder: LensCode[] = ['N', 'P', 'T'];
   }
   .lens h3 {
     margin: 0;
+  }
+  .aka {
+    margin: var(--sp-half) 0 0;
+    font-size: var(--fs-sm);
+    color: var(--muted);
   }
   .lens h4 {
     margin: var(--sp-2) 0 var(--sp-half);
@@ -270,7 +278,7 @@ const lensOrder: LensCode[] = ['N', 'P', 'T'];
     width: 2.1rem;
     height: 2.1rem;
     border-radius: 50%;
-    background: var(--m-interpret);
+    background: var(--accent);
     color: var(--bg);
     font-weight: 700;
     display: grid;

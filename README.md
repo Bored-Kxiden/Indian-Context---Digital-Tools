@@ -7,12 +7,12 @@ The toolkit is built in **components**. Each is a different way of reading the w
 | Component | Status | What it reads |
 | --- | --- | --- |
 | **1 · Reading Existing Products** | Live | Whose user is built into a product, and who pays when it is wrong. Media & Gossip, History, The Break, Power, Synthesis. With a card kit. |
-| **2 · Reading Visual Culture** | Coming next | Placeholder page only. |
-| **3 · Reading Language** | Live | The Meaning-to-Interface Toolkit: Meaning Card, Physical Field Kit, Fidelity Protocol, Language Lens Audit, Expression Library, Design Language Library. |
+| **2 · Reading Visual Culture** | Live | What people have learned to notice, trust and act on. Show, Read, Build, Hand off. Six photo missions the participants take. |
+| **3 · Reading Language** | Live | What was meant, not only what was said. Before you start, then Listen, Translate (thick, and reverse thick, translation), Test, Library and the Kahavat Relay. Under them sit the Meaning Card, Physical Field Kit, Fidelity Protocol, Language Lens Audit and the two libraries. |
 | **4 · Reading Material Reality** | Live | What people have around them, what it costs, and who they lean on. Build, Break, Weigh, Say. |
 | **Reflection** | Coming next | Placeholder page only. |
 
-Every tool page has four tabs, in the same order: **Guide · Example · Blank template · Card kit** (the card kit is Component 1 only). The home page leads with an **"I want to…"** index, one card per component, that opens the right tool for the job. A sticky strip keeps every component one click away, and **Find a tool** (press `/`) searches every tool, step and page.
+Every tool page has the same tabs, in the same order: **Guide · Example · Blank template · Card kit** (the card kit is Component 1 only). Two tools add a tab of their own: **The six missions** (Component 2 · Show) and **Reverse thick translation** (Component 3 · Translate). The home page leads with an **"I want to…"** index, one card per component, that opens the right tool for the job. A sticky strip keeps every component one click away, and **Find a tool** (press `/`) searches every tool, step and page.
 
 > **Working on this repo?** Read [`CONTEXT.md`](CONTEXT.md) first. It records the project's context, decisions, open questions and a change log, and it is updated with every change. [`CLAUDE.md`](CLAUDE.md) has the working rules for AI assistants.
 
@@ -57,24 +57,25 @@ python3 scripts/extract-booklet-assets.py   # regenerate page images and split P
 │       ├── templates/             single-page blank templates cut from the booklet
 │       └── card-kit/              each sheet, each board, all sheets, all boards
 ├── scripts/
-│   ├── extract-booklet-assets.py  booklet + card-kit PDFs → images, blanks, split PDFs
+│   ├── extract-booklet-assets.py  booklet + card-kit PDFs → images, blanks, split PDFs (`--c23-only` for Components 2 and 3)
 │   └── build-templates.mjs        Component 3 PDFs and CSV from /templates
 ├── templates/                     source definitions for the Component 3 printable cards
 └── src/
     ├── components/                Header, ComponentNav (sticky strip), Finder (search), ComponentStepper, Section, PageHead,
     │                              GoalIndex, PageFigure, DownloadCard, Footer, …
+    │   ├── panels/                the extra tabs a tool can have (the six missions, reverse thick translation), and index.ts
     │   └── examples/              the 14 filled examples as HTML (Ex106, Ex108, … Ex420), ExFrame (frame + "compare with the
     │                              booklet page"), Tag, Lines, and index.ts (booklet page id → component)
     ├── data/
     │   ├── components.ts          the components (order, colour, status, blurb)
     │   ├── goals.ts               the "I want to…" index, all components
     │   ├── site.ts                site name, nav, links
-    │   ├── booklet/               Components 1 and 4: tools, parts, steps, words, examples (from the booklet)
+    │   ├── booklet/               Components 1 to 4: tools, parts, steps, words, examples (from the two booklets)
     │   ├── card-kit.ts            card sheets S1–S8 and boards B1–B7
     │   ├── downloads.ts           every downloadable file
-    │   ├── rail.ts                the step bar on component pages (Components 1, 3 and 4)
+    │   ├── rail.ts                the step bar on component pages (Components 1 to 4)
     │   ├── finder.ts              everything the "Find a tool" search can open
-    │   ├── tools.ts, modules.ts   Component 3 tools and process flow
+    │   ├── tools.ts               Component 3 deeper pages (Meaning Card, Field Kit, …) and the tool each belongs to
     │   └── library.ts, *.json     Component 3 Expression and Design Language libraries
     ├── layouts/                   BaseLayout, ComponentLayout, BookletToolLayout, ToolLayout (Language), ComingNextLayout
     ├── pages/                     index, components/*, card-kit, guideline, downloads, about
@@ -99,13 +100,14 @@ Everything visual is a token in `src/styles/global.css`; components use the toke
 | `/components/` | All components |
 | `/components/existing-products/` | Component 1 overview, with `pick-a-product/` and one page per tool |
 | `/components/material-reality/` | Component 4 overview, with `before-you-start/`, one page per tool, `ask-your-participants/` |
-| `/components/language/` | Component 3 overview, six tools, and `methodology/` |
-| `/components/visual-culture/`, `/components/reflection/` | "Coming next" placeholders |
+| `/components/visual-culture/` | Component 2 overview, one page per tool, and `is-it-working/` |
+| `/components/language/` | Component 3 overview, `before-you-start/`, one page per tool, `is-it-working/`, and the deeper pages (`meaning-card/`, `physical-field-kit/`, `fidelity-protocol/`, `language-lens-audit/`, `expression-library/`, `design-language-library/`) |
+| `/components/reflection/` | "Coming next" placeholder |
 | `/card-kit/` | Component 1 boards and card sheets, with print instructions |
 | `/guideline/` | The one guideline, how to read a tool (`#how-to-read`), Meera (`#meera`) |
 | `/downloads/` | Every file, grouped |
 | `/about/` | Who it is for, what comes after, further reading |
-| `/tools/…` | Old Component 3 addresses. Redirect to `/components/language/…` |
+| `/tools/…`, `/components/language/methodology/` | Old Component 3 addresses. Redirect to `/components/language/…` (the methodology is now the **Reverse thick translation** tab of `translate/`) |
 
 ## Deploying
 
@@ -126,14 +128,14 @@ The workflow sets both for the GitHub Pages project URL. Internal links go throu
 
 ## Content from the booklet
 
-Components 1 and 4 come from the **Toolkit Booklet** and the **Component 1 Card Kit** (two PDFs in `public/downloads/`).
+Components 1 and 4 come from the **Toolkit Booklet** and the **Component 1 Card Kit**, and Components 2 and 3 from the **Components 2 + 3 booklet** (PDFs in `public/downloads/`). An earlier six-page Component 2 draft repeated most of that booklet; its extra detail is folded in once (see D26 in `CONTEXT.md`).
 
 - **Words are copied from the booklet**, not paraphrased, and live in `src/data/booklet/`. Where the site adds text (a few card-kit intros, the Component 1 "I want to…" phrases, UI labels), `CONTEXT.md` says so.
 - **Examples are rebuilt as HTML** from the booklet's own geometry and text (see `src/components/examples/` and D25 in `CONTEXT.md`), with the original page one click away under "Compare with the booklet page". **Blank templates are the booklet's own pages**, shown as images with a text alternative and the steps beside them. Filled examples are illustrative, as the booklet says. Never invent quotes or data on the site.
 - **`scripts/extract-booklet-assets.py`** renders every booklet and card-kit page to WebP, cuts the blank templates and card-kit sheets and boards into their own PDFs, and writes `src/data/booklet-assets.json`. Run it only when the source PDFs change (`pip install pymupdf pillow`); commit the outputs.
-- **Page ids** follow the printed page numbers: `1.06` is the Media Story example, `4.12` is in Component 4. Card-kit ids are `S1`…`S8` and `B1`…`B7`.
+- **Page ids** follow the printed page numbers: `1.06` is the Media Story example, `4.12` is in Component 4, `2.07` is the three passes and `3.09` is the thick translation. Card-kit ids are `S1`…`S8` and `B1`…`B7`.
 
-To change a tool's wording, edit `src/data/booklet/existing-products.ts` or `material-reality.ts`. The tool page, the rail, the "I want to…" index (Component 4) and the download list all read from those files.
+To change a tool's wording, edit `src/data/booklet/existing-products.ts`, `visual-culture.ts`, `language.ts` or `material-reality.ts`. The tool page, the rail, the "I want to…" index (Component 4) and the download list all read from those files.
 
 ## Adding or changing a native example
 
@@ -150,7 +152,7 @@ Each filled example is one Astro component in `src/components/examples/`, wrappe
 Every download is listed in one place, `src/data/downloads.ts`. The Downloads page and the tool pages read from it, and file sizes are measured at build time. The blank templates and the card-kit sheets and boards are derived from the content data, so they need no entry of their own.
 
 1. Put the file in `public/downloads/`.
-2. Add an entry to `downloadEntries` in `src/data/downloads.ts` (see the Component 3 entries for the shape): `id`, `title`, `description`, `file` (relative to `public/downloads`), `format` (`'PDF' | 'CSV' | 'JSON'`), `group` (`'booklet' | 'card-kit' | 'templates' | 'language'`), optionally `component` (`'c1' | 'c3' | 'c4'`, for colour), `page` (the site path of the page it belongs to), `note`, `status`.
+2. Add an entry to `downloadEntries` in `src/data/downloads.ts` (see the Component 3 entries for the shape): `id`, `title`, `description`, `file` (relative to `public/downloads`), `format` (`'PDF' | 'CSV' | 'JSON'`), `group` (`'booklet' | 'card-kit' | 'templates' | 'language'`), optionally `component` (`'c1' | 'c2' | 'c3' | 'c4'`, for colour), `page` (the site path of the page it belongs to), `note`, `status`.
 3. Run `npm run build`. If the file is missing, the build fails with a message naming the entry, so a broken link can never be published.
 
 ### Regenerating the Component 3 printable cards
@@ -158,7 +160,7 @@ Every download is listed in one place, `src/data/downloads.ts`. The Downloads pa
 The two Language PDFs and the CSV are generated from `templates/`:
 
 - `templates/meaning-card-fields.json` defines every field on the Meaning Card. The Meaning Card page, the PDF and the CSV columns all read from it.
-- `templates/kit-cards.json` defines the decks in the Physical Field Kit.
+- `templates/kit-cards.json` defines the decks in the Physical Field Kit, and the positionality prompts. The prompts also show on the Before you start page, so they are written once.
 
 After editing either, run `npm run build:templates`. This renders the PDFs with headless Chromium through `playwright-core` (a dev dependency that does not download a browser); set `CHROMIUM_PATH` if yours is somewhere unusual. The script fails if any card's text overflows. Commit the regenerated files: the site build and CI never need a browser. Cards are 6 × 4 in; to change that, edit `W_MM` and `H_MM` at the top of `scripts/build-templates.mjs`.
 

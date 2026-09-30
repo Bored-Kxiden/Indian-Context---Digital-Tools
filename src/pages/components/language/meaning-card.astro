@@ -23,18 +23,16 @@ const exampleBack = {
   sensitive: false,
 };
 
+// The booklet's Tool 1 · Listen already covers noticing, marking cues and asking what it meant.
+// These steps are what the full card adds.
 const steps = [
   {
-    title: 'Notice',
-    body: 'During the interview, spot a phrase, an action, or a pause that seems to carry more than its words. Jot the exact words and what you saw right away, before the moment fades.',
-  },
-  {
-    title: 'Fill the front',
-    body: 'Record the setting, what was happening, the exact words in the language spoken, and what you observed. Only then write your guess at the meaning, and label it as a guess.',
+    title: 'Fill the front, guess last',
+    body: 'Record the moment ID, the setting, what was happening, the exact words in the language spoken, and what you observed. Only then write your guess at the meaning, and label it as a guess.',
   },
   {
     title: 'Ask, then fill the back',
-    body: 'Ask the participant what the moment meant to them. Write down the question, their explanation in their own words, and whether they confirmed, corrected, or disagreed with your guess.',
+    body: 'Write down the question you asked, their explanation in their own words, and whether they confirmed, corrected, or disagreed with your guess.',
   },
   {
     title: 'Flag what needs care',
@@ -42,8 +40,18 @@ const steps = [
   },
   {
     title: 'Hand on',
-    body: 'In Module 3, cards go through thick translation and the Fidelity Protocol. Cards that pass are digitized into the Expression Library.',
+    body: 'In Tool 2 · Translate, cards go through thick translation, reverse thick translation and the Fidelity Protocol. Cards that pass are digitized into the Expression Library.',
   },
+];
+
+// The booklet's short card, and where each of its lines lives on this one.
+const shortCard: [string, string][] = [
+  ['Said (in their language)', 'Exact words (original language)'],
+  ['Observed', 'What was observed'],
+  ['Inferred', 'Researcher’s guess at meaning'],
+  ['What did that moment mean to you?', 'What was asked to confirm · Participant’s explanation'],
+  ['Their correction or disagreement', 'Correction status · Another possible meaning'],
+  ['Not on the short card', 'Moment ID · Setting · Time · What was happening · Translation review flag · Sensitive to reuse'],
 ];
 ---
 
@@ -55,7 +63,7 @@ const steps = [
     <div class="prose">
       <h2 id="why">Why one card per moment</h2>
       <p>
-        The Meaning Card is the atomic unit the rest of the toolkit builds on. It is created in Module 2, for a single moment, and
+        The Meaning Card is the atomic unit the rest of the toolkit builds on. It is created in Tool 1 · Listen, for a single moment, and
         it does not yet claim that the researcher’s inference is correct. Keeping each moment on its own card means it can be
         translated, checked, tagged, and later cited by a design pattern, without dragging a whole interview along with it.
       </p>
@@ -63,6 +71,38 @@ const steps = [
         The front captures the moment. The back is where the inference is tested with the participant, so a guess is never mistaken
         for a finding.
       </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="short">
+    <div class="section-head">
+      <h2 id="short">The short card and the full card</h2>
+      <p>
+        In <a href={url('/components/language/listen/')}>Tool 1 · Listen</a>, the booklet uses a short card for the field: said, observed, inferred, then what it
+        meant to them and their correction. This is the full card, for when a moment will be translated, checked and reused.
+        Every line of the short card has a place on it.
+      </p>
+    </div>
+    <div class="table-wrap" tabindex="0" role="region" aria-label="Short card and full card: scroll sideways to see both columns">
+      <table>
+        <caption>Where each line of the short card goes</caption>
+        <thead>
+          <tr>
+            <th scope="col">Short card (booklet)</th>
+            <th scope="col">Full card (this page)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            shortCard.map(([a, b]) => (
+              <tr>
+                <th scope="row">{a}</th>
+                <td>{b}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
     </div>
   </section>
 
@@ -166,7 +206,7 @@ const steps = [
     width: 2.1rem;
     height: 2.1rem;
     border-radius: 50%;
-    background: var(--m-person);
+    background: var(--accent);
     color: var(--bg);
     font-weight: 700;
     display: grid;

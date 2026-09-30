@@ -6,7 +6,7 @@ import { site } from '../data/site';
 import { url } from '../utils/url';
 
 // A full sitemap: every tool, under its own component's colour.
-const cols = (['existing-products', 'language', 'material-reality'] as const).map((id) => ({
+const cols = (['existing-products', 'visual-culture', 'language', 'material-reality'] as const).map((id) => ({
   comp: componentById[id],
   rail: railFor(id),
 }));
@@ -53,7 +53,6 @@ const cols = (['existing-products', 'language', 'material-reality'] as const).ma
           <li><a href={url('/card-kit/')}>Card kit</a></li>
           <li><a href={url('/guideline/#meera')}>Meet Meera</a></li>
           <li><a href={url('/about/')}>About</a></li>
-          <li><a href={url('/components/visual-culture/')}>2 · Visual culture <span class="soon">Soon</span></a></li>
           <li><a href={url('/components/reflection/')}>Reflection <span class="soon">Soon</span></a></li>
         </ul>
       </nav>
@@ -61,7 +60,8 @@ const cols = (['existing-products', 'language', 'material-reality'] as const).ma
       <nav aria-label="Download">
         <p class="head">Download</p>
         <ul>
-          <li><a href={url(site.bookletPdf)} download>Full booklet (A4)</a></li>
+          <li><a href={url(site.bookletPdf)} download>Booklet 1: guideline, Components 1 and 4</a></li>
+          <li><a href={url('/downloads/components-2-3-booklet.pdf')} download>Booklet 2: Components 2 and 3</a></li>
           <li><a href={url('/downloads/card-kit/card-sheets-s1-s8.pdf')} download>Card sheets (A4)</a></li>
           <li><a href={url('/downloads/card-kit/boards-b1-b7.pdf')} download>Boards (A2)</a></li>
           <li><a href={url('/downloads/')}>All downloads</a></li>
@@ -70,7 +70,7 @@ const cols = (['existing-products', 'language', 'material-reality'] as const).ma
     </div>
 
     <p class="legal">
-      Examples in the toolkit are illustrative and use no real participant data. Site code:
+      Examples in the toolkit are illustrative and use no real participant data. Site code:{' '}
       <a href={site.repoUrl}>{site.licenseName} License</a>.
     </p>
   </div>
@@ -99,7 +99,7 @@ const cols = (['existing-products', 'language', 'material-reality'] as const).ma
   }
   @media (min-width: 80rem) {
     .cols {
-      grid-template-columns: minmax(0, 1.5fr) repeat(5, minmax(0, 1fr));
+      grid-template-columns: minmax(0, 1.3fr) repeat(6, minmax(0, 1fr));
     }
     .brand {
       grid-column: auto;

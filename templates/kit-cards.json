@@ -5,8 +5,8 @@
       "id": "context",
       "name": "Context Cards",
       "module": "context",
-      "moduleLabel": "Module 1",
-      "when": "Module 1, once per context or setting",
+      "moduleLabel": "Before you start",
+      "when": "Before you start, once per place",
       "purpose": "Prompts for building a picture of the setting before you talk to anyone one-on-one. They feed the provisional codebook, glossary, and interview guide.",
       "backHeading": "What I noticed",
       "backFields": ["Date", "Setting"],
@@ -58,8 +58,8 @@
       "id": "interview",
       "name": "Interview Cards",
       "module": "person",
-      "moduleLabel": "Module 2",
-      "when": "Module 2, once per person or session",
+      "moduleLabel": "Tool 1 · Listen",
+      "when": "Tool 1 · Listen, once per person or session",
       "purpose": "One card per step of the one-on-one interview, from consent to correction, so nothing is skipped when the conversation gets absorbing.",
       "backHeading": "Notes and exact words",
       "backFields": ["Participant code", "Date"],
@@ -94,7 +94,7 @@
         },
         {
           "title": "Probe heavy moments",
-          "kicker": "Branch: if it is hard to understand",
+          "kicker": "Hard to understand? Try Tool 5 · Kahavat Relay",
           "prompts": [
             "If an emotion, expression, or gesture is heavy or hard to understand, ask what it is like.",
             "Invite a picture, a saying, or a comparison, in their own language.",
@@ -135,7 +135,7 @@
       "name": "Reflection Cards",
       "module": "person",
       "moduleLabel": "After each session",
-      "when": "After each session, before moving into Module 3",
+      "when": "After each session, before Tool 2 · Translate",
       "purpose": "Short prompts for the researcher, straight after a session, about surprises, assumptions, and what crossed a language boundary.",
       "backHeading": "My reflection",
       "backFields": ["Participant code", "Date"],
@@ -168,26 +168,29 @@
             "Which Meaning Cards need a second reader, a translation review, or another question?",
             "What new questions should go into the next round?"
           ],
-          "footnote": "New questions feed back into Module 1."
+          "footnote": "New questions go back into Tool 1 · Listen."
         }
       ]
     }
   ],
   "positionality": {
     "name": "Researcher Positionality Card",
-    "moduleLabel": "Module 1",
+    "moduleLabel": "Before you start",
     "fields": ["Researcher", "Date"],
     "prompts": [
-      "Languages I speak, understand, and do not understand.",
-      "How my background differs from, or overlaps with, the people I am talking to.",
+      "Languages I speak, understand, and do not understand, and how well.",
+      "Where I grew up, where they grew up, and how my background differs from theirs.",
       "How participants may see me, and what that might lead them to say or leave unsaid.",
-      "What I treat as normal that may not be.",
-      "What I may find hard to notice."
+      "What I might hear as “normal”.",
+      "Words I tend to over-read.",
+      "What I may find hard to notice.",
+      "Who will help me when I don’t understand."
     ],
     "backHeading": "Revisit at the end of fieldwork",
     "backPrompt": "What changed in how I see my own position?"
   },
   "blankMeaningCardCopies": 4,
+  "blankMeaningCardLabel": "Tool 1 · Listen",
   "guide": {
     "frontTitle": "The Physical Field Kit",
     "frontIntro": "Cards for capturing meaning on paper, in the language it was spoken.",

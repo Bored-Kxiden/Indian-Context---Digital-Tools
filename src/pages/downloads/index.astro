@@ -13,6 +13,8 @@ const kitMain = kit.filter((d) => ['card-kit-full', 'card-sheets', 'boards'].inc
 const kitEach = kit.filter((d) => !['card-kit-full', 'card-sheets', 'boards'].includes(d.id));
 const templates = getDownloadsByGroup('templates');
 const c1 = templates.filter((d) => d.component === 'c1');
+const c2 = templates.filter((d) => d.component === 'c2');
+const c3 = templates.filter((d) => d.component === 'c3');
 const c4 = templates.filter((d) => d.component === 'c4');
 const language = getDownloadsByGroup('language');
 ---
@@ -30,12 +32,12 @@ const language = getDownloadsByGroup('language');
       <a href="#booklet">Booklet</a>
       <a href="#card-kit">Card kit</a>
       <a href="#templates">Blank templates</a>
-      <a href="#language">Language</a>
+      <a href="#language">Language field kit</a>
     </nav>
   </PageHead>
 
-  <Section id="booklet" eyebrow="The whole toolkit" title="Booklet">
-    <div class="single">
+  <Section id="booklet" eyebrow="The whole toolkit, in two booklets" title="Booklets">
+    <div class="grid grid--2 single">
       {booklet.map((d) => <DownloadCard item={d} />)}
     </div>
   </Section>
@@ -59,13 +61,21 @@ const language = getDownloadsByGroup('language');
     <div class="grid grid--3">
       {c1.map((d) => <DownloadCard item={d} />)}
     </div>
+    <h3 class="grp" data-c="c2">Component 2 · Reading Visual Culture</h3>
+    <div class="grid grid--3">
+      {c2.map((d) => <DownloadCard item={d} />)}
+    </div>
+    <h3 class="grp" data-c="c3">Component 3 · Reading Language</h3>
+    <div class="grid grid--3">
+      {c3.map((d) => <DownloadCard item={d} />)}
+    </div>
     <h3 class="grp" data-c="c4">Component 4 · Reading Material Reality</h3>
     <div class="grid grid--3">
       {c4.map((d) => <DownloadCard item={d} />)}
     </div>
   </Section>
 
-  <Section id="language" eyebrow="Component 3 · Reading Language" title="Language templates" tone="c3">
+  <Section id="language" eyebrow="Component 3 · Reading Language" title="Field cards and digital templates" tone="c3">
     <p slot="lead" class="lead-text">
       Print-ready cards for the field, and digital templates for moving validated moments into a spreadsheet or the Expression Library.
       Every card is 6 × 4 in (152 × 102 mm). Print at 100% (actual size), double-sided.
@@ -122,7 +132,7 @@ const language = getDownloadsByGroup('language');
     color: #fff;
   }
   .single {
-    max-width: 40rem;
+    max-width: 56rem;
   }
   .grp {
     display: flex;

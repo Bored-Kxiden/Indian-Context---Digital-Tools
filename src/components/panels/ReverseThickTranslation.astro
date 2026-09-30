@@ -1,0 +1,277 @@
+---
+import Icon from '../Icon.astro';
+import { reverseThickTranslation as rtt } from '../../data/booklet/language';
+import { url } from '../../utils/url';
+
+// Component 3 · Translate: reverse thick translation, the check that closes the loop.
+// This is the centre of the tool, so it has a tab of its own, and the overview and the goal
+// index point straight here.
+---
+
+<div class="rtt">
+  <header class="hero">
+    <p class="eb">The centre of Tool 2</p>
+    <h3>{rtt.title}</h3>
+    <p class="line">{rtt.line}</p>
+    {rtt.why.map((p) => <p class="why">{p}</p>)}
+  </header>
+
+  <ol class="loop" aria-label="Where reverse thick translation sits in Translate">
+    {
+      rtt.loop.map((l, i) => (
+        <li class:list={{ hot: l.hot }}>
+          <span class="n" aria-hidden="true">{i + 1}</span>
+          <b>{l.step}</b>
+          <span>{l.note}</span>
+        </li>
+      ))
+    }
+  </ol>
+
+  <section class="dirs-sec" aria-labelledby="rtt-dirs">
+    <h3 id="rtt-dirs" class="sub">Ask in three directions</h3>
+    <p class="lead-text">
+      Show people the phrase, or the wording, and ask each question. The gap between what the words say and what people
+      understand is what you are looking for. These three directions are separate from the three lenses in{' '}
+      <a href={url('/components/language/test/')}>Tool 3 · Test</a>.
+    </p>
+    <ol class="dirs">
+      {
+        rtt.directions.map((d) => (
+          <li class="dir">
+            <span class="dn" aria-hidden="true">{d.n}</span>
+            <h4>{d.title}</h4>
+            <p class="lbl">Ask</p>
+            <p>{d.script}</p>
+            <p class="lbl">It shows you</p>
+            <p>{d.shows}</p>
+            <div class="eg">
+              <span class="lbl">Example result (illustrative)</span>
+              <p>{d.example}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+    <p class="record">
+      {rtt.record}
+    </p>
+  </section>
+
+  <div class="two">
+    <div class="callout">
+      <strong>{rtt.signals.title}</strong>
+      <p>{rtt.signals.body}</p>
+    </div>
+    <div class="card read">
+      <h3 class="sub">Reading the result</h3>
+      <ul class="plain">
+        {
+          rtt.reading.map((r) => (
+            <li>
+              <b>{r.title}.</b> {r.body}
+            </li>
+          ))
+        }
+      </ul>
+      <p class="small">
+        The four support-check parts are in <a href={url('/components/language/fidelity-protocol/')}>the Fidelity Protocol</a>.
+        A worked example is under <a href="#example">Example</a>.
+      </p>
+    </div>
+  </div>
+
+  <section aria-labelledby="rtt-gloss">
+    <h3 id="rtt-gloss" class="sub">{rtt.glossary.title}</h3>
+    <p class="body">{rtt.glossary.body}</p>
+    <div class="table-wrap" tabindex="0" role="region" aria-label="Glossary entries: scroll sideways to see every column">
+      <table>
+        <caption>{rtt.glossary.caption}</caption>
+        <thead>
+          <tr>
+            <th scope="col">Phrase</th>
+            <th scope="col">Literal meaning</th>
+            <th scope="col">Implied meaning</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            rtt.glossary.rows.map((g) => (
+              <tr>
+                <th scope="row" lang="hi-Latn">{g.phrase}</th>
+                <td>{g.literal}</td>
+                <td>{g.implied}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+<style>
+  .rtt {
+    display: grid;
+    gap: var(--sp-5);
+  }
+  .hero {
+    display: grid;
+    gap: var(--sp-2);
+    padding: var(--sp-4) var(--sp-4);
+    border-radius: var(--r-lg);
+    background: var(--accent-tint);
+    border: 2px solid var(--accent-deep);
+  }
+  .hero > * {
+    margin: 0;
+    max-width: 52rem;
+  }
+  .hero .eb {
+    color: var(--accent-deep);
+  }
+  .hero h3 {
+    font-size: var(--fs-h2);
+    line-height: 1.05;
+  }
+  .line {
+    font-size: var(--fs-h3);
+    font-weight: 700;
+    line-height: 1.25;
+  }
+  .why {
+    color: var(--ink-soft);
+    font-size: var(--fs-lead);
+  }
+
+  .loop {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--sp-1);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+    counter-reset: none;
+  }
+  .loop li {
+    margin: 0;
+    display: grid;
+    gap: 2px;
+    align-content: start;
+    padding: var(--sp-2);
+    border: 2px solid var(--line-strong);
+    border-radius: var(--r-md);
+    background: var(--surface);
+  }
+  .loop li.hot {
+    background: var(--accent-deep);
+    border-color: var(--accent-deep);
+    color: #fff;
+  }
+  .loop .n {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: var(--fs-sm);
+  }
+  .loop li:not(.hot) .n {
+    color: var(--accent-deep);
+  }
+  .loop b {
+    font-size: var(--fs-lead);
+    line-height: 1.2;
+  }
+  .loop span:last-child {
+    font-size: var(--fs-ui);
+  }
+  .loop li:not(.hot) span:last-child {
+    color: var(--ink-soft);
+  }
+
+  .sub {
+    margin: 0 0 var(--sp-1);
+  }
+  .lead-text {
+    margin: 0 0 var(--sp-3);
+    max-width: 52rem;
+    color: var(--ink-soft);
+    font-size: var(--fs-lead);
+  }
+  .dirs {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--sp-2);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  }
+  .dir {
+    margin: 0;
+    position: relative;
+    padding: var(--sp-3);
+    border: 2px solid var(--accent-deep);
+    border-radius: var(--r-lg);
+    background: var(--surface);
+    display: grid;
+    gap: var(--sp-1);
+    align-content: start;
+  }
+  .dir > * {
+    margin: 0;
+  }
+  .dn {
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--accent-deep);
+    color: #fff;
+    font-weight: 800;
+  }
+  .dir h4 {
+    font-size: var(--fs-h3);
+    margin-top: var(--sp-1);
+  }
+  .dir .lbl {
+    margin-top: var(--sp-1);
+  }
+  .eg {
+    margin-top: var(--sp-1);
+    padding: var(--sp-2);
+    border-radius: var(--r-sm);
+    background: var(--accent-tint);
+  }
+  .eg p {
+    margin: 0;
+  }
+  .record {
+    margin: var(--sp-3) 0 0;
+    max-width: 52rem;
+    font-weight: 600;
+  }
+
+  .two {
+    display: grid;
+    gap: var(--sp-2);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    align-items: start;
+  }
+  .read .plain {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--sp-2);
+    display: grid;
+    gap: var(--sp-1);
+  }
+  .read .plain li {
+    margin: 0;
+  }
+  .small {
+    margin: 0;
+    font-size: var(--fs-sm);
+  }
+  .body {
+    max-width: 52rem;
+    color: var(--ink-soft);
+  }
+</style>

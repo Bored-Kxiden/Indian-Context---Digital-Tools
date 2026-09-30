@@ -1,12 +1,9 @@
 ---
 import ToolLayout from '../../../layouts/ToolLayout.astro';
-import ModuleChip from '../../../components/ModuleChip.astro';
 import kit from '../../../../templates/kit-cards.json';
 import { url } from '../../../utils/url';
 
-type ModuleKey = 'context' | 'person' | 'interpret';
-
-const decks = kit.decks.map((d) => ({ ...d, module: d.module as ModuleKey }));
+const decks = kit.decks;
 const total = decks.reduce((n, d) => n + d.cards.length, 0) + 1 + kit.blankMeaningCardCopies;
 ---
 
@@ -38,7 +35,7 @@ const total = decks.reduce((n, d) => n + d.cards.length, 0) + 1 + kit.blankMeani
         decks.map((d) => (
           <article class="card" id={`${d.id}-cards`}>
             <div class="chip-row head">
-              <ModuleChip id={d.module} />
+              <span class="chip chip--solid">{d.moduleLabel}</span>
               <span class="chip">{d.cards.length} cards</span>
             </div>
             <h3>{d.name}</h3>
@@ -67,30 +64,28 @@ const total = decks.reduce((n, d) => n + d.cards.length, 0) + 1 + kit.blankMeani
 
       <article class="card" id="positionality-card">
         <div class="chip-row head">
-          <ModuleChip id="context" />
+          <span class="chip chip--solid">{kit.positionality.moduleLabel}</span>
           <span class="chip">1 card</span>
         </div>
         <h3>{kit.positionality.name}</h3>
-        <p class="when">Module 1, before fieldwork begins</p>
+        <p class="when">Before you start, once per place</p>
         <p>
           A structured place to write your positionality note: the languages you do and do not speak, how your background relates to
           participants’, how they may see you, and what you may find hard to notice. It is revisited at the end of fieldwork.
         </p>
-        <details>
-          <summary>Prompts</summary>
-          <ul class="titles">
-            {kit.positionality.prompts.map((p) => <li>{p}</li>)}
-          </ul>
-        </details>
+        <p class="more">
+          The {kit.positionality.prompts.length} prompts are on{' '}
+          <a href={url('/components/language/before-you-start/#positionality')}>Before you start</a>.
+        </p>
       </article>
 
       <article class="card" id="blank-meaning-cards">
         <div class="chip-row head">
-          <ModuleChip id="person" />
+          <span class="chip chip--solid">{kit.blankMeaningCardLabel}</span>
           <span class="chip">{kit.blankMeaningCardCopies} cards</span>
         </div>
         <h3>Blank Meaning Cards</h3>
-        <p class="when">Module 2, during interviews</p>
+        <p class="when">Tool 1 · Listen, during interviews</p>
         <p>
           Ready-to-fill copies of the <a href={url('/components/language/meaning-card/')}>Meaning Card</a>, front and back. Print as many copies
           of these pages as you expect to need: one card per meaning moment.
@@ -132,6 +127,9 @@ const total = decks.reduce((n, d) => n + d.cards.length, 0) + 1 + kit.blankMeani
   }
   details {
     margin-top: var(--sp-1);
+  }
+  .more {
+    margin: var(--sp-1) 0 0;
   }
   summary {
     cursor: pointer;

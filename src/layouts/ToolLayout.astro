@@ -2,44 +2,42 @@
 import BaseLayout from './BaseLayout.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
 import ComponentStepper from '../components/ComponentStepper.astro';
-import ModuleChip from '../components/ModuleChip.astro';
 import DownloadCard from '../components/DownloadCard.astro';
 import Icon from '../components/Icon.astro';
 import { getDownloadsForPage } from '../data/downloads';
-import { toolBySlug, toolHref, tools } from '../data/tools';
+import { referenceBySlug, referenceHref, parentLabel } from '../data/tools';
 import { railFor } from '../data/rail';
 import { componentById } from '../data/components';
 import { url } from '../utils/url';
 
-// Shell for the pages of Component 3 · Reading Language (the Meaning-to-Interface Toolkit):
-// its six tools and the methodology. The page content goes in the slot. The step bar
-// lists the pages in order; a side column holds "On this page" (built from the headings)
-// and the downloads, so the text column never stands alone in a wide window.
+// Shell for the deeper pages of Component 3 · Reading Language (the Meaning Card, the Field Kit,
+// the Fidelity Protocol, the Language Lens Audit and the two libraries). Each belongs to a
+// booklet tool: that tool stays highlighted in the step bar, and the breadcrumb and the button
+// at the end lead back to it. The page content goes in the slot. A side column holds "On this
+// page" (built from the headings) and the downloads, so the text column never stands alone
+// in a wide window.
 
 interface Props {
-  /** A tool slug, or "methodology". */
+  /** The page's slug (see data/tools.ts). */
   slug: string;
-  /** Overrides the tool blurb as the page intro. */
+  /** Overrides the page blurb as the intro. */
   intro?: string;
-  /** Page heading, for pages that are not one of the six tools. */
-  heading?: string;
 }
 
-const { slug, intro, heading } = Astro.props;
+const { slug, intro } = Astro.props;
 const comp = componentById['language'];
 const rail = railFor('language');
-const tool = toolBySlug[slug];
-const name = heading ?? tool?.name ?? '';
-const lead = intro ?? tool?.blurb ?? '';
-const n = tool ? tools.findIndex((t) => t.slug === slug) : -1;
-const pagePath = tool ? toolHref(slug) : `${comp.href}${slug}/`;
+const page = referenceBySlug[slug];
+const lead = intro ?? page.blurb;
+const pagePath = referenceHref(slug);
 const downloads = getDownloadsForPage(pagePath);
-const at = rail.items.findIndex((i) => i.slug === slug);
-const prev = at > 0 ? rail.items[at - 1] : undefined;
-const next = at >= 0 && at < rail.items.length - 1 ? rail.items[at + 1] : undefined;
+const parentAt = rail.items.findIndex((i) => i.slug === page.parent);
+const parent = rail.items[parentAt];
+const next = parentAt >= 0 && parentAt < rail.items.length - 1 ? rail.items[parentAt + 1] : undefined;
+const also = (page.also ?? []).map((a) => ({ label: parentLabel(a), href: rail.items.find((i) => i.slug === a)?.href ?? comp.href }));
 ---
 
-<BaseLayout title={`${tool?.name ?? name}: Language`} description={lead || tool?.blurb} component="c3">
+<BaseLayout title={`${page.name}: Language`} description={lead} component="c3">
   <div class="page-head">
     <div class="wrap head-grid">
       <div class="hl">
@@ -48,62 +46,47 @@ const next = at >= 0 && at < rail.items.length - 1 ? rail.items[at + 1] : undefi
             { label: 'Home', href: '/' },
             { label: 'Components', href: '/components/' },
             { label: '3 · Language', href: '/components/language/' },
-            { label: tool?.name ?? 'Methodology' },
+            { label: parentLabel(page.parent), href: parent.href },
+            { label: page.name },
           ]}
         />
         <div class="chip-row eyebrow-row">
+          <span class="chip chip--quiet">Go deeper</span>
+          <span class="chip chip--quiet">{page.kind}</span>
+        </div>
+        <h1>{page.name}</h1>
+        <p class="lead">{lead}</p>
+        <p class="under">
+          <span class="where">Belongs to</span>
+          <a class="chip chip--solid" href={url(parent.href)}>{parentLabel(page.parent)}</a>
           {
-            tool ? (
+            also.length > 0 && (
               <>
-                <span class="chip chip--quiet">Tool {n + 1} of {tools.length}</span>
-                <span class="chip chip--quiet">{tool.kind}</span>
+                <span class="where">Also used in</span>
+                {also.map((a) => <a class="chip" href={url(a.href)}>{a.label}</a>)}
               </>
-            ) : (
-              <span class="chip chip--quiet">Technique</span>
             )
           }
-        </div>
-        <h1>{name}</h1>
-        <p class="lead">{lead}</p>
-        {
-          tool && (
-            <div class="chip-row used">
-              <span class="where">Used in</span>
-              {tool.modules.map((m) => <ModuleChip id={m} full />)}
-            </div>
-          )
-        }
+        </p>
       </div>
       <span class="bignum" aria-hidden="true">3</span>
     </div>
   </div>
 
-  <ComponentStepper rail={rail} current={slug} />
+  <ComponentStepper rail={rail} current={page.parent} />
 
   <div class="wrap body">
     <div class="main">
       <slot />
 
-      <nav class="pager" aria-label="Other pages in this component">
-        {
-          prev ? (
-            <a class="prev" href={url(prev.href)}>
-              <Icon name="arrow-left" size={20} />
-              <span>
-                <small>Before</small>
-                <b>{prev.label}</b>
-              </span>
-            </a>
-          ) : (
-            <a class="prev" href={url(comp.href)}>
-              <Icon name="arrow-left" size={20} />
-              <span>
-                <small>Back to</small>
-                <b>Reading Language</b>
-              </span>
-            </a>
-          )
-        }
+      <nav class="pager" aria-label="Back to the tool">
+        <a class="prev" href={url(parent.href)}>
+          <Icon name="arrow-left" size={20} />
+          <span>
+            <small>Back to</small>
+            <b>{parentLabel(page.parent)}</b>
+          </span>
+        </a>
         {
           next && (
             <a class="next" href={url(next.href)}>
@@ -198,8 +181,18 @@ const next = at >= 0 && at < rail.items.length - 1 ? rail.items[at + 1] : undefi
     max-width: 44rem;
     margin-bottom: var(--sp-3);
   }
-  .used {
+  .under {
+    display: flex;
+    flex-wrap: wrap;
     align-items: center;
+    gap: var(--sp-1);
+    margin: 0;
+  }
+  .under .chip {
+    text-decoration: none;
+  }
+  .under a.chip:hover {
+    text-decoration: underline;
   }
   .where {
     font-family: var(--font-mono);

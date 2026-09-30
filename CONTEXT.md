@@ -20,8 +20,8 @@ The toolkit is organised as **components**. Each component works on its own and 
 | # | Component | Status on the site |
 | --- | --- | --- |
 | 1 | Reading Existing Products (4 tools + synthesis, optional card kit) | Live |
-| 2 | Reading Visual Culture | Placeholder ("coming next") |
-| 3 | Reading Language, which is the **Meaning-to-Interface Toolkit** | Live |
+| 2 | Reading Visual Culture (Show, Read, Build, Hand off) | Live |
+| 3 | Reading Language (Before you start, then Listen, Translate, Test, Library, Kahavat Relay). Includes the earlier Meaning-to-Interface pages | Live |
 | 4 | Reading Material Reality (4 tools, 1 guideline, 1 map) | Live |
 | – | Reflection | Placeholder ("coming next") |
 
@@ -33,7 +33,9 @@ The site does three jobs: explain each tool, show a worked example (the running 
 
 | Source | What it is | Where it lives |
 | --- | --- | --- |
-| Language component write-up | The Meaning-to-Interface process flow, Fidelity Protocol, Language Lens, and thick-translation method (PDF called "The Meaning-to-Interface Process Flow" and "The Thick Translation Methodology") | Owner's upload. Content is reflected in `src/pages/components/language/` and `src/data/modules.ts` |
+| Language component write-up | The Meaning-to-Interface process flow, Fidelity Protocol, Language Lens, and thick-translation method (PDF called "The Meaning-to-Interface Process Flow" and "The Thick Translation Methodology") | Owner's upload. Its content now sits under the booklet's tools: the Meaning Card, Field Kit, Fidelity Protocol, Lens Audit and libraries are "Go deeper" pages (`src/pages/components/language/`), and the methodology is the Reverse thick translation tab. The process-flow modules were retired (D27) |
+| **Components 2 + 3 booklet** (36 pages) | Component 2 (pages 2.01–2.15) and Component 3 (3.01–3.21): guide pages, filled examples, blank templates, closing "Is it working?" pages. This is the main source for both | `public/downloads/components-2-3-booklet.pdf` (recompressed). Page images and blank PDFs are generated from it |
+| **Component 02 draft** (6 pages) | An earlier draft of Component 2 that repeats most of the booklet | Owner's upload; not stored. What it adds is folded in once (D26) |
 | FigJam board "First-Generation Personal" | The process-flow diagram (section 12) and the Fidelity Protocol and Language Lens notes. Sections 13 (information architecture), 14 (simplified wireframe), and 15 (task flows) were added during this project | Owner's Figma. Link intentionally not stored here |
 | **Toolkit Booklet** (53 pages) | Components 1 and 4: guide pages, filled examples, blank templates, the "I want to…" list for Component 4, participant field cards, closing page | `public/downloads/designing-for-the-indian-context-booklet.pdf`. Page images and split PDFs are generated from it |
 | **Component 1 Card Kit** (16 pages) | Card sheets S1–S8 and boards B1–B7 for Component 1 | `public/downloads/component-1-card-kit.pdf`. Split into sheets and boards |
@@ -45,7 +47,7 @@ The site does three jobs: explain each tool, show a worked example (the running 
 - **Stack:** Astro 7, static output, no backend, one runtime dependency. Node 22.12 or newer.
 - **Source of truth for content:** files in `src/data/` (TypeScript and JSON), not the page files. Pages render from data.
 - **Downloads:** every file is listed in `src/data/downloads.ts`; sizes are measured at build time and a missing file fails the build.
-- **Generated assets:** `scripts/build-templates.mjs` (Language component cards and CSV) and `scripts/extract-booklet-assets.py` (booklet and card-kit page images and split PDFs). Outputs are committed, so builds never need a browser or Python.
+- **Generated assets:** `scripts/build-templates.mjs` (Language component cards and CSV) and `scripts/extract-booklet-assets.py` (booklet and card-kit page images and split PDFs; `--c23-only` adds Components 2 and 3 without touching the first booklet's files). Outputs are committed, so builds never need a browser or Python.
 - **Hosting:**
   - **Vercel** (primary). Project `meaning-to-interface-toolkit`, production alias `https://meaning-to-interface-toolkit.vercel.app`. Git-connected: a push to `main` deploys to production; any other branch gets a preview. Vercel Authentication is off, because the site is public.
   - **GitHub Pages** workflow (`.github/workflows/deploy.yml`) runs on pushes to `main`. It needs Settings → Pages → Source: GitHub Actions to be switched on. It sets `SITE_URL` and `BASE_PATH` for the project URL.
@@ -77,19 +79,23 @@ Status: **Confirmed** by the owner, or **Assumed** (made to keep moving; needs c
 | D17 | Redirects for old `/tools/*` are explicit per slug in `astro.config.mjs` (Astro's dynamic redirects need a matching dynamic route). The destinations carry the base path, because Astro does not add it. | Assumed |
 | D18 | `vercel.json` pins the framework to Astro (`npm run build`, output `dist`), so a Vercel project with the wrong preset still builds. It matches what Vercel auto-detects, so projects that were already right are unaffected. | Assumed |
 | D19 | **Design system.** Spacing steps are multiples of 8 px (4 px for hairlines): `--sp-half … --sp-16`. Type scale is 12 · 14 · 16 · 18 · 20 · 24 · 32 · 40 · 48–72. Radii are 8 / 16 / 24 px. Body text is 18 px. Small mono labels are never below 12 px. All of it lives as tokens in `src/styles/global.css`. Every component has a text-safe `-deep` colour for small type on light and tinted grounds. | Confirmed (asked for: rule of 8, hierarchy, consistency, contrast) |
-| D20 | **Colour means the component, and nothing else.** Chips, tags, buttons, dots and headers take their own component's colour: 1 green, 2 turmeric, 3 terracotta, 4 indigo. Component 4's Break is indigo, not terracotta. Reflection is neutral ink, not turmeric. Language's three modules are three depths of terracotta. Status chips (confirmed, needs re-check, sensitive) and warnings are colour-neutral: a glyph and a border style carry the meaning, so green, amber and red never suggest a component. Decorative blocks (how a tool works, "with it", "good") use ink and sand. Supersedes D12. | Confirmed (asked for) |
+| D20 | **Colour means the component, and nothing else.** Chips, tags, buttons, dots and headers take their own component's colour: 1 green, 2 turmeric, 3 terracotta, 4 indigo. Component 4's Break is indigo, not terracotta. Reflection is neutral ink, not turmeric. Language's tools are all terracotta (its three modules, three depths of it, were retired in D27). Status chips (confirmed, needs re-check, sensitive) and warnings are colour-neutral: a glyph and a border style carry the meaning, so green, amber and red never suggest a component. Decorative blocks (how a tool works, "with it", "good") use ink and sand. Supersedes D12. | Confirmed (asked for) |
 | D21 | **End-to-end layout.** The content container runs to 1920 px with a fluid 16–48 px gutter, and pages are built in columns: split sections (heading left, content right), examples side by side, and each example decides with a container query whether its steps sit beside or below the page so the page stays large. Reading text stays at about 68 characters. | Confirmed (asked for) |
-| D22 | **Navigation.** A sticky component strip on wide screens (all components one click away, current one filled in), a "Find a tool" search over every tool, step and page (opens with `/` or Ctrl+K; on phones a search button), a Menu on phones, a step bar under every component heading (replaces the old left rail, so Components 1, 3 and 4 navigate the same way), and a sticky tab bar on tool pages. Language pages get an "On this page" column. | Confirmed (asked for) |
-| D23 | **"I want to…" is one card per component.** Language's five groups are sub-headings inside one Component 3 card, so no component looks bigger than it is. Home shows the cards as a board (1 and 4 stacked beside the longer 3, with a Visual culture placeholder). Component overviews show their own card as a full-width list. | Confirmed (asked for) |
+| D22 | **Navigation.** A sticky component strip on wide screens (all components one click away, current one filled in), a "Find a tool" search over every tool, step and page (opens with `/` or Ctrl+K; on phones a search button), a Menu on phones, a step bar under every component heading (replaces the old left rail, so Components 1 to 4 navigate the same way), and a sticky tab bar on tool pages. Language pages get an "On this page" column. | Confirmed (asked for) |
+| D23 | **"I want to…" is one card per component.** Language's five groups are sub-headings inside one Component 3 card, so no component looks bigger than it is. Home shows the cards as a board (1, 2 and 4 stacked beside the longer 3). Component overviews show their own card as a full-width list. | Confirmed (asked for) |
 | D24 | **Accessibility bar: WCAG 2.2 AA, checked, not assumed.** axe-core (WCAG 2 A/AA, 2.1, 2.2 AA and best practice) reports no violations on every page, every tab, the search dialog and the phone menu, at 1440, 390 and 320 px (and, for the pages with examples, 1024 px). Keyboard: every focus stop has a visible ring and is never hidden under a sticky bar. Targets are at least 44 px where they are primary controls. Reduced motion and forced colours are handled. | Confirmed (asked for) |
 | D25 | **Filled examples are real HTML, drawn from the booklet's own geometry.** Each of the 14 filled examples (1.06, 1.08, 1.11, 1.14, 1.16, 1.17, 1.20, 1.22, 4.07, 4.09, 4.12, 4.14, 4.17, 4.20) is rebuilt as HTML/CSS/SVG in `src/components/examples/`, so text is sharp, searchable, selectable and translatable. Positions, sizes, gaps, colours and line breaks come from a PDF extraction (PyMuPDF): one unit `--u` is one point of the A4 page (511.5 pt content width), so the example scales exactly with its column. Type pins Bricolage's optical size to the printed size (`opsz` = pt × 4/3), which is what makes line breaks match the print. Inside an example the booklet's own colours apply (indigo #283a7a, green #2e5e4e, terracotta #a8432a, amber #e3a72f, note yellow and teal), an intentional exception to the site's component colours (D20), because the example is the printed page. Below about 45 rem the printed layout gives way to a reflowed one (stacked cards, tables that scroll in a keyboard-reachable region, diagrams with a text list). Every example keeps its text alternative and a "Compare with the booklet page" disclosure showing the original page image. Blank templates stay page images. | Confirmed (asked for) |
+| D26 | **Components 2 and 3 are built from the new booklet; the six-page draft is merged in once.** The booklet is the base for both. The earlier Component 02 draft repeated most of it (overview, missions, passes, scenario, hand-off), so wherever the two agree the booklet's wording appears once. What only the draft has is kept: the rule not to photograph "Indian culture", the lists of actions and enablers for Passes 1 and 2, the nine structures as questions, the fuller prompt under each of the nine scenario boxes, the edge-case check, the visual reading, the twelve Context Profile lines, the one-sentence reading, and the general question each hand-off asks. Nothing is shown twice: each piece lives on the page it belongs to (see D28 for Language). Filled examples are the booklet's, labelled illustrative. | Confirmed (asked for) |
+| D27 | **One vocabulary for Language: Before you start + Tools 1 to 5.** The booklet's route (Listen, Translate, Test, Library, Kahavat Relay) replaces the earlier Modules 1 to 3, the "six tools" count and the process-flow diagram. Each earlier page stays at its address and now hangs under the tool it belongs to as a "Go deeper" link: Meaning Card and Field Kit under Listen, Fidelity Protocol under Translate, Lens Audit under Test, the two libraries under Library. On those pages the step bar keeps the parent tool lit and the breadcrumb and button lead back to it. The booklet's Meaning Card (short: said, observed, inferred, what it meant, correction) and the site's full card are the same card at two levels of detail, and the Meaning Card page now says so with a line-by-line table. New questions loop back to Tool 1 · Listen, as the booklet says. Lens N is "New (the form's own words: nomenclature)" and Lens P is "Proxy". The positionality prompts are the union of the site's five and the booklet's five (seven), written once in `templates/kit-cards.json` and shown on Before you start. | Assumed: how the request was met. Confirm |
+| D28 | **Reverse thick translation is the centre of Language and is easy to find.** The booklet only touches it lightly, so the site gives it a tab of its own on Translate (three directions with their questions, the reading of the result, small signals, the glossary entry), a feature section on the Language overview, a marked row in the route, its own lines in "I want to…" and search, and a redirect from the old methodology page. The two-direction and three-direction sections of the old methodology page are one set of three directions now. The three directions are kept apart from the three lenses (N, P, T) in Test. | Confirmed (asked for) |
+| D29 | **Colour stays with the component, also in Components 2 and 3.** The booklet colours each tool's guide page differently (indigo, terracotta, turmeric), which would put Component 4's indigo on a Component 2 page (D20). So in Components 2 and 3 the guide page image sits under the text, one click away, and the text uses the two columns. Components 1 and 4 keep the page beside the text. Component 2 takes turmeric, Component 3 terracotta. The printable Language cards now use two depths of terracotta too. | Assumed: follows D20. Confirm (Q14) |
 
 ### Earlier decisions that still apply (Language component)
 
 - **Fidelity rule:** a finding missing any of the four tags (source language, who interpreted, rendering type, single-source flag) cannot carry full confidence until re-checked. A single-source finding stays provisional until a second reader agrees. *(Assumed reading of the write-up.)*
-- **"Three directions of comparison"** is our name for the write-up's three thick-translation comparisons (native to English, English to native, native to regional dialect), to avoid clashing with the Language Lens's three lenses (N, P, T).
+- **The three directions** (native to English, English to native, native to regional) are the booklet's, with the earlier write-up's reasons for each. They are kept apart from the Language Lens's three lenses (N, P, T).
 - **Tested-status meanings** (Confirmed / Partially confirmed / Not yet tested) and the **Correction status options** on the Meaning Card are our wording. *(Assumed.)*
-- **Printable cards** for the Language component are 6 × 4 in. Their prompts (Context, Interview, Reflection, Positionality) are a first draft written from the process steps, in `templates/kit-cards.json`.
+- **Printable cards** for the Language component are 6 × 4 in. Their prompts (Context, Interview, Reflection, Positionality) are a first draft written from the process steps, in `templates/kit-cards.json`. They are labelled Draft v0.2: "Module" labels became Before you start / Tool 1 · Listen, and the positionality card has seven prompts.
 - **India 1 / 2 / 3** is used only as an audience label; the segments are not defined.
 - **The site never invents research data.** Sample entries and worked examples are labelled illustrative.
 
@@ -97,26 +103,32 @@ Status: **Confirmed** by the owner, or **Assumed** (made to keep moving; needs c
 
 ```
 /                                   Home: hero, "I want to…" (all components), components, why, how every tool works, guideline, Meera
-/components/                        the five components (two placeholders)
+/components/                        the five components (Reflection is a placeholder)
   existing-products/                1 · overview + "I want to…", route, two ways to work, design claim
     pick-a-product/                   one specific product, before Tool 1
     media-gossip/ history/ the-break/ power/ synthesis/     4 tabs each: Guide · Example · Blank template · Card kit
-  language/                         3 · overview, "I want to…", process flow, tools
+  visual-culture/                   2 · overview + "I want to…", the idea, situation not persona, route, evidence statuses, hand-offs
+    show/ read/ build/ hand-off/      Guide · Example · Blank template (Show adds "The six missions")
+    is-it-working/                    good and warning signs, the closing line
+  language/                         3 · overview, reverse thick translation, "I want to…", route, problems, where to use
+    before-you-start/                 team, six things to do, positionality note, provisional glossary
+    listen/ translate/ test/ library/ kahavat-relay/     Guide · Example · Blank template (Translate adds "Reverse thick translation")
+    is-it-working/                    good and warning signs, hand-offs
     meaning-card/ physical-field-kit/ fidelity-protocol/ language-lens-audit/ expression-library/ design-language-library/
-    methodology/                      thick translation, bidirectional validation
+                                      "Go deeper" pages, each under its tool (D27)
   material-reality/                 4 · overview + "I want to…", nine layers, route
     before-you-start/                 Journey Strip, Visual Toolkit photos
     build/ break/ weigh/ say/         3 tabs each: Guide · Example · Blank template
     ask-your-participants/            field cards: questions, consent, care
-  visual-culture/  reflection/      "coming next" placeholders
+  reflection/                       "coming next" placeholder
 /card-kit/                          boards B1–B7, sheets S1–S8, print and set-up
 /guideline/                         one real thing (#one-real-thing), how to read (#how-to-read), Meera (#meera)
 /downloads/                         booklet, card kit, blank templates, Language templates
 /about/                             who it is for, after the toolkit, further reading, open code
-/tools/…                            redirects to /components/language/…
+/tools/…, /components/language/methodology/    redirects to /components/language/… (methodology → translate/#reverse)
 ```
 
-Every component page has a **step bar** under its heading (overview, then the tools in order; it scrolls sideways on a phone and fades where more steps continue). Tool pages add a sticky tab bar with the Paper | Cards switch for Component 1. Language pages add an "On this page" column built from their headings. Site-wide: a sticky component strip and "Find a tool" search (D22).
+Every component page has a **step bar** under its heading (overview, then the tools in order; it scrolls sideways on a phone and fades where more steps continue). Tool pages add a sticky tab bar with the Paper | Cards switch for Component 1. The Language "Go deeper" pages add an "On this page" column built from their headings. Site-wide: a sticky component strip and "Find a tool" search (D22).
 
 Fuller wireframes, a simplified wireframe, and task flows are in the owner's FigJam board (sections 13 to 15). Those describe the earlier six-tool site and need refreshing for this structure (see backlog).
 
@@ -126,13 +138,17 @@ Fuller wireframes, a simplified wireframe, and task flows are in the owner's Fig
 | --- | --- |
 | Component 1 and 4 guide text, steps, words, "I want to…" (C4) | Copied from the booklet (light editing for the web) |
 | Component 1 cross-component "I want to…" phrases | **Written by us** from each tool's subtitle. Not in the booklet |
-| Component 3 (Language) content | From the Language write-up; card prompts drafted by us |
-| Examples | Rebuilt as HTML from the booklet's own geometry and text (D25); the original page stays one click away |
+| Component 2 (Visual culture) guide text, steps, words, missions, boxes, closing page | Copied from the booklet; the earlier draft's extra lists and prompts folded in once (D26) |
+| Component 3 (Language) guide text, steps, words, cue cards, closing page | Copied from the booklet |
+| Language "Go deeper" pages, reverse thick translation, team, glossary | From the earlier Language write-up, re-pointed at the booklet's tools (D27, D28); card prompts drafted by us |
+| Component 2 and 3 "I want to…" phrases (the four tool lines for Component 2; cue cards, provisional glossary and Kahavat Relay for Component 3) | **Written by us.** The first Component 2 line is the booklet's own |
+| Examples (Components 1 and 4) | Rebuilt as HTML from the booklet's own geometry and text (D25); the original page stays one click away |
+| Examples (Components 2 and 3) | Booklet page images for now, with the full text description; rebuilt as HTML in the next step |
 | Blank templates | Booklet pages as images |
 | Guideline, "how to read", Meera, "after the toolkit", further reading | Copied from the booklet's front and back matter |
 | Home, About and component-overview framing text | **Written by us** (short connecting copy; "Where it comes from" on About) |
 | Card-kit page: sheet and board blurbs, per-tool "Play it on the table" intros | From the card kit and booklet; a few intros composed by us from booklet phrases |
-| Placeholders: Visual culture, Reflection | Minimal "coming next" pages. No invented content |
+| Placeholder: Reflection | Minimal "coming next" page. No invented content |
 
 ## 7. Open questions
 
@@ -150,6 +166,9 @@ Fuller wireframes, a simplified wireframe, and task flows are in the owner's Fig
 | Q10 | Wording check: the About page's "Where it comes from" paragraph and the connecting copy on Home and the component overviews are ours. Confirm, and say who is credited (see Q3). |
 | Q11 | Where should "Print" and "You need" sit on a tool page? Now: a right-hand column on very wide screens (92rem+), otherwise below the tabs. |
 | Q12 | Reflection has no colour of its own yet, so it uses neutral ink (D20). Does it get one? Turmeric is Component 2's. |
+| Q14 | The booklet colours each Component 2 and 3 tool page differently (indigo, terracotta, turmeric). The site keeps colour = component (D29). Should the booklet be recoloured to match, so the page images agree with the site? |
+| Q15 | Wording check for Components 2 and 3: the connecting copy (section headings such as "Start with their world", "Then hand it on", "Six things to do first"), the "I want to…" lines we added, and the way the Meaning Card page maps the short card to the full card are ours. Confirm, and see Q10. |
+| Q16 | The six-page Component 02 draft repeated the booklet. Anything in it that should stay out? Everything it added is folded in (D26). |
 | Q13 | **Resolved (D25):** the filled examples are native HTML. Still open: the Journey Strip (p.4.04), the Visual Toolkit photos (p.4.05) and the participant field cards (p.4.22) are page images, and so are the blank templates. Rebuild them the same way? |
 
 ## 8. Backlog
@@ -157,13 +176,35 @@ Fuller wireframes, a simplified wireframe, and task flows are in the owner's Fig
 - Native HTML for the remaining page images: blank templates, Journey Strip (4.04), Visual Toolkit (4.05), field cards (4.22).
 - Fill-on-screen blank templates, and the interactive **Synthesis builder** with "Save as PDF".
 - Refresh FigJam sections 13 to 15 for the multi-component structure.
-- Visual culture and Reflection components when their content exists.
+- Reflection component when its content exists.
+- Rebuild the Component 2 and 3 filled examples as HTML (2.04, 2.07, 2.10, 2.13, 3.05, 3.06, 3.09, 3.12, 3.15, 3.18, 3.20).
 - A print stylesheet check for tool pages.
-- Language tool pages could take the same tabs as Components 1 and 4 where it fits (D13); they already share the step bar.
 - "Visited" progress in the rail.
 - Decide what a Component 1 tool page shows in Cards mode beyond opening the Card kit tab first.
 
 ## 9. Change log (newest first)
+
+### 2026-09-30 · Components 2 and 3 built from the new booklet
+Requested: use the two new PDFs (the 36-page Components 2 + 3 booklet as the main process, and the six-page Component 02 draft) to build out Visual culture and Language on the site, fix the gaps and inconsistencies, leave nothing out and repeat nothing, and give reverse thick translation real emphasis in Language.
+
+- **Component 2 · Reading Visual Culture is live** (D26): overview (idea, situation not persona, "I want to…", route, evidence statuses and the stop rule, hand-offs), four tools (Show, Read, Build, Hand off) with Guide, Example and Blank template tabs, "The six missions" tab on Show (six mission cards, the three questions, the printable cards), and an "Is it working?" page. Turmeric is its colour.
+- **Component 3 · Reading Language is restructured** (D27, D28): Before you start (team, six things to do, positionality note, provisional glossary), Tools 1 to 5 (Listen, Translate, Test, Library, Kahavat Relay), and "Is it working?". The six earlier pages keep their addresses and sit under the tool they belong to as "Go deeper" links. The methodology page is gone: it became the **Reverse thick translation** tab on Translate, and `/components/language/methodology/` redirects there. The Modules 1 to 3 wording, the process-flow diagram, the module chips and the "six tools" cards were removed.
+- **Reverse thick translation is easy to find:** its own tab, a feature section on the Language overview, a marked row in the route, "I want to…" and search entries.
+- **Gaps and inconsistencies fixed:**
+  - The draft repeated the booklet; its extra detail is in once (D26).
+  - Lens N was "Nomenclature" on the site and "New" in the booklet, and Lens P "Proxy / Audience" against "Proxy": now "New (the form's own words: nomenclature)" and "Proxy", in the pages, the library filters and the goal index.
+  - The positionality prompts differed between the site's card and the booklet page: now seven, written once in `templates/kit-cards.json`, shown on Before you start, and printed on the card.
+  - The booklet's short Meaning Card and the site's full card are now explained as one card at two levels, with a mapping table; the full card's "Notice" step (already in Listen) was dropped and its "Hand on" step re-pointed at Translate.
+  - New questions loop back to Tool 1 · Listen (the booklet's loop), not to a "Module 1".
+  - The idiom probe in the old Module 2 branch is now Tool 5 · Kahavat Relay, with links both ways to Component 2 (drawings are participant-made images) and Translate (own-language lines).
+  - The old methodology page had two-direction and three-direction sections; there is one set of three directions now, kept apart from the three lenses.
+  - The team and "before fieldwork" text existed on both the methodology page and the overview; it now lives once, on Before you start. The glossary explanation lives once, in the Reverse thick translation tab.
+  - The home page, the components list, the footer and the downloads page still called Visual culture "coming next": all updated (four live tiles, footer columns, two booklets, blank templates for Components 2 and 3).
+- **Printable cards regenerated (Draft v0.2):** "Module" labels replaced by Before you start / Tool 1 · Listen, the footer says Reading Language, the positionality card has seven prompts, and the cards use terracotta instead of orange, teal and indigo (D29). No card overflows.
+- **Layout:** short word lists (the actions, enablers and profile lines) show as chips; in Components 2 and 3 the booklet's guide page sits under the text (D29). `Section` gained the turmeric tone; `RouteList` gained a sub-label and a marker; a shared `ClosingChecks` component serves both "Is it working?" pages; a `panels` registry holds the two extra tabs.
+- **Assets:** `scripts/extract-booklet-assets.py --c23-only` renders the 36 pages to WebP and cuts twelve blank or print sheets; `components-2-3-booklet.pdf` is a new download.
+- **Checked:** `npm run build` (41 pages); base-path build with 6,878 internal references, 0 problems; axe-core (WCAG 2 A/AA, 2.1, 2.2 AA, best practice) clean on 414 scans (every page and tab) at 1440, 1024, 390 and 320 px; no horizontal scroll at 320, 360, 768, 1024, 1280, 1920 and 2560 px; keyboard pass including the new tabs. One contrast miss on the way (a "coming next" chip on the turmeric tile) went away with the chip.
+- **Not done yet:** the filled examples of Components 2 and 3 are still the booklet's page images (with full text descriptions); the next step rebuilds them as HTML like D25.
 
 ### 2026-09-30 · Filled examples rebuilt as native HTML
 Requested: build the examples as exact HTML (Reflection's colour can wait), then open a pull request into `main`.

@@ -1,0 +1,12 @@
+---
+import BookletToolLayout from '../../../layouts/BookletToolLayout.astro';
+import { tools } from '../../../data/booklet/visual-culture';
+
+export function getStaticPaths() {
+  return tools.map((tool) => ({ params: { tool: tool.slug }, props: { tool } }));
+}
+
+const { tool } = Astro.props;
+---
+
+<BookletToolLayout tool={tool} />

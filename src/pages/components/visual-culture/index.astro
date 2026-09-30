@@ -1,5 +1,231 @@
 ---
-import ComingNextLayout from '../../../layouts/ComingNextLayout.astro';
+import ComponentLayout from '../../../layouts/ComponentLayout.astro';
+import Section from '../../../components/Section.astro';
+import GoalIndex from '../../../components/GoalIndex.astro';
+import RouteList from '../../../components/RouteList.astro';
+import Icon from '../../../components/Icon.astro';
+import { overview, tools } from '../../../data/booklet/visual-culture';
+import { goalsByComponent } from '../../../data/goals';
+import { componentById } from '../../../data/components';
+import { url } from '../../../utils/url';
+
+const comp = componentById['visual-culture'];
+const route = [
+  ...tools.map((t) => ({
+    label: `${t.number} · ${t.name}`,
+    href: `${comp.href}${t.slug}/`,
+    blurb: t.question,
+    time: t.time,
+  })),
+  { label: 'Is it working?', href: `${comp.href}is-it-working/`, blurb: 'Good signs and warning signs, before you hand the reading on.' },
+];
 ---
 
-<ComingNextLayout component="visual-culture" />
+<ComponentLayout
+  component="visual-culture"
+  current="overview"
+  title={comp.name}
+  heading={comp.name}
+  lead={overview.lead}
+  description={overview.descriptor}
+  chips={['Component 2', overview.meta.time, overview.meta.mode]}
+>
+  <Section id="idea" eyebrow="The idea" title="Start with their world." split>
+    <p class="big">{overview.idea[0]}</p>
+    <div class="callout">
+      <strong>{overview.principle.lead}</strong>
+      <p>{overview.principle.body}</p>
+    </div>
+    <p class="def">{overview.definition}</p>
+    <p class="small">{overview.images}</p>
+    <p class="small">{overview.builtFor}</p>
+  </Section>
+
+  <Section id="goals" eyebrow="Start here" title="I want to…" tone="white">
+    <p slot="lead" class="lead-text">Start with what you want to find out. The four tools run in order, one feeding the next.</p>
+    <GoalIndex groups={goalsByComponent('c2')} variant="list" search={false} />
+  </Section>
+
+  <Section id="scenario" eyebrow="What you end up with" title="A situation, not a persona." split>
+    <div class="pair">
+      <div class="card">
+        <p class="lbl">{overview.persona.not}</p>
+        <p class="ask">{overview.persona.persona}</p>
+      </div>
+      <div class="card card--tint">
+        <p class="lbl">{overview.persona.scenario}</p>
+        <p class="ask">{overview.persona.scenarioBody}</p>
+      </div>
+    </div>
+    <p class="small">{overview.persona.note}</p>
+  </Section>
+
+  <Section id="route" eyebrow="The route" title="Four tools, in order." tone="white" split>
+    <p class="big">Participants photograph their own world. You read the photos together, build one situation, and hand it on as a question about the system.</p>
+    <RouteList items={route} />
+    <div class="need">
+      <p class="lbl">You need</p>
+      <ul class="chip-row" aria-label="You need">
+        {overview.youNeed.map((n) => <li class="chip">{n}</li>)}
+      </ul>
+    </div>
+    <a class="btn btn--accent" href={url(`${comp.href}show/`)}>
+      Start with Tool 1 · Show <Icon name="arrow" size={20} />
+    </a>
+  </Section>
+
+  <Section id="evidence" eyebrow="How to make a claim" title={overview.evidence.title} split>
+    <ul class="status">
+      {
+        overview.evidence.statuses.map((s) => (
+          <li>
+            <b>{s.name}</b>
+            <span>{s.def}</span>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="big">{overview.evidence.rule}</p>
+    <div class="callout callout--warn">
+      <strong>Stop rule</strong>
+      <p>{overview.evidence.stop}</p>
+    </div>
+  </Section>
+
+  <Section id="next" eyebrow="Where it goes" title="Then hand it on." tone="white" split>
+    <p class="big">The end of Tool 4 is a question for one of the other components.</p>
+    <ul class="next">
+      {
+        overview.handOffs.map((h) => (
+          <li>
+            <a href={url(h.href)}>
+              <b>{h.to}</b>
+              <span>{h.ask}</span>
+              <Icon name="arrow" size={20} />
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+</ComponentLayout>
+
+<style>
+  .big {
+    font-size: var(--fs-lead);
+    color: var(--ink-soft);
+    max-width: var(--measure);
+  }
+  .def {
+    font-size: var(--fs-h3);
+    font-weight: 700;
+    line-height: 1.25;
+    max-width: 34rem;
+    margin: var(--sp-4) 0;
+    color: var(--c2-deep);
+  }
+  .small {
+    font-size: var(--fs-ui);
+    color: var(--muted);
+    max-width: var(--measure);
+    margin: var(--sp-2) 0 0;
+  }
+  .pair {
+    display: grid;
+    gap: var(--sp-2);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  }
+  .pair .card {
+    margin: 0;
+  }
+  .pair .card--tint {
+    background: var(--c2-tint);
+    border-color: transparent;
+  }
+  .pair .lbl {
+    margin: 0 0 var(--sp-1);
+  }
+  .card--tint .lbl {
+    color: var(--c2-deep);
+  }
+  .pair .ask {
+    font-size: var(--fs-h4);
+    font-weight: 700;
+    margin: 0;
+  }
+  .need {
+    margin: var(--sp-4) 0 var(--sp-3);
+  }
+  .need .lbl {
+    margin: 0 0 var(--sp-1);
+  }
+  .need ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .need li {
+    margin: 0;
+  }
+  .status {
+    list-style: none;
+    margin: 0 0 var(--sp-3);
+    padding: 0;
+    display: grid;
+    gap: var(--sp-2);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+  }
+  .status li {
+    margin: 0;
+    display: grid;
+    gap: var(--sp-half);
+    align-content: start;
+    padding: var(--sp-3);
+    border-radius: var(--r-md);
+    background: var(--c2-tint);
+  }
+  .status b {
+    font-size: var(--fs-h4);
+    color: var(--c2-deep);
+  }
+  .status span {
+    color: var(--ink-soft);
+    font-size: var(--fs-ui);
+  }
+  .next {
+    list-style: none;
+    margin: var(--sp-3) 0 0;
+    padding: 0;
+    display: grid;
+    gap: var(--sp-2);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  }
+  .next li {
+    margin: 0;
+  }
+  .next a {
+    display: grid;
+    gap: var(--sp-1);
+    height: 100%;
+    padding: var(--sp-3);
+    border: 2px solid var(--line-strong);
+    border-radius: var(--r-md);
+    background: var(--surface);
+    color: var(--ink);
+    text-decoration: none;
+    align-content: start;
+  }
+  .next a:hover {
+    border-color: var(--ink);
+  }
+  .next a :global(svg) {
+    justify-self: end;
+    margin-top: auto;
+  }
+  .next b {
+    font-size: var(--fs-h4);
+  }
+  .next span {
+    color: var(--ink-soft);
+  }
+</style>

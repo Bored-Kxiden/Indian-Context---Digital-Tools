@@ -1,0 +1,302 @@
+---
+import ComponentLayout from '../../../layouts/ComponentLayout.astro';
+import Section from '../../../components/Section.astro';
+import PageFigure from '../../../components/PageFigure.astro';
+import DownloadCard from '../../../components/DownloadCard.astro';
+import Icon from '../../../components/Icon.astro';
+import kit from '../../../../templates/kit-cards.json';
+import { beforeYouStart as b, route } from '../../../data/booklet/language';
+import { getDownloadById } from '../../../data/downloads';
+import { bookletImage } from '../../../utils/assets';
+import { url } from '../../../utils/url';
+
+// The glossary's three columns are the three lines of the Context Cards' "Glossary seed" card.
+const seed = kit.decks[0].cards.find((c) => c.title === 'Glossary seed')!;
+const glossary = b.glossaryColumns.map((name, i) => ({ name, hint: seed.prompts[i] }));
+const dl = getDownloadById('tpl-before-you-start-c3');
+---
+
+<ComponentLayout
+  component="language"
+  current="before-you-start"
+  title="Before you start"
+  heading="Before you start"
+  lead={b.lead}
+  description={b.intro}
+  chips={['Component 3', route[0].time, 'Once per place']}
+  crumb="Before you start"
+>
+  <Section id="team" eyebrow="Start with people" title={b.team.title} split>
+    <p class="big">{b.team.lead}</p>
+    <ul class="people">
+      {
+        b.team.people.map((p, i) => (
+          <li>
+            <span class="n" aria-hidden="true">{i + 1}</span>
+            <b>{p.name}</b>
+            <span>{p.body}</span>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="small">{b.team.budget}</p>
+  </Section>
+
+  <Section id="steps" eyebrow="Once per place, before Tool 1" title="Six things to do first." tone="white" split>
+    <p class="big">{b.intro}</p>
+    <div class="callout callout--warn gate">
+      <strong>{b.gate.title}</strong>
+      <p>{b.gate.body}</p>
+    </div>
+    <ol class="steps">
+      {
+        b.steps.map((s, i) => (
+          <li>
+            <span class="n" aria-hidden="true">{i + 1}</span>
+            <div>
+              <b>{s.title}</b>
+              <span>{s.body}</span>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+    <p class="cards-note">
+      <Icon name="cards" size={20} />
+      <span>
+        Cards for steps 2 to 4 and for your positionality note: the Context Cards and the Positionality Card in the{' '}
+        <a href={url('/components/language/physical-field-kit/#context-cards')}>Physical Field Kit</a>.
+      </span>
+    </p>
+  </Section>
+
+  <Section id="positionality" eyebrow="Step 5" title="Your positionality note." split>
+    <p class="big">Your language, your background, what you might mishear. Write it before you meet anyone.</p>
+    <ol class="prompts">
+      {kit.positionality.prompts.map((p) => <li>{p}</li>)}
+    </ol>
+    <p class="small">
+      Come back to it at the end of fieldwork and ask: “{kit.positionality.backPrompt}” The{' '}
+      <a href={url('/components/language/physical-field-kit/#positionality-card')}>Positionality Card</a> prints these prompts as one card.
+    </p>
+  </Section>
+
+  <Section id="glossary" eyebrow="Step 6" title="A provisional glossary." tone="white" split>
+    <p class="big">Start it here. Correct it in Tool 2 · Translate.</p>
+    <ul class="cols">
+      {
+        glossary.map((g, i) => (
+          <li>
+            <p class="lbl">Column {i + 1}</p>
+            <b>{g.name}</b>
+            <span>{g.hint}</span>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="small">Provisional means it will change after Tool 2, when each phrase gets its literal and implied meaning.</p>
+  </Section>
+
+  <Section id="print" eyebrow="Print and go" title="Then start with Tool 1 · Listen.">
+    <div class="print">
+      <div class="left">
+        {dl && <DownloadCard item={dl} />}
+        <a class="btn btn--accent" href={url('/components/language/listen/')}>
+          Next: Tool 1 · Listen <Icon name="arrow" size={20} />
+        </a>
+      </div>
+      <details class="compare">
+        <summary>Compare with the booklet page <span>{b.printed}</span></summary>
+        <PageFigure image={bookletImage(b.image)} alt={b.alt} caption={`The booklet page, ${b.printed}`} />
+      </details>
+    </div>
+  </Section>
+</ComponentLayout>
+
+<style>
+  .big {
+    font-size: var(--fs-lead);
+    color: var(--ink-soft);
+    max-width: var(--measure);
+  }
+  .small {
+    font-size: var(--fs-ui);
+    color: var(--muted);
+    max-width: var(--measure);
+    margin: var(--sp-3) 0 0;
+  }
+  .people,
+  .steps,
+  .prompts,
+  .cols {
+    list-style: none;
+    margin: var(--sp-3) 0 0;
+    padding: 0;
+  }
+  .people {
+    display: grid;
+    gap: var(--sp-2);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  }
+  .people li {
+    margin: 0;
+    display: grid;
+    gap: var(--sp-1);
+    align-content: start;
+    padding: var(--sp-3);
+    border-radius: var(--r-md);
+    background: var(--c3-tint);
+  }
+  .people b {
+    font-size: var(--fs-h4);
+  }
+  .people li > span:last-child {
+    color: var(--ink-soft);
+    font-size: var(--fs-ui);
+  }
+  .n {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--c3);
+    color: #fff;
+    font-weight: 800;
+    flex: none;
+  }
+  .gate {
+    margin: var(--sp-3) 0 0;
+    max-width: var(--measure);
+  }
+  .gate p {
+    margin: 0;
+  }
+  .steps {
+    display: grid;
+    gap: var(--sp-2);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  }
+  .steps li {
+    margin: 0;
+    display: flex;
+    gap: var(--sp-2);
+    align-items: start;
+    padding: var(--sp-3);
+    border: 2px solid var(--line-strong);
+    border-radius: var(--r-md);
+    background: var(--ground);
+  }
+  .steps li > div {
+    display: grid;
+    gap: var(--sp-half);
+  }
+  .steps b {
+    font-size: var(--fs-h4);
+    line-height: 1.25;
+  }
+  .steps li span:not(.n) {
+    color: var(--ink-soft);
+    font-size: var(--fs-ui);
+  }
+  .cards-note {
+    display: flex;
+    gap: var(--sp-2);
+    align-items: start;
+    margin: var(--sp-3) 0 0;
+    color: var(--ink-soft);
+    max-width: var(--measure);
+  }
+  .cards-note :global(svg) {
+    flex: none;
+    margin-top: 2px;
+    color: var(--c3-deep);
+  }
+  .prompts {
+    counter-reset: p;
+    display: grid;
+    gap: 0;
+    max-width: 44rem;
+    border-top: 2px solid var(--line-strong);
+  }
+  .prompts li {
+    counter-increment: p;
+    margin: 0;
+    padding: var(--sp-2) 0 var(--sp-2) var(--sp-6);
+    position: relative;
+    border-bottom: 1px solid var(--line-strong);
+    font-size: var(--fs-lead);
+  }
+  .prompts li::before {
+    content: counter(p);
+    position: absolute;
+    left: 0;
+    top: var(--sp-2);
+    font-family: var(--font-mono);
+    font-weight: 600;
+    color: var(--c3-deep);
+  }
+  .cols {
+    display: grid;
+    gap: var(--sp-2);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  }
+  .cols li {
+    margin: 0;
+    display: grid;
+    gap: var(--sp-1);
+    align-content: start;
+    padding: var(--sp-3);
+    border: 2px dashed var(--line-strong);
+    border-radius: var(--r-md);
+    background: var(--ground);
+  }
+  .cols .lbl {
+    margin: 0;
+    color: var(--c3-deep);
+  }
+  .cols b {
+    font-size: var(--fs-h4);
+    line-height: 1.25;
+  }
+  .cols span {
+    color: var(--ink-soft);
+    font-size: var(--fs-ui);
+  }
+  .print {
+    display: grid;
+    gap: var(--sp-4);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    align-items: start;
+  }
+  .left {
+    display: grid;
+    gap: var(--sp-2);
+    align-content: start;
+    justify-items: start;
+  }
+  .compare {
+    border: 2px solid var(--line-strong);
+    border-radius: var(--r-md);
+    background: var(--surface);
+    padding: var(--sp-1) var(--sp-2);
+  }
+  .compare summary {
+    cursor: pointer;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    gap: var(--sp-1);
+    font-weight: 700;
+    font-size: var(--fs-ui);
+  }
+  .compare summary span {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    font-weight: 400;
+    color: var(--muted);
+  }
+  .compare[open] summary {
+    margin-bottom: var(--sp-2);
+  }
+</style>

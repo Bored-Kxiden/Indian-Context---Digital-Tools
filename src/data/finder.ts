@@ -1,8 +1,10 @@
 import { goals } from './goals';
 import { components } from './components';
 import { tools as c1Tools } from './booklet/existing-products';
+import { tools as c2Tools } from './booklet/visual-culture';
+import { tools as c3Tools } from './booklet/language';
 import { tools as c4Tools } from './booklet/material-reality';
-import { tools as languageTools, toolHref } from './tools';
+import { referencePages, referenceHref, parentLabel } from './tools';
 
 // Everything the "Find a tool" search can open, built from the same data as the pages.
 // Order = order of the result groups.
@@ -22,6 +24,8 @@ export interface FinderGroup {
 }
 
 const C1 = '/components/existing-products/';
+const C2 = '/components/visual-culture/';
+const C3 = '/components/language/';
 const C4 = '/components/material-reality/';
 
 const iWantTo: FinderItem[] = goals.flatMap((g) =>
@@ -35,7 +39,27 @@ const tools: FinderItem[] = [
     href: `${C1}${t.slug}/`,
     c: 'c1' as const,
   })),
-  ...languageTools.map((t) => ({ title: t.name, hint: t.blurb, href: toolHref(t.slug), c: 'c3' as const })),
+  ...c2Tools.map((t) => ({
+    title: t.number ? `${t.number} · ${t.name}` : t.name,
+    hint: t.question,
+    href: `${C2}${t.slug}/`,
+    c: 'c2' as const,
+  })),
+  { title: 'The six photo missions', hint: 'Show · what to ask participants to photograph', href: `${C2}show/#missions`, c: 'c2' as const },
+  { title: 'Before you start', hint: 'Language · understand the context first', href: `${C3}before-you-start/`, c: 'c3' as const },
+  ...c3Tools.map((t) => ({
+    title: t.number ? `${t.number} · ${t.name}` : t.name,
+    hint: t.question,
+    href: `${C3}${t.slug}/`,
+    c: 'c3' as const,
+  })),
+  {
+    title: 'Reverse thick translation',
+    hint: 'Translate · test a translation back with the audience, in three directions',
+    href: `${C3}translate/#reverse`,
+    c: 'c3' as const,
+  },
+  ...referencePages.map((p) => ({ title: p.name, hint: `${parentLabel(p.parent)} · go deeper`, href: referenceHref(p.slug), c: 'c3' as const })),
   ...c4Tools.map((t) => ({
     title: t.number ? `${t.number} · ${t.name}` : t.name,
     hint: t.question,

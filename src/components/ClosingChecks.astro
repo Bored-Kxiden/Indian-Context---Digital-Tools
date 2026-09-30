@@ -1,0 +1,72 @@
+---
+// "Is it working?" for a whole component (Components 2 and 3): good signs, and warning
+// signs with what to do about each. The page around it supplies the heading.
+interface Props {
+  good: string[];
+  warnings: { sign: string; fix: string }[];
+}
+const { good, warnings } = Astro.props;
+---
+
+<div class="iw">
+  <div class="callout callout--done">
+    <strong>Good signs</strong>
+    <ul class="plain">
+      {good.map((g) => <li>{g}</li>)}
+    </ul>
+  </div>
+  <div class="callout callout--warn">
+    <strong>Warning signs, and what to do</strong>
+    <ul class="plain">
+      {
+        warnings.map((w) => (
+          <li>
+            <b>{w.sign}</b>
+            <span>{w.fix}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</div>
+
+<style>
+  .iw {
+    display: grid;
+    gap: var(--sp-2);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+    align-items: start;
+  }
+  .callout {
+    margin: 0;
+  }
+  .plain {
+    list-style: none;
+    padding: 0;
+    margin: var(--sp-1) 0 0;
+    display: grid;
+    gap: var(--sp-2);
+  }
+  .plain li {
+    margin: 0;
+    display: grid;
+    gap: 2px;
+  }
+  .plain li b {
+    font-weight: 700;
+  }
+  .callout--done .plain li {
+    padding-left: var(--sp-3);
+    position: relative;
+  }
+  .callout--done .plain li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.5em;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--accent-deep);
+  }
+</style>
