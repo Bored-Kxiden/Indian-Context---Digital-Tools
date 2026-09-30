@@ -1,0 +1,459 @@
+---
+import Icon from './Icon.astro';
+import { functionsUrl } from '../data/backend';
+import { url } from '../utils/url';
+import '../styles/ask.css';
+
+// "Ask the toolkit" as a chat panel, on every page except /ask/ itself: a button at the bottom right that opens it.
+// The answer code and data load only when someone opens it (the page stays light on prepaid data), the conversation
+// follows the reader from page to page for the visit, and on a tool page the suggestions are about that tool.
+// On a phone the panel fills the screen and the page behind it is inert; elsewhere it floats beside the page.
+// Without JavaScript the button is a link to /ask/.
+
+const tries = ['What is reverse thick translation?', 'Which tool shows who people depend on?', 'Kahavat kya hai?', 'How do I run the Villain Story?'];
+---
+
+<aside class="chat" aria-label="Ask the toolkit" data-chat data-functions={functionsUrl} data-base={url('/')}>
+  <a class="launcher" href={url('/ask/')} data-chat-open aria-controls="chat-panel" aria-expanded="false">
+    <Icon name="chat" size={22} />
+    <span class="lt">Ask</span>
+    <span class="visually-hidden">the toolkit</span>
+    <span class="dot" hidden data-chat-dot><span class="visually-hidden">(conversation in progress)</span></span>
+  </a>
+
+  <section class="panel" id="chat-panel" role="dialog" aria-labelledby="chat-title" hidden data-chat-panel>
+    <div class="ph">
+      <div class="pt">
+        <h2 id="chat-title">Ask the toolkit</h2>
+        <p class="sub">Answers from the toolkit’s own pages. No AI model.</p>
+      </div>
+      <a class="full" href={url('/ask/')}>Full page</a>
+      <button type="button" class="x" data-chat-close aria-label="Close the chat">
+        <Icon name="x" size={22} />
+      </button>
+    </div>
+
+    <div class="body" data-chat-scroll>
+      <div class="intro" data-chat-intro>
+        <p>Ask about any tool, step or term, in English, Hindi or Hinglish.</p>
+        <ul class="tries" data-chat-tries aria-label="Try asking">
+          {
+            tries.map((t) => (
+              <li>
+                <button type="button" class="chip try" data-try={t}>
+                  {t}
+                </button>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <ol class="log" data-chat-log aria-label="Questions and answers"></ol>
+    </div>
+
+    <form class="bar" data-chat-form autocomplete="off">
+      <label for="chat-q" class="visually-hidden">Your question</label>
+      <input id="chat-q" name="q" type="text" maxlength="300" required placeholder="Ask about a tool, step or term" />
+      <button class="send" type="submit" aria-label="Ask">
+        <Icon name="arrow" size={22} />
+      </button>
+    </form>
+    <p class="fine">
+      Don’t type participants’ names or personal details.
+      <button type="button" class="clear" data-chat-clear>Clear</button>
+    </p>
+    <p class="visually-hidden" role="status" aria-live="polite" data-chat-status></p>
+  </section>
+</aside>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-chat]');
+  if (root) {
+    const launcher = root.querySelector<HTMLAnchorElement>('[data-chat-open]')!;
+    const panel = root.querySelector<HTMLElement>('[data-chat-panel]')!;
+    const scroller = root.querySelector<HTMLElement>('[data-chat-scroll]')!;
+    const log = root.querySelector<HTMLOListElement>('[data-chat-log]')!;
+    const intro = root.querySelector<HTMLElement>('[data-chat-intro]')!;
+    const tries = root.querySelector<HTMLElement>('[data-chat-tries]')!;
+    const form = root.querySelector<HTMLFormElement>('[data-chat-form]')!;
+    const input = root.querySelector<HTMLInputElement>('#chat-q')!;
+    const status = root.querySelector<HTMLElement>('[data-chat-status]')!;
+    const dot = root.querySelector<HTMLElement>('[data-chat-dot]')!;
+    const phone = matchMedia('(max-width: 40rem)');
+
+    type Chat = ReturnType<typeof import('../scripts/ask/ui').createAsk>;
+    let chat: Chat | null = null;
+    let starting: Promise<Chat> | null = null;
+
+    const saved = () => {
+      try {
+        return (JSON.parse(sessionStorage.getItem('bte-ask-v1') ?? '[]') as unknown[]).length > 0;
+      } catch {
+        return false;
+      }
+    };
+    dot.hidden = !saved();
+
+    const syncIntro = () => (intro.hidden = log.children.length > 0);
+    new MutationObserver(syncIntro).observe(log, { childList: true });
+
+    // The answer code is loaded on first open only.
+    function start() {
+      starting ??= import('../scripts/ask/ui').then(({ createAsk }) => {
+        chat = createAsk({ log, status, base: root!.dataset.base ?? '/', functionsUrl: root!.dataset.functions ?? '', scroller });
+        chat.restore();
+        syncIntro();
+        chat.suggestionsFor(location.pathname, []).then((qs) => {
+          if (!qs.length) return;
+          tries.replaceChildren(
+            ...qs.map((q) => {
+              const li = document.createElement('li');
+              const b = document.createElement('button');
+              b.type = 'button';
+              b.className = 'chip try';
+              b.textContent = q;
+              b.addEventListener('click', () => chat?.ask(q));
+              li.append(b);
+              return li;
+            }),
+          );
+        });
+        return chat;
+      });
+      return starting;
+    }
+
+    // On a phone the panel covers the page: make everything behind it inert.
+    const behind = () => [...document.body.children].filter((n) => n !== root && n.tagName !== 'DIALOG' && n.tagName !== 'SCRIPT') as HTMLElement[];
+    const setInert = (on: boolean) => behind().forEach((n) => (on ? n.setAttribute('inert', '') : n.removeAttribute('inert')));
+
+    function open() {
+      panel.hidden = false;
+      root!.classList.add('is-open');
+      launcher.setAttribute('aria-expanded', 'true');
+      if (phone.matches) setInert(true);
+      input.focus();
+      start();
+    }
+    function close() {
+      panel.hidden = true;
+      root!.classList.remove('is-open');
+      launcher.setAttribute('aria-expanded', 'false');
+      setInert(false);
+      dot.hidden = !saved();
+      launcher.focus();
+    }
+
+    launcher.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (panel.hidden) open();
+      else close();
+    });
+    root.querySelector('[data-chat-close]')!.addEventListener('click', close);
+    panel.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        close();
+      }
+    });
+    phone.addEventListener('change', () => setInert(!panel.hidden && phone.matches));
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const q = input.value;
+      input.value = '';
+      (await start()).ask(q);
+    });
+    root.querySelectorAll<HTMLButtonElement>('[data-try]').forEach((b) => b.addEventListener('click', async () => (await start()).ask(b.dataset.try ?? '')));
+    root.querySelector('[data-chat-clear]')!.addEventListener('click', async () => {
+      (await start()).clear();
+      input.focus();
+    });
+    // Following a link inside an answer on a phone: close first, so the new page isn't hidden behind the panel.
+    log.addEventListener('click', (e) => {
+      const link = (e.target as HTMLElement).closest('a');
+      if (link && phone.matches && !link.hasAttribute('download')) {
+        setInert(false);
+        panel.hidden = true;
+      }
+    });
+  }
+</script>
+
+<style>
+  .chat {
+    position: fixed;
+    right: max(var(--sp-2), env(safe-area-inset-right));
+    bottom: max(var(--sp-2), env(safe-area-inset-bottom));
+    z-index: 60;
+    font-size: var(--fs-ui);
+  }
+  @media (min-width: 64rem) {
+    .chat {
+      right: var(--sp-3);
+      bottom: var(--sp-3);
+    }
+  }
+
+  .launcher {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-1);
+    min-height: 56px;
+    padding: 0 var(--sp-3) 0 var(--sp-2);
+    border-radius: 999px;
+    background: var(--ink);
+    color: #fff;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 10px 28px -10px rgb(22 20 15 / 0.55);
+    transition:
+      transform var(--t-fast) var(--ease),
+      box-shadow var(--t-fast) var(--ease);
+  }
+  .launcher:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 32px -12px rgb(22 20 15 / 0.65);
+  }
+  .launcher:focus-visible {
+    outline: 3px solid var(--ink);
+    outline-offset: 3px;
+    box-shadow: 0 0 0 3px #fff;
+  }
+  .is-open .launcher {
+    display: none;
+  }
+  .dot {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--c2);
+    border: 2px solid var(--ink);
+  }
+  .dot[hidden] {
+    display: none;
+  }
+
+  .panel {
+    position: fixed;
+    right: var(--sp-3);
+    bottom: var(--sp-3);
+    width: min(26rem, calc(100vw - 2 * var(--sp-3)));
+    height: min(40rem, calc(100dvh - var(--sp-4) - var(--sp-3)));
+    display: flex;
+    flex-direction: column;
+    background: var(--ground);
+    border: 1.5px solid var(--ink);
+    border-radius: var(--r-lg);
+    box-shadow: 0 24px 60px -24px rgb(22 20 15 / 0.55);
+    overflow: hidden;
+  }
+  .panel[hidden] {
+    display: none;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .panel:not([hidden]) {
+      animation: rise var(--t-med) var(--ease);
+    }
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+    }
+  }
+  @media (max-width: 40rem) {
+    .panel {
+      inset: 0;
+      width: 100%;
+      height: 100dvh;
+      border: 0;
+      border-radius: 0;
+    }
+  }
+
+  .ph {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-1);
+    padding: var(--sp-2) var(--sp-1) var(--sp-2) var(--sp-3);
+    background: var(--ink);
+    color: #fff;
+  }
+  .pt {
+    flex: 1;
+    min-width: 0;
+  }
+  .ph h2 {
+    font-size: var(--fs-h4);
+    margin: 0;
+    color: #fff;
+  }
+  .sub {
+    margin: 2px 0 0;
+    font-size: var(--fs-xs);
+    font-family: var(--font-mono);
+    letter-spacing: 0.04em;
+    color: var(--on-dark);
+  }
+  .full {
+    color: #fff;
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    padding: var(--sp-1);
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .x {
+    display: inline-grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: var(--r-sm);
+    background: transparent;
+    color: #fff;
+    cursor: pointer;
+  }
+  .x:hover {
+    background: rgb(255 255 255 / 0.12);
+  }
+  .full:focus-visible,
+  .x:focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: -3px;
+  }
+
+  .body {
+    flex: 1;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: var(--sp-2);
+  }
+  .intro p {
+    margin: 0 0 var(--sp-2);
+    color: var(--ink-soft);
+  }
+  .intro[hidden] {
+    display: none;
+  }
+  .tries {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--sp-1);
+  }
+  .body :global(.try) {
+    cursor: pointer;
+    text-transform: none;
+    letter-spacing: 0;
+    font-family: var(--font-body);
+    font-size: var(--fs-sm);
+    white-space: normal;
+    text-align: left;
+    min-height: 40px;
+    background: var(--surface);
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .body :global(.try:hover) {
+    background: var(--ink);
+    color: #fff;
+  }
+  .log {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .bar {
+    display: flex;
+    gap: var(--sp-1);
+    padding: var(--sp-1) var(--sp-2) 0;
+    border-top: 1px solid var(--line-strong);
+    background: var(--surface);
+  }
+  .bar input {
+    flex: 1;
+    min-width: 0;
+    min-height: 48px;
+    font: inherit;
+    font-size: var(--fs-ui);
+    padding: 0 var(--sp-2);
+    border: 1.5px solid var(--field);
+    border-radius: var(--r-sm);
+    background: var(--surface);
+  }
+  .bar input:focus-visible {
+    outline: 3px solid var(--ink);
+    outline-offset: 1px;
+  }
+  .send {
+    display: inline-grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border: 0;
+    border-radius: var(--r-sm);
+    background: var(--ink);
+    color: #fff;
+    cursor: pointer;
+  }
+  .send:focus-visible {
+    outline: 3px solid var(--ink);
+    outline-offset: 2px;
+  }
+  .fine {
+    margin: 0;
+    padding: var(--sp-1) var(--sp-2) max(var(--sp-1), env(safe-area-inset-bottom));
+    background: var(--surface);
+    font-size: var(--fs-xs);
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--sp-1);
+  }
+  .clear {
+    font: inherit;
+    background: none;
+    border: 0;
+    padding: 0 var(--sp-half);
+    min-height: 24px;
+    color: var(--ink);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  /* Answers, a little tighter than on the full page */
+  .body :global(.askui) {
+    gap: var(--sp-3);
+  }
+  .body :global(.askui .turn > .q) {
+    max-width: 90%;
+  }
+  .body :global(.askui .a .ans) {
+    padding: var(--sp-2);
+  }
+  .body :global(.askui .a h3) {
+    font-size: var(--fs-h4);
+  }
+  .body :global(.askui .a .tool .q) {
+    font-size: var(--fs-ui);
+  }
+  .body :global(.askui .a .compare) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  @media print {
+    .chat {
+      display: none;
+    }
+  }
+</style>

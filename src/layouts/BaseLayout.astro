@@ -4,6 +4,7 @@ import Header from '../components/Header.astro';
 import ComponentNav from '../components/ComponentNav.astro';
 import Finder from '../components/Finder.astro';
 import Footer from '../components/Footer.astro';
+import ChatWidget from '../components/ChatWidget.astro';
 import { site } from '../data/site';
 import { url } from '../utils/url';
 
@@ -17,6 +18,8 @@ interface Props {
 const { title, description = site.description, component } = Astro.props;
 const pageTitle = title ? `${title} · ${site.name}` : `${site.name}: a toolkit for designing in Indian contexts`;
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
+// The chat button is on every page except the full Ask page.
+const showChat = !/\/ask\/?$/.test(Astro.url.pathname);
 ---
 
 <!doctype html>
@@ -44,5 +47,6 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : un
     </main>
     <Footer />
     <Finder />
+    {showChat && <ChatWidget />}
   </body>
 </html>
