@@ -1,0 +1,10 @@
+---
+// Text broken into the lines the booklet prints. Wide layouts keep the line breaks (the example
+// sets `white-space: nowrap`); narrow ones hide them and let the words wrap (`.ex .b`).
+interface Props {
+  lines: string[];
+}
+const { lines } = Astro.props;
+---
+
+{lines.map((l, i) => <>{l}{i < lines.length - 1 && <><br class="b" />{' '}</>}</>)}

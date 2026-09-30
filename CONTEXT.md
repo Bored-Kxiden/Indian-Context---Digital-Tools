@@ -81,7 +81,8 @@ Status: **Confirmed** by the owner, or **Assumed** (made to keep moving; needs c
 | D21 | **End-to-end layout.** The content container runs to 1920 px with a fluid 16–48 px gutter, and pages are built in columns: split sections (heading left, content right), examples side by side, and each example decides with a container query whether its steps sit beside or below the page so the page stays large. Reading text stays at about 68 characters. | Confirmed (asked for) |
 | D22 | **Navigation.** A sticky component strip on wide screens (all components one click away, current one filled in), a "Find a tool" search over every tool, step and page (opens with `/` or Ctrl+K; on phones a search button), a Menu on phones, a step bar under every component heading (replaces the old left rail, so Components 1, 3 and 4 navigate the same way), and a sticky tab bar on tool pages. Language pages get an "On this page" column. | Confirmed (asked for) |
 | D23 | **"I want to…" is one card per component.** Language's five groups are sub-headings inside one Component 3 card, so no component looks bigger than it is. Home shows the cards as a board (1 and 4 stacked beside the longer 3, with a Visual culture placeholder). Component overviews show their own card as a full-width list. | Confirmed (asked for) |
-| D24 | **Accessibility bar: WCAG 2.2 AA, checked, not assumed.** axe-core (WCAG 2 A/AA, 2.1, 2.2 AA and best practice) reports no violations on every page, every tab, the search dialog and the phone menu, at 1440, 390 and 320 px. Keyboard: every focus stop has a visible ring and is never hidden under a sticky bar. Targets are at least 44 px where they are primary controls. Reduced motion and forced colours are handled. | Confirmed (asked for) |
+| D24 | **Accessibility bar: WCAG 2.2 AA, checked, not assumed.** axe-core (WCAG 2 A/AA, 2.1, 2.2 AA and best practice) reports no violations on every page, every tab, the search dialog and the phone menu, at 1440, 390 and 320 px (and, for the pages with examples, 1024 px). Keyboard: every focus stop has a visible ring and is never hidden under a sticky bar. Targets are at least 44 px where they are primary controls. Reduced motion and forced colours are handled. | Confirmed (asked for) |
+| D25 | **Filled examples are real HTML, drawn from the booklet's own geometry.** Each of the 14 filled examples (1.06, 1.08, 1.11, 1.14, 1.16, 1.17, 1.20, 1.22, 4.07, 4.09, 4.12, 4.14, 4.17, 4.20) is rebuilt as HTML/CSS/SVG in `src/components/examples/`, so text is sharp, searchable, selectable and translatable. Positions, sizes, gaps, colours and line breaks come from a PDF extraction (PyMuPDF): one unit `--u` is one point of the A4 page (511.5 pt content width), so the example scales exactly with its column. Type pins Bricolage's optical size to the printed size (`opsz` = pt × 4/3), which is what makes line breaks match the print. Inside an example the booklet's own colours apply (indigo #283a7a, green #2e5e4e, terracotta #a8432a, amber #e3a72f, note yellow and teal), an intentional exception to the site's component colours (D20), because the example is the printed page. Below about 45 rem the printed layout gives way to a reflowed one (stacked cards, tables that scroll in a keyboard-reachable region, diagrams with a text list). Every example keeps its text alternative and a "Compare with the booklet page" disclosure showing the original page image. Blank templates stay page images. | Confirmed (asked for) |
 
 ### Earlier decisions that still apply (Language component)
 
@@ -126,7 +127,8 @@ Fuller wireframes, a simplified wireframe, and task flows are in the owner's Fig
 | Component 1 and 4 guide text, steps, words, "I want to…" (C4) | Copied from the booklet (light editing for the web) |
 | Component 1 cross-component "I want to…" phrases | **Written by us** from each tool's subtitle. Not in the booklet |
 | Component 3 (Language) content | From the Language write-up; card prompts drafted by us |
-| Examples and blanks | Booklet pages as images (v1) |
+| Examples | Rebuilt as HTML from the booklet's own geometry and text (D25); the original page stays one click away |
+| Blank templates | Booklet pages as images |
 | Guideline, "how to read", Meera, "after the toolkit", further reading | Copied from the booklet's front and back matter |
 | Home, About and component-overview framing text | **Written by us** (short connecting copy; "Where it comes from" on About) |
 | Card-kit page: sheet and board blurbs, per-tool "Play it on the table" intros | From the card kit and booklet; a few intros composed by us from booklet phrases |
@@ -140,7 +142,7 @@ Fuller wireframes, a simplified wireframe, and task flows are in the owner's Fig
 | Q2 | Licence for the booklet and card-kit content. The repository code is MIT, but the toolkit content is not covered by that automatically. |
 | Q3 | Credits and partners: who is named, and where? (Nothing on the site yet.) |
 | Q4 | Define India 1 / 2 / 3 for the Language Lens? |
-| Q5 | Rebuild the examples natively in HTML, and add fill-on-screen templates and the interactive Synthesis builder? |
+| Q5 | The examples are now native HTML (D25). Still open: fill-on-screen templates and the interactive Synthesis builder? |
 | Q6 | Supabase: does anything need a database? |
 | Q7 | Custom domain, or stay on the vercel.app address? |
 | Q8 | GitHub's default branch is still the feature branch; switch it to `main`. |
@@ -148,11 +150,11 @@ Fuller wireframes, a simplified wireframe, and task flows are in the owner's Fig
 | Q10 | Wording check: the About page's "Where it comes from" paragraph and the connecting copy on Home and the component overviews are ours. Confirm, and say who is credited (see Q3). |
 | Q11 | Where should "Print" and "You need" sit on a tool page? Now: a right-hand column on very wide screens (92rem+), otherwise below the tabs. |
 | Q12 | Reflection has no colour of its own yet, so it uses neutral ink (D20). Does it get one? Turmeric is Component 2's. |
-| Q13 | The examples are still the booklet's page images. They are now large (side by side on wide screens), but rebuilding them as real HTML (Q5) would make them sharper, searchable and translatable. |
+| Q13 | **Resolved (D25):** the filled examples are native HTML. Still open: the Journey Strip (p.4.04), the Visual Toolkit photos (p.4.05) and the participant field cards (p.4.22) are page images, and so are the blank templates. Rebuild them the same way? |
 
 ## 8. Backlog
 
-- Native HTML examples (the concept's version) instead of page images.
+- Native HTML for the remaining page images: blank templates, Journey Strip (4.04), Visual Toolkit (4.05), field cards (4.22).
 - Fill-on-screen blank templates, and the interactive **Synthesis builder** with "Save as PDF".
 - Refresh FigJam sections 13 to 15 for the multi-component structure.
 - Visual culture and Reflection components when their content exists.
@@ -162,6 +164,18 @@ Fuller wireframes, a simplified wireframe, and task flows are in the owner's Fig
 - Decide what a Component 1 tool page shows in Cards mode beyond opening the Card kit tab first.
 
 ## 9. Change log (newest first)
+
+### 2026-09-30 · Filled examples rebuilt as native HTML
+Requested: build the examples as exact HTML (Reflection's colour can wait), then open a pull request into `main`.
+
+- **14 examples rebuilt** (D25): Media Story, Gossip Venn, Timeline, Ideal flow + needs, Blame Scale, Villain Story, Three lenses + findings, Synthesis (Component 1); Loop, Access Ladder, Whisper, Big players & the Cut, What gets compromised first?, Brief pad (Component 4). Each lives in `src/components/examples/Ex<page>.astro`, registered in `index.ts` by booklet page id. A page with no entry still falls back to its page image.
+- **Method:** text, shapes and colours extracted from the PDF with PyMuPDF; layout in points (`--u`); diagrams (Venn, Loop, Cut) in inline SVG with the printed dash pattern; text set at the printed optical size so lines break where the print breaks. Compared against a crop of the PDF page for each example.
+- **Responsive:** exact layout above about 45 rem; below it, cards stack, tables (Ladder, Whisper, Villain Story, Ideal flow) scroll inside a focusable region, and diagrams add a list of the same tokens and lines as text. `<br>` line breaks (`Lines.astro`) apply only in the exact layout.
+- **Accessibility:** real tables with headers and captions; marks (✓, ✕, dots) carry hidden text; SVG drawings are hidden from assistive technology and replaced by a text list; the page image stays available under "Compare with the booklet page".
+- **Layout:** examples may be up to 72 rem wide; two parts sit side by side only when each gets 50 rem, so the exact layout applies on wide screens too. The duplicate "Card kit" pill inside each example was dropped (the part header already links it).
+- Typographic apostrophes replace the booklet's straight ones. Card-kit board references are not repeated inside examples.
+- **Checked:** `npm run build`; axe-core (WCAG 2 A/AA, 2.1, 2.2 AA, best practice) clean on all 191 scans of the previous pass plus the nine tool pages with examples at 1440, 1024, 390 and 320 px (with the "Compare" disclosures open); no horizontal scroll on those pages at 320, 360, 768, 1024, 1280 and 1920 px; keyboard pass; base-path build with 4,233 links all resolving. Two fixes on the way: an example's hidden helper text was widening the page (scroll regions are now positioned), and the "Find a tool" button had no accessible name between 1024 and 1280 px (it now has an `aria-label`).
+- **Not changed:** Reflection stays neutral ink (Q12); blank templates stay page images.
 
 ### 2026-09-29 · Redesign: layout, colour, navigation and accessibility pass
 Requested: better layout, the rule of 8, hierarchy, consistency and contrast; better accessibility; consistent colour (Break in Component 4 must not look like Language); no dead side margins, with examples as large as possible; closer to the reference and less generic; easier navigation.

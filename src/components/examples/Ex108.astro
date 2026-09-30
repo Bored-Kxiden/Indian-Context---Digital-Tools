@@ -1,0 +1,285 @@
+---
+import ExFrame from './ExFrame.astro';
+import Tag from './Tag.astro';
+
+// Booklet p.1.08 · Tool 1 Media & Gossip, Part B: The Gossip Venn (filled example).
+// Positions are the booklet's own, in points, measured from the frame's inner corner.
+interface Props {
+  alt: string;
+  caption: string;
+}
+const { alt, caption } = Astro.props;
+
+const ox = 42.75;
+const oy = 85.85;
+
+const circles = [
+  { n: 1, name: 'Media', cx: 226.5, cy: 232.5, colour: '#283a7a', fill: 0.08, label: [122.2, 113.8] },
+  { n: 2, name: 'Official feedback', cx: 369, cy: 232.5, colour: '#1c1a17', fill: 0.05, label: [401.2, 113.8] },
+  { n: 3, name: 'Gossip', cx: 297.8, cy: 345, colour: '#a8432a', fill: 0.08, label: [267.8, 451.3] },
+];
+
+// x, y, w, h: the sticky note on the page. zone: where it sits in the Venn.
+const quotes = [
+  { x: 125.2, y: 180, w: 84, h: 39, lines: ['“Seamless,', 'one place for all”'], src: 'Ad', zone: 'Media only' },
+  { x: 257.2, y: 142.5, w: 81, h: 39, lines: ['“Track your status', 'anytime”'], src: 'Ad + FAQ', zone: 'Media and official feedback' },
+  { x: 389.2, y: 180, w: 90, h: 39, lines: ['“Upload as per the', 'prescribed format”'], src: 'FAQ', zone: 'Official feedback only' },
+  { x: 255.8, y: 256.5, w: 84, h: 39, lines: ['Status stuck on', '“pending” for weeks'], src: 'All three', zone: 'All three circles', hot: true },
+  { x: 162.8, y: 304.5, w: 87, h: 39, lines: ['“Money straight to', 'your bank” · “late”'], src: 'Ad + Reddit', zone: 'Media and gossip' },
+  { x: 347.2, y: 304.5, w: 88.6, h: 39, lines: ['“Upload fails above', '200KB”'], src: 'Review + YouTube', zone: 'Official feedback and gossip' },
+  { x: 237.8, y: 378, w: 120, h: 49.5, lines: ['“Cybercafé bhaiya se karwa', 'lo, woh setting jaanta hai”'], src: 'WhatsApp forward', zone: 'Gossip only' },
+];
+---
+
+<ExFrame page="1.08" alt={alt} caption={caption}>
+  <div class="gv">
+    <div class="venn" role="group" aria-label="Gossip Venn: three overlapping circles">
+      <ul class="legend" aria-hidden="true">
+        {circles.map((c) => <li style={`--c:${c.colour}`}>{c.n} {c.name}</li>)}
+      </ul>
+      <svg viewBox={`${ox} ${oy} 510 383.3`} aria-hidden="true" focusable="false">
+        {circles.map((c) => <circle cx={c.cx} cy={c.cy} r="120" fill={c.colour} fill-opacity={c.fill} stroke={c.colour} stroke-width="1.5" />)}
+      </svg>
+      {
+        circles.map((c) => (
+          <span class="cl" aria-hidden="true" style={`--x:${c.label[0] - ox}; --y:${c.label[1] - oy}; color:${c.colour}`}>
+            {c.n} {c.name}
+          </span>
+        ))
+      }
+      <ul class="quotes">
+        {
+          quotes.map((q) => (
+            <li class:list={['q', { hot: q.hot }]} style={`--x:${q.x - ox}; --y:${q.y - oy}; --w:${q.w}; --h:${q.h}`}>
+              <span class="zone"><span class="visually-hidden">In </span>{q.zone}</span>
+              <span class="say">{q.lines.map((l, i) => <><span>{l}</span>{i < q.lines.length - 1 && <br />}</>)}</span>
+              <span class="src"><span class="visually-hidden">Source: </span>{q.src}</span>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="tags">
+        <Tag>S2 Channel · per circle</Tag>
+        <Tag>S1 Evidence · each quote</Tag>
+        <Tag>S2 Question · teal note</Tag>
+      </div>
+    </div>
+
+    <div class="bar">
+      <div class="left">
+        <span class="lbl">Hardest<br class="b" />{' '}contradiction</span>
+        <Tag>B2 ★ Slot</Tag>
+      </div>
+      <p>Media says “track your status anytime”. Gossip says nobody can tell you where your application is. Set this card aside for Synthesis.</p>
+    </div>
+  </div>
+</ExFrame>
+
+<style is:global>
+  .gv {
+    display: grid;
+    gap: calc(var(--u) * 11);
+  }
+  .gv .venn {
+    position: relative;
+    height: calc(var(--u) * 384.8);
+    background: #fff;
+    border: calc(var(--u) * 0.75) solid var(--bk-ink);
+    border-radius: calc(var(--u) * 12);
+    overflow: hidden;
+  }
+  .gv .venn > svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .gv .legend {
+    display: none;
+  }
+  .gv .cl {
+    position: absolute;
+    left: calc(var(--u) * var(--x) - 1px);
+    top: calc(var(--u) * var(--y) - var(--u) * 1.5);
+    font-family: var(--font-mono);
+    font-size: max(11px, calc(var(--u) * 9));
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 600;
+    line-height: 1.3;
+    white-space: nowrap;
+  }
+  .gv .quotes {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .gv .q {
+    position: absolute;
+    left: calc(var(--u) * var(--x));
+    top: calc(var(--u) * var(--y));
+    width: max-content;
+    min-width: calc(var(--u) * var(--w));
+    min-height: calc(var(--u) * var(--h));
+    display: flex;
+    flex-direction: column;
+    padding: calc(var(--u) * 6.5) calc(var(--u) * 6) calc(var(--u) * 2.5);
+    background: var(--bk-yellow-dot);
+    margin: 0;
+    white-space: nowrap;
+  }
+  .gv .q.hot {
+    background: #e8833a;
+  }
+  .gv .q .zone {
+    display: none;
+  }
+  .gv .q .say {
+    font-variation-settings: 'opsz' 12;
+    font-size: max(12px, calc(var(--u) * 8.6));
+    line-height: 1.31;
+    font-weight: 500;
+  }
+  .gv .q .src {
+    margin-top: auto;
+    padding-top: calc(var(--u) * 1);
+    font-family: var(--font-mono);
+    font-size: max(10px, calc(var(--u) * 6.4));
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--bk-muted);
+    line-height: 1.3;
+  }
+  .gv .q.hot .src {
+    color: var(--bk-ink);
+  }
+  .gv .tags {
+    position: absolute;
+    left: calc(var(--u) * 9);
+    bottom: calc(var(--u) * 9);
+    display: grid;
+    gap: max(4px, calc(var(--u) * 3.5));
+    justify-items: start;
+  }
+  .gv .bar {
+    display: grid;
+    grid-template-columns: calc(var(--u) * 103.5) minmax(0, 1fr);
+    gap: 0;
+    align-items: start;
+    background: var(--bk-ink);
+    color: var(--bk-cream, #f5f0e6);
+    border-radius: calc(var(--u) * 12);
+    padding: calc(var(--u) * 11.5) calc(var(--u) * 15) calc(var(--u) * 12);
+    min-height: calc(var(--u) * 63.7);
+  }
+  .gv .bar .left {
+    display: grid;
+    gap: calc(var(--u) * 5.5);
+    justify-items: start;
+  }
+  .gv .bar .lbl {
+    margin: 0;
+    color: #e3a72f;
+    font-size: max(11px, calc(var(--u) * 8.2));
+    line-height: 1.28;
+  }
+  .gv .bar p {
+    font-variation-settings: 'opsz' 16;
+    font-size: max(15px, calc(var(--u) * 12));
+    line-height: 1.375;
+    padding-top: calc(var(--u) * 3);
+  }
+
+  /* Below this width the note positions no longer fit their text: the circles shrink to a
+     picture and the notes become a list, each naming the zone it sits in. */
+  @container (max-width: 45rem) {
+    .gv .venn {
+      height: auto;
+      display: grid;
+      gap: var(--sp-2);
+      padding: var(--sp-2);
+      overflow: visible;
+      border-radius: var(--r-md);
+    }
+    .gv .venn > svg {
+      position: static;
+      height: auto;
+      aspect-ratio: 510 / 383.3;
+      max-width: 22rem;
+      margin-inline: auto;
+      order: 1;
+    }
+    .gv .cl {
+      display: none;
+    }
+    .gv .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--sp-half) var(--sp-2);
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      order: 0;
+    }
+    .gv .legend li {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: var(--c);
+    }
+    .gv .quotes {
+      order: 2;
+      display: grid;
+      gap: var(--sp-1);
+    }
+    .gv .q {
+      position: static;
+      width: auto;
+      min-width: 0;
+      min-height: 0;
+      white-space: normal;
+      padding: var(--sp-1) var(--sp-2);
+      border-radius: var(--r-sm);
+      gap: 2px;
+    }
+    .gv .q .zone {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--bk-ink);
+      opacity: 0.85;
+    }
+    .gv .q .zone .visually-hidden {
+      display: none;
+    }
+    .gv .q .say {
+      font-size: 15px;
+    }
+    .gv .q .say br {
+      display: none;
+    }
+    .gv .q .say span::after {
+      content: ' ';
+    }
+    .gv .q .src {
+      margin-top: 0;
+      font-size: 11px;
+    }
+    .gv .tags {
+      position: static;
+      order: 3;
+    }
+    .gv .bar {
+      grid-template-columns: 1fr;
+      gap: var(--sp-1);
+    }
+    .gv .bar p {
+      padding-top: 0;
+    }
+  }
+</style>

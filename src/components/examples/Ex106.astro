@@ -1,0 +1,202 @@
+---
+import ExFrame from './ExFrame.astro';
+import Tag from './Tag.astro';
+
+// Booklet p.1.06 · Tool 1 Media & Gossip, Part A: The Media Story (filled example).
+interface Props {
+  alt: string;
+  caption: string;
+}
+const { alt, caption } = Astro.props;
+
+const notes = [
+  {
+    tone: 'y',
+    title: 'A · What it claims',
+    kit: 'S1 Evidence',
+    rows: [
+      ['Main promise', '“One place for all scholarships.”'],
+      ['Word it never delivers', '“Seamless”'],
+      ['Users’ own tagline', '“Upload karo, reject ho jao, phir se karo.”'],
+    ],
+  },
+  {
+    tone: 'y',
+    title: 'B · The story it sells',
+    kit: 'S1 Evidence',
+    rows: [
+      ['Promises to fix', 'The distance between students and money they’re owed.'],
+      ['Journey in its story', 'Starts at log-in. Ends at “Submitted”.'],
+      ['Left out of the story', 'Getting documents, the cybercafé, the months of waiting.'],
+    ],
+  },
+  {
+    tone: 't',
+    title: 'C · What the designers meant',
+    rows: [
+      ['In their words', '“Let students apply for every scholarship on one platform.”'],
+      ['Who they imagined', 'Own laptop, scanner, broadband, a parent who knows forms.'],
+      ['Designed against', 'Fraud. Cost: heavy document checks for everyone.'],
+    ],
+  },
+  {
+    tone: 't',
+    title: 'D · How the user sees it',
+    rows: [
+      ['Tool or gate?', 'A gate she has to get through.'],
+      ['What she calls it', '“Woh NSP wala form”'],
+      ['What she thinks happens next', '“Someone reads it.” In fact: automatic checks, then her college verifies.'],
+    ],
+  },
+];
+---
+
+<ExFrame page="1.06" alt={alt} caption={caption}>
+  <div class="ms">
+    <div class="people">
+      <div class="who who--ad">
+        <div class="row"><span class="lbl">The person in the ads</span><Tag>B1 · Screenshot</Tag></div>
+        <p class="big">Smiling student, own laptop, bright desk, finishes in one sitting.</p>
+      </div>
+      <div class="who who--real">
+        <div class="row"><span class="lbl">The real user</span><Tag>B1 · Photo</Tag></div>
+        <p class="big">Meera, 19. Phone at 12% in a hostel corridor. Worried. Three days, several tries.</p>
+      </div>
+    </div>
+    <div class="nts">
+      {
+        notes.map((n) => (
+          <section class={`nt nt--${n.tone}`}>
+            <header>
+              <h4>{n.title}</h4>
+              {n.kit && <Tag>{n.kit}</Tag>}
+              <i aria-hidden="true" />
+            </header>
+            <dl>
+              {n.rows.map(([k, v]) => (
+                <div>
+                  <dt class="lbl">{k}</dt>
+                  <dd>{v}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        ))
+      }
+    </div>
+  </div>
+</ExFrame>
+
+<style is:global>
+  .ms {
+    display: grid;
+    gap: calc(var(--u) * 11);
+  }
+  .ms .people {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border: calc(var(--u) * 0.75) solid var(--bk-ink);
+    border-radius: calc(var(--u) * 8);
+    overflow: hidden;
+  }
+  .ms .who {
+    padding: calc(var(--u) * 11) calc(var(--u) * 12) calc(var(--u) * 12);
+  }
+  .ms .who--ad {
+    background: #fff;
+    border-right: calc(var(--u) * 0.75) solid var(--bk-ink);
+  }
+  .ms .who--real {
+    background: var(--bk-indigo);
+    color: #fff;
+  }
+  .ms .who--real .lbl {
+    color: #fff;
+  }
+  .ms .who .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: calc(var(--u) * 8);
+    margin-bottom: calc(var(--u) * 5);
+  }
+  .ms .who .lbl {
+    margin: 0;
+    font-size: max(11px, calc(var(--u) * 7.5));
+  }
+  .ms .big {
+    font-variation-settings: 'opsz' 15;
+    font-size: var(--t-lead);
+    line-height: 1.41;
+  }
+  .ms .nts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: calc(var(--u) * 7.5);
+  }
+  .ms .nt {
+    border-radius: calc(var(--u) * 12);
+    padding: calc(var(--u) * 12);
+    min-height: calc(var(--u) * 157);
+  }
+  .ms .nt--y {
+    background: var(--bk-yellow);
+  }
+  .ms .nt--t {
+    background: var(--bk-teal);
+    min-height: calc(var(--u) * 172);
+  }
+  .ms .nt header {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--u) * 4.5);
+    margin-bottom: calc(var(--u) * 5.5);
+  }
+  .ms .nt h4 {
+    font-variation-settings: 'opsz' 16;
+    margin: 0 auto 0 0;
+    font-size: var(--t-head);
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: 0;
+  }
+  .ms .nt header i {
+    flex: none;
+    width: calc(var(--u) * 10.5);
+    height: calc(var(--u) * 10.5);
+    min-width: 10px;
+    min-height: 10px;
+    border-radius: calc(var(--u) * 2.5);
+  }
+  .ms .nt--y header i {
+    background: var(--bk-yellow-dot);
+  }
+  .ms .nt--t header i {
+    background: var(--bk-teal-dot);
+  }
+  .ms .nt dl {
+    margin: 0;
+    display: grid;
+    gap: calc(var(--u) * 8);
+  }
+  .ms .nt dt {
+    font-weight: 600;
+  }
+  .ms .nt dd {
+    margin: 0;
+  }
+  @container (max-width: 45rem) {
+    .ms .people,
+    .ms .nts {
+      grid-template-columns: 1fr;
+    }
+    .ms .who--ad {
+      border-right: 0;
+      border-bottom: 1px solid var(--bk-ink);
+    }
+    .ms .nt,
+    .ms .nt--t {
+      min-height: 0;
+    }
+  }
+</style>

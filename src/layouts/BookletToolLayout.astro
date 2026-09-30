@@ -11,6 +11,7 @@ import { railFor } from '../data/rail';
 import { boardById, sheetById, sheetMeta } from '../data/card-kit';
 import { getDownloadById, getDownloadsForPage } from '../data/downloads';
 import { bookletImage, cardKitImage } from '../utils/assets';
+import { nativeExamples } from '../components/examples';
 import { url } from '../utils/url';
 
 // One page per tool in Components 1 and 4. Four tabs, always in the same order:
@@ -219,7 +220,9 @@ const crumbs = [
         </p>
         <div class="parts">
           {
-            tool.parts.map((p) => (
+            tool.parts.map((p) => {
+              const Native = nativeExamples[p.example.page];
+              return (
               <article class="part" id={`part-${p.id}`}>
                 <div class="part-in">
                   <header class="part-head">
@@ -233,7 +236,7 @@ const crumbs = [
                       </a>
                     )}
                   </header>
-                  <PageFigure image={bookletImage(p.example.page)} alt={p.example.alt} caption={p.example.note} />
+                  {Native ? <Native alt={p.example.alt} caption={p.example.note} /> : <PageFigure image={bookletImage(p.example.page)} alt={p.example.alt} caption={p.example.note} />}
                   <div class="how">
                     <h4>How to use it</h4>
                     <ol class="steps-list">
@@ -247,7 +250,8 @@ const crumbs = [
                   </div>
                 </div>
               </article>
-            ))
+              );
+            })
           }
         </div>
       </section>
@@ -836,7 +840,7 @@ const crumbs = [
   .parts {
     display: grid;
     gap: var(--sp-6) var(--sp-5);
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 40rem), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 50rem), 1fr));
     align-items: start;
   }
   .part {

@@ -63,6 +63,8 @@ python3 scripts/extract-booklet-assets.py   # regenerate page images and split P
 └── src/
     ├── components/                Header, ComponentNav (sticky strip), Finder (search), ComponentStepper, Section, PageHead,
     │                              GoalIndex, PageFigure, DownloadCard, Footer, …
+    │   └── examples/              the 14 filled examples as HTML (Ex106, Ex108, … Ex420), ExFrame (frame + "compare with the
+    │                              booklet page"), Tag, Lines, and index.ts (booklet page id → component)
     ├── data/
     │   ├── components.ts          the components (order, colour, status, blurb)
     │   ├── goals.ts               the "I want to…" index, all components
@@ -127,11 +129,21 @@ The workflow sets both for the GitHub Pages project URL. Internal links go throu
 Components 1 and 4 come from the **Toolkit Booklet** and the **Component 1 Card Kit** (two PDFs in `public/downloads/`).
 
 - **Words are copied from the booklet**, not paraphrased, and live in `src/data/booklet/`. Where the site adds text (a few card-kit intros, the Component 1 "I want to…" phrases, UI labels), `CONTEXT.md` says so.
-- **Examples and blanks are the booklet's own pages**, shown as images with a text alternative and the steps beside them. Filled examples are illustrative, as the booklet says. Never invent quotes or data on the site.
+- **Examples are rebuilt as HTML** from the booklet's own geometry and text (see `src/components/examples/` and D25 in `CONTEXT.md`), with the original page one click away under "Compare with the booklet page". **Blank templates are the booklet's own pages**, shown as images with a text alternative and the steps beside them. Filled examples are illustrative, as the booklet says. Never invent quotes or data on the site.
 - **`scripts/extract-booklet-assets.py`** renders every booklet and card-kit page to WebP, cuts the blank templates and card-kit sheets and boards into their own PDFs, and writes `src/data/booklet-assets.json`. Run it only when the source PDFs change (`pip install pymupdf pillow`); commit the outputs.
 - **Page ids** follow the printed page numbers: `1.06` is the Media Story example, `4.12` is in Component 4. Card-kit ids are `S1`…`S8` and `B1`…`B7`.
 
 To change a tool's wording, edit `src/data/booklet/existing-products.ts` or `material-reality.ts`. The tool page, the rail, the "I want to…" index (Component 4) and the download list all read from those files.
+
+## Adding or changing a native example
+
+Each filled example is one Astro component in `src/components/examples/`, wrapped in `ExFrame` and registered in `index.ts` under its booklet page id. A page id with no entry falls back to the page image, so examples can be added one at a time.
+
+- Size everything with `calc(var(--u) * N)` where N is points on the printed A4 page (511.5 pt content width). Read the numbers from the PDF (text lines with position, size and colour; shapes with fill and stroke).
+- Keep the printed line breaks with `Lines.astro` and `white-space: nowrap`; they switch off below 45 rem so text can wrap.
+- Use real tables for grids, hide decorative SVG from assistive technology, and give every diagram a text list.
+- Compare with a crop of the PDF page at the same width before committing.
+
 
 ## Adding a new downloadable file
 
