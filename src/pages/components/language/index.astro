@@ -2,39 +2,24 @@
 import ComponentLayout from '../../../layouts/ComponentLayout.astro';
 import Section from '../../../components/Section.astro';
 import GoalIndex from '../../../components/GoalIndex.astro';
-import ProcessFlow from '../../../components/ProcessFlow.astro';
-import ToolCard from '../../../components/ToolCard.astro';
+import RouteList from '../../../components/RouteList.astro';
 import Icon from '../../../components/Icon.astro';
-import { tools } from '../../../data/tools';
+import { overview, route, reverseThickTranslation as rtt } from '../../../data/booklet/language';
 import { goalsByComponent } from '../../../data/goals';
 import { componentById } from '../../../data/components';
 import { url } from '../../../utils/url';
 
 const comp = componentById['language'];
-
-const problems = [
-  {
-    title: 'Meaning gets lost in translation',
-    body: 'A phrase can shift with the language, the tone, the region, or the gesture that goes with it. Word-for-word translation keeps the words and drops the rest: rapport, tone, code-switching, and the gap between what someone says and what they mean.',
-  },
-  {
-    title: 'Every finding looks equally certain',
-    body: 'Nothing in a typical research pipeline marks whether a finding is what a person meant or one interpreter’s best guess. It travels with the same authority however many hops of translation or single-source judgment calls produced it.',
-  },
-  {
-    title: 'Generic personas result',
-    body: 'By the time a finding reaches a design team, meaning has quietly become approximation, and the interface gets built for an averaged, invented person rather than anyone real.',
-  },
-];
-
-const applies = [
-  'Public-service and civic platforms in any linguistically diverse country',
-  'Healthcare intake and patient-facing tools used with immigrant or refugee populations',
-  'Financial-inclusion products, banking apps, and lending platforms',
-  'E-commerce, delivery, and logistics across dialect-rich regions',
-  'Humanitarian and NGO field tools in crisis zones with no shared language',
-  'Enterprise software used by distributed teams working in a second or third language',
-  'Voice assistants, IVR systems, and chatbots deployed far outside the dialect they were trained on',
+const routeItems = [
+  ...route.map((r) => ({
+    label: r.label,
+    sub: r.sub,
+    href: `${comp.href}${r.slug}/`,
+    blurb: r.blurb,
+    time: r.time,
+    tag: r.slug === 'translate' ? 'Reverse thick translation' : undefined,
+  })),
+  { label: 'Is it working?', href: `${comp.href}is-it-working/`, blurb: 'Good signs and warning signs, before you rely on what you found.' },
 ];
 ---
 
@@ -42,26 +27,92 @@ const applies = [
   component="language"
   current="overview"
   title={comp.name}
-  heading="Keep what people mean, not only what the words say."
-  lead="Practical tools for capturing emotional and cultural meaning faithfully in cross-language field research, tagging how reliable each finding is, and carrying it through to interface wording that has actually been tested."
-  description="Practical tools for capturing emotional and cultural meaning faithfully in cross-language field research, tagging how reliable each finding is, and carrying it through to interface wording that has actually been tested."
-  chips={['Component 3', 'Meaning-to-Interface Toolkit']}
+  heading={comp.name}
+  lead={overview.lead}
+  description={`${overview.lead} ${overview.thick.title} ${overview.thick.body}`}
+  chips={['Component 3', 'Thick translation, both ways']}
 >
-  <p slot="head" class="built">Built for research on first-generation Indian college students. Reusable for any cross-language qualitative research.</p>
+  <p slot="head" class="built">{overview.builtFor}</p>
+
+  <Section id="idea" eyebrow="The idea" title="Words rarely mean only what they say." split>
+    <p class="big">{overview.what[0]}</p>
+    <p class="cover" aria-label="An example: what the words say, and what was meant">
+      <span class="lit">{overview.cover.literal}</span>
+      <Icon name="arrow" size={24} />
+      <b>{overview.cover.meant}</b>
+    </p>
+    <div class="callout">
+      <strong>{overview.thick.title}</strong>
+      <p>{overview.thick.body}</p>
+    </div>
+  </Section>
+
+  <Section id="reverse" eyebrow="The centre of the toolkit" title={rtt.title} tone="c3" split>
+    <div class="rtt">
+      <p class="line">{rtt.line}</p>
+      <ol class="loop" aria-label="Where reverse thick translation sits">
+        {
+          rtt.loop.map((l) => (
+            <li class:list={{ hot: l.hot }}>
+              <b>{l.step}</b>
+              <span>{l.note}</span>
+            </li>
+          ))
+        }
+      </ol>
+      <ul class="dirs" aria-label="The three directions">
+        {rtt.directions.map((d) => <li>{d.title}</li>)}
+      </ul>
+      <p class="end">{overview.endProduct}</p>
+      <a class="btn-light" href={url(`${comp.href}translate/#reverse`)}>
+        How to run it <Icon name="arrow" size={20} />
+      </a>
+    </div>
+  </Section>
 
   <Section id="goals" eyebrow="Start here" title="I want to…" tone="white">
     <p slot="lead" class="lead-text">Start with what you’re doing. Every tool works on its own.</p>
     <GoalIndex groups={goalsByComponent('c3')} variant="list" search={false} />
   </Section>
 
-  <Section id="problem" eyebrow="The problem" title="Cross-language research loses exactly the thing that matters most." split>
+  <Section id="route" eyebrow="The route" title="Before you start, then five tools." split>
+    <p class="big">Understand the context first. Then listen, translate thickly and check it both ways, test the wording, and keep what works.</p>
+    <RouteList items={routeItems} />
+    <div class="need">
+      <p class="lbl">You need</p>
+      <p class="need-t">{overview.youNeed}</p>
+    </div>
+    <div class="loops">
+      <h3 class="lbl">The loops</h3>
+      <ul>
+        {
+          overview.loops.map((l) => (
+            <li>
+              <b>{l.where}</b>
+              <span>{l.text}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+    <div class="callout works">
+      <strong>{overview.worksWith.title}</strong>
+      <p>
+        {overview.worksWith.body}{' '}
+        <a href={url('/components/visual-culture/')}>Component 2 · Visual culture</a>
+      </p>
+    </div>
+    <p class="funnel">{overview.funnel}</p>
+  </Section>
+
+  <Section id="problem" eyebrow="The problem" title="Cross-language research loses exactly the thing that matters most." tone="white" split>
     <p class="big">
       Run a conversation through a translator or transcriber once and the nuance is gone by the time it reaches a design team.
       Nobody downstream can tell what was meant from what was guessed.
     </p>
     <ol class="rows">
       {
-        problems.map((p, i) => (
+        overview.problems.map((p, i) => (
           <li>
             <span class="idx" aria-hidden="true">{i + 1}</span>
             <div>
@@ -74,42 +125,13 @@ const applies = [
     </ol>
   </Section>
 
-  <Section id="process" eyebrow="The process" title="Three modules, an entry step, and a loop." tone="white">
-    <p slot="lead" class="lead-text">
-      Module 1 builds a picture of the setting. Module 2 captures meaning moments one person at a time. Module 3 turns raw moments
-      into validated meaning, then into a tested design response. The last step feeds new questions back into Module 1, so the
-      process compounds across research cycles.
-    </p>
-    <ProcessFlow />
-    <p class="funnel">
-      Not every Meaning Card travels all the way to a shipped pattern. Many surface something useful without further action, a
-      smaller number justify a design hypothesis, and fewer still become tested, library-worthy patterns. A “not yet” or a “no” at
-      a decision point is the toolkit doing its job.
-    </p>
-  </Section>
-
-  <Section id="tools" eyebrow="Tools" title="The six tools, in the order you meet them" split>
-    <div class="tool-rows">
-      {tools.map((t, i) => <ToolCard tool={t} index={i + 1} />)}
-    </div>
-  </Section>
-
-  <Section id="where" eyebrow="Where to use it" title="Not specific to one sector, or to India." tone="white" split>
+  <Section id="where" eyebrow="Where to use it" title="Not specific to one sector, or to India." split>
     <div class="where">
       <div>
-        <p class="big">
-          The condition that makes this component necessary is simple: somewhere between the people building a product and the
-          people using it, there is a language or meaning gap, and someone is bridging it by guesswork rather than a documented
-          method.
-        </p>
-        <p class="big">
-          The common thread is a research or design team on one side of a language boundary and real users on the other, with no
-          method in place for checking whether meaning crossed.
-        </p>
-        <a class="link-arrow" href={url('/components/language/methodology/')}>Read the methodology <Icon name="arrow" size={20} /></a>
+        {overview.whereBody.map((p) => <p class="big">{p}</p>)}
       </div>
       <ul class="applies">
-        {applies.map((a) => <li>{a}</li>)}
+        {overview.applies.map((a) => <li>{a}</li>)}
       </ul>
     </div>
   </Section>
@@ -126,6 +148,152 @@ const applies = [
     font-size: var(--fs-lead);
     color: var(--ink-soft);
     max-width: var(--measure);
+  }
+  .cover {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-1) var(--sp-2);
+    font-size: var(--fs-h3);
+    margin: var(--sp-4) 0;
+  }
+  .cover .lit {
+    color: var(--muted);
+    text-decoration: line-through;
+    text-decoration-thickness: 2px;
+  }
+  .cover b {
+    color: var(--c3-deep);
+  }
+
+  /* Reverse thick translation, the feature section (on terracotta, so everything here is white) */
+  .rtt {
+    display: grid;
+    gap: var(--sp-3);
+    justify-items: start;
+  }
+  .rtt > * {
+    margin: 0;
+  }
+  .line {
+    font-size: var(--fs-h2);
+    font-weight: 800;
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+    max-width: 24ch;
+  }
+  .loop {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--sp-1);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+    width: 100%;
+  }
+  .loop li {
+    margin: 0;
+    display: grid;
+    gap: 2px;
+    align-content: start;
+    padding: var(--sp-2);
+    border: 2px solid rgb(255 255 255 / 0.55);
+    border-radius: var(--r-md);
+  }
+  .loop li.hot {
+    background: #fff;
+    border-color: #fff;
+    color: var(--ink);
+  }
+  .loop b {
+    font-size: var(--fs-lead);
+    line-height: 1.2;
+  }
+  .loop span {
+    font-size: var(--fs-ui);
+  }
+  .dirs {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-1);
+  }
+  .dirs li {
+    margin: 0;
+    padding: var(--sp-1) var(--sp-2);
+    border: 2px solid #fff;
+    border-radius: 999px;
+    font-weight: 700;
+  }
+  .end {
+    max-width: 44rem;
+    font-size: var(--fs-lead);
+  }
+  .btn-light {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-1);
+    min-height: 48px;
+    padding: 0 var(--sp-3);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--ink);
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .btn-light:hover {
+    background: var(--ink);
+    color: #fff;
+  }
+
+  .need {
+    margin: var(--sp-4) 0 0;
+  }
+  .need .lbl,
+  .loops .lbl {
+    margin: 0 0 var(--sp-1);
+  }
+  .need-t {
+    margin: 0;
+    color: var(--ink-soft);
+    max-width: var(--measure);
+  }
+  .loops {
+    margin: var(--sp-4) 0 0;
+  }
+  .loops ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: var(--sp-2);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  }
+  .loops li {
+    margin: 0;
+    display: grid;
+    gap: var(--sp-half);
+    align-content: start;
+    padding: var(--sp-2) var(--sp-3);
+    border-left: 4px solid var(--c3);
+    background: var(--c3-tint);
+    border-radius: var(--r-sm);
+  }
+  .loops li span {
+    color: var(--ink-soft);
+    font-size: var(--fs-ui);
+  }
+  .works {
+    margin: var(--sp-3) 0 0;
+  }
+  .works p {
+    margin: 0;
+  }
+  .funnel {
+    max-width: 56rem;
+    margin: var(--sp-4) 0 0;
+    color: var(--muted);
+    font-size: var(--fs-ui);
   }
   .rows {
     list-style: none;
@@ -146,7 +314,7 @@ const applies = [
     font-weight: 800;
     line-height: 0.9;
     letter-spacing: -0.04em;
-    color: var(--c3);
+    color: var(--c3-deep);
     min-width: 1ch;
   }
   .rows h3 {
@@ -156,14 +324,6 @@ const applies = [
     margin: 0;
     color: var(--ink-soft);
     max-width: var(--measure);
-  }
-  .funnel {
-    max-width: 56rem;
-    margin: var(--sp-4) 0 0;
-    color: var(--ink-soft);
-  }
-  .tool-rows {
-    border-top: 2px solid var(--line-strong);
   }
   .where {
     display: grid;
@@ -181,7 +341,7 @@ const applies = [
   .applies li {
     margin: 0;
     padding: var(--sp-2) var(--sp-3);
-    background: var(--ground);
+    background: var(--surface);
     border: 1px solid var(--line-strong);
     border-left: 4px solid var(--c3);
     border-radius: var(--r-sm);

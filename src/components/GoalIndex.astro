@@ -78,17 +78,6 @@ const nameOf = (label: string) => label.split('·')[1]?.trim() ?? label;
         </article>
       ))
     }
-    {
-      variant === 'board' && (
-        <a class="gsoon" data-c="c2" data-card="c2" data-goal-extra href={url('/components/visual-culture/')}>
-          <span class="n" aria-hidden="true">2</span>
-          <span>
-            <b>Visual culture</b>
-            <small>Coming next</small>
-          </span>
-        </a>
-      )
-    }
   </div>
 
   <p class="none" data-goal-none hidden>
@@ -103,7 +92,6 @@ const nameOf = (label: string) => label.split('·')[1]?.trim() ?? label;
     const status = root.querySelector<HTMLElement>('[data-goal-status]');
     const none = root.querySelector<HTMLElement>('[data-goal-none]');
     const cards = [...root.querySelectorAll<HTMLElement>('[data-goal-card]')];
-    const extras = [...root.querySelectorAll<HTMLElement>('[data-goal-extra]')];
     q.addEventListener('input', () => {
       const words = q.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
       let shown = 0;
@@ -123,7 +111,6 @@ const nameOf = (label: string) => label.split('·')[1]?.trim() ?? label;
         card.hidden = inCard === 0;
         shown += inCard;
       }
-      extras.forEach((el) => (el.hidden = words.length > 0));
       if (none) none.hidden = shown !== 0 || words.length === 0;
       if (status) status.textContent = words.length ? `${shown} ${shown === 1 ? 'match' : 'matches'}` : '';
     });
@@ -176,21 +163,20 @@ const nameOf = (label: string) => label.split('·')[1]?.trim() ?? label;
     grid-template-columns: minmax(0, 1fr);
     align-items: start;
   }
-  /* Home: Component 1 and 4 stacked on the left, the longer Component 3 alongside. */
+  /* Home: two by two, in order. Each row is as tall as its taller card. */
   @media (min-width: 64rem) {
     .board .cards {
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      grid-template-rows: auto auto 1fr;
       grid-template-areas:
-        'c1 c3'
-        'c4 c3'
-        'c2 c3';
-    }
-    .board [data-card='c2'] {
-      grid-area: c2;
+        'c1 c2'
+        'c3 c4';
+      align-items: stretch;
     }
     .board [data-card='c1'] {
       grid-area: c1;
+    }
+    .board [data-card='c2'] {
+      grid-area: c2;
     }
     .board [data-card='c3'] {
       grid-area: c3;
@@ -198,50 +184,11 @@ const nameOf = (label: string) => label.split('·')[1]?.trim() ?? label;
     .board [data-card='c4'] {
       grid-area: c4;
     }
+    .board .gcard {
+      align-self: stretch;
+    }
   }
 
-  .gsoon {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-2);
-    min-height: 80px;
-    padding: var(--sp-2) var(--sp-3);
-    border: 2px dashed var(--line-strong);
-    border-radius: var(--r-lg);
-    color: var(--ink);
-    text-decoration: none;
-    align-self: start;
-    transition:
-      background-color var(--t-fast) var(--ease),
-      border-color var(--t-fast) var(--ease);
-  }
-  .gsoon:hover {
-    background: var(--surface);
-    border-color: var(--ink);
-  }
-  .gsoon .n {
-    display: grid;
-    place-items: center;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    flex: none;
-    font-size: var(--fs-h3);
-    font-weight: 800;
-    color: var(--muted);
-    box-shadow: inset 0 0 2px 0 transparent, inset 0 0 0 2px var(--line-strong);
-  }
-  .gsoon b {
-    display: block;
-    line-height: 1.2;
-  }
-  .gsoon small {
-    font-family: var(--font-mono);
-    font-size: var(--fs-xs);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
   .gcard {
     align-self: start;
     background: var(--surface);

@@ -1,7 +1,8 @@
 import { componentById, type ComponentColour } from './components';
 import { tools as c1Tools } from './booklet/existing-products';
+import { tools as c2Tools } from './booklet/visual-culture';
+import { tools as c3Tools, route as c3Route } from './booklet/language';
 import { tools as c4Tools } from './booklet/material-reality';
-import { tools as languageTools, toolHref } from './tools';
 import type { Tool } from './booklet/types';
 
 // The step-by-step bar on component pages: the tools of one component, in order.
@@ -39,7 +40,9 @@ function toolItem(base: string, t: Tool): RailItem {
   };
 }
 
-export function railFor(id: 'existing-products' | 'material-reality' | 'language'): Rail {
+export type RailId = 'existing-products' | 'visual-culture' | 'language' | 'material-reality';
+
+export function railFor(id: RailId): Rail {
   const c = componentById[id];
   const head = { c: c.c, number: c.number, name: c.name, short: c.short, overviewHref: c.href };
   if (id === 'existing-products') {
@@ -52,18 +55,21 @@ export function railFor(id: 'existing-products' | 'material-reality' | 'language
       ],
     };
   }
+  if (id === 'visual-culture') {
+    return {
+      ...head,
+      hasCardKit: false,
+      items: [...c2Tools.map((t) => toolItem(c.href, t)), { slug: 'is-it-working', label: 'Is it working?', href: `${c.href}is-it-working/` }],
+    };
+  }
   if (id === 'language') {
     return {
       ...head,
       hasCardKit: false,
       items: [
-        { slug: 'methodology', label: 'Methodology', href: `${c.href}methodology/` },
-        ...languageTools.map((t, i) => ({
-          slug: t.slug,
-          label: t.name.replace(/^The /, ''),
-          href: toolHref(t.slug),
-          n: i + 1,
-        })),
+        { slug: 'before-you-start', label: 'Before you start', href: `${c.href}before-you-start/`, meta: c3Route[0].time },
+        ...c3Tools.map((t) => toolItem(c.href, t)),
+        { slug: 'is-it-working', label: 'Is it working?', href: `${c.href}is-it-working/` },
       ],
     };
   }

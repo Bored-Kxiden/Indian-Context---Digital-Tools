@@ -7,6 +7,10 @@ interface Item {
   href: string;
   blurb: string;
   time?: string;
+  /** The booklet's short label under the name, e.g. "the person". */
+  sub?: string;
+  /** A pill that marks the step to look at first, e.g. "Reverse thick translation". */
+  tag?: string;
 }
 interface Props {
   items: Item[];
@@ -21,11 +25,15 @@ const { items, numbered = false } = Astro.props;
   {
     items.map((i, n) => (
       <li>
-        <a href={url(i.href)}>
+        <a href={url(i.href)} class:list={{ hot: !!i.tag }}>
           {numbered ? <span class="n" aria-hidden="true">{n + 1}</span> : <span class="dot" aria-hidden="true" />}
           <span class="body">
-            <b>{i.label}</b>
+            <b>
+              {i.label}
+              {i.sub && <em class="sub">{i.sub}</em>}
+            </b>
             <span>{i.blurb}</span>
+            {i.tag && <span class="tag">{i.tag}</span>}
           </span>
           {i.time && <span class="time">{i.time}</span>}
           <Icon name="arrow" size={20} />
@@ -103,6 +111,29 @@ const { items, numbered = false } = Astro.props;
   }
   .body span {
     color: var(--ink-soft);
+  }
+  .body .sub {
+    font-style: normal;
+    font-weight: 400;
+    color: var(--muted);
+    margin-left: var(--sp-1);
+    font-size: var(--fs-ui);
+  }
+  a.hot {
+    background: var(--accent-tint);
+    box-shadow: inset 4px 0 0 var(--accent);
+  }
+  .body .tag {
+    justify-self: start;
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: var(--accent-deep);
+    color: #fff;
+    border-radius: 999px;
+    padding: 2px 12px;
   }
   .time {
     font-family: var(--font-mono);

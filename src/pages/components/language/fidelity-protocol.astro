@@ -49,10 +49,10 @@ const tags = [
       <p>
         In a typical research pipeline nothing marks whether a finding is what a person meant or one interpreter’s best guess. Every
         finding travels with equal authority however many hops of translation produced it. The Fidelity Protocol makes those hops
-        visible. It is the check behind the decision in Module 3: <em>is the meaning well supported?</em>
+        visible. It is the last step of <a href={url('/components/language/translate/')}>Tool 2 · Translate</a>, after <a href={url('/components/language/translate/#reverse')}>reverse thick translation</a>: <em>is the meaning well supported?</em>
       </p>
       <ul>
-        <li><strong>Not yet:</strong> the finding loops back to thick translation and is re-checked.</li>
+        <li><strong>Not yet:</strong> the finding loops back to Translate and is re-checked.</li>
         <li>
           <strong>Yes:</strong> the de-identified pattern is stored in the{' '}
           <a href={url('/components/language/expression-library/')}>Expression Library</a>, with its tags attached.
@@ -201,7 +201,7 @@ const tags = [
     height: 1.9rem;
     margin: 0 0 var(--sp-1);
     border-radius: 50%;
-    background: var(--m-interpret);
+    background: var(--accent);
     color: var(--bg);
     font-weight: 700;
   }

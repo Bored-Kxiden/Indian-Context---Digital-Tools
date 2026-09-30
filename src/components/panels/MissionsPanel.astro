@@ -1,0 +1,127 @@
+---
+import Icon from '../Icon.astro';
+import { missions, threeQuestions } from '../../data/booklet/visual-culture';
+import { getDownloadById } from '../../data/downloads';
+import { url } from '../../utils/url';
+
+// Component 2 · Show: the six missions as text (the printable cards are under Blank template).
+const dl = getDownloadById('tpl-c2-show-missions-blank');
+---
+
+<div class="ms">
+  <div class="intro">
+    <p class="big">Give participants all six. Don’t explain what a “good” photo should look like, and don’t show example photos first.</p>
+    <p>
+      For every photo, ask only the same three questions:
+    </p>
+    <ol class="three">
+      {threeQuestions.map((q) => <li>{q}</li>)}
+    </ol>
+    <p class="small">Answers can be written in any language or script.</p>
+    {
+      dl && (
+        <a class="btn btn--accent" href={url(dl.href)} download>
+          <Icon name="download" size={20} /> Download mission cards
+          <span class="meta">{dl.format} · {dl.size}</span>
+        </a>
+      )
+    }
+  </div>
+
+  <ol class="cards">
+    {
+      missions.map((m) => (
+        <li class="card mission">
+          <span class="lbl">Mission {m.n}</span>
+          <h3>{m.title}</h3>
+          <p>{m.body}</p>
+          <p class="ask"><span aria-hidden="true">→</span> {m.ask}</p>
+        </li>
+      ))
+    }
+  </ol>
+</div>
+
+<style>
+  .ms {
+    display: grid;
+    gap: var(--sp-4);
+  }
+  .intro {
+    display: grid;
+    gap: var(--sp-2);
+    align-content: start;
+    max-width: 48rem;
+  }
+  .intro p {
+    margin: 0;
+  }
+  .big {
+    font-size: var(--fs-lead);
+    color: var(--ink-soft);
+  }
+  .three {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-1);
+  }
+  .three li {
+    margin: 0;
+    padding: var(--sp-1) var(--sp-2);
+    border: 2px solid var(--accent-deep);
+    border-radius: 999px;
+    font-weight: 700;
+    color: var(--accent-deep);
+  }
+  .intro .btn {
+    justify-self: start;
+  }
+  .meta {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    opacity: 0.9;
+    margin-left: var(--sp-1);
+  }
+  .cards {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--sp-2);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
+  }
+  .mission {
+    margin: 0;
+    display: grid;
+    gap: var(--sp-1);
+    align-content: start;
+    background: var(--surface);
+    border: 2px solid var(--accent-deep);
+  }
+  .mission .lbl {
+    color: var(--accent-deep);
+    margin: 0;
+  }
+  .mission h3 {
+    margin: 0;
+    font-size: var(--fs-h4);
+  }
+  .mission p {
+    margin: 0;
+    color: var(--ink-soft);
+  }
+  .mission .ask {
+    margin-top: auto;
+    padding-top: var(--sp-1);
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .mission .ask span {
+    color: var(--accent-deep);
+  }
+</style>

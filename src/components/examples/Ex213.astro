@@ -1,0 +1,236 @@
+---
+import ExFrame from './ExFrame.astro';
+
+// Booklet p.2.13 · Tool 4 Hand off, Part A: a Context Profile and the reading (filled example).
+interface Props {
+  alt: string;
+  caption: string;
+}
+const { alt, caption } = Astro.props;
+
+const profile = [
+  ['Trying to', 'submit before the deadline'],
+  ['Depends on', 'a café, a senior, Papa’s phone'],
+  ['Already knows', 'the emblem means official'],
+  ['Doesn’t know yet', 'how to make a PDF'],
+  ['Asks', 'her senior, before submitting'],
+  ['Converts', 'paper → photo → PDF'],
+  ['Checks', 'the class group for dates'],
+  ['Works around', 'the OTP by calling home'],
+  ['Risks', 'her data with a stranger'],
+  ['Does instead', 'a trip to the café'],
+  ['Has access to', 'a phone, not a scanner'],
+  ['Almost called “extra”', 'the notebook of IDs'],
+];
+
+const handoffs = [
+  { c: 'c1', to: '1 · Existing Products', ask: 'Can the product work under this condition?' },
+  { c: 'c3', to: '3 · Reading Language', ask: 'What does “setting” really mean here?' },
+  { c: 'c4', to: '4 · Material Reality', ask: 'What does the café trip cost her?' },
+];
+---
+
+<ExFrame page="2.13" alt={alt} caption={caption}>
+  <div class="e213">
+    <h4 class="sit">When Meera is uploading documents at night, before a deadline…</h4>
+
+    <dl class="prof">
+      {
+        profile.map(([k, v]) => (
+          <div class="pc">
+            <dt class="lbl">{k}</dt>
+            <dd>{v}</dd>
+          </div>
+        ))
+      }
+    </dl>
+
+    <div class="trio">
+      <div class="tb tb--p">
+        <span class="lbl">Person</span>
+        <p>“I ask my senior before submitting.”</p>
+      </div>
+      <div class="tb tb--n">
+        <span class="lbl">Don’t conclude</span>
+        <p><s>Students depend on seniors.</s></p>
+      </div>
+      <div class="tb tb--a">
+        <span class="lbl">Ask instead</span>
+        <p>What does the senior know that the system hasn’t made visible?</p>
+      </div>
+    </div>
+
+    <div class="read">
+      <span class="lbl">The reading · one traceable statement</span>
+      <p>
+        We observed <b>students converting paper documents through a café</b> in <b>night-time, deadline</b> conditions (M3, M4,
+        P3·2). This matters because <b>the upload step assumes a scanner and a PDF</b>. The existing product currently
+        {' '}<b>calls this one step</b>. This makes us investigate <b>whether the product can accept a phone photo</b>.
+      </p>
+    </div>
+
+    <ul class="hand" aria-label="Hand-offs">
+      {
+        handoffs.map((h) => (
+          <li class={`ho ho--${h.c}`}>
+            <span class="lbl"><span aria-hidden="true">→ </span>Hands off to</span>
+            <b>{h.to}</b>
+            <span class="q">{h.ask}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</ExFrame>
+
+<style is:global>
+  .e213 {
+    --bk-terra: #a8432a;
+    display: grid;
+    gap: calc(var(--u) * 5);
+  }
+  .e213 .sit {
+    margin: calc(var(--u) * 2) 0 calc(var(--u) * 3);
+    font-variation-settings: 'opsz' 15;
+    font-size: max(15px, calc(var(--u) * 10.9));
+    font-weight: 700;
+    line-height: 1.3;
+  }
+  .e213 .prof {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: calc(var(--u) * 4.7) calc(var(--u) * 5);
+    margin: 0;
+  }
+  .e213 .pc {
+    background: #fff;
+    border: calc(var(--u) * 0.75) solid #dcd6c9;
+    border-radius: calc(var(--u) * 4.5);
+    padding: calc(var(--u) * 9.2) calc(var(--u) * 6) calc(var(--u) * 3.8) calc(var(--u) * 7);
+  }
+  .e213 .pc .lbl,
+  .e213 .tb .lbl,
+  .e213 .read .lbl,
+  .e213 .ho .lbl {
+    margin: 0;
+    font-size: max(11px, calc(var(--u) * 6.6));
+    letter-spacing: 0.1em;
+    color: #5a544b;
+  }
+  .e213 .pc dd {
+    margin: calc(var(--u) * 1.6) 0 0;
+    font-variation-settings: 'opsz' 12;
+    font-size: max(14px, calc(var(--u) * 9.4));
+    font-weight: 500;
+    line-height: 1.3;
+  }
+  .e213 .trio {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: calc(var(--u) * 7);
+    margin-top: calc(var(--u) * 5);
+  }
+  .e213 .tb {
+    border-radius: calc(var(--u) * 8);
+    padding: calc(var(--u) * 9.5) calc(var(--u) * 9) calc(var(--u) * 8);
+    min-height: calc(var(--u) * 55.5);
+  }
+  .e213 .tb p {
+    margin-top: calc(var(--u) * 2.6);
+    font-variation-settings: 'opsz' 13;
+    font-size: max(14px, calc(var(--u) * 9.7));
+    line-height: 1.42;
+  }
+  .e213 .tb--p {
+    background: #fff;
+    border: calc(var(--u) * 1) solid var(--bk-ink);
+  }
+  .e213 .tb--n {
+    background: #f0ddd6;
+  }
+  .e213 .tb--n .lbl {
+    color: var(--bk-terra);
+  }
+  .e213 .tb--n s {
+    text-decoration-thickness: calc(var(--u) * 0.8);
+    color: #4a2a20;
+  }
+  .e213 .tb--a {
+    background: var(--bk-ink);
+    color: #fff;
+  }
+  .e213 .tb--a .lbl {
+    color: #e3a72f;
+  }
+  .e213 .read {
+    background: #fff;
+    border: calc(var(--u) * 1) solid var(--bk-ink);
+    border-radius: calc(var(--u) * 10);
+    padding: calc(var(--u) * 14) calc(var(--u) * 12.6) calc(var(--u) * 9.5);
+    margin-top: calc(var(--u) * 4.5);
+  }
+  .e213 .read p {
+    margin-top: calc(var(--u) * 6);
+    font-variation-settings: 'opsz' 15;
+    font-size: max(15px, calc(var(--u) * 10.9));
+    line-height: 1.64;
+  }
+  .e213 .read b {
+    font-weight: 700;
+  }
+  .e213 .hand {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: calc(var(--u) * 7);
+    margin-top: calc(var(--u) * 4.5);
+  }
+  .e213 .ho {
+    border-radius: calc(var(--u) * 8);
+    color: #fff;
+    padding: calc(var(--u) * 9) calc(var(--u) * 9) calc(var(--u) * 8);
+    min-height: calc(var(--u) * 64);
+  }
+  .e213 .ho--c1 {
+    background: var(--bk-green);
+  }
+  .e213 .ho--c3 {
+    background: var(--bk-terra);
+  }
+  .e213 .ho--c4 {
+    background: var(--bk-indigo);
+  }
+  .e213 .ho .lbl {
+    color: #fff;
+    opacity: 0.92;
+  }
+  .e213 .ho b {
+    display: block;
+    margin-top: calc(var(--u) * 3.5);
+    font-variation-settings: 'opsz' 13;
+    font-size: max(14px, calc(var(--u) * 9.5));
+    font-weight: 700;
+    line-height: 1.3;
+  }
+  .e213 .ho .q {
+    display: block;
+    font-variation-settings: 'opsz' 12;
+    font-size: max(14px, calc(var(--u) * 9.4));
+    line-height: 1.4;
+  }
+  @container (max-width: 45rem) {
+    .e213 {
+      --u: 1.33px;
+    }
+    .e213 .prof {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .e213 .trio,
+    .e213 .hand {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .e213 .tb,
+    .e213 .ho {
+      min-height: 0;
+    }
+  }
+</style>

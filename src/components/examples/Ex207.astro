@@ -1,0 +1,329 @@
+---
+import ExFrame from './ExFrame.astro';
+
+// Booklet p.2.07 · Tool 2 Read, Part A: three passes over the photos (filled example).
+interface Props {
+  alt: string;
+  caption: string;
+}
+const { alt, caption } = Astro.props;
+
+const status = { O: 'Observed', R: 'Reported', I: 'Inferred' } as const;
+
+const clusters = [
+  { name: 'Checking', tag: 'O', photos: ['M1', 'M6', 'P2·4'] },
+  { name: 'Converting', tag: 'O', photos: ['M3', 'M4', 'P3·2'] },
+  { name: 'Waiting', tag: 'O', photos: ['M5', 'P4·1'] },
+  { name: 'Keeping records', tag: 'O', photos: ['M2', 'P2·6'] },
+] as const;
+
+const enablers = [
+  { name: 'Checking', what: 'A class WhatsApp group · a senior · the emblem', tag: 'R' },
+  { name: 'Converting', what: 'A cybercafé · ₹30–50 · the owner’s know-how', tag: 'R' },
+  { name: 'Waiting', what: 'Father’s phone · father’s free time', tag: 'R' },
+  { name: 'Keeping records', what: 'A paper notebook · a pen', tag: 'O' },
+] as const;
+
+const structures = [
+  { name: 'Social', ask: 'Who else must be involved?', held: false },
+  { name: 'Institutional', ask: 'Who has permission to resolve this?', held: false },
+  { name: 'Knowledge', ask: 'What had to be known already?', held: false },
+  { name: 'Material', ask: 'What physical thing had to exist?', held: true },
+  { name: 'Economic', ask: 'Did making this work cost anything?', held: true },
+  { name: 'Linguistic', ask: 'Did meaning change as information moved?', held: true },
+  { name: 'Authority', ask: 'What makes one version trustworthy?', held: true },
+  { name: 'Risk', ask: 'What happens if they get it wrong?', held: false },
+  { name: 'Adaptation', ask: 'What did they change to make it work?', held: false },
+] as const;
+---
+
+<ExFrame page="2.07" alt={alt} caption={caption}>
+  <div class="e207">
+    <section aria-labelledby="e207-p1">
+      <h4 class="pass" id="e207-p1">Pass 1 · What is happening?</h4>
+      <ul class="clusters">
+        {
+          clusters.map((c) => (
+            <li class="cl">
+              <div class="top">
+                <b>{c.name}</b>
+                <span class={`tgx tgx--${c.tag}`}>
+                  <span aria-hidden="true">{c.tag}</span>
+                  <span class="visually-hidden">{status[c.tag]}</span>
+                </span>
+              </div>
+              <ul class="ph" aria-label="Photos">
+                {c.photos.map((p) => <li>{p}</li>)}
+              </ul>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section aria-labelledby="e207-p2">
+      <h4 class="pass" id="e207-p2">Pass 2 · What makes it possible?</h4>
+      <div class="rows" role="region" aria-label="What makes each cluster possible" tabindex="0">
+        <table>
+          <tbody>
+            {
+              enablers.map((r) => (
+                <tr>
+                  <th scope="row">{r.name}</th>
+                  <td>
+                    {r.what}{' '}
+                    <span class={`tgx tgx--${r.tag}`}>
+                      <span aria-hidden="true">{r.tag}</span>
+                      <span class="visually-hidden">{status[r.tag]}</span>
+                    </span>
+                  </td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section aria-labelledby="e207-p3">
+      <h4 class="pass" id="e207-p3">Pass 3 · What does the product show differently?</h4>
+      <div class="cmp">
+        <div class="cbx">
+          <span class="lbl">Product shows</span>
+          <p>“Upload your documents (PDF, max 200KB).”</p>
+        </div>
+        <div class="cbx">
+          <span class="lbl">Photos show</span>
+          <p>A paper certificate, photographed, carried to a café, converted by someone else.</p>
+        </div>
+        <div class="cbx cbx--dark">
+          <span class="lbl">What changed</span>
+          <p>
+            Format, place and person. Three steps the product calls one.{' '}
+            <span class="tgx tgx--I">
+              <span aria-hidden="true">I</span>
+              <span class="visually-hidden">Inferred</span>
+            </span>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="e207-s">
+      <h4 class="pass pass--s" id="e207-s">Structures tested · shaded ones held up for this cluster</h4>
+      <ul class="st">
+        {
+          structures.map((s) => (
+            <li class:list={['s', { held: s.held }]}>
+              <b>{s.name}</b>
+              <span>{s.ask}</span>
+              {s.held && <span class="visually-hidden">Held up for this cluster.</span>}
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </div>
+</ExFrame>
+
+<style is:global>
+  .e207 {
+    --bk-sand: #e6dfd3;
+    --bk-pink: #f0ddd6;
+    --bk-terra: #a8432a;
+    display: grid;
+    gap: calc(var(--u) * 10.6);
+  }
+  .e207 .pass {
+    margin: 0 0 calc(var(--u) * 5);
+    font-family: var(--font-mono);
+    font-size: max(11px, calc(var(--u) * 7.8));
+    font-weight: 400;
+    line-height: 1.3;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--bk-terra);
+  }
+  .e207 .pass--s {
+    color: #6f695e;
+  }
+  .e207 .tgx {
+    display: inline-grid;
+    place-items: center;
+    min-width: calc(var(--u) * 11);
+    height: calc(var(--u) * 10.4);
+    padding: 0 calc(var(--u) * 2);
+    border-radius: calc(var(--u) * 3);
+    font-family: var(--font-mono);
+    font-size: max(10px, calc(var(--u) * 6.4));
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    vertical-align: middle;
+  }
+  .e207 .tgx--O {
+    background: var(--bk-ink);
+  }
+  .e207 .tgx--R {
+    background: var(--bk-terra);
+  }
+  .e207 .tgx--I {
+    background: #f6f1e7;
+    color: var(--bk-ink);
+  }
+
+  /* Pass 1 */
+  .e207 .clusters {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: calc(var(--u) * 6.5);
+  }
+  .e207 .cl {
+    background: #fff;
+    border: calc(var(--u) * 1) solid var(--bk-ink);
+    border-radius: calc(var(--u) * 7);
+    padding: calc(var(--u) * 8) calc(var(--u) * 8) calc(var(--u) * 6);
+  }
+  .e207 .cl .top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: calc(var(--u) * 4);
+  }
+  .e207 .cl b {
+    font-variation-settings: 'opsz' 14;
+    font-size: max(15px, calc(var(--u) * 10.7));
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .e207 .ph {
+    display: flex;
+    flex-wrap: wrap;
+    gap: calc(var(--u) * 3.4);
+    margin-top: calc(var(--u) * 5.4);
+  }
+  .e207 .ph li {
+    background: var(--bk-sand);
+    color: #4a453d;
+    font-family: var(--font-mono);
+    font-size: max(11px, calc(var(--u) * 6.6));
+    line-height: 1;
+    padding: calc(var(--u) * 6) calc(var(--u) * 8) calc(var(--u) * 6.4);
+    border-radius: calc(var(--u) * 4);
+  }
+
+  /* Pass 2 */
+  .e207 .rows {
+    border-top: calc(var(--u) * 0.7) solid #dfd9d0;
+  }
+  .e207 .rows table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .e207 .rows th,
+  .e207 .rows td {
+    text-align: left;
+    vertical-align: middle;
+    padding: calc(var(--u) * 5.6) 0 calc(var(--u) * 5.8);
+    border-bottom: calc(var(--u) * 0.7) solid #dfd9d0;
+    font-variation-settings: 'opsz' 14;
+    font-size: max(15px, calc(var(--u) * 9.6));
+    line-height: 1.25;
+    min-width: 0;
+  }
+  .e207 .rows th {
+    width: calc(var(--u) * 90);
+    font-weight: 700;
+    font-size: max(15px, calc(var(--u) * 9.9));
+  }
+  .e207 .rows td {
+    font-weight: 400;
+  }
+
+  /* Pass 3 */
+  .e207 .cmp {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: calc(var(--u) * 7);
+  }
+  .e207 .cbx {
+    min-height: calc(var(--u) * 69);
+    background: #fff;
+    border: calc(var(--u) * 1) solid var(--bk-ink);
+    border-radius: calc(var(--u) * 8);
+    padding: calc(var(--u) * 9) calc(var(--u) * 8.5) calc(var(--u) * 8);
+  }
+  .e207 .cbx--dark {
+    background: var(--bk-ink);
+    color: #fff;
+  }
+  .e207 .cbx .lbl {
+    margin: 0 0 calc(var(--u) * 3);
+    font-size: max(11px, calc(var(--u) * 6.9));
+    letter-spacing: 0.1em;
+    color: #6f695e;
+  }
+  .e207 .cbx--dark .lbl {
+    color: #e3a72f;
+  }
+  .e207 .cbx p {
+    font-variation-settings: 'opsz' 15;
+    font-size: max(15px, calc(var(--u) * 9.7));
+    line-height: 1.41;
+  }
+
+  /* The nine structures */
+  .e207 .st {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: calc(var(--u) * 4.7) calc(var(--u) * 5.5);
+  }
+  .e207 .s {
+    background: #fff;
+    border: calc(var(--u) * 0.75) solid #dcd8cf;
+    border-radius: calc(var(--u) * 5.5);
+    padding: calc(var(--u) * 7.9) calc(var(--u) * 3.5) calc(var(--u) * 4.3) calc(var(--u) * 6.5);
+    min-height: calc(var(--u) * 44.5);
+  }
+  .e207 .s.held {
+    background: var(--bk-pink);
+    border-color: #e6d5cb;
+  }
+  .e207 .s b {
+    display: block;
+    font-variation-settings: 'opsz' 12;
+    font-size: max(14px, calc(var(--u) * 9.25));
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: calc(var(--u) * 0.2);
+  }
+  .e207 .s > span:not(.visually-hidden) {
+    display: block;
+    font-variation-settings: 'opsz' 11;
+    font-size: max(13px, calc(var(--u) * 7.9));
+    line-height: 1.29;
+    color: #5a544b;
+  }
+
+  @container (max-width: 45rem) {
+    .e207 {
+      --u: 1.33px;
+    }
+    .e207 .clusters,
+    .e207 .cmp {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .e207 .st {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .e207 .rows {
+      overflow-x: auto;
+    }
+    .e207 .rows th {
+      width: 7.5rem;
+    }
+    .e207 .cbx {
+      min-height: 0;
+    }
+  }
+</style>

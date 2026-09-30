@@ -1,7 +1,8 @@
-// Shapes for the content that comes from the Toolkit Booklet (Components 1 and 4).
-// Wording is copied from the booklet; see CONTEXT.md, section 6.
+// Shapes for the content that comes from the Toolkit Booklets: Components 1 and 4 (the first
+// booklet) and Components 2 and 3 (the second). Wording is copied from the booklets; see
+// CONTEXT.md, section 6.
 
-export type BookletComponent = 'existing-products' | 'material-reality';
+export type BookletComponent = 'existing-products' | 'visual-culture' | 'language' | 'material-reality';
 
 export interface Word {
   term: string;
@@ -13,6 +14,8 @@ export interface Extra {
   title: string;
   body?: string;
   list?: string[];
+  /** Show a list of short words as chips in a row, not as bullets. */
+  chips?: boolean;
   tone?: 'plain' | 'care' | 'remember';
 }
 
@@ -36,12 +39,35 @@ export interface Part {
     printed: string;
     /** True when the example and the blank share one booklet page. */
     shared?: boolean;
+    /** Replaces the default "example and blank share one page" line, e.g. for a read-first sheet. */
+    sharedNote?: string;
+    /** True for a print-only sheet with no form to fill in (listed under Print, not under Blank template). */
+    skip?: boolean;
+    /** Title and description of the download, when "blank template" is the wrong name for it. */
+    downloadTitle?: string;
+    downloadNote?: string;
     note?: string;
   };
   /** The booklet's "How to use it" steps. */
   steps: string[];
   /** Where this part sits in the card kit, e.g. "Board B1". */
   board?: string;
+}
+
+/** A pointer to a deeper page that belongs to this tool ("Go deeper"). */
+export interface Ref {
+  label: string;
+  href: string;
+  blurb: string;
+}
+
+/** An extra tab on a tool page, for content that is more than a paragraph or a list. */
+export interface PanelDef {
+  id: string;
+  label: string;
+  icon: string;
+  /** "guide": right after the Guide tab. "end": after Blank template. */
+  after?: 'guide' | 'end';
 }
 
 export interface ToolCardKit {
@@ -76,6 +102,14 @@ export interface Tool {
   whatIsIt: string[];
   words: Word[];
   extras: Extra[];
+  /** After "Illustrative example." on the Example tab. Components 1 and 4 use a default. */
+  sampleNote?: string;
+  /** Under the Blank template heading. */
+  blankNote?: string;
+  /** Deeper pages that belong to this tool. */
+  refs?: Ref[];
+  /** Extra tabs (rendered by src/components/panels). */
+  panels?: PanelDef[];
   need: string;
   endUp: string;
   /** Booklet page id of the tool's guide page. */

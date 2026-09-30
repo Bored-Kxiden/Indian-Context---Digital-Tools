@@ -1,0 +1,83 @@
+---
+import ComponentLayout from '../../../layouts/ComponentLayout.astro';
+import Section from '../../../components/Section.astro';
+import ClosingChecks from '../../../components/ClosingChecks.astro';
+import Icon from '../../../components/Icon.astro';
+import { closing } from '../../../data/booklet/language';
+import { url } from '../../../utils/url';
+---
+
+<ComponentLayout
+  component="language"
+  current="is-it-working"
+  title="Is it working?"
+  heading="Is it working?"
+  lead="Check your work against these signs before you rely on it. They apply to all five tools."
+  chips={['Component 3', 'After Tool 5']}
+  crumb="Is it working?"
+>
+  <Section id="signs" eyebrow="Before you rely on it" title="Good signs and warning signs">
+    <ClosingChecks good={closing.good} warnings={closing.warnings} />
+  </Section>
+
+  <Section id="next" eyebrow="Where it goes" title="Then hand it on." tone="white" split>
+    <p class="big">What you learned here is the start of a question for the other components.</p>
+    <ul class="next">
+      {
+        closing.handOffs.map((h) => (
+          <li>
+            <a href={url(h.href)}>
+              <b>{h.to}</b>
+              <span>{h.ask}</span>
+              <Icon name="arrow" size={20} />
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+</ComponentLayout>
+
+<style>
+  .big {
+    font-size: var(--fs-lead);
+    color: var(--ink-soft);
+    max-width: var(--measure);
+  }
+  .next {
+    list-style: none;
+    margin: var(--sp-3) 0 0;
+    padding: 0;
+    display: grid;
+    gap: var(--sp-2);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  }
+  .next li {
+    margin: 0;
+  }
+  .next a {
+    display: grid;
+    gap: var(--sp-1);
+    height: 100%;
+    padding: var(--sp-3);
+    border: 2px solid var(--line-strong);
+    border-radius: var(--r-md);
+    background: var(--surface);
+    color: var(--ink);
+    text-decoration: none;
+    align-content: start;
+  }
+  .next a:hover {
+    border-color: var(--ink);
+  }
+  .next a :global(svg) {
+    justify-self: end;
+    margin-top: auto;
+  }
+  .next b {
+    font-size: var(--fs-h4);
+  }
+  .next span {
+    color: var(--ink-soft);
+  }
+</style>

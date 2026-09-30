@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Generate the booklet and card-kit assets used by the site.
 
-Reads the two source PDFs in public/downloads/:
-  designing-for-the-indian-context-booklet.pdf   (53 pages)
+Reads the three source PDFs in public/downloads/:
+  designing-for-the-indian-context-booklet.pdf   (53 pages: Components 1 and 4)
   component-1-card-kit.pdf                        (16 pages)
+  components-2-3-booklet.pdf                      (36 pages: Components 2 and 3)
 
 Writes:
   public/booklet/<id>.webp        one image per booklet page (id = printed page, e.g. 1.06, 4.12)
@@ -14,11 +15,13 @@ Writes:
 
 Usage (only needed when the source PDFs change; outputs are committed):
   pip install pymupdf pillow
-  python3 scripts/extract-booklet-assets.py
+  python3 scripts/extract-booklet-assets.py            # everything
+  python3 scripts/extract-booklet-assets.py --c23-only  # only Components 2 and 3, keep the rest byte-for-byte
 
 Page numbering. Booklet PDF page n -> printed label:
   1 cover | 2-6 -> 02..06 | 7-30 -> 1.01..1.24 | 31-52 -> 4.01..4.22 | 53 end
 Card-kit PDF page -> 1 = 1.25 (intro) | 2-9 = sheets S1-S8 | 10-16 = boards B1-B7
+Components 2 and 3 PDF page n -> printed label: 1-15 -> 2.01..2.15 | 16-36 -> 3.01..3.21
 """
 import io
 import json
@@ -35,6 +38,7 @@ ROOT = Path(__file__).resolve().parent.parent
 DL = ROOT / "public" / "downloads"
 BOOKLET = DL / "designing-for-the-indian-context-booklet.pdf"
 CARDKIT = DL / "component-1-card-kit.pdf"
+BOOKLET23 = DL / "components-2-3-booklet.pdf"
 
 MAX_SIDE = 1800  # longest edge of rendered page images, in pixels
 WEBP_QUALITY = 80
@@ -50,6 +54,10 @@ def booklet_id(n: int) -> str:
     if 31 <= n <= 52:
         return f"4.{n - 30:02d}"
     return "end"
+
+
+def c23_id(n: int) -> str:
+    return f"2.{n:02d}" if n <= 15 else f"3.{n - 15:02d}"
 
 
 def cardkit_id(n: int) -> str:
@@ -81,6 +89,23 @@ BLANKS = {
 }
 
 
+# Components 2 and 3: PDF page -> filename for the single-page blanks and print sheets.
+BLANKS23 = {
+    5: "c2-show-missions-blank.pdf",          # 2.05 mission cards + photo slips
+    8: "c2-read-passes-blank.pdf",            # 2.08
+    11: "c2-build-scenario-blank.pdf",        # 2.11
+    14: "c2-handoff-profile-blank.pdf",       # 2.14
+    18: "c3-before-you-start.pdf",            # 3.03 (checklist, positionality note, glossary)
+    20: "c3-listen-cue-cards.pdf",            # 3.05 (read first)
+    22: "c3-listen-log-meaning-card-blank.pdf",  # 3.07
+    25: "c3-translate-blank.pdf",             # 3.10
+    28: "c3-test-blank.pdf",                  # 3.13
+    31: "c3-library-entries-blank.pdf",       # 3.16
+    34: "c3-relay-sheet-blank.pdf",           # 3.19
+    35: "c3-relay-idiom-cards.pdf",           # 3.20
+}
+
+
 def render(page, out: Path) -> tuple[int, int]:
     rect = page.rect
     scale = MAX_SIDE / max(rect.width, rect.height)
@@ -102,21 +127,41 @@ def cut(src, pages: list[int], out: Path) -> None:
 
 
 def main() -> int:
-    for f in (BOOKLET, CARDKIT):
+    c23_only = "--c23-only" in sys.argv
+    for f in (BOOKLET23,) if c23_only else (BOOKLET, CARDKIT, BOOKLET23):
         if not f.exists():
             print(f"missing source PDF: {f}", file=sys.stderr)
             return 1
 
-    manifest: dict = {"booklet": {}, "cardKit": {}, "templates": {}, "cardKitPdfs": {}}
+    out = ROOT / "src" / "data" / "booklet-assets.json"
+    if c23_only:
+        manifest = json.loads(out.read_text())
+    else:
+        manifest = {"booklet": {}, "cardKit": {}, "templates": {}, "cardKitPdfs": {}}
 
-    booklet = pymupdf.open(BOOKLET)
-    for n in range(1, len(booklet) + 1):
-        bid = booklet_id(n)
-        w, h = render(booklet[n - 1], ROOT / "public" / "booklet" / f"{bid}.webp")
-        manifest["booklet"][bid] = {"page": n, "width": w, "height": h}
-    for n, name in BLANKS.items():
-        cut(booklet, [n], DL / "templates" / name)
-        manifest["templates"][name] = {"bookletPage": booklet_id(n)}
+    if not c23_only:
+        booklet = pymupdf.open(BOOKLET)
+        for n in range(1, len(booklet) + 1):
+            bid = booklet_id(n)
+            w, h = render(booklet[n - 1], ROOT / "public" / "booklet" / f"{bid}.webp")
+            manifest["booklet"][bid] = {"page": n, "width": w, "height": h}
+        for n, name in BLANKS.items():
+            cut(booklet, [n], DL / "templates" / name)
+            manifest["templates"][name] = {"bookletPage": booklet_id(n)}
+
+    c23 = pymupdf.open(BOOKLET23)
+    for n in range(1, len(c23) + 1):
+        bid = c23_id(n)
+        w, h = render(c23[n - 1], ROOT / "public" / "booklet" / f"{bid}.webp")
+        manifest["booklet"][bid] = {"page": n, "width": w, "height": h, "source": "components-2-3"}
+    for n, name in BLANKS23.items():
+        cut(c23, [n], DL / "templates" / name)
+        manifest["templates"][name] = {"bookletPage": c23_id(n)}
+
+    if c23_only:
+        out.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n")
+        print(f"components 2 and 3: pages and blanks written; manifest now has {len(manifest['booklet'])} pages")
+        return 0
 
     kit = pymupdf.open(CARDKIT)
     for n in range(1, len(kit) + 1):
@@ -132,7 +177,6 @@ def main() -> int:
     manifest["cardKitPdfs"]["card-sheets-s1-s8.pdf"] = {"id": "S1-S8"}
     manifest["cardKitPdfs"]["boards-b1-b7.pdf"] = {"id": "B1-B7"}
 
-    out = ROOT / "src" / "data" / "booklet-assets.json"
     out.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n")
     print(f"booklet pages: {len(manifest['booklet'])}, card-kit pages: {len(manifest['cardKit'])}, "
           f"templates: {len(manifest['templates'])}, card-kit PDFs: {len(manifest['cardKitPdfs'])}")

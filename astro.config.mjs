@@ -34,6 +34,8 @@ export default defineConfig({
   // (Astro does not add the base path to a redirect's destination, so it is added here.)
   redirects: {
     '/tools': `${prefix}/components/language/`,
+    // The methodology page became the "Reverse thick translation" tab of Translate.
+    '/components/language/methodology': `${prefix}/components/language/translate/#reverse`,
     ...Object.fromEntries(languageTools.map((slug) => [`/tools/${slug}`, `${prefix}/components/language/${slug}/`])),
   },
 });

@@ -2,6 +2,8 @@ import { existsSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
 import manifest from './pdf-manifest.json';
 import { tools as c1Tools } from './booklet/existing-products';
+import { tools as c2Tools } from './booklet/visual-culture';
+import { tools as c3Tools, beforeYouStart as c3BeforeYouStart } from './booklet/language';
 import { tools as c4Tools, beforeYouStart, participants } from './booklet/material-reality';
 import { boards, sheets } from './card-kit';
 
@@ -20,8 +22,8 @@ export interface DownloadEntry {
   file: string;
   format: DownloadFormat;
   group: DownloadGroup;
-  /** Which component it belongs to, for colour: c1, c3, c4, or none. */
-  component?: 'c1' | 'c3' | 'c4';
+  /** Which component it belongs to, for colour: c1 to c4, or none. */
+  component?: 'c1' | 'c2' | 'c3' | 'c4';
   note?: string;
   status?: 'Draft' | 'Final';
   pages?: number;
@@ -30,18 +32,29 @@ export interface DownloadEntry {
 }
 
 const C1 = '/components/existing-products/';
+const C2 = '/components/visual-culture/';
+const C3 = '/components/language/';
 const C4 = '/components/material-reality/';
 
 // ---- Booklet and card kit
 const booklet: DownloadEntry[] = [
   {
     id: 'booklet',
-    title: 'Full booklet (A4)',
-    description: 'The whole toolkit: guideline, Meera, Component 1 and Component 4 with every example and blank template.',
+    title: 'Booklet · guideline, Components 1 and 4 (A4)',
+    description: 'The guideline, Meera, Component 1 and Component 4, with every example and blank template.',
     file: 'designing-for-the-indian-context-booklet.pdf',
     format: 'PDF',
     group: 'booklet',
     pages: 53,
+  },
+  {
+    id: 'booklet-2-3',
+    title: 'Booklet · Components 2 and 3 (A4)',
+    description: 'Reading Visual Culture and Reading Language: every tool, filled example and blank template.',
+    file: 'components-2-3-booklet.pdf',
+    format: 'PDF',
+    group: 'booklet',
+    pages: 36,
   },
   {
     id: 'card-kit-full',
@@ -106,27 +119,46 @@ const boardEntries: DownloadEntry[] = boards.map((b) => ({
 // ---- Blank templates, derived from the tool data so they cannot drift
 const templateEntries: DownloadEntry[] = [];
 const seen = new Set<string>();
-for (const t of [...c1Tools, ...c4Tools]) {
-  const c = t.component === 'existing-products' ? 'c1' : 'c4';
-  const base = t.component === 'existing-products' ? C1 : C4;
-  for (const p of t.parts) {
-    if (seen.has(p.blank.pdf)) continue;
-    seen.add(p.blank.pdf);
-    templateEntries.push({
-      id: `tpl-${p.blank.pdf.replace(/\.pdf$/, '')}`,
-      title: `${t.short}${t.parts.length > 1 ? ` · ${p.title}` : ''}: blank template`,
-      description: p.blank.shared ? 'Example above, blank below.' : 'Print it and fill it in for your person.',
-      file: `templates/${p.blank.pdf}`,
-      format: 'PDF',
-      group: 'templates',
-      component: c,
-      pages: 1,
-      note: `A4 · ${p.blank.printed}`,
-      page: `${base}${t.slug}/`,
-    });
+const templateSources = [
+  { tools: c1Tools, c: 'c1' as const, base: C1 },
+  { tools: c2Tools, c: 'c2' as const, base: C2 },
+  { tools: c3Tools, c: 'c3' as const, base: C3 },
+  { tools: c4Tools, c: 'c4' as const, base: C4 },
+];
+for (const { tools, c, base } of templateSources) {
+  for (const t of tools) {
+    for (const p of t.parts) {
+      if (seen.has(p.blank.pdf)) continue;
+      seen.add(p.blank.pdf);
+      templateEntries.push({
+        id: `tpl-${p.blank.pdf.replace(/\.pdf$/, '')}`,
+        title: p.blank.downloadTitle ?? `${t.short}${t.parts.length > 1 ? ` · ${p.title}` : ''}: blank template`,
+        description:
+          p.blank.downloadNote ?? (p.blank.shared ? 'Example above, blank below.' : 'Print it and fill it in for your person.'),
+        file: `templates/${p.blank.pdf}`,
+        format: 'PDF',
+        group: 'templates',
+        component: c,
+        pages: 1,
+        note: `A4 · ${p.blank.printed}`,
+        page: `${base}${t.slug}/`,
+      });
+    }
   }
 }
 templateEntries.push(
+  {
+    id: 'tpl-before-you-start-c3',
+    title: 'Before you start: context, positionality, glossary',
+    description: 'Six things to do once per place before Tool 1, a positionality note, and a provisional glossary. Print it and keep it with your fieldwork.',
+    file: `templates/${c3BeforeYouStart.pdf}`,
+    format: 'PDF',
+    group: 'templates',
+    component: 'c3',
+    pages: 1,
+    note: `A4 · ${c3BeforeYouStart.printed}`,
+    page: `${C3}before-you-start/`,
+  },
   {
     id: 'tpl-journey-strip',
     title: 'Before you start: Journey Strip',

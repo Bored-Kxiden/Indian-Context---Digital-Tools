@@ -20,7 +20,7 @@ const haystack = (e: (typeof entries)[number]) =>
 const mapping = [
   ['Moment ID', 'Entry ID (a new, de-identified ID, for example EX-012)'],
   ['Exact words (original language)', 'Original text'],
-  ['Thick translation of the exact words (Module 3)', 'Literal meaning'],
+  ['Thick translation of the exact words (Tool 2 · Translate)', 'Literal meaning'],
   ['Participant’s explanation, once confirmed', 'Implied meaning'],
   ['Setting', 'Setting, generalized: no names, and no details that identify people'],
   ['Translation review flag, and who reviewed', 'The four Fidelity tags'],
@@ -36,7 +36,7 @@ const mapping = [
     <div class="prose">
       <h2 id="what">What goes in it</h2>
       <p>
-        An entry is a meaning moment that has passed the decision “is the meaning well supported?” in Module 3, with the
+        An entry is a meaning moment that has passed the decision “is the meaning well supported?” in Tool 2 · Translate, with the
         participant’s identity removed. It records the original words, the literal meaning, the implied meaning, and the four{' '}
         <a href={url('/components/language/fidelity-protocol/')}>Fidelity Protocol</a> tags.
       </p>
@@ -172,7 +172,7 @@ const mapping = [
 
             <footer>
               <span class="lbl">Relevant lenses</span>
-              {e.lenses.map((l) => <span class="chip chip--interpret">{l} · {lensNames[l]}</span>)}
+              {e.lenses.map((l) => <span class="chip chip--solid">{l} · {lensNames[l]}</span>)}
               {
                 e.citedBy.length > 0 && (
                   <>
@@ -336,8 +336,8 @@ const mapping = [
   blockquote {
     margin: var(--sp-half) 0 var(--sp-half);
     padding: var(--sp-1) var(--sp-2);
-    border-left: 4px solid var(--m-interpret);
-    background: var(--m-interpret-soft);
+    border-left: 4px solid var(--accent);
+    background: var(--accent-tint);
     border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
     font-family: var(--font-head);
     font-size: var(--fs-body);
