@@ -102,7 +102,7 @@ export const stops: ReflectStop[] = [
       code: 'R·2A',
       pdf: 'reflection-r2a.pdf',
       image: 'r2a',
-      after: { label: 'Overview', href: C2 },
+      after: { label: 'Before you start', href: `${C2}before-you-start/` },
       before: { label: '1 · Show', href: `${C2}show/` },
       predict: 'which images people will trust, which they will ignore, and why.',
     },

@@ -42,6 +42,8 @@ const pageBeside = tool.component === 'existing-products' || tool.component === 
 const multi = tool.parts.length > 1;
 const kit = tool.cardKit;
 const templates = getDownloadsForPage(pagePath);
+// Component 2 is worked in a Figma template; its tools point at the frame that does their job.
+const figma = tool.component === 'visual-culture' ? getDownloadById('visual-culture-figma') : undefined;
 
 const panels = (tool.panels ?? []).filter((p) => toolPanels[`${tool.component}/${tool.slug}/${p.id}`]);
 const afterGuide = panels.filter((p) => (p.after ?? 'guide') === 'guide');
@@ -331,6 +333,17 @@ const crumbs = [
       <section class="panel" id="blank" data-panel="blank">
         <h2 class="panel-h">Blank template</h2>
         <p class="body-p">{blankNote}</p>
+        {
+          figma && tool.figmaFrame && (
+            <div class="callout figma-note">
+              <strong>Or work in Figma</strong>
+              <p>
+                The Figma template has {tool.figmaFrame}. <a href={url(figma.href)} download>Download the template ({figma.size})</a>, or read how it is laid out on the{' '}
+                <a href={url('/components/visual-culture/#template')}>overview</a>.
+              </p>
+            </div>
+          )
+        }
         <div class="parts">
           {
             blankParts.map((p) => {
@@ -489,6 +502,7 @@ const crumbs = [
         <h2 class="side-h"><Icon name="print" size={20} /> Print</h2>
         <div class="dl-list">
           {templates.map((d) => <DownloadCard item={d} compact />)}
+          {figma && tool.figmaFrame && <DownloadCard item={figma} compact />}
         </div>
         {
           kit && (
@@ -830,6 +844,10 @@ const crumbs = [
   .g-b > .sub:first-child,
   .kit-intro .sub:first-child {
     margin-top: 0;
+  }
+  .figma-note {
+    margin: var(--sp-3) 0;
+    max-width: 52rem;
   }
   .body-p {
     font-size: var(--fs-lead);

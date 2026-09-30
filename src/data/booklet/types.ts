@@ -106,6 +106,8 @@ export interface Tool {
   sampleNote?: string;
   /** Under the Blank template heading. */
   blankNote?: string;
+  /** Component 2: which frame of the Figma template does this tool's work (see `figma` in visual-culture.ts). */
+  figmaFrame?: string;
   /** Deeper pages that belong to this tool. */
   refs?: Ref[];
   /** Extra tabs (rendered by src/components/panels). */

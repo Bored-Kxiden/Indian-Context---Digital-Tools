@@ -77,6 +77,7 @@ export function railFor(id: RailComponentId): Rail {
       ...head,
       hasCardKit: false,
       items: [
+        { slug: 'before-you-start', label: 'Before you start', href: `${c.href}before-you-start/` },
         reflectBefore(c.href),
         ...c2Tools.map((t) => toolItem(c.href, t)),
         { slug: 'is-it-working', label: 'Is it working?', href: `${c.href}is-it-working/` },

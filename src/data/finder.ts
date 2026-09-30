@@ -46,6 +46,8 @@ const tools: FinderItem[] = [
     href: `${C2}${t.slug}/`,
     c: 'c2' as const,
   })),
+  { title: 'Before you start', hint: 'Visual culture · a context, participants, an activity and their explanations', href: `${C2}before-you-start/`, c: 'c2' as const },
+  { title: 'The Figma template', hint: 'Visual culture · the main file to follow, as a .fig', href: `${C2}#template`, c: 'c2' as const },
   { title: 'The six photo missions', hint: 'Show · what to ask participants to photograph', href: `${C2}show/#missions`, c: 'c2' as const },
   { title: 'Before you start', hint: 'Language · understand the context first', href: `${C3}before-you-start/`, c: 'c3' as const },
   ...c3Tools.map((t) => ({

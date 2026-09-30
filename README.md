@@ -61,8 +61,9 @@ python3 scripts/extract-booklet-assets.py   # regenerate page images and split P
 │       └── card-kit/              each sheet, each board, all sheets, all boards
 ├── scripts/
 │   ├── extract-booklet-assets.py  booklet + card-kit PDFs → images, blanks, split PDFs (`--c23-only` for Components 2 and 3)
-│   └── build-templates.mjs        Component 3 PDFs and CSV from /templates
-├── templates/                     source definitions for the Component 3 printable cards
+│   ├── build-templates.mjs        Component 3 PDFs and CSV from /templates
+│   └── build-reflection-pdfs.mjs  the twelve Claim & Reflection A4 sheets, one file of all twelve, and page previews
+├── templates/                     source definitions for the Component 3 printable cards, and reflection/ (the twelve-page layout)
 └── src/
     ├── components/                Header, ComponentNav (sticky strip), Finder (search), ComponentStepper, Section, PageHead,
     │                              GoalIndex, PageFigure, DownloadCard, Footer, …
@@ -76,7 +77,8 @@ python3 scripts/extract-booklet-assets.py   # regenerate page images and split P
     │   ├── booklet/               Components 1 to 4: tools, parts, steps, words, examples (from the two booklets)
     │   ├── card-kit.ts            card sheets S1–S8 and boards B1–B7
     │   ├── downloads.ts           every downloadable file
-    │   ├── rail.ts                the step bar on component pages (Components 1 to 4)
+    │   ├── reflection.ts          Claim & Reflection: the steps, the Before and After worksheets, the three Look back pages
+│   ├── rail.ts                the step bar on component pages (Components 1 to 4 and Reflection)
     │   ├── finder.ts              everything the "Find a tool" search can open
     │   ├── tools.ts               Component 3 deeper pages (Meaning Card, Field Kit, …) and the tool each belongs to
     │   └── library.ts, *.json     Component 3 Expression and Design Language libraries
@@ -155,7 +157,7 @@ Each filled example is one Astro component in `src/components/examples/`, wrappe
 Every download is listed in one place, `src/data/downloads.ts`. The Downloads page and the tool pages read from it, and file sizes are measured at build time. The blank templates and the card-kit sheets and boards are derived from the content data, so they need no entry of their own.
 
 1. Put the file in `public/downloads/`.
-2. Add an entry to `downloadEntries` in `src/data/downloads.ts` (see the Component 3 entries for the shape): `id`, `title`, `description`, `file` (relative to `public/downloads`), `format` (`'PDF' | 'CSV' | 'JSON'`), `group` (`'booklet' | 'card-kit' | 'templates' | 'language'`), optionally `component` (`'c1' | 'c2' | 'c3' | 'c4'`, for colour), `page` (the site path of the page it belongs to), `note`, `status`.
+2. Add an entry to `downloadEntries` in `src/data/downloads.ts` (see the Component 3 entries for the shape): `id`, `title`, `description`, `file` (relative to `public/downloads`), `format` (`'PDF' | 'CSV' | 'JSON' | 'FIG'`), `group` (`'booklet' | 'card-kit' | 'templates' | 'language' | 'reflection'`), optionally `component` (`'c1' | 'c2' | 'c3' | 'c4' | 'ink'`, for colour), `page` (the site path of the page it belongs to), `note`, `status`.
 3. Run `npm run build`. If the file is missing, the build fails with a message naming the entry, so a broken link can never be published.
 
 ### Regenerating the Component 3 printable cards

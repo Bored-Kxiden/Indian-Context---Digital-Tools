@@ -12,7 +12,7 @@ import { lookBack, overview as reflectionOverview, stops as reflectStops } from 
 // data). Sizes are measured from disk at build time; a missing file fails the build.
 // To add a file: drop it in /public/downloads and add an entry.
 
-export type DownloadFormat = 'PDF' | 'CSV' | 'JSON';
+export type DownloadFormat = 'PDF' | 'CSV' | 'JSON' | 'FIG';
 export type DownloadGroup = 'booklet' | 'card-kit' | 'templates' | 'language' | 'reflection';
 
 export interface DownloadEntry {
@@ -147,6 +147,19 @@ for (const { tools, c, base } of templateSources) {
     }
   }
 }
+// Component 2's main file: the Figma template (a .fig, opened in Figma)
+templateEntries.unshift({
+  id: 'visual-culture-figma',
+  title: 'Reading Visual Culture: the Figma template',
+  description:
+    'The template to follow, as a Figma file: the capture cards and photo slip, the Context scenario builder, the Context profile and the hand-off cards.',
+  file: 'visual-culture-framework.fig',
+  format: 'FIG',
+  group: 'templates',
+  component: 'c2',
+  note: 'Open it in Figma: drag the file into Drafts or a team project, or use Import. It is a working file: it also holds Component 1 layouts and reference material, and you only need the Component 2 frames.',
+  page: C2,
+});
 templateEntries.push(
   {
     id: 'tpl-before-you-start-c3',

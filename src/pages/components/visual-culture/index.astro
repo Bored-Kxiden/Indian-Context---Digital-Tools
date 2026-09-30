@@ -3,14 +3,18 @@ import ComponentLayout from '../../../layouts/ComponentLayout.astro';
 import Section from '../../../components/Section.astro';
 import GoalIndex from '../../../components/GoalIndex.astro';
 import RouteList from '../../../components/RouteList.astro';
+import DownloadCard from '../../../components/DownloadCard.astro';
 import Icon from '../../../components/Icon.astro';
-import { overview, tools } from '../../../data/booklet/visual-culture';
+import { overview, tools, why, readTheWorld, movements, movementsNote, make, evidenceMore, whenToUse, core, figma } from '../../../data/booklet/visual-culture';
 import { goalsByComponent } from '../../../data/goals';
 import { componentById } from '../../../data/components';
+import { getDownloadById } from '../../../data/downloads';
 import { url } from '../../../utils/url';
 
 const comp = componentById['visual-culture'];
+const figmaDl = getDownloadById(figma.id)!;
 const route = [
+  { label: 'Before you start', href: `${comp.href}before-you-start/`, blurb: 'A specific context, participants who show you their reality, a real activity, and a way to keep their explanation.' },
   { label: 'Reflect: before (R·2A)', href: `${comp.href}reflect-before/`, blurb: 'Say where you stand and what you expect to find, before Tool 1 · Show.' },
   ...tools.map((t) => ({
     label: `${t.number} · ${t.name}`,
@@ -21,6 +25,7 @@ const route = [
   { label: 'Is it working?', href: `${comp.href}is-it-working/`, blurb: 'Good signs and warning signs, before you hand the reading on.' },
   { label: 'Reflect: after (R·2B)', href: `${comp.href}reflect-after/`, blurb: 'Say what the process actually gave you, then check it against your own bias.' },
 ];
+const toolHref = (slug: string) => `${comp.href}${slug}/`;
 ---
 
 <ComponentLayout
@@ -32,15 +37,80 @@ const route = [
   description={overview.descriptor}
   chips={['Component 2', overview.meta.time, overview.meta.mode]}
 >
-  <Section id="idea" eyebrow="The idea" title="Start with their world." split>
-    <p class="big">{overview.idea[0]}</p>
+  <Section id="idea" eyebrow="Why this exists" title={why.title} split>
+    <p class="big">{why.intro[0]}</p>
+    <p class="body-p">{why.intro[1]}</p>
+    <p class="body-p"><b>{why.start}</b></p>
+
+    <div class="pair pair--quotes">
+      <figure class="q q--without">
+        <figcaption class="lbl">{why.pair.interface.label}</figcaption>
+        <blockquote>{why.pair.interface.quote}</blockquote>
+      </figure>
+      <figure class="q q--with">
+        <figcaption class="lbl">{why.pair.situation.label}</figcaption>
+        <blockquote>{why.pair.situation.quote}</blockquote>
+      </figure>
+    </div>
+
+    <p class="body-p">{why.edge[0]}</p>
+    <p class="edge">{why.edge[1]}</p>
     <div class="callout">
+      <strong>The question this component starts with</strong>
+      <p class="ask-line">{why.question}</p>
+    </div>
+    <p class="small">{why.caution}</p>
+    <p class="small">{why.aim}</p>
+    <p class="small">{overview.builtFor}</p>
+  </Section>
+
+  <Section id="meaning" eyebrow="What do we mean by “visual culture”?" title="Not how things look. How people learn to read the world." tone="white" split>
+    <p class="def">{overview.definition}</p>
+    <p class="body-p">{readTheWorld.not} {readTheWorld.is}</p>
+    <ul class="learn">
+      {readTheWorld.learn.map((l) => <li>{l}</li>)}
+    </ul>
+    <p class="body-p">{readTheWorld.outside}</p>
+    <div class="callout">
+      <strong>The question</strong>
+      <p class="ask-line">{readTheWorld.ask}</p>
+    </div>
+    <p class="small">{readTheWorld.better}</p>
+    <p class="small">{overview.images}</p>
+    <div class="callout callout--ink principle">
       <strong>{overview.principle.lead}</strong>
       <p>{overview.principle.body}</p>
     </div>
-    <p class="def">{overview.definition}</p>
-    <p class="small">{overview.images}</p>
-    <p class="small">{overview.builtFor}</p>
+  </Section>
+
+  <Section id="template" eyebrow="Your main file" title={figma.title} split>
+    <p class="big">{figma.lead}</p>
+    <div class="dl"><DownloadCard item={figmaDl} /></div>
+    <h3 class="h3">What is in it</h3>
+    <ul class="frames">
+      {
+        figma.frames.map((f) => (
+          <li>
+            <div>
+              <b>{f.name}</b>
+              <span>{f.what}</span>
+            </div>
+            <a class="link-arrow" href={url(toolHref(f.tool))}>
+              {f.tool === 'show' ? 'Tool 1 · Show' : f.tool === 'build' ? 'Tool 3 · Build' : 'Tool 4 · Hand off'} <Icon name="arrow" size={20} />
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <h3 class="h3">How to use it</h3>
+    <ol class="how">
+      {figma.howTo.map((h) => <li>{h}</li>)}
+    </ol>
+    <p class="small">{figma.alsoHolds}</p>
+    <div class="callout callout--warn differs">
+      <strong>Where the template differs from the booklet</strong>
+      <p>{figma.differs}</p>
+    </div>
   </Section>
 
   <Section id="goals" eyebrow="Start here" title="I want to…" tone="white">
@@ -48,7 +118,36 @@ const route = [
     <GoalIndex groups={goalsByComponent('c2')} variant="list" search={false} />
   </Section>
 
-  <Section id="scenario" eyebrow="What you end up with" title="A situation, not a persona." split>
+  <Section id="route" eyebrow="The route" title="Six movements, four tools." split>
+    <p class="big">Participants photograph their own world. You read the photos together, build one situation, and hand it on as a question about the system.</p>
+    <ol class="moves" aria-label="The six movements">
+      {
+        movements.map((m, i) => (
+          <li>
+            <span class="n" aria-hidden="true">{i + 1}</span>
+            <div>
+              <b>{m.name}</b>
+              <span>{m.body}</span>
+              <small>{m.where}</small>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+    <p class="small">{movementsNote}</p>
+    <RouteList items={route} />
+    <div class="need">
+      <p class="lbl">You need</p>
+      <ul class="chip-row" aria-label="You need">
+        {overview.youNeed.map((n) => <li class="chip">{n}</li>)}
+      </ul>
+    </div>
+    <a class="btn btn--accent" href={url(`${comp.href}before-you-start/`)}>
+      Start with Before you start <Icon name="arrow" size={20} />
+    </a>
+  </Section>
+
+  <Section id="scenario" eyebrow="What you end up with" title="A situation, not a persona." tone="white" split>
     <div class="pair">
       <div class="card">
         <p class="lbl">{overview.persona.not}</p>
@@ -60,23 +159,29 @@ const route = [
       </div>
     </div>
     <p class="small">{overview.persona.note}</p>
-  </Section>
-
-  <Section id="route" eyebrow="The route" title="Four tools, in order." tone="white" split>
-    <p class="big">Participants photograph their own world. You read the photos together, build one situation, and hand it on as a question about the system.</p>
-    <RouteList items={route} />
-    <div class="need">
-      <p class="lbl">You need</p>
-      <ul class="chip-row" aria-label="You need">
-        {overview.youNeed.map((n) => <li class="chip">{n}</li>)}
-      </ul>
-    </div>
-    <a class="btn btn--accent" href={url(`${comp.href}show/`)}>
-      Start with Tool 1 · Show <Icon name="arrow" size={20} />
-    </a>
+    <p class="big make">{make.is}</p>
+    <p class="example"><span class="lbl">For example</span>{make.example}</p>
+    <p class="body-p">{make.starting}</p>
+    <ol class="asks">
+      {make.asks.map((a) => <li>{a}</li>)}
+    </ol>
+    <p class="small">{make.after}</p>
   </Section>
 
   <Section id="evidence" eyebrow="How to make a claim" title={overview.evidence.title} split>
+    <p class="rule-lead">{evidenceMore.rule}</p>
+    <p class="body-p">{evidenceMore.body}</p>
+    <div class="pair pair--quotes">
+      <figure class="q q--with">
+        <figcaption class="lbl">{evidenceMore.observedLabel}</figcaption>
+        <blockquote>{evidenceMore.observed}</blockquote>
+      </figure>
+      <figure class="q q--without">
+        <figcaption class="lbl">{evidenceMore.inferredLabel}</figcaption>
+        <blockquote>{evidenceMore.inferred}</blockquote>
+      </figure>
+    </div>
+    <p class="body-p">{evidenceMore.note}</p>
     <ul class="status">
       {
         overview.evidence.statuses.map((s) => (
@@ -88,27 +193,53 @@ const route = [
       }
     </ul>
     <p class="big">{overview.evidence.rule}</p>
+    <p class="body-p">{evidenceMore.single}</p>
+    <div class="callout">
+      <strong>{evidenceMore.next}</strong>
+      <p class="ask-line">{evidenceMore.nextAsk}</p>
+    </div>
     <div class="callout callout--warn">
       <strong>Stop rule</strong>
       <p>{overview.evidence.stop}</p>
     </div>
   </Section>
 
-  <Section id="next" eyebrow="Where it goes" title="Then hand it on." tone="white" split>
-    <p class="big">The end of Tool 4 is a question for one of the other components.</p>
+  <Section id="when" eyebrow="When to reach for it" title={whenToUse.title} tone="white" split>
+    <ul class="chip-row signals" aria-label="Signals">
+      {whenToUse.signals.map((s) => <li class="chip">{s}</li>)}
+    </ul>
+    <p class="big">{whenToUse.body}</p>
+  </Section>
+
+  <Section id="next" eyebrow="Where it goes" title="Then hand it on." split>
+    <p class="big">The end of Tool 4 is a question for another part of the toolkit, or an honest “we don’t know yet”.</p>
     <ul class="next">
       {
         overview.handOffs.map((h) => (
           <li>
-            <a href={url(h.href)}>
-              <b>{h.to}</b>
-              <span>{h.ask}</span>
-              <Icon name="arrow" size={20} />
-            </a>
+            {h.href ? (
+              <a href={url(h.href)}>
+                <b>{h.to}</b>
+                <span class="q-ask">{h.ask}</span>
+                <span>{h.body}</span>
+                <Icon name="arrow" size={20} />
+              </a>
+            ) : (
+              <div class="plain">
+                <b>{h.to}</b>
+                <span class="q-ask">{h.ask}</span>
+                <span>{h.body}</span>
+              </div>
+            )}
           </li>
         ))
       }
     </ul>
+  </Section>
+
+  <Section id="core" eyebrow="The component’s core principle" title={core.line} tone="c2">
+    <p class="core">{core.lead}</p>
+    <p class="core">{core.result}</p>
   </Section>
 </ComponentLayout>
 
@@ -118,13 +249,42 @@ const route = [
     color: var(--ink-soft);
     max-width: var(--measure);
   }
+  .body-p {
+    max-width: var(--measure);
+  }
+  .edge {
+    font-size: var(--fs-h3);
+    font-weight: 700;
+    line-height: 1.25;
+    max-width: 34rem;
+    margin: var(--sp-2) 0 var(--sp-3);
+    padding-left: var(--sp-2);
+    border-left: 4px solid var(--accent);
+  }
+  .ask-line {
+    font-size: var(--fs-lead);
+    font-weight: 700;
+    line-height: 1.3;
+    max-width: 40rem;
+  }
   .def {
     font-size: var(--fs-h3);
     font-weight: 700;
     line-height: 1.25;
     max-width: 34rem;
-    margin: var(--sp-4) 0;
+    margin: 0 0 var(--sp-3);
     color: var(--c2-deep);
+  }
+  .learn {
+    margin: 0 0 var(--sp-2);
+    padding-left: var(--sp-3);
+    max-width: var(--measure);
+  }
+  .learn li {
+    margin: 0 0 var(--sp-1);
+  }
+  .principle {
+    margin-top: var(--sp-3);
   }
   .small {
     font-size: var(--fs-ui);
@@ -155,6 +315,134 @@ const route = [
     font-weight: 700;
     margin: 0;
   }
+  .pair--quotes {
+    margin: var(--sp-3) 0;
+  }
+  .q {
+    margin: 0;
+    border-radius: var(--r-lg);
+    padding: var(--sp-3) var(--sp-4);
+  }
+  .q blockquote {
+    margin: var(--sp-1) 0 0;
+    font-size: var(--fs-lead);
+    line-height: 1.35;
+    font-weight: 700;
+    letter-spacing: -0.005em;
+  }
+  .q--without {
+    background: var(--ground);
+    border: 2px solid var(--line-strong);
+  }
+  .q--with {
+    background: var(--ink);
+    color: #fff;
+  }
+  .q--with .lbl {
+    color: rgb(255 255 255 / 0.85);
+  }
+  .dl {
+    max-width: 36rem;
+    margin: var(--sp-3) 0;
+  }
+  .h3 {
+    margin: var(--sp-4) 0 var(--sp-2);
+  }
+  .frames {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--sp-1);
+  }
+  .frames li {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-1) var(--sp-3);
+    padding: var(--sp-2) var(--sp-3);
+    border-radius: var(--r-md);
+    background: var(--c2-tint);
+  }
+  .frames li > div {
+    display: grid;
+    gap: 2px;
+    flex: 1 1 24rem;
+    min-width: 0;
+  }
+  .frames b {
+    font-size: var(--fs-h4);
+  }
+  .frames span {
+    color: var(--ink-soft);
+    max-width: 48rem;
+  }
+  .how {
+    margin: 0 0 var(--sp-2);
+    padding-left: var(--sp-3);
+    max-width: var(--measure);
+    display: grid;
+    gap: var(--sp-1);
+  }
+  .how li {
+    margin: 0;
+  }
+  .differs {
+    margin-top: var(--sp-3);
+    max-width: 52rem;
+  }
+  .moves {
+    list-style: none;
+    margin: var(--sp-3) 0 0;
+    padding: 0;
+    display: grid;
+    gap: var(--sp-1);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  }
+  .moves li {
+    margin: 0;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--sp-2);
+    align-items: start;
+    padding: var(--sp-2) var(--sp-3);
+    border: 2px solid var(--line-strong);
+    border-radius: var(--r-md);
+    background: var(--surface);
+  }
+  .moves .n {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-weight: 800;
+  }
+  .moves b {
+    display: block;
+    font-size: var(--fs-h4);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .moves span:not(.n) {
+    display: block;
+    color: var(--ink-soft);
+  }
+  .moves small {
+    display: block;
+    margin-top: var(--sp-1);
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.04em;
+    color: var(--c2-deep);
+  }
+  .moves + .small {
+    margin-bottom: var(--sp-3);
+  }
   .need {
     margin: var(--sp-4) 0 var(--sp-3);
   }
@@ -169,9 +457,43 @@ const route = [
   .need li {
     margin: 0;
   }
+  .make {
+    margin-top: var(--sp-4);
+  }
+  .example {
+    margin: var(--sp-2) 0;
+    padding: var(--sp-2) var(--sp-3);
+    border-left: 4px solid var(--accent);
+    background: var(--ground);
+    border-radius: 0 var(--r-md) var(--r-md) 0;
+    max-width: var(--measure);
+  }
+  .example .lbl {
+    display: block;
+    margin-bottom: var(--sp-1);
+  }
+  .asks {
+    margin: 0 0 var(--sp-2);
+    padding-left: var(--sp-4);
+    max-width: var(--measure);
+    display: grid;
+    gap: var(--sp-1);
+    font-weight: 600;
+  }
+  .asks li {
+    margin: 0;
+  }
+  .rule-lead {
+    font-size: var(--fs-h2);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin: 0 0 var(--sp-2);
+    max-width: 20ch;
+  }
   .status {
     list-style: none;
-    margin: 0 0 var(--sp-3);
+    margin: var(--sp-3) 0;
     padding: 0;
     display: grid;
     gap: var(--sp-2);
@@ -194,18 +516,27 @@ const route = [
     color: var(--ink-soft);
     font-size: var(--fs-ui);
   }
+  .signals {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--sp-3);
+  }
+  .signals li {
+    margin: 0;
+  }
   .next {
     list-style: none;
     margin: var(--sp-3) 0 0;
     padding: 0;
     display: grid;
     gap: var(--sp-2);
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
   }
   .next li {
     margin: 0;
   }
-  .next a {
+  .next a,
+  .next .plain {
     display: grid;
     gap: var(--sp-1);
     height: 100%;
@@ -217,6 +548,9 @@ const route = [
     text-decoration: none;
     align-content: start;
   }
+  .next .plain {
+    border-style: dashed;
+  }
   .next a:hover {
     border-color: var(--ink);
   }
@@ -227,7 +561,18 @@ const route = [
   .next b {
     font-size: var(--fs-h4);
   }
+  .next .q-ask {
+    font-weight: 700;
+  }
   .next span {
     color: var(--ink-soft);
+  }
+  .next .q-ask {
+    color: var(--ink);
+  }
+  .core {
+    font-size: var(--fs-lead);
+    max-width: 44rem;
+    margin: 0 0 var(--sp-2);
   }
 </style>

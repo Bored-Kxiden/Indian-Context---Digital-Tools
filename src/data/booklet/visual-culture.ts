@@ -8,6 +8,13 @@ import type { Tool } from './types';
 // passes, the fuller prompt under each of the nine scenario boxes, the wording of the
 // edge-case check, and the question each hand-off asks in general), it is folded in below.
 // Filled examples are illustrative (the booklet says so).
+//
+// The write-up "Reading Visual Culture" (Website Writeup) is the updated content for the component. It
+// repeats much of the above, so its wording is used once where they agree; what only it has is below:
+// `why`, `readTheWorld`, `movements`, `make`, `beforeYouStart`, `role`, `whenToUse`, `evidenceMore`,
+// `handOffs` (now five, with a reason each) and `core`. Its names for other components ("Reading
+// Material Conditions", "Reading Language Conditions", "Reading Yourself") are the site's own names here:
+// Material Reality, Language, Reflection.
 
 export const overview = {
   lead: 'What have people learned to notice, trust and act on, before they ever read your product?',
@@ -50,22 +57,37 @@ export const overview = {
     'A printer',
     'A big table or wall',
   ],
-  /** Where the reading goes next. The questions are the general form of the ones in Meera's example. */
+  /** Where the reading goes next. The questions and lines are the write-up's. */
   handOffs: [
     {
       to: '1 · Existing Products',
       href: '/components/existing-products/',
-      ask: 'Can the product actually work under this condition?',
-    },
-    {
-      to: '3 · Reading Language',
-      href: '/components/language/',
-      ask: 'What does a word from the talk-backs, like “setting”, really mean here?',
+      ask: 'What does the existing product assume about this situation?',
+      body: 'Use the scenario to stress the product, remove one of its dependencies, trace what happens outside the interface, or investigate the informal work surrounding it.',
     },
     {
       to: '4 · Material Reality',
       href: '/components/material-reality/',
-      ask: 'What physical, infrastructural or resource conditions make this possible?',
+      ask: 'What physical, infrastructural or economic conditions make this situation possible?',
+      body: 'Look at devices, documents, spaces, connectivity, money, time, transport, physical labour and other resources.',
+    },
+    {
+      to: '3 · Reading Language',
+      href: '/components/language/',
+      ask: 'What happens to meaning as information moves between people, languages and systems?',
+      body: 'Carry forward the original message, explanation, translation and participant interpretation rather than collapsing them into one final version.',
+    },
+    {
+      to: 'Reflection',
+      href: '/components/reflection/',
+      ask: 'What did I assume when I first saw this situation?',
+      body: 'A scenario can become evidence of your own design assumptions as much as evidence about the participant.',
+    },
+    {
+      to: 'More research',
+      href: '',
+      ask: 'We don’t know yet.',
+      body: 'That is also a valid output. A good scenario should make the next research question clearer.',
     },
   ],
 };
@@ -78,6 +100,7 @@ export const iWantTo = [
     tag: 'Component 2',
     anchor: '#route',
   },
+  { phrase: '…check I have what I need before I start', tool: 'before-you-start', tag: 'Before you start', anchor: '' },
   { phrase: '…see what the moment actually looks like in their world', tool: 'show', tag: '1 · Show', anchor: '' },
   { phrase: '…find what keeps happening, and what makes it possible', tool: 'read', tag: '2 · Read', anchor: '' },
   { phrase: '…turn photos into one situation I can design for', tool: 'build', tag: '3 · Build', anchor: '' },
@@ -125,6 +148,8 @@ export const missions = [
 ];
 
 export const threeQuestions = ['What is this?', 'Why did you show us this?', 'What were you doing?'];
+/** The write-up records a fourth line: an open invitation, not a fourth question to probe. */
+export const openInvitation = 'What else should we know?';
 
 /** The nine structures the passes test for (page 2.08). They are questions, never boxes to sort into. */
 export const structures = [
@@ -138,6 +163,294 @@ export const structures = [
   { name: 'Risk', ask: 'What happens if they get it wrong?' },
   { name: 'Adaptation', ask: 'What did they change to make it work?' },
 ];
+
+/** Why the component exists (write-up). The paired quotes are the write-up's own: the same student, described two ways. */
+export const why = {
+  title: 'Digital products are never used in isolation.',
+  intro: [
+    'A scholarship portal may look like a website, but the person using it may also be dealing with a family member, a senior, a college office, a document on someone else’s phone, a deadline, a language barrier, unreliable connectivity, or a piece of information they learned somewhere else.',
+    'These things rarely appear on the screen. Yet they can determine whether the product works.',
+  ],
+  start: 'Reading Visual Culture starts with those situations. Instead of asking the designer to imagine what a user’s life looks like, it asks people to show you.',
+  pair: {
+    interface: { label: 'The interface', quote: 'The student uses the portal on their phone.' },
+    situation: {
+      label: 'The situation',
+      quote:
+        'The student receives a message from a senior, checks a document on someone else’s phone, asks someone whether the information is correct, opens the portal on a slow connection, and then returns to the message to understand what the portal is asking for.',
+    },
+  },
+  edge: [
+    'When we only study the interface, the surrounding conditions can disappear. They can later be described as unusual behaviour, a workaround, an exception, or an “edge case”.',
+    'But whether something is an edge case depends partly on the baseline we designed from.',
+  ],
+  question: 'What situations are people actually navigating, before we decide what is normal?',
+  caution:
+    'It does not assume that every unusual-looking situation represents a broader cultural pattern. Instead, it gives the designer a way to investigate those situations without explaining them too quickly.',
+  aim: 'The aim is not to produce a “user persona” or a collection of photographs about a particular culture. The aim is to understand what people have learned to notice, recognise, trust, ignore and act upon in the situations where a product is actually used.',
+};
+
+/** What "visual culture" means here (write-up). */
+export const readTheWorld = {
+  not: 'Here, visual culture is not simply about aesthetics, graphic design, colours, symbols or what looks “Indian”.',
+  is: 'It is about the ways people learn to read the world around them.',
+  learn: [
+    'People learn that certain things deserve attention.',
+    'They learn what looks trustworthy.',
+    'They learn what can be ignored.',
+    'They learn which signs mean “act now”, which documents matter, who to ask, what information needs to be cross-checked, and what can be taken at face value.',
+  ],
+  outside:
+    'Much of this learning happens outside formal interfaces. A noticeboard, a WhatsApp message, a familiar logo, a handwritten instruction, a document format or even the physical location of information can become meaningful because someone has learned how to read it.',
+  ask: 'What has this person learned to notice, and where did they learn to read it that way?',
+  better: 'That question is more useful than simply asking whether an interface is visually clear.',
+};
+
+/**
+ * The write-up's six movements. `where` says where each sits in the four tools: that mapping is ours,
+ * not the write-up's (see CONTEXT.md, D32).
+ */
+export const movements = [
+  { name: 'Show', body: 'Let participants show you their reality.', where: 'Tool 1 · Show', tool: 'show' },
+  { name: 'Find', body: 'Look for situations and relationships that repeat.', where: 'Tool 2 · Read, Pass 1', tool: 'read' },
+  {
+    name: 'Read',
+    body: 'Investigate what people notice, recognise, trust, ignore or need explained.',
+    where: 'Tool 2 · Read, Passes 2 and 3 and the nine questions',
+    tool: 'read',
+  },
+  { name: 'Build', body: 'Turn the evidence into a Context Scenario.', where: 'Tool 3 · Build', tool: 'build' },
+  {
+    name: 'Challenge',
+    body: 'Test whether your interpretation is actually supported by evidence.',
+    where: 'The evidence tags and stop rule (Tools 2 and 3), the edge-case check, and Is it working?',
+    tool: 'build',
+  },
+  { name: 'Hand off', body: 'Carry the scenario into another part of the research process.', where: 'Tool 4 · Hand off', tool: 'hand-off' },
+];
+export const movementsNote =
+  'The sequence is a guide, not a rigid research law. You may move backwards when you discover that you do not have enough evidence. You may return to participants. You may decide that a scenario needs material, language or product-level investigation before you can make sense of it.';
+
+/** What you end up with (write-up). The nine questions are the ones the nine boxes answer. */
+export const make = {
+  not: 'The final output is not a persona. It is a Context Scenario.',
+  is: 'A Context Scenario describes a real situation in which a person is trying to do something under particular conditions.',
+  example:
+    'A student is trying to submit a scholarship application close to a deadline. The information needed to complete the submission is distributed across a portal, a message from another student and a physical document. The student checks the information with another person before submitting.',
+  starting: 'That is only a starting point. The toolkit then asks:',
+  asks: [
+    'What exactly is happening?',
+    'What conditions make it possible?',
+    'What information is moving between people and places?',
+    'What does the student know already?',
+    'What did they have to learn?',
+    'Who or what else is involved?',
+    'What work happens outside the visible product?',
+    'What happens when one of those conditions disappears?',
+    'Which parts have actually been observed, and which are our interpretation?',
+  ],
+  after: 'The scenario therefore becomes something another designer can investigate, rather than a conclusion they are expected to accept.',
+};
+
+/** The "Before you start" page (write-up). */
+export const beforeYouStart = {
+  lead: 'This toolkit works best when you have access to real participants and real situations.',
+  note: 'You do not need a large research sample to begin, but you should have enough evidence to distinguish an individual situation from a recurring pattern.',
+  needs: [
+    {
+      n: '01',
+      title: 'A specific context',
+      body: ['Know who you are investigating and what situation you are interested in.'],
+      example: 'First-generation college students from Tier 2 / Tier 3 towns navigating higher-education systems.',
+      avoid: '“Indian students.”',
+      foot: 'The more specific the context, the more useful your scenarios become.',
+    },
+    {
+      n: '02',
+      title: 'Participants who can show you their reality',
+      body: [
+        'The participant is not there to perform your research hypothesis. They decide what is worth showing.',
+        'You can give them prompts if useful, but the prompts are optional. If you want participants to have maximum autonomy over what becomes visible, simply give them the task and allow them to decide what matters. If you need more direction, the toolkit provides suggested prompts.',
+      ],
+      warn: 'Do not treat the suggested prompts as a checklist that every participant must complete. They are there to open possibilities, not to predetermine the evidence.',
+    },
+    {
+      n: '03',
+      title: 'A real activity or situation',
+      body: ['The toolkit becomes more useful when connected to something people are actually trying to do.'],
+      list: [
+        'applying for a scholarship',
+        'finding information',
+        'submitting a document',
+        'making a payment',
+        'accessing a service',
+        'travelling somewhere',
+        'communicating with an institution',
+        'completing a form',
+      ],
+      foot: 'You are trying to understand the situation around an activity, not collect photographs of a person’s life in general.',
+    },
+    {
+      n: '04',
+      title: 'A way to preserve the participant’s explanation',
+      body: [
+        'An image without context can be very easy to misinterpret. A photograph of someone talking to another person does not tell you why they were talking.',
+        'So every image should, where possible, remain connected to the participant’s explanation. Record:',
+      ],
+      record: ['What is this?', 'Why did you show us this?', 'What were you doing?', 'What else should we know?'],
+      foot: 'The participant’s account is part of the evidence.',
+    },
+  ],
+  autonomy: {
+    title: 'A note on participant autonomy',
+    intro: 'You can either give participants suggested things to photograph, or you can leave the task deliberately open.',
+    open: {
+      label: 'More open',
+      quote: 'Show us things around you that are important to how you complete this task.',
+      body: 'This gives participants more control over what becomes visible.',
+    },
+    directed: {
+      label: 'More directed',
+      quote: 'Show us where you go when you don’t know what to do.',
+      body: 'This can help investigate a particular research question.',
+    },
+    choice: 'Neither is automatically better. The choice depends on what you are trying to learn.',
+    reasons: [
+      'If you already have a strong hypothesis, a more open capture can prevent the research from simply confirming what you expected to find.',
+      'If you are exploring a specific question, a prompt can help participants notice something they might otherwise overlook.',
+    ],
+    instrument: 'The toolkit therefore treats prompts as research instruments, not instructions that must always be followed.',
+  },
+  notToDo: {
+    title: 'What not to do',
+    lead: 'This toolkit is not asking you to:',
+    list: [
+      'photograph “Indian culture”',
+      'find stereotypically Indian behaviours',
+      'turn every repeated behaviour into a cultural trait',
+      'create a persona from a few photographs',
+      'decide what a participant “really means”',
+      'assume that an unusual situation is an edge case',
+      'treat one participant’s behaviour as representative',
+      'force every observation into predefined categories',
+      'design a solution immediately',
+    ],
+    instead: 'Instead, keep asking:',
+    asks: ['What do I actually know?', 'What am I currently assuming?'],
+  },
+  checklist: {
+    title: 'Check that you have',
+    items: [
+      'A clearly defined context',
+      'A real activity or situation to investigate',
+      'Access to participants',
+      'A way to collect photographs / visual evidence',
+      'A way to retain participant explanations',
+      'Consent for collecting and using the material',
+      'A place to keep evidence separate from interpretation',
+    ],
+  },
+  remember: [
+    'You are not collecting “representative images”.',
+    'You are collecting situations worth understanding.',
+    'You are not looking for a cultural answer.',
+    'You are looking for a better question.',
+  ],
+};
+
+/** The designer's role (write-up). */
+export const role = {
+  title: 'The designer’s role',
+  intro: 'The participant generates the starting evidence. The designer’s job is to investigate it. That means resisting two opposite behaviours.',
+  two: [
+    {
+      title: 'Do not disappear from the research.',
+      body: 'You are not simply collecting photographs and letting them “speak for themselves”. You need to ask questions, connect evidence, identify gaps and test interpretations.',
+    },
+    {
+      title: 'But do not take over the research either.',
+      body: 'You should not decide beforehand what every photograph means. Your interpretation should remain traceable to the evidence.',
+    },
+  ],
+  lead: 'The designer moves between:',
+  chain: ['What did they show me?', 'What keeps happening?', 'What might this mean?', 'What evidence supports that?', 'What do I still need to investigate?'],
+};
+
+/** When to reach for it (write-up). */
+export const whenToUse = {
+  title: 'Use it when you catch yourself saying…',
+  signals: [
+    '“Users probably…”',
+    '“They obviously…”',
+    '“People in this context usually…”',
+    '“This is just a workaround…”',
+    '“That’s an edge case.”',
+    '“They don’t understand the interface.”',
+    '“They prefer…”',
+    '“The problem is…”',
+  ],
+  body: 'These statements are not necessarily wrong. They are signals to investigate further. The toolkit gives you a way to move from an assumption about the situation towards evidence about the situation.',
+};
+
+/** The rule that matters most, with the write-up's example (it extends `overview.evidence`). */
+export const evidenceMore = {
+  rule: 'Start with evidence. Not explanation.',
+  body: 'The easiest mistake in contextual research is to see something and immediately explain it.',
+  inferred: '“The student asks their senior because first-generation students depend on informal networks.”',
+  observed: '“The student asks their senior.”',
+  inferredLabel: 'An interpretation',
+  observedLabel: 'Evidence',
+  note: 'The first may eventually become a useful finding. For now, you have only observed the second. This toolkit deliberately keeps them apart. It is not bureaucratic: it protects the research from becoming a collection of convincing-sounding assumptions.',
+  single:
+    'This does not mean that a single situation is unimportant. A single situation can reveal something worth investigating. It simply means that you should not silently turn one person’s experience into a statement about an entire population.',
+  next: 'When something appears important, the next question is:',
+  nextAsk: 'What would I need to see or hear before I could make a stronger claim?',
+};
+
+/**
+ * The Figma template (Visual_Culture_framework.fig), the component's main file. Frame names and texts are read from the
+ * file itself. It is the working file behind the booklet, so `alsoHolds` says what else is in it.
+ */
+export const figma = {
+  id: 'visual-culture-figma',
+  title: 'The Figma template',
+  lead: 'The template to follow. Open it in Figma and work through its frames with your own participants.',
+  frames: [
+    {
+      name: 'Capture cards sheet',
+      tool: 'show',
+      what: 'The six missions as cards (01 to 06), each with its own follow-up question, and the photo slip with the three questions. The prompts are suggestions, not requirements.',
+    },
+    {
+      name: 'Context scenario builder',
+      tool: 'build',
+      what: 'Canvas 1 of 2 · the situation. Eight boxes: the moment, the world around them, the information journey, the people around the user, the things they already know, the hidden work, the consequence, the edge case.',
+    },
+    {
+      name: 'Context profile',
+      tool: 'hand-off',
+      what: 'Canvas 2 of 2 · the person, in the situation. The twelve profile lines, then person, don’t conclude and ask instead, with a worked example.',
+    },
+    { name: 'Handoff card', tool: 'hand-off', what: 'A “hands off to” card for each place the scenario goes next.' },
+    { name: 'The capture stage', tool: 'show', what: 'A diagram of the capture stage: the image, and the three questions every picture gets.' },
+  ],
+  howTo: [
+    'Open Figma and drag the .fig file into Drafts or a team project (or use Import file). You get your own editable copy.',
+    'On Page 1, scroll right, past the Component 1 booklet pages, to the frames named above.',
+    'Copy a frame for each participant or scenario. Work on the copy, and keep the original blank.',
+  ],
+  alsoHolds:
+    'It is the working file behind the booklet, so it also holds the Component 1 page layouts (Page 1 and the “final designs” page) and reference and sketch material. You only need the frames above.',
+  differs:
+    'The Figma scenario canvas has eight boxes. The booklet’s Build sheet has nine: it adds “The visual cue” and “The condition”, and keeps the edge-case check under the boxes. The Handoff cards still carry the earlier wording and cover two of the five places the scenario can go.',
+};
+
+/** The component's core principle (write-up's close). */
+export const core = {
+  lead: 'The purpose of this toolkit is not to teach you what to see. It is to help you notice when your first reading of a situation is incomplete.',
+  line: 'Don’t explain the person too quickly. Question the system around the situation.',
+  result: 'The result is not a definitive description of a culture. It is a set of evidence-backed situations that give the designer somewhere more precise to look next.',
+};
 
 export const tools: Tool[] = [
   {
@@ -161,7 +474,10 @@ export const tools: Tool[] = [
     ],
     words: [
       { term: 'Mission', def: 'One photo brief, like “Show me what you keep beside you.”' },
-      { term: 'Three questions', def: 'What is this? Why did you show us this? What were you doing? Ask only these.' },
+      {
+        term: 'Three questions',
+        def: 'What is this? Why did you show us this? What were you doing? Ask only these, then leave room: “What else should we know?”',
+      },
       {
         term: 'Capture rule',
         def: 'Never show example photos first. Examples are for your understanding, not for steering what people shoot.',
@@ -173,10 +489,19 @@ export const tools: Tool[] = [
         title: 'Give the six missions as they are',
         body: 'Don’t explain what a “good” photo should look like. The missions, with the question that goes with each, are under “The six missions”.',
       },
+      {
+        title: 'The missions are optional',
+        body: 'They are suggestions, not a checklist every participant must complete. For as little direction as possible, give only the task and let the participant decide what matters. Choose the level of direction that suits what you are trying to learn (see Before you start).',
+      },
+      {
+        title: 'Keep the participant’s explanation with every photo',
+        body: 'An image without its explanation is easy to misread. Write the three answers beside the photo in the participant’s words, then ask “What else should we know?” The participant’s account is part of the evidence.',
+      },
     ],
     panels: [{ id: 'missions', label: 'The six missions', icon: 'cards', after: 'guide' }],
     need: 'Participants with camera phones, the mission cards (p.2.05), consent for their photos',
     endUp: 'A wall of captioned photos, each tagged Observed or Reported, for Tool 2',
+    figmaFrame: 'the Capture cards sheet (the six missions, and the photo slip with its three questions)',
     guidePage: '2.03',
     parts: [
       {
@@ -333,6 +658,7 @@ export const tools: Tool[] = [
     ],
     need: 'Your clusters from Tool 2, 3–5 printed photos, glue',
     endUp: 'One Context Scenario to design against, for Tool 4',
+    figmaFrame: 'the Context scenario builder (Canvas 1 of 2 · the situation)',
     guidePage: '2.09',
     parts: [
       {
@@ -417,6 +743,7 @@ export const tools: Tool[] = [
     ],
     need: 'Your Context Scenario from Tool 3',
     endUp: 'One traceable statement, handed to Component 1, 3 or 4',
+    figmaFrame: 'the Context profile (Canvas 2 of 2 · the person, in the situation) and the Handoff cards',
     guidePage: '2.12',
     parts: [
       {
