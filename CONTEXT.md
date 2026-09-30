@@ -205,7 +205,7 @@ Requested: use the write-up as the updated Visual Culture content, with the Figm
 - **New page: Before you start** (four needs, participant autonomy, what not to do, the designer's role, the checklist). In the step bar, routes, "I want to…" and search. Show gains "The missions are optional" and "Keep the participant's explanation with every photo".
 - **Figma download:** `visual-culture-framework.fig` (11.6 MB) added; `DownloadFormat` gained `FIG`. See Q19 for what the file holds and Q20 for where it differs from the booklet.
 - **Reflection:** Component 2's Before page now sits after Before you start.
-- **Checked:** `npm run build` (53 pages); base-path build, 10,312 internal references, 0 problems.
+- **Checked (this batch, all three changes):** `npm run build` (53 pages); base-path build, 10,312 internal references, 0 problems; axe-core (WCAG 2 A/AA, 2.1, 2.2 AA, best practice) clean on 462 scans (every page and tab, the search dialog and the phone menu) at 1440, 1024, 390 and 320 px; no horizontal scroll at 320, 360, 768, 1024, 1280, 1920 and 2560 px on the new and changed pages. One contrast miss on the way (a small label on the "you are here" box in Component 3's terracotta) was fixed.
 
 ### 2026-09-30 · Reflection built (D31)
 Requested: use the reference HTML to build the Reflection component, and add the reflection pages that sit inside the other components, in the website's theme.
