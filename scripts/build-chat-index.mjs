@@ -68,7 +68,8 @@ function chunkPage(file) {
   const html = readFileSync(file, 'utf8');
   if (html.includes('http-equiv="refresh"')) return [];
   // A space between adjacent tags, so inline labels do not run together ("Before" + "Listen").
-  const doc = parse(html.replace(/>(?=<)/g, '> '));
+  // …and after an inline label that runs straight into the next words ("For example" + "First-generation").
+  const doc = parse(html.replace(/>(?=<)/g, '> ').replace(/(<\/(?:span|b|strong|small|dt|dd|label|em)>)(?=[A-Z0-9“"])/g, '$1 '));
   const main = doc.querySelector('main');
   if (!main) return [];
 
@@ -78,7 +79,7 @@ function chunkPage(file) {
   const component = rel.startsWith('components/') && COMPONENTS[compKey] ? COMPONENTS[compKey] : '';
 
   // Drop what is navigation, controls or decoration, not content.
-  for (const sel of ['nav', 'script', 'style', 'svg', 'form', 'button', 'select', 'input', 'textarea', '[aria-hidden="true"]', '.tabbar', '.skip-link', '[data-no-index]']) {
+  for (const sel of ['nav', 'script', 'style', 'svg', 'form', 'button', 'select', 'input', 'textarea', '[aria-hidden="true"]', '.tabbar', '.skip-link', '[data-no-index]', 'a.btn[download]']) {
     for (const el of main.querySelectorAll(sel)) el.remove();
   }
   // Keep the descriptions of the booklet pages and worked examples: they are the example.

@@ -47,8 +47,10 @@ const oneTemplate = tool.parts.every((p) => p.blank.shared && p.blank.page === p
 const tplDl = (p: (typeof tool.parts)[number]) => getDownloadById(`tpl-${p.blank.pdf.replace(/\.pdf$/, '')}`);
 const kit = tool.cardKit;
 const templates = getDownloadsForPage(pagePath);
-// Component 2 is worked in a Figma template; its tools point at the frame that does their job.
-const figma = tool.component === 'visual-culture' ? getDownloadById('visual-culture-figma') : undefined;
+// Component 2 is worked on a FigJam board; its tools point at the part of the board that does their job.
+// Component 1's pages also come as a Figma file, offered beside each tool's template.
+const figjam = tool.component === 'visual-culture' ? getDownloadById('visual-culture-figjam') : undefined;
+const c1Figma = tool.component === 'existing-products' ? getDownloadById('existing-products-figma') : undefined;
 
 const panels = (tool.panels ?? []).filter((p) => toolPanels[`${tool.component}/${tool.slug}/${p.id}`]);
 const afterGuide = panels.filter((p) => (p.after ?? 'guide') === 'guide');
@@ -327,7 +329,7 @@ const crumbs = [
                       {oneTemplate && tplDl(p) && (
                         <a class="btn btn--accent" href={url(tplDl(p)!.href)} download>
                           <Icon name="download" size={20} /> Download template
-                          <span class="btn-meta">
+                          <span class="btn-meta" data-no-index>
                             {tplDl(p)!.format} · {tplDl(p)!.size}
                           </span>
                         </a>
@@ -360,11 +362,11 @@ const crumbs = [
         <h2 class="panel-h">Template</h2>
         <p class="body-p">{blankNote}</p>
         {
-          figma && tool.figmaFrame && (
+          figjam && tool.figjamSection && (
             <div class="callout figma-note">
-              <strong>Or work in Figma</strong>
+              <strong>Or work in FigJam</strong>
               <p>
-                The Figma template has {tool.figmaFrame}. <a href={url(figma.href)} download>Download the template ({figma.size})</a>, or read how it is laid out on the{' '}
+                The FigJam template has {tool.figjamSection}. <a href={url(figjam.href)} download>Download the board ({figjam.size})</a>, or read how it is laid out on the{' '}
                 <a href={url('/components/visual-culture/#template')}>overview</a>.
               </p>
             </div>
@@ -385,7 +387,7 @@ const crumbs = [
                       {dl && (
                         <a class="btn btn--accent" href={url(dl.href)} download>
                           <Icon name="download" size={20} /> Download template
-                          <span class="btn-meta">
+                          <span class="btn-meta" data-no-index>
                             {dl.format} · {dl.size}
                           </span>
                         </a>
@@ -529,7 +531,8 @@ const crumbs = [
         <h2 class="side-h"><Icon name="print" size={20} /> Print</h2>
         <div class="dl-list">
           {templates.map((d) => <DownloadCard item={d} compact />)}
-          {figma && tool.figmaFrame && <DownloadCard item={figma} compact />}
+          {figjam && tool.figjamSection && <DownloadCard item={figjam} compact />}
+          {c1Figma && <DownloadCard item={c1Figma} compact />}
         </div>
         {
           kit && (

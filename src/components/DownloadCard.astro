@@ -18,14 +18,14 @@ const { item, compact = false } = Astro.props;
       <span class="ic"><Icon name="download" size={18} /></span>
       <span class="t">
         {item.title}
-        <span class="m">
+        <span class="m" data-no-index>
           {item.format} · {item.size}
         </span>
       </span>
     </a>
   ) : (
     <article class="card dl" data-c={item.component}>
-      <div class="top">
+      <div class="top" data-no-index>
         <span class="fmt">{item.format}</span>
         <div class="meta">
           <span>{item.size}</span>

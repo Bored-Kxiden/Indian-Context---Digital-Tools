@@ -5,14 +5,14 @@ import GoalIndex from '../../../components/GoalIndex.astro';
 import RouteList from '../../../components/RouteList.astro';
 import DownloadCard from '../../../components/DownloadCard.astro';
 import Icon from '../../../components/Icon.astro';
-import { overview, tools, why, readTheWorld, movements, movementsNote, make, evidenceMore, whenToUse, core, figma } from '../../../data/booklet/visual-culture';
+import { overview, tools, why, readTheWorld, movements, movementsNote, make, evidenceMore, whenToUse, core, figjam } from '../../../data/booklet/visual-culture';
 import { goalsByComponent } from '../../../data/goals';
 import { componentById } from '../../../data/components';
 import { getDownloadById } from '../../../data/downloads';
 import { url } from '../../../utils/url';
 
 const comp = componentById['visual-culture'];
-const figmaDl = getDownloadById(figma.id)!;
+const figjamDl = getDownloadById(figjam.id)!;
 const route = [
   { label: 'Before you start', href: `${comp.href}before-you-start/`, blurb: 'A specific context, participants who show you their reality, a real activity, and a way to keep their explanation.' },
   { label: 'Reflect: before (R·2A)', href: `${comp.href}reflect-before/`, blurb: 'Say where you stand and what you expect to find, before Tool 1 · Show.' },
@@ -83,33 +83,46 @@ const toolHref = (slug: string) => `${comp.href}${slug}/`;
     </div>
   </Section>
 
-  <Section id="template" eyebrow="Your main file" title={figma.title} split>
-    <p class="big">{figma.lead}</p>
-    <div class="dl"><DownloadCard item={figmaDl} /></div>
-    <h3 class="h3">What is in it</h3>
+  <Section id="template" eyebrow="Your main file" title={figjam.title} split>
+    <p class="big">{figjam.lead}</p>
+    <div class="dl"><DownloadCard item={figjamDl} /></div>
+    <h3 class="h3">What is on the board</h3>
     <ul class="frames">
       {
-        figma.frames.map((f) => (
+        figjam.sections.map((f) => (
           <li>
             <div>
               <b>{f.name}</b>
               <span>{f.what}</span>
             </div>
-            <a class="link-arrow" href={url(toolHref(f.tool))}>
-              {f.tool === 'show' ? 'Tool 1 · Show' : f.tool === 'build' ? 'Tool 3 · Build' : 'Tool 4 · Hand off'} <Icon name="arrow" size={20} />
+            <a class="link-arrow" href={url(f.tool ? toolHref(f.tool) : `${comp.href}#route`)}>
+              {f.tool === 'show' ? 'Tool 1 · Show' : f.tool === 'read' ? 'Tool 2 · Read' : f.tool === 'hand-off' ? 'Tool 4 · Hand off' : 'The route'} <Icon name="arrow" size={20} />
             </a>
           </li>
         ))
       }
     </ul>
+    <h3 class="h3">The board’s capture cards</h3>
+    <ol class="jam-cards">
+      {
+        figjam.cards.map((c) => (
+          <li>
+            <span class="lbl">Card {c.n}</span>
+            <b>{c.title}</b>
+            <span>{c.body}</span>
+            <span class="ask"><span aria-hidden="true">→</span> {c.ask}</span>
+          </li>
+        ))
+      }
+    </ol>
     <h3 class="h3">How to use it</h3>
     <ol class="how">
-      {figma.howTo.map((h) => <li>{h}</li>)}
+      {figjam.howTo.map((h) => <li>{h}</li>)}
     </ol>
-    <p class="small">{figma.alsoHolds}</p>
+    <p class="small">{figjam.alsoHolds}</p>
     <div class="callout callout--warn differs">
-      <strong>Where the template differs from the booklet</strong>
-      <p>{figma.differs}</p>
+      <strong>Where the board differs from the booklet</strong>
+      {figjam.differs.map((d) => <p>{d}</p>)}
     </div>
   </Section>
 
@@ -378,6 +391,30 @@ const toolHref = (slug: string) => `${comp.href}${slug}/`;
   .frames span {
     color: var(--ink-soft);
     max-width: 48rem;
+  }
+  .jam-cards {
+    list-style: none;
+    margin: 0 0 var(--sp-4);
+    padding: 0;
+    display: grid;
+    gap: var(--sp-2);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+  }
+  .jam-cards li {
+    display: grid;
+    gap: var(--sp-1);
+    align-content: start;
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-md);
+    padding: var(--sp-3);
+  }
+  .jam-cards span {
+    color: var(--ink-soft);
+  }
+  .jam-cards .ask {
+    color: var(--ink);
+    font-weight: 600;
   }
   .how {
     margin: 0 0 var(--sp-2);

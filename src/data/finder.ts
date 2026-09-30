@@ -6,6 +6,7 @@ import { tools as c3Tools } from './booklet/language';
 import { tools as c4Tools } from './booklet/material-reality';
 import { referencePages, referenceHref, parentLabel } from './tools';
 import { lookBack, stops as reflectStops } from './reflection';
+import { glossary, scopeLabel } from './glossary';
 
 // Everything the "Find a tool" search can open, built from the same data as the pages.
 // Order = order of the result groups.
@@ -40,6 +41,7 @@ const tools: FinderItem[] = [
     href: `${C1}${t.slug}/`,
     c: 'c1' as const,
   })),
+  { title: 'The Figma file', hint: 'Existing products · every page of the component, as a .fig', href: `${C1}#figma`, c: 'c1' as const },
   ...c2Tools.map((t) => ({
     title: t.number ? `${t.number} · ${t.name}` : t.name,
     hint: t.question,
@@ -47,7 +49,7 @@ const tools: FinderItem[] = [
     c: 'c2' as const,
   })),
   { title: 'Before you start', hint: 'Visual culture · a context, participants, an activity and their explanations', href: `${C2}before-you-start/`, c: 'c2' as const },
-  { title: 'The Figma template', hint: 'Visual culture · the main file to follow, as a .fig', href: `${C2}#template`, c: 'c2' as const },
+  { title: 'The FigJam template', hint: 'Visual culture · the board to work on, as a .jam', href: `${C2}#template`, c: 'c2' as const },
   { title: 'The six photo missions', hint: 'Show · what to ask participants to photograph', href: `${C2}show/#missions`, c: 'c2' as const },
   { title: 'Before you start', hint: 'Language · understand the context first', href: `${C3}before-you-start/`, c: 'c3' as const },
   ...c3Tools.map((t) => ({
@@ -104,6 +106,8 @@ const pages: FinderItem[] = [
   { title: 'How to read a tool', hint: 'Guide, Example, Template, Card kit', href: '/guideline/#how-to-read', c: 'ink' },
   { title: 'Meet Meera', hint: 'The running example', href: '/guideline/#meera', c: 'ink' },
   { title: 'Downloads', hint: 'Booklet, card kit, templates', href: '/downloads/', c: 'ink' },
+  { title: 'Ask the toolkit', hint: 'Ask a question; answers come from the toolkit’s own pages', href: '/ask/', c: 'ink' },
+  { title: 'Glossary', hint: 'Every term the toolkit uses, A–Z', href: '/glossary/', c: 'ink' },
   { title: 'About', hint: 'Who it is for, and what comes after', href: '/about/', c: 'ink' },
 ];
 
@@ -111,4 +115,14 @@ export const finderGroups: FinderGroup[] = [
   { id: 'want', title: 'I want to…', items: iWantTo },
   { id: 'tools', title: 'Tools', items: [...tools, ...reflect] },
   { id: 'pages', title: 'Pages', items: pages },
+  {
+    id: 'terms',
+    title: 'Terms',
+    items: glossary.map((t) => ({
+      title: t.term,
+      hint: `${t.scope === 'general' ? 'General term' : scopeLabel[t.scope]}${t.context && t.context !== 'General term' ? ` · ${t.context}` : ''}`,
+      href: `/glossary/#${t.id}`,
+      c: t.scope === 'toolkit' || t.scope === 'general' ? ('ink' as const) : t.scope,
+    })),
+  },
 ];

@@ -3,9 +3,10 @@
 //   POST { "mode": "sync" }   fetch the site's published /chat-index.json (only from the allowed
 //                             addresses below), add new passages, update changed ones and remove
 //                             ones that are gone. At most once every ten minutes.
-//   POST { "mode": "embed" }  embed up to 30 passages that have no embedding yet, with the free
-//                             gte-small model built into Supabase Edge Functions. Call it again
-//                             until `remaining` is 0.
+//   POST { "mode": "embed" }  embed a few passages that have no embedding yet (4 by default, at
+//                             most 8), with the free gte-small model built into Supabase Edge
+//                             Functions. The free plan limits compute time per call, so batches
+//                             stay small. Call it again until `remaining` is 0.
 //
 // Neither mode takes any content from the caller, so the function is safe to leave public.
 import 'jsr:@supabase/functions-js/edge-runtime.d.ts';
@@ -21,7 +22,8 @@ const SOURCES = (
   .map((s) => s.trim())
   .filter(Boolean);
 
-const BATCH = 30;
+const BATCH = 4;
+const MAX_BATCH = 8;
 
 type Chunk = { id: string; url: string; title: string; section?: string; component?: string; content: string; hash: string };
 
@@ -75,17 +77,17 @@ async function sync(db: ReturnType<typeof adminClient>, source: string) {
   return json({ ok: true, passages: chunks.length, changed: changed.length, removed: gone.length });
 }
 
-async function embed(db: ReturnType<typeof adminClient>) {
+async function embed(db: ReturnType<typeof adminClient>, size: number) {
   const { data: rows, error } = await db
     .from('doc_chunks')
     .select('id, title, section, content')
     .is('embedding', null)
-    .limit(BATCH);
+    .limit(size);
   if (error) throw error;
   let done = 0;
   const started = Date.now();
   for (const r of rows ?? []) {
-    if (Date.now() - started > 40_000) break;
+    if (Date.now() - started > 8_000) break;
     const text = [r.title, r.section, r.content].filter(Boolean).join('. ');
     const vector = (await model.run(text, { mean_pool: true, normalize: true })) as number[];
     const { error: e } = await db.from('doc_chunks').update({ embedding: JSON.stringify(vector) }).eq('id', r.id);
@@ -106,7 +108,8 @@ Deno.serve(async (req) => {
       const source = typeof body.source === 'string' && SOURCES.includes(body.source) ? body.source : SOURCES[0];
       return await sync(db, source);
     }
-    return await embed(db);
+    const size = Math.max(1, Math.min(MAX_BATCH, Number(body?.batch) || BATCH));
+    return await embed(db, size);
   } catch (err) {
     console.error(err);
     return json({ error: 'Something went wrong while updating the index.' }, 500);

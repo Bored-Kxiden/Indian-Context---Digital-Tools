@@ -12,7 +12,7 @@ import { lookBack, overview as reflectionOverview, stops as reflectStops } from 
 // data). Sizes are measured from disk at build time; a missing file fails the build.
 // To add a file: drop it in /public/downloads and add an entry.
 
-export type DownloadFormat = 'PDF' | 'CSV' | 'JSON' | 'FIG';
+export type DownloadFormat = 'PDF' | 'CSV' | 'JSON' | 'FIG' | 'JAM';
 export type DownloadGroup = 'booklet' | 'card-kit' | 'templates' | 'language' | 'reflection';
 
 export interface DownloadEntry {
@@ -144,18 +144,35 @@ for (const { tools, c, base } of templateSources) {
     }
   }
 }
-// Component 2's main file: the Figma template (a .fig, opened in Figma)
+// Component 2's main file: the FigJam template (a .jam, opened in FigJam), first among its templates.
+templateEntries.splice(
+  templateEntries.findIndex((e) => e.component === 'c2'),
+  0,
+  {
+    id: 'visual-culture-figjam',
+    title: 'Reading Visual Culture: the FigJam template',
+    description:
+      'The board to work on, in FigJam: how to use it, the six capture cards and the capture stage, a clusters board to group photos, and the Context Profile canvas.',
+    file: 'reading-visual-culture.jam',
+    format: 'JAM',
+    group: 'templates',
+    component: 'c2',
+    note: 'Open it in FigJam: drag the file into Drafts or a team project, or use Import.',
+    page: C2,
+  },
+);
+// Component 1's Figma file (a .fig): every page of the component, first among its templates.
 templateEntries.unshift({
-  id: 'visual-culture-figma',
-  title: 'Reading Visual Culture: the Figma template',
+  id: 'existing-products-figma',
+  title: 'Reading Existing Products: the Figma file',
   description:
-    'The template to follow, as a Figma file: the capture cards and photo slip, the Context scenario builder, the Context profile and the hand-off cards.',
-  file: 'visual-culture-framework.fig',
+    'Component 1 in Figma, to adapt or print: the cover, what and how, Tools 1–4 with their blank templates, Synthesis, and Is it working? (the “final designs” page).',
+  file: 'reading-existing-products.fig',
   format: 'FIG',
   group: 'templates',
-  component: 'c2',
-  note: 'Open it in Figma: drag the file into Drafts or a team project, or use Import. It is a working file: it also holds Component 1 layouts and reference material, and you only need the Component 2 frames.',
-  page: C2,
+  component: 'c1',
+  note: 'Open it in Figma: drag the file into Drafts or a team project, or use Import. Use the “final designs” page; the first page holds the layouts it was drawn from and reference material.',
+  page: C1,
 });
 templateEntries.push(
   {

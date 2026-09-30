@@ -12,15 +12,15 @@ The toolkit is built in **components**. Each is a different way of reading the w
 | **2 · Reading Visual Culture** | Live | What people have learned to notice, trust and act on. Show, Read, Build, Hand off. Six photo missions the participants take. |
 | **3 · Reading Language** | Live | What was meant, not only what was said. Before you start, then Listen, Translate (thick, and reverse thick, translation), Test, Library and the Kahavat Relay. Under them sit the Meaning Card, Physical Field Kit, Fidelity Protocol, Language Lens Audit and the two libraries. |
 | **4 · Reading Material Reality** | Live | What people have around them, what it costs, and who they lean on. Build, Break, Weigh, Say. |
-| **Reflection** | Coming next | Placeholder page only. |
+| **Claim & Reflection** | Live | Runs through all four: a Before and After page in each component, and three Look back pages at the end. |
 
-Every tool page has the same tabs, in the same order: **Guide · Example · Blank template · Card kit** (the card kit is Component 1 only). Two tools add a tab of their own: **The six missions** (Component 2 · Show) and **Reverse thick translation** (Component 3 · Translate). The home page leads with an **"I want to…"** index, one card per component, that opens the right tool for the job. A sticky strip keeps every component one click away, and **Find a tool** (press `/`) searches every tool, step and page.
+Every tool page has the same tabs, in the same order: **Guide · Example · Template** (Component 1: **Guide · Template · Card kit**). Two tools add a tab of their own: **The six missions** (Component 2 · Show) and **Reverse thick translation** (Component 3 · Translate). The home page leads with an **"I want to…"** index, one card per component, that opens the right tool for the job. A sticky strip keeps every component one click away, and **Find a tool** (press `/`) searches every tool, step, page and term. **Ask the toolkit** (`/ask/`) answers questions from the toolkit's own content, without an AI model, and the **Glossary** (`/glossary/`) lists every term the toolkit uses.
 
 > **Working on this repo?** Read [`CONTEXT.md`](CONTEXT.md) first. It records the project's context, decisions, open questions and a change log, and it is updated with every change. [`CLAUDE.md`](CLAUDE.md) has the working rules for AI assistants.
 
 ## Stack
 
-[Astro](https://astro.build) in static mode. No backend, no client framework, one runtime dependency.
+[Astro](https://astro.build) in static mode, no client framework, one runtime dependency. A small [Supabase](https://supabase.com) backend sits beside it for the libraries and the Ask search (see [Backend](#backend-supabase)); every page works without it.
 
 The site is content-heavy with a handful of page types. Astro turns `.astro` files (HTML with a little templating) into plain static HTML and CSS. Interactive bits are small vanilla scripts: the tabs, the Paper | Cards switch, the "I want to…" search, and the library search and Fidelity checker in Component 3. Everything reads without JavaScript; with it, the tool-page panels become tabs.
 
@@ -62,8 +62,14 @@ python3 scripts/extract-booklet-assets.py   # regenerate page images and split P
 ├── scripts/
 │   ├── extract-booklet-assets.py  the final booklet → page images, templates, card-kit sheets and boards, split PDFs
 │   ├── build-templates.mjs        Component 3 PDFs and CSV from /templates
+│   ├── build-chat-index.mjs       after `astro build`: every page split into passages → dist/chat-index.json (the Ask search index)
 │   └── build-reflection-pdfs.mjs  the twelve Claim & Reflection A4 sheets, one file of all twelve, and page previews
 ├── templates/                     source definitions for the Component 3 printable cards, and reflection/ (the twelve-page layout)
+├── supabase/
+│   ├── migrations/                the database: libraries, members, search index, rate limits, row-level security
+│   ├── functions/ask/             search only: meaning (gte-small) + keywords over the index; no language model
+│   ├── functions/index-sync/      copies /chat-index.json into the index and embeds it
+│   └── seed.sql                   the illustrative library entries
 └── src/
     ├── components/                Header, ComponentNav (sticky strip), Finder (search), ComponentStepper, Section, PageHead,
     │                              GoalIndex, PageFigure, DownloadCard, Footer, …
@@ -80,10 +86,13 @@ python3 scripts/extract-booklet-assets.py   # regenerate page images and split P
     │   ├── reflection.ts          Claim & Reflection: the steps, the Before and After worksheets, the three Look back pages
 │   ├── rail.ts                the step bar on component pages (Components 1 to 4 and Reflection)
     │   ├── finder.ts              everything the "Find a tool" search can open
+    │   ├── glossary.ts            every term: read from the page data, plus toolkit concepts and labelled general terms
+    │   ├── backend.ts             the Supabase address the site calls (PUBLIC_SUPABASE_URL, or "off")
     │   ├── tools.ts               Component 3 deeper pages (Meaning Card, Field Kit, …) and the tool each belongs to
     │   └── library.ts, *.json     Component 3 Expression and Design Language libraries
     ├── layouts/                   BaseLayout, ComponentLayout, BookletToolLayout, ToolLayout (Language), ComingNextLayout
-    ├── pages/                     index, components/*, card-kit, guideline, downloads, about
+    ├── pages/                     index, components/*, card-kit, guideline, downloads, about, glossary, ask, ask-data.json
+    ├── scripts/ask/engine.ts      the Ask answer engine (no language model)
     ├── styles/global.css          design tokens and shared styles
     └── utils/                     url helper, page-image lookup, Fidelity Protocol rule
 ```
@@ -107,11 +116,13 @@ Everything visual is a token in `src/styles/global.css`; components use the toke
 | `/components/material-reality/` | Component 4 overview, with `before-you-start/`, one page per tool, `ask-your-participants/` |
 | `/components/visual-culture/` | Component 2 overview, one page per tool, and `is-it-working/` |
 | `/components/language/` | Component 3 overview, `before-you-start/`, one page per tool, `is-it-working/`, and the deeper pages (`meaning-card/`, `physical-field-kit/`, `fidelity-protocol/`, `language-lens-audit/`, `expression-library/`, `design-language-library/`) |
-| `/components/reflection/` | "Coming next" placeholder |
+| `/components/reflection/` | Claim & Reflection, with `summarise/`, `wheel/` and `consequences/`; each component has `reflect-before/` and `reflect-after/` |
 | `/card-kit/` | Component 1 boards and card sheets, with print instructions |
 | `/guideline/` | The one guideline, how to read a tool (`#how-to-read`), Meera (`#meera`) |
 | `/downloads/` | Every file, grouped |
 | `/about/` | Who it is for, what comes after, further reading |
+| `/glossary/` | Every term, A–Z, with a filter; each term has its own anchor (`/glossary/#reverse-thick-translation`) |
+| `/ask/` | Ask the toolkit. `?q=` asks straight away |
 | `/tools/…`, `/components/language/methodology/` | Old Component 3 addresses. Redirect to `/components/language/…` (the methodology is now the **Reverse thick translation** tab of `translate/`) |
 
 ## Deploying
@@ -130,6 +141,26 @@ The workflow sets both for the GitHub Pages project URL. Internal links go throu
 **Vercel.** [Import this repository](https://vercel.com/new/import?s=https%3A%2F%2Fgithub.com%2FBored-Kxiden%2FIndian-Context---Digital-Tools). Vercel detects Astro and the defaults work as they are: build command `npm run build`, output directory `dist`, no environment variables. `vercel.json` pins the same settings and the Astro framework, so a project whose Framework Preset was set wrongly (for example to Next.js) still builds. Pushes to a branch get a preview URL; the production branch is `main`.
 
 **Custom domain or other hosts.** Set `BASE_PATH: /` and `SITE_URL: https://your-domain` in the workflow, add `public/CNAME` with the domain, and configure it under **Settings → Pages**. Netlify and Cloudflare Pages use the same settings as Vercel.
+
+## Ask the toolkit and the glossary
+
+There is **no language model**. `src/scripts/ask/engine.ts` reads the kind of question (what is, how do I, where is the template, how long, what do I need, which tool, the difference between), in English, Hindi or Hinglish, finds the terms and tools it names in the glossary and the tool data, and arranges the toolkit's own text into an answer: a term card, a tool's steps and template, a comparison, "I want to…" lines, and quoted passages with the question's words marked. It never writes a sentence of its own, so an answer can be incomplete but not made up.
+
+- **Terms** come from `src/data/glossary.ts`. Most are read from the page data (each tool's `words`, the tools, card sheets and boards, tags, structures, layers), so they follow the pages. To add a term the data does not have, add an entry there. General terms (OTP, code-switching…) must be marked `General` and carry a source.
+- **Passages** come from `dist/chat-index.json`, built by `npm run build` (every page's main text, split at its headings). The Supabase `ask` function searches them by meaning and keywords; if it cannot be reached the page searches them in the browser by keywords.
+- **After content changes**, refresh the Supabase index once the site is deployed: call `index-sync` with `{"mode":"sync"}` (it reads `/chat-index.json` from the production site), then `{"mode":"embed","batch":8}` until `remaining` is 0.
+
+## Backend (Supabase)
+
+The project address is in `src/data/backend.ts` (public by design; the database is protected by row-level security). `PUBLIC_SUPABASE_URL=off` builds a site that never calls it. Keys and secrets are never committed.
+
+Owner setup that cannot be done from the repository (Supabase dashboard):
+
+1. **Auth → URL configuration:** site URL `https://meaning-to-interface-toolkit.vercel.app`, and redirect URLs for it, the Vercel previews and `http://localhost:4321`.
+2. **Auth → Providers → Email:** turn off "Allow new users to sign up" (researchers are invited).
+3. **Auth → SMTP:** a custom SMTP sender (for example a free Resend or Brevo account). Supabase's built-in email only reaches the project's own team, so invitations need it.
+4. **Make the owner an editor:** after signing in once, add a row for that user in `public.members` with role `editor` (SQL editor).
+5. Optional **Edge Function secrets:** `ASK_SALT` (any random text, for the daily visitor hash), `ASK_MIN_SIMILARITY`, `ASK_PER_MINUTE`, `ASK_PER_DAY`, `ASK_SITE_PER_DAY`, `INDEX_SOURCES`.
 
 ## Content from the booklet
 

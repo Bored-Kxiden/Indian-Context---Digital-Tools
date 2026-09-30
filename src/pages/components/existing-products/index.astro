@@ -4,12 +4,16 @@ import Section from '../../../components/Section.astro';
 import GoalIndex from '../../../components/GoalIndex.astro';
 import RouteList from '../../../components/RouteList.astro';
 import Icon from '../../../components/Icon.astro';
-import { overview, route } from '../../../data/booklet/existing-products';
+import DownloadCard from '../../../components/DownloadCard.astro';
+import { overview, route, figmaFile } from '../../../data/booklet/existing-products';
+import { getDownloadById } from '../../../data/downloads';
 import { goalsByComponent } from '../../../data/goals';
 import { componentById } from '../../../data/components';
 import { url } from '../../../utils/url';
 
 const comp = componentById['existing-products'];
+const figmaDl = getDownloadById(figmaFile.id)!;
+const toolName = Object.fromEntries(route.map((r) => [r.href, r.label]));
 const items = [
   { label: 'Reflect: before (R·1A)', href: `${comp.href}reflect-before/`, blurb: 'Say where you stand and what you expect to find, before Tool 1.' },
   ...route.map((r) => ({ ...r, href: `${comp.href}${r.href}/` })),
@@ -89,6 +93,31 @@ const items = [
     </div>
     <p class="small">{overview.twoWays.note}</p>
     <p class="small">{overview.team}</p>
+  </Section>
+
+  <Section id="figma" eyebrow="Or work in Figma" title={figmaFile.title} tone="white" split>
+    <p class="big">{figmaFile.lead}</p>
+    <div class="dl"><DownloadCard item={figmaDl} /></div>
+    <h3 class="h3">What is in it: the “final designs” page</h3>
+    <ol class="pages">
+      {
+        figmaFile.pages.map((p) => (
+          <li>
+            <b>{p.name}</b>
+            {p.tool && (
+              <a href={url(`${comp.href}${p.tool}/`)}>
+                {toolName[p.tool]}
+              </a>
+            )}
+          </li>
+        ))
+      }
+    </ol>
+    <h3 class="h3">How to use it</h3>
+    <ol class="how">
+      {figmaFile.howTo.map((h) => <li>{h}</li>)}
+    </ol>
+    <p class="small">{figmaFile.alsoHolds}</p>
   </Section>
 
   <Section id="claim" eyebrow="Where it ends" title="One design claim." tone="c1" split>
@@ -193,6 +222,38 @@ const items = [
   .way--cards {
     background: var(--c1-tint);
     border-color: transparent;
+  }
+  .dl {
+    margin-bottom: var(--sp-4);
+    max-width: 40rem;
+  }
+  .pages {
+    list-style: none;
+    margin: 0 0 var(--sp-4);
+    padding: 0;
+    display: grid;
+    gap: var(--sp-1);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+  }
+  .pages li {
+    display: grid;
+    gap: 2px;
+    padding: var(--sp-2);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-sm);
+    background: var(--surface);
+  }
+  .pages a {
+    font-size: var(--fs-sm);
+    color: var(--ink);
+  }
+  .how {
+    margin: 0 0 var(--sp-3);
+    padding-left: 1.25em;
+    max-width: var(--measure);
+  }
+  .how li + li {
+    margin-top: var(--sp-1);
   }
   .small {
     font-size: var(--fs-ui);

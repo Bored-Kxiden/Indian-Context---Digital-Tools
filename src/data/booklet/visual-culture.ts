@@ -408,41 +408,104 @@ export const evidenceMore = {
 };
 
 /**
- * The Figma template (Visual_Culture_framework.fig), the component's main file. Frame names and texts are read from the
- * file itself. It is the working file behind the booklet, so `alsoHolds` says what else is in it.
+ * The FigJam template (VISUAL TOOLKIT.jam), the component's main file. Section names and texts are read from the
+ * board itself (see CONTEXT.md, D35). It replaces a .fig that was attached here by mistake: that file is Component 1's.
+ * `cards` are the board's six capture cards, word for word; three are worded differently from the booklet's missions.
  */
-export const figma = {
-  id: 'visual-culture-figma',
-  title: 'The Figma template',
-  lead: 'The template to follow. Open it in Figma and work through its frames with your own participants.',
-  frames: [
+export const figjam = {
+  id: 'visual-culture-figjam',
+  title: 'The FigJam template',
+  lead: 'The board to work on. Open it in FigJam, share it with your team, and fill it step by step: Show, Group, Build, Scenario.',
+  sections: [
     {
-      name: 'Capture cards sheet',
+      name: 'Introduction · How to use it',
+      tool: '',
+      what: 'What the component is and why to do it, and how to use it. Students photograph six missions; the designer runs three affinity passes across the images and builds the scenario from the recurring pattern, not the first interesting photo. Five steps: Capture, Affinity, Build, Verify, Scenario.',
+    },
+    {
+      name: '1 · Show: what do I ask the student to capture?',
       tool: 'show',
-      what: 'The six missions as cards (01 to 06), each with its own follow-up question, and the photo slip with the three questions. The prompts are suggestions, not requirements.',
+      what: 'You can give the student prompts to guide what they photograph. These are suggestions, not requirements. If you want the photographs to emerge with as little direction as possible, do not use them.',
     },
     {
-      name: 'Context scenario builder',
-      tool: 'build',
-      what: 'Canvas 1 of 2 · the situation. Eight boxes: the moment, the world around them, the information journey, the people around the user, the things they already know, the hidden work, the consequence, the edge case.',
+      name: 'Capture cards',
+      tool: 'show',
+      what: 'Six suggested prompt cards, one mission per card. Every photo gets three prompts, and only three: What is this? Why did you show us this? What were you doing? Plus the card’s own question.',
     },
     {
-      name: 'Context profile',
+      name: 'The capture stage',
+      tool: 'show',
+      what: 'The kinds of data you need the student to capture: the image, then what is this, why did you show us that, and what were you doing. Each picture should have a context from their end.',
+    },
+    {
+      name: 'Output of Show',
+      tool: 'show',
+      what: 'A set of participant-generated images and participant accounts. You are ready to move on when you have enough images to begin seeing relationships or repetitions, not when you have “covered the whole environment”.',
+    },
+    {
+      name: '2 · Group: clusters',
+      tool: 'read',
+      what: 'A section for each cluster (Cluster 01, and on). Keep putting your images in.',
+    },
+    {
+      name: '3 · Build: the Context Profile',
       tool: 'hand-off',
-      what: 'Canvas 2 of 2 · the person, in the situation. The twelve profile lines, then person, don’t conclude and ask instead, with a worked example.',
+      what: 'Canvas 2 of 2 · the person, in the situation. “When this person is in this situation…” and its twelve lines, then “What does this tell us about the system, and not about the person?”: a worked example (person, don’t conclude, ask instead) and your scenario.',
     },
-    { name: 'Handoff card', tool: 'hand-off', what: 'A “hands off to” card for each place the scenario goes next.' },
-    { name: 'The capture stage', tool: 'show', what: 'A diagram of the capture stage: the image, and the three questions every picture gets.' },
+    {
+      name: 'Scenario',
+      tool: 'hand-off',
+      what: 'An open space, with stickies, for the scenario you hand off.',
+    },
+  ],
+  cards: [
+    {
+      n: '01',
+      title: 'Show me where you learn',
+      body: 'Show me something that helps you know what to do. A message, a notice, a person, a document, a screenshot, a handwritten note, anything.',
+      ask: 'What did this help you understand?',
+    },
+    {
+      n: '02',
+      title: 'Show me what you keep beside you',
+      body: 'Don’t photograph the task. Photograph what’s around it: a certificate, another phone, a notebook, Aadhaar, a printout, another person.',
+      ask: 'Why do you need this?',
+    },
+    {
+      n: '03',
+      title: 'Show me who helps',
+      body: 'Photograph the person, message, screen, note or place that helped you: whatever helped, when something or someone helped.',
+      ask: 'What did they help you do? Could you have done it alone?',
+    },
+    {
+      n: '04',
+      title: 'Show me when information changes',
+      body: 'Paper → photo. Photo → PDF. English → explanation. Notice → WhatsApp. Show something you had to change before you could use it.',
+      ask: 'What did you have to do to make it usable?',
+    },
+    {
+      n: '05',
+      title: 'Show me when the normal way doesn’t work',
+      body: 'Not “what problems did you face”: show us the workaround. Asking someone, another device, a cyber café, a screenshot, a call, a repeat.',
+      ask: 'What made you do this instead?',
+    },
+    {
+      n: '06',
+      title: 'Show me what you check again',
+      body: 'Show something you check more than once: before you trust it, before you act on it, before you submit it.',
+      ask: 'What are you checking for? What makes you feel sure?',
+    },
   ],
   howTo: [
-    'Open Figma and drag the .fig file into Drafts or a team project (or use Import file). You get your own editable copy.',
-    'On Page 1, scroll right, past the Component 1 booklet pages, to the frames named above.',
-    'Copy a frame for each participant or scenario. Work on the copy, and keep the original blank.',
+    'Open FigJam (figma.com), then drag the .jam file into Drafts or a team project, or use Import. You get your own editable board.',
+    'Share the board with your team. Give participants the capture cards, paste their photos into the clusters, and fill the Context Profile from them.',
+    'Keep each participant’s answers next to their photo, in their own words.',
   ],
-  alsoHolds:
-    'It is the working file behind the booklet, so it also holds the Component 1 page layouts (Page 1 and the “final designs” page) and reference and sketch material. You only need the frames above.',
-  differs:
-    'The Figma scenario canvas has eight boxes. The booklet’s Build sheet has nine: it adds “The visual cue” and “The condition”, and keeps the edge-case check under the boxes. The Handoff cards still carry the earlier wording and cover two of the five places the scenario can go.',
+  alsoHolds: 'The board also keeps FigJam’s own quick tips (toolbar, move and zoom, sharing, stickies, rectangles, stamps). You can delete them.',
+  differs: [
+    'The capture cards word three missions differently from the booklet (p.2.05): 03 “Show me who helps”, 05 “Show me when the normal way doesn’t work” and 06 “Show me what you check again”, and five of the follow-up questions differ. The tool pages keep the booklet’s wording, because the booklet’s filled example (p.2.04) is built on it.',
+    'The board has no Context Scenario canvas (the nine boxes). For Tool 3 · Build, use the booklet’s sheet (p.2.11). The board’s Build step holds the Context Profile, which this site places in Tool 4 · Hand off.',
+  ],
 };
 
 /** The component's core principle (write-up's close). */
@@ -494,6 +557,10 @@ export const tools: Tool[] = [
         body: 'They are suggestions, not a checklist every participant must complete. For as little direction as possible, give only the task and let the participant decide what matters. Choose the level of direction that suits what you are trying to learn (see Before you start).',
       },
       {
+        title: 'When to move on',
+        body: 'You are ready to move on when you have enough images to begin seeing relationships or repetitions, not when you have “covered the whole environment”. (From the FigJam template’s “Output of Show”.)',
+      },
+      {
         title: 'Keep the participant’s explanation with every photo',
         body: 'An image without its explanation is easy to misread. Write the three answers beside the photo in the participant’s words, then ask “What else should we know?” The participant’s account is part of the evidence.',
       },
@@ -501,7 +568,7 @@ export const tools: Tool[] = [
     panels: [{ id: 'missions', label: 'The six missions', icon: 'cards', after: 'guide' }],
     need: 'Participants with camera phones, the mission cards (p.2.05), consent for their photos',
     endUp: 'A wall of captioned photos, each tagged Observed or Reported, for Tool 2',
-    figmaFrame: 'the Capture cards sheet (the six missions, and the photo slip with its three questions)',
+    figjamSection: 'the capture cards (its own wording of the six missions) and the capture stage, under 1 · Show',
     guidePage: '2.03',
     parts: [
       {
@@ -580,6 +647,7 @@ export const tools: Tool[] = [
     ],
     need: 'All the captioned photos from Tool 1, sticky notes in three colours, the product open',
     endUp: 'Named clusters, what enables them, and the gaps, for Tool 3',
+    figjamSection: 'a clusters section to group the photos in, under 2 · Group',
     guidePage: '2.06',
     parts: [
       {
@@ -658,7 +726,6 @@ export const tools: Tool[] = [
     ],
     need: 'Your clusters from Tool 2, 3–5 printed photos, glue',
     endUp: 'One Context Scenario to design against, for Tool 4',
-    figmaFrame: 'the Context scenario builder (Canvas 1 of 2 · the situation)',
     guidePage: '2.09',
     parts: [
       {
@@ -743,7 +810,7 @@ export const tools: Tool[] = [
     ],
     need: 'Your Context Scenario from Tool 3',
     endUp: 'One traceable statement, handed to Component 1, 3 or 4',
-    figmaFrame: 'the Context profile (Canvas 2 of 2 · the person, in the situation) and the Handoff cards',
+    figjamSection: 'the Context Profile canvas (Canvas 2 of 2 · the person, in the situation), under 3 · Build, and an open space for your scenario',
     guidePage: '2.12',
     parts: [
       {
