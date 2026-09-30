@@ -16,7 +16,8 @@ import { toolPanels } from '../components/panels';
 import { url } from '../utils/url';
 
 // One page per tool in Components 1 to 4. Tabs, always in the same order:
-// Guide · (extra tabs a tool asks for) · Example · Blank template · Card kit (Component 1 only).
+// Guide · (extra tabs a tool asks for) · Example · Template · Card kit (Component 1 only). Component 1's
+// pages are templates with the example in [brackets], so there the Example and Template tabs are one.
 // Without JavaScript the panels simply stack; with it they become tabs.
 // The layout uses the whole width: examples sit side by side when there is room, and
 // each one puts its steps beside the page or below it, whichever leaves the page larger.
@@ -33,13 +34,17 @@ const idx = rail.items.findIndex((i) => i.slug === tool.slug);
 const prev = idx > 0 ? rail.items[idx - 1] : undefined;
 const next = idx >= 0 && idx < rail.items.length - 1 ? rail.items[idx + 1] : undefined;
 
-const guideImage = bookletImage(tool.guidePage);
+// Component 1's pages are templates, each with the example written into the fields, so it has no
+// separate guide page (and no separate example and blank): its page tab is one "Template".
+const guideImage = tool.guidePage ? bookletImage(tool.guidePage) : undefined;
 // Components 1 and 4 show the booklet's guide page beside the text. In Components 2 and 3 the
 // booklet colours each tool's page differently (indigo, terracotta, turmeric), which would clash
 // with the site's one-colour-per-component rule, and the page repeats the text. So there it sits
 // under the text, one click away, and the text uses the width.
-const pageBeside = tool.component === 'existing-products' || tool.component === 'material-reality';
+const pageBeside = !!guideImage && (tool.component === 'existing-products' || tool.component === 'material-reality');
 const multi = tool.parts.length > 1;
+const oneTemplate = tool.parts.every((p) => p.blank.shared && p.blank.page === p.example.page);
+const tplDl = (p: (typeof tool.parts)[number]) => getDownloadById(`tpl-${p.blank.pdf.replace(/\.pdf$/, '')}`);
 const kit = tool.cardKit;
 const templates = getDownloadsForPage(pagePath);
 // Component 2 is worked in a Figma template; its tools point at the frame that does their job.
@@ -51,8 +56,12 @@ const atEnd = panels.filter((p) => p.after === 'end');
 const tabs = [
   { id: 'guide', label: 'Guide', icon: 'info' },
   ...afterGuide.map((p) => ({ id: p.id, label: p.label, icon: p.icon })),
-  { id: 'example', label: 'Example', icon: 'bulb' },
-  { id: 'blank', label: 'Blank template', icon: 'file' },
+  ...(oneTemplate
+    ? [{ id: 'example', label: 'Template', icon: 'file' }]
+    : [
+        { id: 'example', label: 'Example', icon: 'bulb' },
+        { id: 'blank', label: 'Template', icon: 'file' },
+      ]),
   ...atEnd.map((p) => ({ id: p.id, label: p.label, icon: p.icon })),
   ...(kit ? [{ id: 'card-kit', label: 'Card kit', icon: 'cards' }] : []),
 ];
@@ -60,7 +69,9 @@ const blankParts = tool.parts.filter((p) => !p.blank.skip);
 const sampleNote =
   tool.sampleNote ??
   'Follow the steps, then do the same for your own person. On your table, use real ads, real quotes and real words.';
-const blankNote = tool.blankNote ?? 'Print it on A4, or copy it onto a big sheet. Write on sticky notes.';
+const blankNote =
+  tool.blankNote ??
+  'Print it on A4, or copy it onto a big sheet. Write on sticky notes. Where the page shows [bracketed] text, it is an example: write over it with your own.';
 
 const eyebrow = [
   tool.number ? `Tool ${tool.number} of ${tool.of}` : (tool.kind ?? 'Closing'),
@@ -87,17 +98,21 @@ const crumbs = [
         <p class="lead q">{tool.question}</p>
         <ul class="meta" aria-label="About this tool">
           <li><Icon name="clock" size={20} /> <span><b>{tool.time}</b></span></li>
-          <li><Icon name="people" size={20} /> <span>{tool.group}</span></li>
-          <li><Icon name="pin" size={20} /> <span>{tool.mode}</span></li>
-          <li>
-            <Icon name="bolt" size={20} />
-            <span>
-              Effort
-              <span class="effort" role="img" aria-label={`${tool.effort} out of 3`}>
-                {[1, 2, 3].map((n) => <i class:list={{ on: n <= tool.effort }}></i>)}
-              </span>
-            </span>
-          </li>
+          {tool.group && <li><Icon name="people" size={20} /> <span>{tool.group}</span></li>}
+          {tool.mode && <li><Icon name="pin" size={20} /> <span>{tool.mode}</span></li>}
+          {
+            tool.effort && (
+              <li>
+                <Icon name="bolt" size={20} />
+                <span>
+                  Effort
+                  <span class="effort" role="img" aria-label={`${tool.effort} out of 3`}>
+                    {[1, 2, 3].map((n) => <i class:list={{ on: n <= (tool.effort ?? 0) }}></i>)}
+                  </span>
+                </span>
+              </li>
+            )
+          }
         </ul>
       </div>
       <div class="hr">
@@ -147,11 +162,11 @@ const crumbs = [
             {tool.whatIsIt.map((p) => <p class="body-p">{p}</p>)}
 
             {
-              tool.sevenSteps && (
+              tool.stepsList && (
                 <>
-                  <h3 class="sub">The seven steps</h3>
+                  <h3 class="sub">{tool.stepsTitle ?? 'The steps'}</h3>
                   <ol class="seven">
-                    {tool.sevenSteps.map((s, i) => (
+                    {tool.stepsList.map((s, i) => (
                       <li class="stp">
                         <b>{i + 1}</b>
                         <span>
@@ -249,7 +264,7 @@ const crumbs = [
           </div>
 
           {
-            pageBeside ? (
+            pageBeside && guideImage ? (
               <div class="g-page">
                 <PageFigure
                   image={guideImage}
@@ -257,7 +272,7 @@ const crumbs = [
                   caption={`The booklet page, p.${tool.guidePage}`}
                 />
               </div>
-            ) : (
+            ) : guideImage ? (
               <details class="g-compare">
                 <summary>
                   Compare with the booklet page <span>p.{tool.guidePage}</span>
@@ -268,7 +283,7 @@ const crumbs = [
                   caption="The booklet colours each tool’s page differently. On this site the colour stays with the component."
                 />
               </details>
-            )
+            ) : null
           }
         </div>
       </section>
@@ -287,7 +302,7 @@ const crumbs = [
 
       <!-- Example -->
       <section class="panel" id="example" data-panel="example">
-        <h2 class="panel-h">Example</h2>
+        <h2 class="panel-h">{oneTemplate ? 'Template' : 'Example'}</h2>
         <p class="sample-banner">
           <strong>Illustrative example.</strong> {sampleNote}
         </p>
@@ -303,11 +318,21 @@ const crumbs = [
                       <p class="eb">{multi ? p.label : tool.name}</p>
                       <h3>{p.title}</h3>
                     </div>
-                    {p.board && (
-                      <a class="kp" href={url(`/card-kit/#${p.board.toLowerCase()}`)}>
-                        <b>Card kit</b> Board {p.board}
-                      </a>
-                    )}
+                    <div class="part-acts">
+                      {p.board && (
+                        <a class="kp" href={url(`/card-kit/#${p.board.toLowerCase()}`)}>
+                          <b>Card kit</b> Board {p.board}
+                        </a>
+                      )}
+                      {oneTemplate && tplDl(p) && (
+                        <a class="btn btn--accent" href={url(tplDl(p)!.href)} download>
+                          <Icon name="download" size={20} /> Download template
+                          <span class="btn-meta">
+                            {tplDl(p)!.format} · {tplDl(p)!.size}
+                          </span>
+                        </a>
+                      )}
+                    </div>
                   </header>
                   {Native ? <Native alt={p.example.alt} caption={p.example.note} /> : <PageFigure image={bookletImage(p.example.page)} alt={p.example.alt} caption={p.example.note} />}
                   <div class="how">
@@ -329,9 +354,10 @@ const crumbs = [
         </div>
       </section>
 
-      <!-- Blank template -->
+      <!-- Blank template (Component 1 has none: its one page tab is the template) -->
+      {!oneTemplate && (
       <section class="panel" id="blank" data-panel="blank">
-        <h2 class="panel-h">Blank template</h2>
+        <h2 class="panel-h">Template</h2>
         <p class="body-p">{blankNote}</p>
         {
           figma && tool.figmaFrame && (
@@ -358,7 +384,7 @@ const crumbs = [
                       </div>
                       {dl && (
                         <a class="btn btn--accent" href={url(dl.href)} download>
-                          <Icon name="download" size={20} /> Download blank
+                          <Icon name="download" size={20} /> Download template
                           <span class="btn-meta">
                             {dl.format} · {dl.size}
                           </span>
@@ -384,6 +410,7 @@ const crumbs = [
           }
         </div>
       </section>
+      )}
 
       {
         atEnd.map((pd) => {
@@ -580,7 +607,11 @@ const crumbs = [
       });
 
       const fromHash = (scroll: boolean) => {
-        const h = decodeURIComponent(location.hash.slice(1));
+        // Component 1 has one "Template" tab where the others have Example and Blank template: old
+        // #blank links land on it.
+        let h = decodeURIComponent(location.hash.slice(1));
+        if (h === 'blank' && !ids.includes('blank') && ids.includes('example')) h = 'example';
+        if (h.startsWith('blank-part-') && !document.getElementById(h) && ids.includes('example')) h = h.replace('blank-part-', 'part-');
         if (h && ids.includes(h)) {
           show(h);
           // Keep the tab bar in view, not just the panel under it.
@@ -848,6 +879,12 @@ const crumbs = [
   .figma-note {
     margin: var(--sp-3) 0;
     max-width: 52rem;
+  }
+  .part-acts {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-1);
   }
   .body-p {
     font-size: var(--fs-lead);

@@ -1,309 +1,169 @@
 ---
 import ExFrame from './ExFrame.astro';
 
-// Booklet p.3.18 · Tool 5 Kahavat Relay, Part A: one anaar, three people (filled example).
-// The three drawings are redrawn as SVG. Lines are shown in Hindi, as in the booklet.
+// Booklet p.3.18 · Tool 4 Library, Part A: two linked entries (filled example).
 interface Props {
   alt: string;
   caption: string;
 }
 const { alt, caption } = Astro.props;
 
-const rounds = [
-  {
-    id: 'Round 1 · P1 (Meera)',
-    sees: 'Sees the idiom card',
-    draw: 'A phone marked OTP in the middle, with lines running out to six people around it.',
-    hi: 'एक ही फ़ोन है घर में, सबका OTP उसी पर आता है।',
-    en: 'There’s only one phone at home. Everyone’s OTP comes to it.',
-  },
-  {
-    id: 'Round 2 · P2',
-    sees: 'Sees only drawing 1',
-    draw: 'One small box at the top, with lines fanning out to four boxes below it.',
-    hi: 'सब एक ही चीज़ के पीछे लगे हैं।',
-    en: 'Everyone is after the same one thing.',
-  },
-  {
-    id: 'Round 3 · P3',
-    sees: 'Sees only drawing 2',
-    draw: 'Four people standing in a line towards a phone, numbered 1, 2, 3, 4 and on.',
-    hi: 'लाइन में लगो, बारी आएगी तब।',
-    en: 'Stand in line, your turn will come.',
-  },
+type Row = { k: string; v: string; hi?: boolean; dev?: string; lat?: string };
+const expression: Row[] = [
+  { k: 'Expression', v: '', dev: 'ऊपर वाले की मर्ज़ी', lat: 'upar wale ki marzi' },
+  { k: 'Language', v: 'Hindi, used inside Hinglish speech' },
+  { k: 'Literal', v: 'The wish of the one above' },
+  { k: 'Implied', v: 'Out of my hands; I don’t know who decides' },
+  { k: 'Heard when', v: 'Waiting on an institution after submitting' },
+  { k: 'Evidence', v: '3 participants · collaborator + second reader · supported' },
+  { k: 'Don’t use for', v: 'Religious meaning in every context. Ask first.' },
 ];
-
-const notes = [
-  { k: 'Survived', v: 'One resource, too many people.' },
-  { k: 'Shifted', v: 'From who owns the phone → who waits for it.' },
-  { k: 'Added', v: 'Turn-taking and time.' },
+const design: Row[] = [
+  { k: 'Moment', v: 'Application status, after submitting' },
+  { k: 'Replaces', v: 'Status: Pending' },
+  { k: 'English', v: 'Your college is checking your documents · day 3 of 15' },
+  { k: 'Hindi', v: 'आपका कॉलेज आपके दस्तावेज़ जाँच रहा है · दिन 3 / 15', hi: true },
+  { k: 'Tested with', v: 'First-gen students on phones; fathers by phone' },
+  { k: 'Lenses', v: 'N ✓ · P ✓ · T ✓ (round 2)' },
+  { k: 'Linked to', v: 'EX-014 · tone: calm, specific, no urgency' },
 ];
 ---
 
 <ExFrame page="3.18" alt={alt} caption={caption}>
-  <div class="e318">
-    <div class="idm">
-      <span class="lbl">Idiom card</span>
-      <b class="dv" lang="hi">एक अनार, सौ बीमार</b>
-      <span class="lt">Ek anaar, sau beemar · one pomegranate, a hundred sick</span>
-    </div>
-
-    <ol class="rounds">
-      {
-        rounds.map((r, i) => (
-          <>
-            {i > 0 && (
-              <li class="arr" aria-hidden="true">
-                <svg viewBox="0 0 32 12" focusable="false"><path d="M1 6h29M25 1.5 30.5 6 25 10.5" /></svg>
-              </li>
-            )}
-            <li class="rd">
-              <div class="hd">{r.id}</div>
-              <p class="se">{r.sees}</p>
-              <div class="dr">
-                {i === 0 && (
-                  <svg viewBox="0 0 328 165" role="img" aria-label={r.draw}>
-                    <rect x="141" y="45" width="49" height="111" rx="9" />
-                    <path d="M153 143h25" />
-                    <text x="150" y="80" class="tx">OTP</text>
-                    <circle cx="64" cy="40" r="10" />
-                    <circle cx="50" cy="91" r="10" />
-                    <circle cx="69" cy="142" r="10" />
-                    <circle cx="267" cy="40" r="10" />
-                    <circle cx="280" cy="91" r="10" />
-                    <circle cx="261" cy="142" r="10" />
-                    <path d="M74 44Q118 50 141 72M60 91Q100 88 141 92M78 138Q115 126 141 116" />
-                    <path d="M257 44Q212 50 190 72M270 91Q230 88 190 92M251 138Q215 126 190 116" />
-                  </svg>
-                )}
-                {i === 1 && (
-                  <svg viewBox="0 0 328 165" role="img" aria-label={r.draw}>
-                    <rect x="144" y="15" width="40" height="32" rx="6" />
-                    <path d="M157 27v9M171 27v9" />
-                    <rect x="40" y="112" width="26" height="42" rx="5" />
-                    <rect x="109" y="126" width="26" height="34" rx="5" />
-                    <rect x="168" y="128" width="26" height="33" rx="5" />
-                    <rect x="246" y="109" width="26" height="42" rx="5" />
-                    <path d="M162 47Q60 60 53 112M162 47Q118 80 122 126M164 47Q180 80 181 128M166 47Q262 60 259 109" />
-                  </svg>
-                )}
-                {i === 2 && (
-                  <svg viewBox="0 0 328 165" role="img" aria-label={r.draw}>
-                    {[57, 105, 153, 202].map((x) => (
-                      <g>
-                        <circle cx={x} cy="66" r="9" />
-                        <path d={`M${x} 75v32M${x - 11} 86h22M${x} 107l-10 22M${x} 107l10 22`} />
-                      </g>
-                    ))}
-                    <rect x="253" y="45" width="42" height="63" rx="8" />
-                    <path d="M266 97h16" />
-                    <path d="M222 33q9-6 18-1" stroke-dasharray="3 3" />
-                    <text x="36" y="152" class="tx tx--n">1  2  3  4  …</text>
-                  </svg>
-                )}
+  <div class="e315">
+    <div class="pair">
+      <article class="en e--x" aria-labelledby="e315-x">
+        <h4 id="e315-x">Expression Library · EX-014</h4>
+        <dl>
+          {
+            expression.map((r) => (
+              <div class="rw">
+                <dt class="lbl">{r.k}</dt>
+                <dd>
+                  {r.dev ? (
+                    <>
+                      <span lang="hi">{r.dev}</span> · {r.lat}
+                    </>
+                  ) : (
+                    r.v
+                  )}
+                </dd>
               </div>
-              <div class="ln">
-                <p class="hi" lang="hi">{r.hi}</p>
-                <p class="en">{r.en}</p>
+            ))
+          }
+        </dl>
+      </article>
+      <article class="en e--d" aria-labelledby="e315-d">
+        <h4 id="e315-d">Design Language Library · DL-031</h4>
+        <dl>
+          {
+            design.map((r) => (
+              <div class="rw">
+                <dt class="lbl">{r.k}</dt>
+                <dd>{r.hi ? <span lang="hi">{r.v}</span> : r.v}</dd>
               </div>
-            </li>
-          </>
-        ))
-      }
-    </ol>
-
-    <div class="sum">
-      {
-        notes.map((n) => (
-          <div class="sb">
-            <span class="lbl">{n.k}</span>
-            <p>{n.v}</p>
-          </div>
-        ))
-      }
-      <div class="sb sb--q">
-        <span class="lbl">Design question</span>
-        <p>Does the product assume one person, one phone? What happens to OTP timing when it’s shared?</p>
-      </div>
+            ))
+          }
+        </dl>
+      </article>
     </div>
+    <p class="grow">
+      <b>Grows into a language system.</b> Once there are enough tested entries, group them by moment (errors, waiting, success)
+      and by voice (how formal, how warm), just like components in a design system.
+    </p>
   </div>
 </ExFrame>
 
 <style is:global>
-  .e318 {
-    --bk-teal: #3fa7a0;
-    --bk-teal-tint: #d8eeec;
+  .e315 {
+    --bk-terra: #a8432a;
     display: grid;
-    gap: calc(var(--u) * 7);
-  }
-  .e318 .idm {
-    display: flex;
-    align-items: baseline;
     gap: calc(var(--u) * 12);
-    background: var(--bk-ink);
-    color: #fff;
-    border-radius: calc(var(--u) * 14);
-    padding: calc(var(--u) * 10) calc(var(--u) * 12) calc(var(--u) * 10);
-    min-height: calc(var(--u) * 34);
-    align-items: center;
   }
-  .e318 .idm .lbl {
-    margin: 0;
-    font-size: max(11px, calc(var(--u) * 7.3));
-    letter-spacing: 0.1em;
-    color: #5ec4bc;
-  }
-  .e318 .idm .dv {
-    font-size: max(17px, calc(var(--u) * 14.6));
-    font-weight: 700;
-    line-height: 1.3;
-  }
-  .e318 .idm .lt {
-    font-variation-settings: 'opsz' 13;
-    font-size: max(14px, calc(var(--u) * 9.8));
-  }
-
-  .e318 .rounds {
+  .e315 .pair {
     display: grid;
-    grid-template-columns: minmax(0, 154.5fr) calc(var(--u) * 24.5) minmax(0, 154.5fr) calc(var(--u) * 24.5) minmax(0, 154.5fr);
-    align-items: stretch;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: calc(var(--u) * 10);
   }
-  .e318 .rd {
+  .e315 .en {
     display: flex;
     flex-direction: column;
     background: #fff;
     border: calc(var(--u) * 1) solid var(--bk-ink);
     border-radius: calc(var(--u) * 10);
     overflow: hidden;
-    min-height: calc(var(--u) * 199);
   }
-  .e318 .arr {
-    align-self: center;
-    justify-self: center;
-    margin-top: calc(var(--u) * 6);
-  }
-  .e318 .arr svg {
-    width: calc(var(--u) * 16);
-    height: auto;
-    fill: none;
-    stroke: var(--bk-ink);
-    stroke-width: 1.2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-  .e318 .hd {
-    background: var(--bk-teal);
-    color: var(--bk-ink);
-    padding: calc(var(--u) * 5.6) calc(var(--u) * 8);
+  .e315 .en h4 {
+    margin: 0;
+    padding: calc(var(--u) * 7) calc(var(--u) * 10);
+    color: #fff;
     font-family: var(--font-mono);
-    font-size: max(11px, calc(var(--u) * 7.3));
-    letter-spacing: 0.1em;
+    font-size: max(11px, calc(var(--u) * 7.8));
+    font-weight: 400;
+    letter-spacing: 0.09em;
     text-transform: uppercase;
     line-height: 1.3;
   }
-  .e318 .se {
-    padding: calc(var(--u) * 4) calc(var(--u) * 8) 0;
-    font-variation-settings: 'opsz' 11;
-    font-size: max(13px, calc(var(--u) * 8.3));
-    color: #4a453d;
+  .e315 .e--x h4 {
+    background: var(--bk-terra);
   }
-  .e318 .dr {
-    padding: calc(var(--u) * 2) 0 0;
-    border-bottom: calc(var(--u) * 0.7) dotted #b8b1a2;
-    margin-bottom: calc(var(--u) * 2.5);
-  }
-  .e318 .dr svg {
-    display: block;
-    width: 100%;
-    height: auto;
-    fill: none;
-    stroke: var(--bk-ink);
-    stroke-width: 3.1;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-  .e318 .dr .tx {
-    font-size: 11px;
-    stroke: none;
-    fill: var(--bk-ink);
-  }
-  .e318 .dr .tx--n {
-    font-size: 11px;
-    letter-spacing: 0.05em;
-  }
-  .e318 .ln {
-    padding: calc(var(--u) * 3) calc(var(--u) * 8) calc(var(--u) * 7);
-  }
-  .e318 .ln .hi {
-    font-size: max(15px, calc(var(--u) * 11));
-    font-weight: 700;
-    line-height: 1.4;
-  }
-  .e318 .ln .en {
-    margin-top: calc(var(--u) * 2);
-    font-variation-settings: 'opsz' 12;
-    font-size: max(13px, calc(var(--u) * 8.7));
-    line-height: 1.45;
-    color: #5a544b;
-  }
-
-  .e318 .sum {
-    margin-top: calc(var(--u) * 3);
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: calc(var(--u) * 6);
-  }
-  .e318 .sb {
-    background: var(--bk-teal-tint);
-    border-radius: calc(var(--u) * 10);
-    padding: calc(var(--u) * 10) calc(var(--u) * 11) calc(var(--u) * 10) calc(var(--u) * 8.4);
-    min-height: calc(var(--u) * 89);
-  }
-  .e318 .sb .lbl {
-    margin: 0 0 calc(var(--u) * 3);
-    font-size: max(11px, calc(var(--u) * 7.3));
-    letter-spacing: 0.1em;
-    color: #1f5f5a;
-  }
-  .e318 .sb p {
-    font-variation-settings: 'opsz' 13;
-    font-size: max(14px, calc(var(--u) * 9.4));
-    line-height: 1.46;
-  }
-  .e318 .sb--q {
+  .e315 .e--d h4 {
     background: var(--bk-ink);
-    color: #fff;
   }
-  .e318 .sb--q .lbl {
-    color: #5ec4bc;
+  .e315 .en dl {
+    margin: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
   }
-
+  .e315 .rw {
+    display: grid;
+    grid-template-columns: calc(var(--u) * 107) minmax(0, 1fr);
+    padding: calc(var(--u) * 3.6) calc(var(--u) * 2) calc(var(--u) * 3.6) 0;
+    border-top: calc(var(--u) * 0.7) solid #dfd9d0;
+    align-items: baseline;
+  }
+  .e315 .rw:first-child {
+    border-top: 0;
+  }
+  .e315 .rw dt.lbl {
+    margin: 0;
+    padding-left: calc(var(--u) * 10);
+    font-size: max(11px, calc(var(--u) * 6.9));
+    letter-spacing: 0.1em;
+    color: #6f695e;
+  }
+  .e315 .rw dd {
+    margin: 0;
+    font-variation-settings: 'opsz' 13;
+    font-size: max(14px, calc(var(--u) * 9.8));
+    line-height: 1.44;
+  }
+  .e315 .grow {
+    border: calc(var(--u) * 1) dashed var(--bk-ink);
+    border-radius: calc(var(--u) * 10);
+    padding: calc(var(--u) * 11) calc(var(--u) * 13);
+    font-variation-settings: 'opsz' 14;
+    font-size: max(15px, calc(var(--u) * 10.6));
+    line-height: 1.5;
+  }
+  .e315 .grow b {
+    font-weight: 700;
+  }
   @container (max-width: 45rem) {
-    .e318 {
+    .e315 {
       --u: 1.33px;
     }
-    .e318 .idm {
-      flex-wrap: wrap;
-      gap: var(--sp-half) var(--sp-2);
-    }
-    .e318 .rounds {
+    .e315 .pair {
       grid-template-columns: minmax(0, 1fr);
     }
-    .e318 .arr {
-      margin: var(--sp-1) 0;
-    }
-    .e318 .arr svg {
-      transform: rotate(90deg);
-      width: 2rem;
-    }
-    .e318 .rd {
-      min-height: 0;
-    }
-    .e318 .sum {
+    .e315 .rw {
       grid-template-columns: minmax(0, 1fr);
+      padding-left: calc(var(--u) * 10);
+      gap: 0;
     }
-    .e318 .sb {
-      min-height: 0;
+    .e315 .rw dt.lbl {
+      padding-left: 0;
     }
   }
 </style>

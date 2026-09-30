@@ -29,7 +29,7 @@ export const components: ToolkitComponent[] = [
     c: 'c1',
     name: 'Reading Existing Products',
     short: 'Existing products',
-    blurb: 'Whose user is built into a product, and who pays when the product is wrong about them.',
+    blurb: 'Whose user is built into a product, and who pays when it’s wrong about them.',
     hours: '3–4 hours',
     status: 'live',
     href: '/components/existing-products/',

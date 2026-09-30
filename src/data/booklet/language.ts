@@ -1,11 +1,12 @@
 import type { Tool } from './types';
 
-// Component 3 · Reading Language. Source: the Components 2 and 3 booklet, pages 3.01–3.21,
-// merged with the site's earlier Meaning-to-Interface pages (the Meaning Card, the Physical
-// Field Kit, the Fidelity Protocol, the Language Lens Audit, the two libraries and the
-// methodology). One vocabulary now: the booklet's Before you start and Tools 1–5 replace the
-// earlier Modules 1–3. Nothing from the earlier pages was dropped: each piece now sits under
-// the tool it belongs to (see CONTEXT.md, D26).
+// Component 3 · Reading Language. Source: the final booklet, pages 3.01–3.24, merged with the
+// site's earlier Meaning-to-Interface pages (the Meaning Card, the Physical Field Kit, the Fidelity
+// Protocol, the Language Lens Audit, the two libraries and the methodology). One vocabulary now: the
+// booklet's Before you start and Tools 1–5 replace the earlier Modules 1–3. Nothing from the earlier
+// pages was dropped: each piece now sits under the tool it belongs to (see CONTEXT.md, D26).
+// In the final booklet Translate has two parts: Part A, thick translation (3.09 example, 3.10 template)
+// and Part B, reverse thick translation (3.11 example, 3.12 survey sheet, 3.13 tally and support check).
 // Filled examples are illustrative (the booklet says so).
 
 export const overview = {
@@ -41,6 +42,7 @@ export const overview = {
     body: 'Words from photo talk-backs come here. Drawings from the Kahavat Relay go there.',
   },
   youNeed: 'Consent to record, a recorder, a local language collaborator, and time to go back to people.',
+  shortOnTime: 'Short on time? Go straight to the templates (3.07, 3.10, 3.12–3.13, 3.16, 3.19, 3.22). Each has [bracketed] examples.',
   people: ['A recorder', 'A local language collaborator'],
   applies: [
     'Public-service and civic platforms in any linguistically diverse country',
@@ -73,8 +75,8 @@ export const route = [
     slug: 'translate',
     label: '2 · Translate',
     sub: 'thick, both ways',
-    blurb: 'What does it mean, and does it mean the same to others? Thick translation, then reverse thick translation.',
-    time: '2–3 hours + a survey',
+    blurb: 'What does it really mean, and do other people read it the same way? Thick translation, then reverse thick translation.',
+    time: 'Part A 1 h · Part B a survey',
   },
   { slug: 'test', label: '3 · Test', sub: 'with the audience', blurb: 'Does our wording work for this audience?', time: '45 min + testing' },
   { slug: 'library', label: '4 · Library', sub: 'keep what works', blurb: 'How do we keep what we learned, so the next team can use it?', time: '20 min per entry' },
@@ -101,48 +103,59 @@ export const reverseThickTranslation = {
     'A translation only counts once it has been checked in both directions. Until then it is one reader’s best reading, however fluent that reader is.',
   ],
   loop: [
-    { step: 'Thick translation', note: 'Literal, in context, alternatives, implied.' },
+    { step: 'Thick translation', note: 'Part A: literal, in context, alternatives, implied, reviewed by a collaborator.' },
     { step: 'Collaborator review', note: 'A local language collaborator reads it.' },
-    { step: 'Reverse thick translation', note: 'Survey in three directions.', hot: true },
+    { step: 'Reverse thick translation', note: 'Part B: a survey in three directions, with 6–8 people from the same audience.', hot: true },
     { step: 'Support check', note: 'Four parts, all needed.' },
+  ],
+  survey: [
+    'Pick 6–8 people from the same audience, not the original speaker.',
+    'Run directions 1 and 2 with everyone, and 3 with the regional speakers.',
+    'Record exactly what they say, plus tone and small signals. One survey sheet each, read aloud when needed.',
+    'Tally: implied, literal only, or something else.',
+    'Run the support check. Store it, or go back to Part A.',
   ],
   directions: [
     {
       n: 1,
-      title: 'Native → English',
-      script: 'Show the phrase. “What does it mean, in English?”',
-      shows: 'What gets lost or changed when their words are pulled into English.',
-      example: '“It’s in God’s hands” · “the officials decide” [n of N]',
+      title: 'Their language → meaning',
+      script: 'Show the phrase in their language. Ask: “What does it literally say? What would someone mean by it? How would they sound?”',
+      shows: 'Whether people read the implied meaning you wrote, or only the literal one, and in what tone.',
+      example: '“It’s out of my hands now” (5) · “The officials will decide” (2) · only the literal, “God’s wish” (1)',
     },
     {
       n: 2,
-      title: 'English → native',
-      script: 'Show the English: a translation of what was said, or a phrase from the product, like “Your application is under review.” Ask: “How would you say it?”',
+      title: 'English → their language',
+      script: 'Show the English text, such as a phrase from the product: “Your application is under review.” Ask: “What does this mean to you? Say it the way you’d say it to a friend.”',
       shows: 'How English-based design actually lands on the people using it.',
-      example: '“Pending mein hai” · “upar gaya hai”: pending is borrowed',
+      example: '“Abhi check ho raha hai” · “Pending mein hai” · “Upar gaya hai” (it’s gone up): the same unseen authority again',
     },
     {
       n: 3,
-      title: 'Native → regional',
-      script: 'Ask the collaborator for the regional version, then test it.',
+      title: 'Standard → regional',
+      script: 'Only if relevant. Show the regional version from your collaborator. Ask: “Does this mean the same to you? Does it sound the same?”',
       shows: 'The same word can mean something different, or sound different, from one place to the next, even within one language.',
-      example: '[Regional version from your collaborator]',
+      example: '[Same meaning: n] · [Different meaning or tone: n] · [what changed in the region: a word, the tone, the respect level]',
     },
   ],
   record:
-    'Note what people said and how many of how many said it (n of N), and what shifts from one direction to the next. Where the three directions agree, the reading holds. Where they don’t, the difference is the finding.',
+    'Note what people said and how many of how many said it, and what shifts from one direction to the next. Where the three directions agree, the reading holds. Where they don’t, the difference is the finding.',
   signals: {
     title: 'Small signals count',
     body: 'The survey also captures the small signals that ordinary surveys ignore but that carry real meaning: exclamations such as “arre” (अरे) or “haye”, the tone someone uses, and gestures. Write them next to the exact words, not in a footnote.',
   },
   reading: [
     {
-      title: 'The directions agree',
-      body: 'And the four support-check parts are recorded: the meaning is supported. Store the de-identified pattern in the Expression Library and take it to Test.',
+      title: 'Supported',
+      body: 'The directions agree and all four support-check parts are recorded. Store it: the de-identified pattern goes in the Expression Library (Tool 4), and the wording goes on to Test.',
     },
     {
-      title: 'They don’t agree',
-      body: 'Note what shifted, and go back to thick translation for another look. Meaning not yet supported? Back to Translate.',
+      title: 'Split',
+      body: 'People read it different ways. Store it with the alternatives.',
+    },
+    {
+      title: 'Not yet',
+      body: 'Note what shifted, and go back to Part A for another look. Meaning not yet supported? Back to Translate.',
     },
   ],
   glossary: {
@@ -326,24 +339,26 @@ export const tools: Tool[] = [
     of: 5,
     name: 'Translate',
     kind: 'Thick, both ways',
-    question: 'What does it mean, and does it mean the same to others?',
-    time: '2–3 hours + a survey',
+    question: 'What does it really mean, and do other people read it the same way?',
+    time: 'Part A 1 h · Part B a survey',
     group: 'With a language collaborator',
     effort: 3,
     mode: 'Desk, then field',
     worksOnItsOwn: true,
     sampleNote: 'Follow the steps with your own participants. Use their real words, written in the language they were said in, with consent.',
-    shows: 'The literal meaning, the implied meaning, and whether other people read it the same way.',
-    done: 'Each phrase passes the four-part support check, or goes back for another round.',
+    shows: 'The literal meaning, the implied meaning, and whether people from the same audience read it the same way.',
+    done: 'The phrase has been read back by other people, and it passes all four support checks, or it goes round again.',
     whatIsIt: [
-      'Transcribe key moments in the original language. Translate each thickly: literal, in context, and alternatives. A local collaborator reviews it. Then test it: show people the phrase and ask what it means, in three directions. Only phrases that pass the support check move on.',
-      'That test is reverse thick translation, and it is the centre of this tool. It has its own tab: “Reverse thick translation”.',
+      'Part A · Thick translation: write the phrase as it was said, then its literal meaning, its meaning in context, alternatives and what it implies. A local collaborator reviews it.',
+      'Part B · Reverse thick translation: take it back to other people from the same audience in a short survey, in three directions, and see if they read the meaning you wrote. Only then run the support check. This is the centre of the tool, and it has its own tab: “Reverse thick translation”.',
     ],
     words: [
-      { term: 'Thick translation', def: 'Literal + context + alternatives, not just words.' },
-      { term: 'Reverse thick translation', def: 'Test it back with the audience, in both directions.' },
-      { term: 'Three directions', def: 'Native → English · English → native · native → regional.' },
-      { term: 'Support check', def: 'Source language, who interpreted, how it was rendered, more than one source.' },
+      { term: 'Literal meaning', def: 'A plain English translation of the words.' },
+      { term: 'Implied meaning', def: 'What the person really meant, including tone and feeling. The gap between the two is the useful part.' },
+      { term: 'Reverse thick translation', def: 'Checking your reading with new people, not the person who said it.' },
+      { term: 'Three directions', def: 'Their language → meaning · English → their language · standard → regional.' },
+      { term: 'Small signals', def: '“Arre”, “haaye”, a laugh, a tone. Normal surveys drop these; record them.' },
+      { term: 'Support check', def: 'Four things that must be true before you store a meaning.' },
     ],
     extras: [],
     panels: [{ id: 'reverse', label: 'Reverse thick translation', icon: 'translate', after: 'guide' }],
@@ -354,31 +369,80 @@ export const tools: Tool[] = [
         blurb: 'The four support-check tags in full, the rule behind them, and a checker you can try in your browser.',
       },
     ],
-    need: 'Your recordings and Meaning Cards, a local language collaborator',
-    endUp: 'Glossary entries with literal and implied meanings, for Tool 3',
+    need: 'Recordings and Meaning Cards from Tool 1, a collaborator, 6–8 people from the same audience for the survey',
+    endUp: 'Glossary entries with literal and implied meanings, checked by other people, for Tool 3',
     guidePage: '3.08',
     parts: [
       {
         id: 'thick',
         label: 'Part A',
-        title: 'Thick translation + support check',
+        title: 'Thick translation',
         example: {
           page: '3.09',
-          alt: 'Filled example: “Form toh bhar diya, ab upar wale ki marzi” (फ़ॉर्म तो भर दिया, अब ऊपर वाले की मर्ज़ी) with its literal translation (“I’ve filled the form, now it’s the wish of the one above”), in context (she has done her part; the outcome is decided somewhere she can’t see or reach), alternatives (“It’s in God’s hands”, “It’s up to the officials now”, “Nothing more I can do”), implied meaning (loss of control, and not knowing who decides; resignation, with a little humour) and who reviewed it (a local language collaborator for Hindi and Bhojpuri, who added the officials reading). Then the reverse thick translation survey in three directions: native to English (“It’s in God’s hands”, “the officials decide”, n of N), English to native (“Pending mein hai”, “upar gaya hai”: pending is borrowed) and native to regional (the collaborator’s version, in brackets). Then the four-part support check, all ticked, and the result: supported, store the pattern and take it to Tool 3.',
-          note: 'Illustrative example. Replace [bracketed] parts with your survey results and your collaborator’s version.',
+          alt: 'Worked example of thick translation: “Form toh bhar diya, ab upar wale ki marzi” (फ़ॉर्म तो भर दिया, अब ऊपर वाले की मर्ज़ी), as said. Literal: “I’ve filled the form, now it’s the wish of the one above.” In context: she has done her part; the outcome is decided somewhere she can’t see or reach. Alternatives: “It’s in God’s hands”, “It’s up to the officials now”, “Nothing more I can do”. Implied: loss of control, and not knowing who decides; resigned, with a little humour. Signals: a short laugh before “marzi”; her voice drops. Reviewed by a local language collaborator (Hindi, Bhojpuri), who added the “officials” reading. Literal versus implied, the useful part: literally it’s about God; what she meant is an unknown official deciding her fate. Take to Part B: is “out of my hands, and I don’t know who decides” what other students hear too?',
+          note: 'Illustrative example.',
         },
         blank: {
           page: '3.10',
-          alt: 'Blank thick-translation sheet: as said, literal, in context, alternatives, implied, reviewed by; the three survey directions with what people said; and the four-part support check (source language, who interpreted, rendering, single source?) with two outcomes: supported (on to Tool 3) or not yet (translate again).',
+          alt: 'Thick-translation template with examples in [brackets]: from Meaning Card no., languages spoken and region; as said (in their language and script, exactly as said), literal (word for word), in context, alternatives, implied (what they really meant, with tone and feeling), signals (arre, haaye, a laugh, a tone), reviewed by, and the sentence “Literally it means [God’s wish], but they meant [an unknown official decides]”, then the question to test in Part B: do other people hear the same thing?',
           pdf: 'c3-translate-blank.pdf',
           printed: 'p.3.10',
         },
         steps: [
-          'Transcribe key moments in the original language.',
-          'Write literal, in context, alternatives, implied.',
-          'Review with a local language collaborator.',
-          'Survey in three directions. Note what shifts.',
-          'Run the support check. Missing one? Loop back.',
+          'Transcribe the moment in the original language and script.',
+          'Write the literal meaning, word for word.',
+          'Add context, alternatives, and the implied meaning.',
+          'Note small signals: exclamations, laughs, tone.',
+          'A local collaborator reviews it. Then go to Part B.',
+        ],
+      },
+      {
+        id: 'reverse',
+        label: 'Part B',
+        title: 'Reverse thick translation',
+        example: {
+          page: '3.11',
+          alt: 'Worked example of reverse thick translation: 8 first-generation students from the same colleges, not Meera. One survey sheet each (p.3.12), read aloud when needed. Directions 1 and 2 with everyone; direction 3 with the regional speakers. Direction 1, their language to meaning: shown “ऊपर वाले की मर्ज़ी”; most hear the implied meaning (“It’s out of my hands now”, 5; “The officials will decide”, 2; only the literal “God’s wish”, 1) and two point at officials, not God. Direction 2, English to their language: shown “Your application is under review.”; answers are “Abhi check ho raha hai”, “Pending mein hai” (3) and “Upar gaya hai” (it’s gone up) (1), so “under review” becomes “gone up”: the same unseen authority again. Direction 3, standard to regional: [same meaning: n], [different meaning or tone: n], [what changed in the region]. Small signals across all surveys: “arre” × 3 (frustration), “haaye” × 1 (resignation), laughed × 2 before the phrase, tone mostly resigned, 2 joking. Support check, all four needed, ticked: source language (Hindi–English mix, recorded as said), who interpreted (local collaborator), rendering (conceptual gloss), more than one source (yes, 8 people read it back). Supported: store it, and add “officials” as an alternative. The glossary entry for the Expression Library: ऊपर वाले की मर्ज़ी; literal, the wish of the one above; implied, it’s out of my hands and I don’t know who decides; signals, resigned, a short laugh; read back by 8 people, 7 agree.',
+          note: 'Illustrative example. Counts are invented to show the method; [brackets] are for your own data.',
+        },
+        blank: {
+          page: '3.13',
+          alt: 'Tally and support-check template with examples in [brackets]: for each of the three directions, tick boxes for read the implied meaning, only the literal meaning, and something else (write it), and what shifted; small signals across all sheets (“arre” × 3, frustration; laughed × 2); the support check, tick all four or loop back (source language, who interpreted, rendering, more than one source?), with three outcomes: supported, store it; split, store with alternatives; not yet, back to Part A; and a glossary entry for the Expression Library (phrase, literal, implied, the difference, signals, read back by).',
+          pdf: 'c3-translate-tally-blank.pdf',
+          printed: 'p.3.13',
+        },
+        steps: [
+          'Pick 6–8 people from the same audience, not the original speaker.',
+          'Run directions 1 and 2 with everyone, and 3 with the regional speakers.',
+          'Record exactly what they say, plus tone and small signals.',
+          'Tally: implied, literal only, or something else.',
+          'Run the support check. Store it, or go back to Part A.',
+        ],
+      },
+      {
+        id: 'survey',
+        label: 'Part B · sheet',
+        title: 'Survey sheet · one per person',
+        example: {
+          page: '3.12',
+          alt: 'The survey sheet, one per person, to print and read aloud when needed. Languages spoken at home, district or region, code (no names), age band and consent to take part and be recorded. Direction 1, their language to meaning: show the phrase in their language; what does it say, word for word; if someone said this to you, what would they mean; how would they sound (calm, worried, joking, resigned, annoyed, respectful, other). Direction 2, English to their language: show the English text; what does this mean to you, say it the way you’d say it to a friend; how would they sound. Direction 3, standard to regional, only if relevant: show the regional version from your language collaborator; does it mean the same here, does it sound the same, what changes; how would they sound. Then small signals, written exactly, and a researcher note on who else was present.',
+          note: 'A print sheet, not a filled example. Print one per person and read it aloud when needed.',
+        },
+        blank: {
+          page: '3.12',
+          alt: 'The survey sheet, to print.',
+          pdf: 'c3-translate-survey-sheet.pdf',
+          printed: 'p.3.12',
+          shared: true,
+          downloadTitle: 'Translate · Part B · Survey sheet (print + read aloud)',
+          downloadNote: 'One per person. Show the phrase, read the questions aloud when needed, and write what they say exactly.',
+          sharedNote: 'On p.3.12 of the booklet, the survey sheet is printed once per person and read aloud when needed. The download is that page.',
+        },
+        steps: [
+          'Print one sheet for each person you survey.',
+          'Show the phrase in each direction, and read the questions aloud when needed.',
+          'Write what they say exactly, in the language they say it in.',
+          'Note how they sound, and any small signals.',
         ],
       },
     ],
@@ -419,22 +483,22 @@ export const tools: Tool[] = [
     ],
     need: 'A supported glossary entry from Tool 2, the screen you want to change',
     endUp: 'Tested wording, ready for the Design Language Library',
-    guidePage: '3.11',
+    guidePage: '3.14',
     parts: [
       {
         id: 'lenses',
         label: 'Part A',
         title: 'Candidate wording + three lenses',
         example: {
-          page: '3.12',
+          page: '3.15',
           alt: 'Filled example: rewriting “Status: Pending”. The hypothesis is that if the status names who is holding the application and for how long, students will stop reading “pending” as fate. The candidate is “Your college is checking your documents · day 3 of 15”, with the Hindi beside it (आपका कॉलेज आपके दस्तावेज़ जाँच रहा है · दिन 3 / 15). Three lenses for first-generation students applying on a phone: N, new (understood “college is checking”), P, proxy (her father repeated it correctly over the phone) and T, trust (the “Call your college” link looked like a scam, so it was removed). Tested in a hostel common room with 6 students and 2 fathers by phone. Result: round 2 passed all three lenses; store in the Design Language Library.',
           note: 'Illustrative example. Check any translated UI copy with a native speaker before testing.',
         },
         blank: {
-          page: '3.13',
-          alt: 'Blank test sheet: a hypothesis (“If we say ___, then ___ will happen”), the wording now and the candidate in every language, this audience, the three lenses N, P and T with what each asks, where and with whom it was tested, and the result: store, rewrite, or new questions.',
+          page: '3.16',
+          alt: 'Test template, with examples in [brackets]: a hypothesis (“If we say ___, then ___ will happen”), the wording now and the candidate in every language, this audience, the three lenses N, P and T with what each asks, where and with whom it was tested, and the result: store, rewrite, or new questions.',
           pdf: 'c3-test-blank.pdf',
-          printed: 'p.3.13',
+          printed: 'p.3.16',
         },
         steps: [
           'Write the hypothesis in one sentence.',
@@ -486,22 +550,22 @@ export const tools: Tool[] = [
     ],
     need: 'Supported entries from Tool 2 and tested wording from Tool 3',
     endUp: 'Library entries your whole team, and the next project, can reuse',
-    guidePage: '3.14',
+    guidePage: '3.17',
     parts: [
       {
         id: 'entries',
         label: 'Part A',
         title: 'Two linked entries',
         example: {
-          page: '3.15',
+          page: '3.18',
           alt: 'Filled example: two linked entries. Expression Library EX-014: “upar wale ki marzi” (ऊपर वाले की मर्ज़ी), Hindi used inside Hinglish speech; literally, the wish of the one above; implied, out of my hands and I don’t know who decides; heard when waiting on an institution after submitting; evidence: 3 participants, collaborator and second reader, supported; don’t use for religious meaning in every context, ask first. Design Language Library DL-031: the moment is application status after submitting; it replaces “Status: Pending”; English “Your college is checking your documents · day 3 of 15” and its Hindi; tested with first-generation students on phones and fathers by phone; lenses N, P and T all passed in round 2; linked to EX-014, tone: calm, specific, no urgency. A note says it grows into a language system: group tested entries by moment (errors, waiting, success) and by voice (how formal, how warm), like components in a design system.',
           note: 'Illustrative example.',
         },
         blank: {
-          page: '3.16',
+          page: '3.19',
           alt: 'Blank library entries to print, cut out and file, two of each: an Expression Library entry (expression, language, literal, implied, heard when, evidence, don’t use for) and a Design Language entry (moment, replaces, English, language 2, tested with, lenses N P T, linked to).',
           pdf: 'c3-library-entries-blank.pdf',
-          printed: 'p.3.16',
+          printed: 'p.3.19',
           note: 'Print, cut out and file. Or copy the fields into a shared spreadsheet.',
         },
         steps: [
@@ -551,24 +615,24 @@ export const tools: Tool[] = [
         body: 'Each own-language line gets a thick translation.',
       },
     ],
-    need: 'Idiom cards (p.3.20), relay sheets (p.3.19), pens, consent to share drawings',
+    need: 'Idiom cards (p.3.23), relay sheets (p.3.22), pens, consent to share drawings',
     endUp: 'Drawings for Component 2, own-language lines for Tool 2, and new questions for Tool 1',
-    guidePage: '3.17',
+    guidePage: '3.20',
     parts: [
       {
         id: 'relay',
         label: 'Part A',
         title: 'One anaar, three people',
         example: {
-          page: '3.18',
+          page: '3.21',
           alt: 'Filled example: the idiom card “Ek anaar, sau beemar” (एक अनार, सौ बीमार): one pomegranate, a hundred sick. Round 1, Meera, sees the idiom card and draws a phone marked OTP with lines to many people, and writes “Ek hi phone hai ghar mein, sabka OTP usi par aata hai” (एक ही फ़ोन है घर में, सबका OTP उसी पर आता है): there’s only one phone at home, everyone’s OTP comes to it. Round 2, who sees only drawing 1, draws one thing with many people after it and writes “Sab ek hi cheez ke peechhe lage hain” (सब एक ही चीज़ के पीछे लगे हैं): everyone is after the same one thing. Round 3, who sees only drawing 2, draws people standing in a numbered line and writes “Line mein lago, baari aayegi tab” (लाइन में लगो, बारी आएगी तब): stand in line, your turn will come. Survived: one resource, too many people. Shifted: from who owns the phone to who waits for it. Added: turn-taking and time. Design question: does the product assume one person, one phone, and what happens to OTP timing when it is shared?',
           note: 'Illustrative example. Lines are shown in Hindi; participants write in whatever language and script they choose.',
         },
         blank: {
-          page: '3.19',
-          alt: 'Blank relay sheet: an idiom card and topic, three rounds each with a code, what that person sees, a space to draw and one line in their own language, then survived, shifted, added, and a design question. Fold the sheet so the next person sees only the last drawing.',
+          page: '3.22',
+          alt: 'Relay sheet, with examples in [brackets]: an idiom card and topic, three rounds each with a code, what that person sees, a space to draw and one line in their own language, then survived, shifted, added, and a design question. Fold the sheet so the next person sees only the last drawing.',
           pdf: 'c3-relay-sheet-blank.pdf',
-          printed: 'p.3.19',
+          printed: 'p.3.22',
           note: 'Fold the sheet so the next person sees only the last drawing. Never show them the idiom or the earlier lines.',
         },
         steps: [
@@ -584,20 +648,20 @@ export const tools: Tool[] = [
         label: 'Part B',
         title: 'Idiom cards',
         example: {
-          page: '3.20',
+          page: '3.23',
           alt: 'Idiom cards to print and cut: six Hindi examples, each with the idiom in Devanagari and in Latin script, what it literally says, what it usually means and the question “When has this happened to you?”. Ek anaar, sau beemar (one pomegranate, a hundred sick); Oont ke munh mein jeera (a cumin seed in a camel’s mouth); Naach na jaane, aangan tedha (can’t dance, blames the crooked courtyard); Door ke dhol suhaavne (distant drums sound sweet); Aasmaan se gira, khajoor mein atka (fell from the sky, stuck in a date palm); Jitni chaadar, utne pair pasaaro (stretch your legs only as far as the sheet). Below them, three blank cards for idioms from the participants’ own language.',
           note: 'A print sheet, not a filled example. Print it and cut along the dashed lines.',
         },
         blank: {
-          page: '3.20',
+          page: '3.23',
           alt: 'Three blank idiom cards for a kahavat from the participants’ own language, what it usually means, and the question “When has this happened to you?”.',
           pdf: 'c3-relay-idiom-cards.pdf',
-          printed: 'p.3.20',
+          printed: 'p.3.23',
           shared: true,
           downloadTitle: 'Kahavat Relay · Idiom cards (print sheet)',
           downloadNote: 'Six filled Hindi idiom cards and three blanks for idioms from your participants’ own language. Print and cut along the dashed lines.',
           sharedNote:
-            'On p.3.20 of the booklet, the six filled idiom cards sit above three blanks for idioms from your participants’ own language. Print the page and cut along the dashed lines. The download is that page.',
+            'On p.3.23 of the booklet, the six filled idiom cards sit above three blanks for idioms from your participants’ own language. Print the page and cut along the dashed lines. The download is that page.',
         },
         steps: [
           'Print the page and cut along the dashed lines.',
@@ -610,7 +674,7 @@ export const tools: Tool[] = [
   },
 ];
 
-/** Page 3.21, the closing "Is it working?" for the whole component. */
+/** Page 3.24, the closing "Is it working?" for the whole component. */
 export const closing = {
   good: [
     'A participant corrected your Meaning Card, and the correction changed your reading.',

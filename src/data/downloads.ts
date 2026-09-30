@@ -41,26 +41,19 @@ const C4 = '/components/material-reality/';
 const booklet: DownloadEntry[] = [
   {
     id: 'booklet',
-    title: 'Booklet · guideline, Components 1 and 4 (A4)',
-    description: 'The guideline, Meera, Component 1 and Component 4, with every example and blank template.',
+    title: 'The booklet · the whole toolkit (A4)',
+    description:
+      'The final booklet: the guideline, Meera, Claim & Reflection, Components 1 to 4 with every tool, worked example and template, and the Component 1 card kit.',
     file: 'designing-for-the-indian-context-booklet.pdf',
     format: 'PDF',
     group: 'booklet',
-    pages: 53,
-  },
-  {
-    id: 'booklet-2-3',
-    title: 'Booklet · Components 2 and 3 (A4)',
-    description: 'Reading Visual Culture and Reading Language: every tool, filled example and blank template.',
-    file: 'components-2-3-booklet.pdf',
-    format: 'PDF',
-    group: 'booklet',
-    pages: 36,
+    pages: 107,
+    note: 'Sheets and boards are A4 and A3 pages here; print them at A2 and on card (see the card kit).',
   },
   {
     id: 'card-kit-full',
     title: 'Component 1 card kit (all)',
-    description: 'Card sheets S1–S8 and boards B1–B7 as one file, exactly as laid out in the booklet.',
+    description: 'The card-kit page, sheets S1–S8 and boards B1–B7 as one file, exactly as laid out in the booklet (p.1.12–1.27).',
     file: 'component-1-card-kit.pdf',
     format: 'PDF',
     group: 'card-kit',
@@ -117,7 +110,8 @@ const boardEntries: DownloadEntry[] = boards.map((b) => ({
   page: '/card-kit/',
 }));
 
-// ---- Blank templates, derived from the tool data so they cannot drift
+// ---- Templates, derived from the tool data so they cannot drift. In the final booklet a template can carry
+// [bracketed] examples, so they are called templates, not blanks.
 const templateEntries: DownloadEntry[] = [];
 const seen = new Set<string>();
 const templateSources = [
@@ -133,9 +127,12 @@ for (const { tools, c, base } of templateSources) {
       seen.add(p.blank.pdf);
       templateEntries.push({
         id: `tpl-${p.blank.pdf.replace(/\.pdf$/, '')}`,
-        title: p.blank.downloadTitle ?? `${t.short}${t.parts.length > 1 ? ` · ${p.title}` : ''}: blank template`,
+        title: p.blank.downloadTitle ?? `${t.short}${t.parts.length > 1 ? ` · ${p.title}` : ''}: template`,
         description:
-          p.blank.downloadNote ?? (p.blank.shared ? 'Example above, blank below.' : 'Print it and fill it in for your person.'),
+          p.blank.downloadNote ??
+          (p.blank.shared
+            ? 'Example above, blank below.'
+            : 'Print it and fill it in for your person. Anything in [brackets] is an example: write over it.'),
         file: `templates/${p.blank.pdf}`,
         format: 'PDF',
         group: 'templates',

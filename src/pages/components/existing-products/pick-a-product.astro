@@ -6,6 +6,7 @@ import { overview } from '../../../data/booklet/existing-products';
 import { url } from '../../../utils/url';
 
 const p = overview.pickAProduct;
+const how = overview.howEveryPageWorks;
 ---
 
 <ComponentLayout
@@ -14,7 +15,7 @@ const p = overview.pickAProduct;
   title="Pick a product"
   heading="Pick a product"
   lead={p.lead}
-  chips={['Before Tool 1', '5 minutes']}
+  chips={['Step 0', 'Before Tool 1']}
   crumb="Pick a product"
 >
   <Section id="good" eyebrow="One product, not a category" title="Specific enough to open." split>
@@ -34,13 +35,13 @@ const p = overview.pickAProduct;
     </div>
   </Section>
 
-  <Section id="do" eyebrow="What to do" title="Write it on an orange note." tone="white" split>
-    <p class="big">{p.instruction}</p>
-    <div class="note note--orange sample">
-      <b>Your product</b>
-      <span>National Scholarship Portal</span>
-    </div>
+  <Section id="do" eyebrow={p.step} title="Write it in one line." tone="white" split>
+    <p class="sentence">{p.sentence}</p>
     <p class="small">{p.note}</p>
+  </Section>
+
+  <Section id="how" eyebrow={how.title} title="Every page after this is a template." split>
+    {how.body.map((t) => <p class="big">{t}</p>)}
     <a class="btn btn--accent" href={url('/components/existing-products/media-gossip/')}>
       Start Tool 1 · Media &amp; Gossip <Icon name="arrow" size={20} />
     </a>
@@ -101,20 +102,15 @@ const p = overview.pickAProduct;
     flex: none;
     margin-top: 4px;
   }
-  .sample {
-    display: grid;
-    gap: var(--sp-half);
-    max-width: 24rem;
-    margin-top: var(--sp-3);
-  }
-  .sample b {
-    font-family: var(--font-mono);
-    font-size: var(--fs-xs);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-  .sample span {
+  .sentence {
     font-size: var(--fs-h3);
     font-weight: 700;
+    line-height: 1.3;
+    max-width: 36rem;
+    margin: 0 0 var(--sp-2);
+    padding: var(--sp-3);
+    border-radius: var(--r-md);
+    background: var(--ground);
+    border: 2px dashed var(--line-strong);
   }
 </style>

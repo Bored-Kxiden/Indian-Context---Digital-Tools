@@ -65,7 +65,7 @@ export function railFor(id: RailComponentId): Rail {
       ...head,
       hasCardKit: true,
       items: [
-        { slug: 'pick-a-product', label: 'Pick a product', href: `${c.href}pick-a-product/`, meta: '5 min' },
+        { slug: 'pick-a-product', label: 'Pick a product', href: `${c.href}pick-a-product/` },
         reflectBefore(c.href),
         ...c1Tools.map((t) => toolItem(c.href, t)),
         reflectAfter(c.href),

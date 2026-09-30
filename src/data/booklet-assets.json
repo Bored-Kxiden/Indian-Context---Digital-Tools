@@ -25,450 +25,449 @@
       "page": 6,
       "width": 1273
     },
-    "1.01": {
+    "07": {
       "height": 1800,
       "page": 7,
+      "width": 1273
+    },
+    "1.01": {
+      "height": 1800,
+      "page": 8,
       "width": 1273
     },
     "1.02": {
       "height": 1800,
-      "page": 8,
+      "page": 9,
       "width": 1273
     },
     "1.03": {
       "height": 1800,
-      "page": 9,
+      "page": 11,
       "width": 1273
     },
     "1.04": {
       "height": 1800,
-      "page": 10,
+      "page": 12,
       "width": 1273
     },
     "1.05": {
       "height": 1800,
-      "page": 11,
+      "page": 13,
       "width": 1273
     },
     "1.06": {
       "height": 1800,
-      "page": 12,
+      "page": 14,
       "width": 1273
     },
     "1.07": {
       "height": 1800,
-      "page": 13,
+      "page": 15,
       "width": 1273
     },
     "1.08": {
       "height": 1800,
-      "page": 14,
+      "page": 16,
       "width": 1273
     },
     "1.09": {
       "height": 1800,
-      "page": 15,
+      "page": 17,
       "width": 1273
     },
     "1.10": {
       "height": 1800,
-      "page": 16,
+      "page": 18,
       "width": 1273
     },
     "1.11": {
       "height": 1800,
-      "page": 17,
+      "page": 20,
       "width": 1273
     },
     "1.12": {
       "height": 1800,
-      "page": 18,
+      "page": 21,
       "width": 1273
     },
     "1.13": {
       "height": 1800,
-      "page": 19,
+      "page": 22,
       "width": 1273
     },
     "1.14": {
       "height": 1800,
-      "page": 20,
+      "page": 23,
       "width": 1273
     },
     "1.15": {
       "height": 1800,
-      "page": 21,
+      "page": 24,
       "width": 1273
     },
     "1.16": {
       "height": 1800,
-      "page": 22,
+      "page": 25,
       "width": 1273
     },
     "1.17": {
       "height": 1800,
-      "page": 23,
+      "page": 26,
       "width": 1273
     },
     "1.18": {
       "height": 1800,
-      "page": 24,
+      "page": 27,
       "width": 1273
     },
     "1.19": {
       "height": 1800,
-      "page": 25,
+      "page": 28,
       "width": 1273
     },
     "1.20": {
       "height": 1800,
-      "page": 26,
+      "page": 29,
       "width": 1273
     },
     "1.21": {
-      "height": 1800,
-      "page": 27,
-      "width": 1273
+      "height": 1274,
+      "page": 30,
+      "width": 1800
     },
     "1.22": {
-      "height": 1800,
-      "page": 28,
-      "width": 1273
+      "height": 1274,
+      "page": 31,
+      "width": 1800
     },
     "1.23": {
-      "height": 1800,
-      "page": 29,
-      "width": 1273
+      "height": 1274,
+      "page": 32,
+      "width": 1800
     },
     "1.24": {
-      "height": 1800,
-      "page": 30,
-      "width": 1273
+      "height": 1274,
+      "page": 33,
+      "width": 1800
+    },
+    "1.25": {
+      "height": 1274,
+      "page": 34,
+      "width": 1800
+    },
+    "1.26": {
+      "height": 1274,
+      "page": 35,
+      "width": 1800
+    },
+    "1.27": {
+      "height": 1274,
+      "page": 36,
+      "width": 1800
     },
     "2.01": {
-      "height": 1800,
-      "page": 1,
-      "source": "components-2-3",
-      "width": 1273
-    },
-    "2.02": {
-      "height": 1800,
-      "page": 2,
-      "source": "components-2-3",
-      "width": 1273
-    },
-    "2.03": {
-      "height": 1800,
-      "page": 3,
-      "source": "components-2-3",
-      "width": 1273
-    },
-    "2.04": {
-      "height": 1800,
-      "page": 4,
-      "source": "components-2-3",
-      "width": 1273
-    },
-    "2.05": {
-      "height": 1800,
-      "page": 5,
-      "source": "components-2-3",
-      "width": 1273
-    },
-    "2.06": {
-      "height": 1800,
-      "page": 6,
-      "source": "components-2-3",
-      "width": 1273
-    },
-    "2.07": {
-      "height": 1800,
-      "page": 7,
-      "source": "components-2-3",
-      "width": 1273
-    },
-    "2.08": {
-      "height": 1800,
-      "page": 8,
-      "source": "components-2-3",
-      "width": 1273
-    },
-    "2.09": {
-      "height": 1800,
-      "page": 9,
-      "source": "components-2-3",
-      "width": 1273
-    },
-    "2.10": {
-      "height": 1800,
-      "page": 10,
-      "source": "components-2-3",
-      "width": 1273
-    },
-    "2.11": {
-      "height": 1800,
-      "page": 11,
-      "source": "components-2-3",
-      "width": 1273
-    },
-    "2.12": {
-      "height": 1800,
-      "page": 12,
-      "source": "components-2-3",
-      "width": 1273
-    },
-    "2.13": {
-      "height": 1800,
-      "page": 13,
-      "source": "components-2-3",
-      "width": 1273
-    },
-    "2.14": {
-      "height": 1800,
-      "page": 14,
-      "source": "components-2-3",
-      "width": 1273
-    },
-    "2.15": {
-      "height": 1800,
-      "page": 15,
-      "source": "components-2-3",
-      "width": 1273
-    },
-    "3.01": {
-      "height": 1800,
-      "page": 16,
-      "source": "components-2-3",
-      "width": 1273
-    },
-    "3.02": {
-      "height": 1800,
-      "page": 17,
-      "source": "components-2-3",
-      "width": 1273
-    },
-    "3.03": {
-      "height": 1800,
-      "page": 18,
-      "source": "components-2-3",
-      "width": 1273
-    },
-    "3.04": {
-      "height": 1800,
-      "page": 19,
-      "source": "components-2-3",
-      "width": 1273
-    },
-    "3.05": {
-      "height": 1800,
-      "page": 20,
-      "source": "components-2-3",
-      "width": 1273
-    },
-    "3.06": {
-      "height": 1800,
-      "page": 21,
-      "source": "components-2-3",
-      "width": 1273
-    },
-    "3.07": {
-      "height": 1800,
-      "page": 22,
-      "source": "components-2-3",
-      "width": 1273
-    },
-    "3.08": {
-      "height": 1800,
-      "page": 23,
-      "source": "components-2-3",
-      "width": 1273
-    },
-    "3.09": {
-      "height": 1800,
-      "page": 24,
-      "source": "components-2-3",
-      "width": 1273
-    },
-    "3.10": {
-      "height": 1800,
-      "page": 25,
-      "source": "components-2-3",
-      "width": 1273
-    },
-    "3.11": {
-      "height": 1800,
-      "page": 26,
-      "source": "components-2-3",
-      "width": 1273
-    },
-    "3.12": {
-      "height": 1800,
-      "page": 27,
-      "source": "components-2-3",
-      "width": 1273
-    },
-    "3.13": {
-      "height": 1800,
-      "page": 28,
-      "source": "components-2-3",
-      "width": 1273
-    },
-    "3.14": {
-      "height": 1800,
-      "page": 29,
-      "source": "components-2-3",
-      "width": 1273
-    },
-    "3.15": {
-      "height": 1800,
-      "page": 30,
-      "source": "components-2-3",
-      "width": 1273
-    },
-    "3.16": {
-      "height": 1800,
-      "page": 31,
-      "source": "components-2-3",
-      "width": 1273
-    },
-    "3.17": {
-      "height": 1800,
-      "page": 32,
-      "source": "components-2-3",
-      "width": 1273
-    },
-    "3.18": {
-      "height": 1800,
-      "page": 33,
-      "source": "components-2-3",
-      "width": 1273
-    },
-    "3.19": {
-      "height": 1800,
-      "page": 34,
-      "source": "components-2-3",
-      "width": 1273
-    },
-    "3.20": {
-      "height": 1800,
-      "page": 35,
-      "source": "components-2-3",
-      "width": 1273
-    },
-    "3.21": {
-      "height": 1800,
-      "page": 36,
-      "source": "components-2-3",
-      "width": 1273
-    },
-    "4.01": {
-      "height": 1800,
-      "page": 31,
-      "width": 1273
-    },
-    "4.02": {
-      "height": 1800,
-      "page": 32,
-      "width": 1273
-    },
-    "4.03": {
-      "height": 1800,
-      "page": 33,
-      "width": 1273
-    },
-    "4.04": {
-      "height": 1800,
-      "page": 34,
-      "width": 1273
-    },
-    "4.05": {
-      "height": 1800,
-      "page": 35,
-      "width": 1273
-    },
-    "4.06": {
-      "height": 1800,
-      "page": 36,
-      "width": 1273
-    },
-    "4.07": {
       "height": 1800,
       "page": 37,
       "width": 1273
     },
-    "4.08": {
+    "2.02": {
       "height": 1800,
       "page": 38,
       "width": 1273
     },
-    "4.09": {
-      "height": 1800,
-      "page": 39,
-      "width": 1273
-    },
-    "4.10": {
+    "2.03": {
       "height": 1800,
       "page": 40,
       "width": 1273
     },
-    "4.11": {
+    "2.04": {
       "height": 1800,
       "page": 41,
       "width": 1273
     },
-    "4.12": {
+    "2.05": {
       "height": 1800,
       "page": 42,
       "width": 1273
     },
-    "4.13": {
+    "2.06": {
       "height": 1800,
       "page": 43,
       "width": 1273
     },
-    "4.14": {
+    "2.07": {
       "height": 1800,
       "page": 44,
       "width": 1273
     },
-    "4.15": {
+    "2.08": {
       "height": 1800,
       "page": 45,
       "width": 1273
     },
-    "4.16": {
+    "2.09": {
       "height": 1800,
       "page": 46,
       "width": 1273
     },
-    "4.17": {
+    "2.10": {
       "height": 1800,
       "page": 47,
       "width": 1273
     },
-    "4.18": {
+    "2.11": {
       "height": 1800,
       "page": 48,
       "width": 1273
     },
-    "4.19": {
+    "2.12": {
       "height": 1800,
       "page": 49,
       "width": 1273
     },
-    "4.20": {
+    "2.13": {
       "height": 1800,
       "page": 50,
       "width": 1273
     },
-    "4.21": {
+    "2.14": {
       "height": 1800,
       "page": 51,
       "width": 1273
     },
-    "4.22": {
+    "2.15": {
       "height": 1800,
       "page": 52,
+      "width": 1273
+    },
+    "3.01": {
+      "height": 1800,
+      "page": 54,
+      "width": 1273
+    },
+    "3.02": {
+      "height": 1800,
+      "page": 55,
+      "width": 1273
+    },
+    "3.03": {
+      "height": 1800,
+      "page": 56,
+      "width": 1273
+    },
+    "3.04": {
+      "height": 1800,
+      "page": 58,
+      "width": 1273
+    },
+    "3.05": {
+      "height": 1800,
+      "page": 59,
+      "width": 1273
+    },
+    "3.06": {
+      "height": 1800,
+      "page": 60,
+      "width": 1273
+    },
+    "3.07": {
+      "height": 1800,
+      "page": 61,
+      "width": 1273
+    },
+    "3.08": {
+      "height": 1800,
+      "page": 62,
+      "width": 1273
+    },
+    "3.09": {
+      "height": 1800,
+      "page": 63,
+      "width": 1273
+    },
+    "3.10": {
+      "height": 1800,
+      "page": 64,
+      "width": 1273
+    },
+    "3.11": {
+      "height": 1800,
+      "page": 65,
+      "width": 1273
+    },
+    "3.12": {
+      "height": 1800,
+      "page": 66,
+      "width": 1273
+    },
+    "3.13": {
+      "height": 1800,
+      "page": 67,
+      "width": 1273
+    },
+    "3.14": {
+      "height": 1800,
+      "page": 68,
+      "width": 1273
+    },
+    "3.15": {
+      "height": 1800,
+      "page": 69,
+      "width": 1273
+    },
+    "3.16": {
+      "height": 1800,
+      "page": 70,
+      "width": 1273
+    },
+    "3.17": {
+      "height": 1800,
+      "page": 71,
+      "width": 1273
+    },
+    "3.18": {
+      "height": 1800,
+      "page": 72,
+      "width": 1273
+    },
+    "3.19": {
+      "height": 1800,
+      "page": 73,
+      "width": 1273
+    },
+    "3.20": {
+      "height": 1800,
+      "page": 74,
+      "width": 1273
+    },
+    "3.21": {
+      "height": 1800,
+      "page": 75,
+      "width": 1273
+    },
+    "3.22": {
+      "height": 1800,
+      "page": 76,
+      "width": 1273
+    },
+    "3.23": {
+      "height": 1800,
+      "page": 77,
+      "width": 1273
+    },
+    "3.24": {
+      "height": 1800,
+      "page": 78,
+      "width": 1273
+    },
+    "4.01": {
+      "height": 1800,
+      "page": 80,
+      "width": 1273
+    },
+    "4.02": {
+      "height": 1800,
+      "page": 81,
+      "width": 1273
+    },
+    "4.03": {
+      "height": 1800,
+      "page": 82,
+      "width": 1273
+    },
+    "4.04": {
+      "height": 1800,
+      "page": 84,
+      "width": 1273
+    },
+    "4.05": {
+      "height": 1800,
+      "page": 85,
+      "width": 1273
+    },
+    "4.06": {
+      "height": 1800,
+      "page": 86,
+      "width": 1273
+    },
+    "4.07": {
+      "height": 1800,
+      "page": 87,
+      "width": 1273
+    },
+    "4.08": {
+      "height": 1800,
+      "page": 88,
+      "width": 1273
+    },
+    "4.09": {
+      "height": 1800,
+      "page": 89,
+      "width": 1273
+    },
+    "4.10": {
+      "height": 1800,
+      "page": 90,
+      "width": 1273
+    },
+    "4.11": {
+      "height": 1800,
+      "page": 91,
+      "width": 1273
+    },
+    "4.12": {
+      "height": 1800,
+      "page": 92,
+      "width": 1273
+    },
+    "4.13": {
+      "height": 1800,
+      "page": 93,
+      "width": 1273
+    },
+    "4.14": {
+      "height": 1800,
+      "page": 94,
+      "width": 1273
+    },
+    "4.15": {
+      "height": 1800,
+      "page": 95,
+      "width": 1273
+    },
+    "4.16": {
+      "height": 1800,
+      "page": 96,
+      "width": 1273
+    },
+    "4.17": {
+      "height": 1800,
+      "page": 97,
+      "width": 1273
+    },
+    "4.18": {
+      "height": 1800,
+      "page": 98,
+      "width": 1273
+    },
+    "4.19": {
+      "height": 1800,
+      "page": 99,
+      "width": 1273
+    },
+    "4.20": {
+      "height": 1800,
+      "page": 100,
+      "width": 1273
+    },
+    "4.21": {
+      "height": 1800,
+      "page": 101,
+      "width": 1273
+    },
+    "4.22": {
+      "height": 1800,
+      "page": 102,
       "width": 1273
     },
     "cover": {
@@ -478,89 +477,84 @@
     },
     "end": {
       "height": 1800,
-      "page": 53,
+      "page": 107,
       "width": 1273
     }
   },
   "cardKit": {
-    "1.25": {
-      "height": 1800,
-      "page": 1,
-      "width": 1273
-    },
     "B1": {
       "height": 1274,
-      "page": 10,
+      "page": 30,
       "width": 1800
     },
     "B2": {
       "height": 1274,
-      "page": 11,
+      "page": 31,
       "width": 1800
     },
     "B3": {
       "height": 1274,
-      "page": 12,
+      "page": 32,
       "width": 1800
     },
     "B4": {
       "height": 1274,
-      "page": 13,
+      "page": 33,
       "width": 1800
     },
     "B5": {
       "height": 1274,
-      "page": 14,
+      "page": 34,
       "width": 1800
     },
     "B6": {
       "height": 1274,
-      "page": 15,
+      "page": 35,
       "width": 1800
     },
     "B7": {
       "height": 1274,
-      "page": 16,
+      "page": 36,
       "width": 1800
     },
     "S1": {
       "height": 1800,
-      "page": 2,
+      "page": 22,
       "width": 1273
     },
     "S2": {
       "height": 1800,
-      "page": 3,
+      "page": 23,
       "width": 1273
     },
     "S3": {
       "height": 1800,
-      "page": 4,
+      "page": 24,
       "width": 1273
     },
     "S4": {
       "height": 1800,
-      "page": 5,
+      "page": 25,
       "width": 1273
     },
     "S5": {
       "height": 1800,
-      "page": 6,
+      "page": 26,
       "width": 1273
     },
     "S6": {
       "height": 1800,
-      "page": 7,
+      "page": 27,
       "width": 1273
     },
     "S7": {
       "height": 1800,
-      "page": 8,
+      "page": 28,
       "width": 1273
     },
     "S8": {
       "height": 1800,
-      "page": 9,
+      "page": 29,
       "width": 1273
     }
   },
@@ -618,29 +612,26 @@
     }
   },
   "templates": {
-    "c1-break-blame-scale.pdf": {
-      "bookletPage": "1.16"
+    "c1-break-flow-needs-template.pdf": {
+      "bookletPage": "1.06"
     },
-    "c1-break-flow-needs-blank.pdf": {
-      "bookletPage": "1.15"
-    },
-    "c1-break-villain-story-blank.pdf": {
-      "bookletPage": "1.18"
-    },
-    "c1-gossip-venn-blank.pdf": {
-      "bookletPage": "1.09"
-    },
-    "c1-history-timeline-blank.pdf": {
-      "bookletPage": "1.12"
-    },
-    "c1-media-story-blank.pdf": {
+    "c1-break-villain-story-template.pdf": {
       "bookletPage": "1.07"
     },
-    "c1-power-lenses-blank.pdf": {
-      "bookletPage": "1.21"
+    "c1-gossip-venn-template.pdf": {
+      "bookletPage": "1.04"
     },
-    "c1-synthesis-blank.pdf": {
-      "bookletPage": "1.23"
+    "c1-history-timeline-template.pdf": {
+      "bookletPage": "1.05"
+    },
+    "c1-media-story-template.pdf": {
+      "bookletPage": "1.03"
+    },
+    "c1-power-template.pdf": {
+      "bookletPage": "1.08"
+    },
+    "c1-synthesis-template.pdf": {
+      "bookletPage": "1.09"
     },
     "c2-build-scenario-blank.pdf": {
       "bookletPage": "2.11"
@@ -658,7 +649,7 @@
       "bookletPage": "3.03"
     },
     "c3-library-entries-blank.pdf": {
-      "bookletPage": "3.16"
+      "bookletPage": "3.19"
     },
     "c3-listen-cue-cards.pdf": {
       "bookletPage": "3.05"
@@ -667,16 +658,22 @@
       "bookletPage": "3.07"
     },
     "c3-relay-idiom-cards.pdf": {
-      "bookletPage": "3.20"
+      "bookletPage": "3.23"
     },
     "c3-relay-sheet-blank.pdf": {
-      "bookletPage": "3.19"
+      "bookletPage": "3.22"
     },
     "c3-test-blank.pdf": {
-      "bookletPage": "3.13"
+      "bookletPage": "3.16"
     },
     "c3-translate-blank.pdf": {
       "bookletPage": "3.10"
+    },
+    "c3-translate-survey-sheet.pdf": {
+      "bookletPage": "3.12"
+    },
+    "c3-translate-tally-blank.pdf": {
+      "bookletPage": "3.13"
     },
     "c4-ask-your-participants.pdf": {
       "bookletPage": "4.22"

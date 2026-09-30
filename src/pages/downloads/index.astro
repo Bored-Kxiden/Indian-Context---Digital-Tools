@@ -22,7 +22,7 @@ const reflection = getDownloadsByGroup('reflection');
 
 <BaseLayout
   title="Downloads"
-  description="Every file in the toolkit: the booklet, the card kit, the blank templates and the language templates."
+  description="Every file in the toolkit: the booklet, the card kit, the templates and the language templates."
 >
   <PageHead
     crumbs={[{ label: 'Home', href: '/' }, { label: 'Downloads' }]}
@@ -32,13 +32,13 @@ const reflection = getDownloadsByGroup('reflection');
     <nav slot="aside" class="jump" aria-label="On this page">
       <a href="#booklet">Booklet</a>
       <a href="#card-kit">Card kit</a>
-      <a href="#templates">Blank templates</a>
+      <a href="#templates">Templates</a>
       <a href="#reflection">Claim &amp; Reflection</a>
       <a href="#language">Language field kit</a>
     </nav>
   </PageHead>
 
-  <Section id="booklet" eyebrow="The whole toolkit, in two booklets" title="Booklets">
+  <Section id="booklet" eyebrow="The whole toolkit, in one booklet" title="Booklet">
     <div class="grid grid--2 single">
       {booklet.map((d) => <DownloadCard item={d} />)}
     </div>
@@ -57,8 +57,10 @@ const reflection = getDownloadsByGroup('reflection');
     </details>
   </Section>
 
-  <Section id="templates" eyebrow="One page each, A4" title="Blank templates">
-    <p slot="lead" class="lead-text">Print the blank for a tool and fill it in for your person, or copy it onto a big sheet.</p>
+  <Section id="templates" eyebrow="One page each, A4" title="Templates">
+    <p slot="lead" class="lead-text">
+      Print the template for a tool and fill it in for your person, or copy it onto a big sheet. Anything in [brackets] is an example: write over it.
+    </p>
     <h3 class="grp" data-c="c1">Component 1 · Reading Existing Products</h3>
     <div class="grid grid--3">
       {c1.map((d) => <DownloadCard item={d} />)}
@@ -79,7 +81,7 @@ const reflection = getDownloadsByGroup('reflection');
 
   <Section id="reflection" eyebrow="Runs through every component" title="Claim & Reflection" tone="white">
     <p slot="lead" class="lead-text">
-      Twelve A4 pages: a Before and After page for each component (they sit with that component’s blank templates above), and three
+      Twelve A4 pages: a Before and After page for each component (they sit with that component’s templates above), and three
       Look back pages for the end.
     </p>
     <div class="grid grid--3" data-c="ink">

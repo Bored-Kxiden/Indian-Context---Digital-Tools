@@ -93,9 +93,10 @@ export interface Tool {
   kind?: string;
   question: string;
   time: string;
-  group: string;
-  effort: 1 | 2 | 3;
-  mode: string;
+  /** Who does it, how hard it is, and where: shown when the booklet gives them (Components 2 to 4). */
+  group?: string;
+  effort?: 1 | 2 | 3;
+  mode?: string;
   worksOnItsOwn: boolean;
   shows: string;
   done: string;
@@ -114,12 +115,13 @@ export interface Tool {
   panels?: PanelDef[];
   need: string;
   endUp: string;
-  /** Booklet page id of the tool's guide page. */
-  guidePage: string;
+  /** Booklet page id of the tool's guide page. Component 1 has none: its pages are templates. */
+  guidePage?: string;
   parts: Part[];
   cardKit?: ToolCardKit;
   /** Synthesis only: the "Is it working?" page. */
   isItWorking?: { good: string[]; warnings: { sign: string; fix: string }[] };
-  /** Synthesis only: the seven steps. */
-  sevenSteps?: { title: string; body: string }[];
+  /** Synthesis only: the numbered steps, and their heading ("The six steps"). */
+  stepsList?: { title: string; body: string }[];
+  stepsTitle?: string;
 }

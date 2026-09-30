@@ -101,9 +101,9 @@ const pages: FinderItem[] = [
   })),
   { title: 'Card kit', hint: 'Boards B1 to B7 and card sheets S1 to S8', href: '/card-kit/', c: 'c1' },
   { title: 'The guideline', hint: 'Be specific: one real person, one real thing', href: '/guideline/', c: 'ink' },
-  { title: 'How to read a tool', hint: 'Guide, Example, Blank template, Card kit', href: '/guideline/#how-to-read', c: 'ink' },
+  { title: 'How to read a tool', hint: 'Guide, Example, Template, Card kit', href: '/guideline/#how-to-read', c: 'ink' },
   { title: 'Meet Meera', hint: 'The running example', href: '/guideline/#meera', c: 'ink' },
-  { title: 'Downloads', hint: 'Booklet, card kit, blank templates', href: '/downloads/', c: 'ink' },
+  { title: 'Downloads', hint: 'Booklet, card kit, templates', href: '/downloads/', c: 'ink' },
   { title: 'About', hint: 'Who it is for, and what comes after', href: '/about/', c: 'ink' },
 ];
 
