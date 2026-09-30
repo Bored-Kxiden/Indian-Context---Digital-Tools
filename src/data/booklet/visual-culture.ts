@@ -1,6 +1,17 @@
 import type { Tool } from './types';
+import capture from '../../../templates/visual-culture/capture-cards.json';
 
-// Component 2 · Reading Visual Culture. Source: the Components 2 and 3 booklet, pages 2.01–2.15.
+// Component 2 · Reading Visual Culture.
+//
+// PRIMARY SOURCE: the owner's FigJam template (reading-visual-culture.jam, D37). Where the board says something,
+// the site says it the board's way: the six missions and their questions (templates/visual-culture/capture-cards.json),
+// "three prompts, and only three", the method flow (Capture, Affinity, Build, Verify, Scenario), the opening, method
+// and distinction, "student-led, image-first", the student and designer directions, the output of Show and the
+// Context Profile's wording. The booklet (pages 2.01–2.15) and the write-up fill in what the board does not cover:
+// the four tools with their steps, filled examples and printable templates, the nine structures and boxes, the
+// evidence tags, Before you start and the hand-offs. The notes below describe how those were merged earlier.
+//
+// Earlier sources: the Components 2 and 3 booklet, pages 2.01–2.15.
 //
 // The earlier six-page "Component 02" draft repeats most of this booklet. Where the two agree,
 // the booklet's wording is used once. Where the draft has something the booklet does not (the
@@ -18,26 +29,30 @@ import type { Tool } from './types';
 
 export const overview = {
   lead: 'What have people learned to notice, trust and act on, before they ever read your product?',
-  descriptor:
-    'A participant-led visual research tool for uncovering the visual and informational conditions through which a particular interaction becomes legible.',
+  // The FigJam's cover line.
+  descriptor: 'Built on participant-generated photo elicitation: the student decides what is salient, not the designer.',
   builtFor:
     'Built for first-generation college students from Tier 2 and 3 towns. Reusable without assuming that one Indian experience is universal.',
+  // The FigJam's "What is it & why should I do it?": opening and method.
   idea: [
-    'Designers usually start with an imagined user and read everything through them. This component flips the order. The participant shows what the situation actually looks like, in their own world, before the designer explains it.',
+    'Designers usually start from a fictional abstraction (“imagine a first-generation student applying for a scholarship”) and then go looking for evidence to fit it. This component reverses the order. The student shows you what applying actually looks like, in their own room, on their own phone, before you interpret anything.',
+    'Six photo missions turn a phone camera into a research instrument. The images are grouped for what they reveal, then rebuilt into a Context Scenario: a real situation, evidenced by real images, that a product’s designers would otherwise have dismissed as an edge case.',
   ],
+  // The FigJam cover's principle.
   principle: {
-    lead: 'The participant decides what matters in the picture.',
-    body: 'The designer does not photograph “Indian culture” and interpret it from the outside.',
+    lead: 'Student-led, image-first.',
+    body: 'Participants photograph their own environment. The designer builds affinity, scenario and context profile from what they chose to show, never from an outside reading of “Indian visual culture”.',
   },
   definition: 'Visual culture is not how things look. It’s what people have learned to recognise, trust, ignore and act on.',
   images:
     'The images are not answers. They are evidence of situations in which information is noticed, trusted, ignored, translated, checked, copied, transformed or made actionable.',
+  // The FigJam's distinction.
   persona: {
-    not: 'Not a persona…',
-    persona: 'A persona asks who.',
+    not: 'The output is not a persona',
+    persona: 'Persona asks who.',
     scenario: 'A Context Scenario',
-    scenarioBody: 'Asks who, where, when, under what conditions, with what information and whose help.',
-    note: 'The same student may navigate the same product differently when the conditions around them change.',
+    scenarioBody: 'Scenario asks who, where, when, under what conditions, and with whose help.',
+    note: 'The same student becomes a different kind of user at home, at a cyber café, or on campus two days before a deadline. The person hasn’t changed; the conditions have.',
   },
   evidence: {
     title: 'Every claim carries an evidence status',
@@ -92,10 +107,10 @@ export const overview = {
   ],
 };
 
-/** The component's "I want to…" line and the four tools' lines. The first is the component's own; the rest are ours. */
+/** The component's "I want to…" line (the FigJam cover's own) and the four tools' lines (ours). */
 export const iWantTo = [
   {
-    phrase: '…understand what people have learned to notice, trust and act upon, before I decide how they should read my product',
+    phrase: '…work with real situations that might be dismissed as “edge cases”, but are ordinary realities for the people experiencing them',
     tool: '',
     tag: 'Component 2',
     anchor: '#route',
@@ -107,49 +122,15 @@ export const iWantTo = [
   { phrase: '…turn what I saw into a question about the system, not the person', tool: 'hand-off', tag: '4 · Hand off', anchor: '' },
 ];
 
-/** The six photo missions (page 2.05). The short follow-up is the question to ask about that photo. */
-export const missions = [
-  {
-    n: '01',
-    title: 'Show me where you learn',
-    body: 'Something that helps you know what to do: a message, notice, document, person, screenshot, note, or something else.',
-    ask: 'What did this help you understand?',
-  },
-  {
-    n: '02',
-    title: 'Show me what you keep beside you',
-    body: 'Not the task. What is around it: anything you keep close to complete, understand or check it.',
-    ask: 'Why do you need this?',
-  },
-  {
-    n: '03',
-    title: 'Show me who or what helps',
-    body: 'Whatever helps when something becomes unclear or difficult: a person, message, screen, object, place or route.',
-    ask: 'What would you have done without it?',
-  },
-  {
-    n: '04',
-    title: 'Show me when information changes',
-    body: 'Follow information as it changes form: one format, language, screen or document becoming another.',
-    ask: 'What changed before you could use it?',
-  },
-  {
-    n: '05',
-    title: 'Show me when the expected way doesn’t work',
-    body: 'Don’t just show the problem. Show what you did instead: another person, device, place or attempt.',
-    ask: 'What made you do this instead?',
-  },
-  {
-    n: '06',
-    title: 'Show me what you know to look at',
-    body: 'Something you look for before deciding what to do, what to trust or what to ignore.',
-    ask: 'How did you learn that this mattered?',
-  },
-];
+/** The six photo missions, as the FigJam's capture cards word them. The follow-up is the card's own question. */
+export const missions = capture.missions;
 
-export const threeQuestions = ['What is this?', 'Why did you show us this?', 'What were you doing?'];
-/** The write-up records a fourth line: an open invitation, not a fourth question to probe. */
-export const openInvitation = 'What else should we know?';
+/** "Every photo gets three prompts, and only three", plus the card's own question (the FigJam). */
+export const threeQuestions = capture.prompts;
+export const promptsLine = capture.promptsLine;
+export const captureStage = capture.captureStage;
+export const showOutput = capture.output;
+export const promptsOptional = capture.optional;
 
 /** The nine structures the passes test for (page 2.08). They are questions, never boxes to sort into. */
 export const structures = [
@@ -207,29 +188,27 @@ export const readTheWorld = {
 };
 
 /**
- * The write-up's six movements. `where` says where each sits in the four tools: that mapping is ours,
- * not the write-up's (see CONTEXT.md, D32).
+ * The FigJam's method flow: five steps. `tool` is where each happens on this site (the four tools keep the booklet's
+ * names, because their examples and templates are the booklet's pages).
  */
-export const movements = [
-  { name: 'Show', body: 'Let participants show you their reality.', where: 'Tool 1 · Show', tool: 'show' },
-  { name: 'Find', body: 'Look for situations and relationships that repeat.', where: 'Tool 2 · Read, Pass 1', tool: 'read' },
-  {
-    name: 'Read',
-    body: 'Investigate what people notice, recognise, trust, ignore or need explained.',
-    where: 'Tool 2 · Read, Passes 2 and 3 and the nine questions',
-    tool: 'read',
-  },
-  { name: 'Build', body: 'Turn the evidence into a Context Scenario.', where: 'Tool 3 · Build', tool: 'build' },
-  {
-    name: 'Challenge',
-    body: 'Test whether your interpretation is actually supported by evidence.',
-    where: 'The evidence tags and stop rule (Tools 2 and 3), the edge-case check, and Is it working?',
-    tool: 'build',
-  },
-  { name: 'Hand off', body: 'Carry the scenario into another part of the research process.', where: 'Tool 4 · Hand off', tool: 'hand-off' },
+export const method = [
+  { n: 1, name: 'Capture', body: 'Students photograph six missions in their own environment.', where: 'Tool 1 · Show', tool: 'show' },
+  { n: 2, name: 'Affinity', body: 'Group images by action, by condition, by what the product doesn’t show.', where: 'Tool 2 · Read, its three passes', tool: 'read' },
+  { n: 3, name: 'Build', body: 'Fill the Context Scenario Canvas from the recurring pattern.', where: 'Tool 3 · Build', tool: 'build' },
+  { n: 4, name: 'Verify', body: 'Challenge it: is this really an edge case, or a dismissed ordinary one?', where: 'The edge-case check in Tool 3, and Is it working?', tool: 'build' },
+  { n: 5, name: 'Scenario', body: 'Hand off an evidenced Context Scenario, not an invented persona.', where: 'Tool 4 · Hand off', tool: 'hand-off' },
 ];
+
+/** The FigJam's "How to use it". */
+export const howToUse = {
+  student:
+    'Students photograph their own reality against six missions: never the task itself, but what surrounds it. What helps them understand, what they keep beside them, who helps, what changes form before it’s usable, what happens when the normal way breaks, what they check more than once. Every photo gets three prompts, and only three: What is this? Why did you show us this? What were you doing?',
+  designer:
+    'The designer runs three affinity passes across the images, then builds the Context Scenario Canvas from the recurring pattern, not the first interesting photo. Every scenario is challenged with one question before it’s trusted: is this really unusual, or did we almost call it “extra”? What survives becomes a Context Scenario and Context Profile, handed to Reading Existing Products and Reading Material Reality.',
+};
+
 export const movementsNote =
-  'The sequence is a guide, not a rigid research law. You may move backwards when you discover that you do not have enough evidence. You may return to participants. You may decide that a scenario needs material, language or product-level investigation before you can make sense of it.';
+  'The steps are a guide, not a rigid research law. You may move backwards when you discover that you do not have enough evidence. You may return to participants. You may decide that a scenario needs material, language or product-level investigation before you can make sense of it.';
 
 /** What you end up with (write-up). The nine questions are the ones the nine boxes answer. */
 export const make = {
@@ -297,7 +276,7 @@ export const beforeYouStart = {
         'An image without context can be very easy to misinterpret. A photograph of someone talking to another person does not tell you why they were talking.',
         'So every image should, where possible, remain connected to the participant’s explanation. Record:',
       ],
-      record: ['What is this?', 'Why did you show us this?', 'What were you doing?', 'What else should we know?'],
+      record: ['What is this?', 'Why did you show us this?', 'What were you doing?', 'The mission card’s own question'],
       foot: 'The participant’s account is part of the evidence.',
     },
   ],
@@ -430,7 +409,7 @@ export const figjam = {
     {
       name: 'Capture cards',
       tool: 'show',
-      what: 'Six suggested prompt cards, one mission per card. Every photo gets three prompts, and only three: What is this? Why did you show us this? What were you doing? Plus the card’s own question.',
+      what: 'Six suggested prompt cards, one mission per card. Every photo gets three prompts, and only three: What is this? Why did you show us this? What were you doing? Plus the card’s own question. They are the six missions on Tool 1 · Show.',
     },
     {
       name: 'The capture stage',
@@ -458,44 +437,6 @@ export const figjam = {
       what: 'An open space, with stickies, for the scenario you hand off.',
     },
   ],
-  cards: [
-    {
-      n: '01',
-      title: 'Show me where you learn',
-      body: 'Show me something that helps you know what to do. A message, a notice, a person, a document, a screenshot, a handwritten note, anything.',
-      ask: 'What did this help you understand?',
-    },
-    {
-      n: '02',
-      title: 'Show me what you keep beside you',
-      body: 'Don’t photograph the task. Photograph what’s around it: a certificate, another phone, a notebook, Aadhaar, a printout, another person.',
-      ask: 'Why do you need this?',
-    },
-    {
-      n: '03',
-      title: 'Show me who helps',
-      body: 'Photograph the person, message, screen, note or place that helped you: whatever helped, when something or someone helped.',
-      ask: 'What did they help you do? Could you have done it alone?',
-    },
-    {
-      n: '04',
-      title: 'Show me when information changes',
-      body: 'Paper → photo. Photo → PDF. English → explanation. Notice → WhatsApp. Show something you had to change before you could use it.',
-      ask: 'What did you have to do to make it usable?',
-    },
-    {
-      n: '05',
-      title: 'Show me when the normal way doesn’t work',
-      body: 'Not “what problems did you face”: show us the workaround. Asking someone, another device, a cyber café, a screenshot, a call, a repeat.',
-      ask: 'What made you do this instead?',
-    },
-    {
-      n: '06',
-      title: 'Show me what you check again',
-      body: 'Show something you check more than once: before you trust it, before you act on it, before you submit it.',
-      ask: 'What are you checking for? What makes you feel sure?',
-    },
-  ],
   howTo: [
     'Open FigJam (figma.com), then drag the .jam file into Drafts or a team project, or use Import. You get your own editable board.',
     'Share the board with your team. Give participants the capture cards, paste their photos into the clusters, and fill the Context Profile from them.',
@@ -503,7 +444,7 @@ export const figjam = {
   ],
   alsoHolds: 'The board also keeps FigJam’s own quick tips (toolbar, move and zoom, sharing, stickies, rectangles, stamps). You can delete them.',
   differs: [
-    'The capture cards word three missions differently from the booklet (p.2.05): 03 “Show me who helps”, 05 “Show me when the normal way doesn’t work” and 06 “Show me what you check again”, and five of the follow-up questions differ. The tool pages keep the booklet’s wording, because the booklet’s filled example (p.2.04) is built on it.',
+    'The site follows the board. The booklet’s printed mission cards (p.2.05) still carry an earlier wording of three missions (“who or what helps”, “the expected way”, “what you know to look at”) and of the follow-up questions; print the capture cards from this site instead.',
     'The board has no Context Scenario canvas (the nine boxes). For Tool 3 · Build, use the booklet’s sheet (p.2.11). The board’s Build step holds the Context Profile, which this site places in Tool 4 · Hand off.',
   ],
 };
@@ -523,6 +464,7 @@ export const tools: Tool[] = [
     number: 1,
     of: 4,
     name: 'Show',
+    kind: 'Capture',
     question: 'What does the moment actually look like, in their world?',
     time: 'A week to capture',
     group: '30 min brief · 45 min talk-back',
@@ -533,13 +475,13 @@ export const tools: Tool[] = [
     shows: 'Where people really learn, check, convert and get help, seen through their own camera.',
     done: 'Every photo has the three answers written beside it, in the participant’s own words.',
     whatIsIt: [
-      'Give participants six photo missions. They photograph their own world for a week. Then you sit with them and ask the same three questions about every photo, so you never have to guess what an image means.',
+      'Give participants six photo missions. They photograph their own world for a week: never the task itself, but what surrounds it. Then you sit with them and ask the same three questions about every photo, plus the card’s own question, so you never have to guess what an image means.',
     ],
     words: [
       { term: 'Mission', def: 'One photo brief, like “Show me what you keep beside you.”' },
       {
         term: 'Three questions',
-        def: 'What is this? Why did you show us this? What were you doing? Ask only these, then leave room: “What else should we know?”',
+        def: 'What is this? Why did you show us this? What were you doing? Three prompts, and only three, plus the mission card’s own question.',
       },
       {
         term: 'Capture rule',
@@ -558,17 +500,17 @@ export const tools: Tool[] = [
       },
       {
         title: 'When to move on',
-        body: 'You are ready to move on when you have enough images to begin seeing relationships or repetitions, not when you have “covered the whole environment”. (From the FigJam template’s “Output of Show”.)',
+        body: 'You are ready to move on when you have enough images to begin seeing relationships or repetitions, not when you have “covered the whole environment”.',
       },
       {
         title: 'Keep the participant’s explanation with every photo',
-        body: 'An image without its explanation is easy to misread. Write the three answers beside the photo in the participant’s words, then ask “What else should we know?” The participant’s account is part of the evidence.',
+        body: 'An image without its explanation is easy to misread. Each picture should have a context from their end: write the three answers, and the answer to the card’s question, beside the photo in the participant’s words. The participant’s account is part of the evidence.',
       },
     ],
     panels: [{ id: 'missions', label: 'The six missions', icon: 'cards', after: 'guide' }],
     need: 'Participants with camera phones, the mission cards (p.2.05), consent for their photos',
-    endUp: 'A wall of captioned photos, each tagged Observed or Reported, for Tool 2',
-    figjamSection: 'the capture cards (its own wording of the six missions) and the capture stage, under 1 · Show',
+    endUp: 'A set of participant-generated images and participant accounts, each tagged Observed or Reported, for Tool 2',
+    figjamSection: 'the six capture cards and the capture stage, under 1 · Show',
     guidePage: '2.03',
     parts: [
       {
@@ -578,14 +520,14 @@ export const tools: Tool[] = [
         example: {
           page: '2.04',
           alt: 'Filled example: Meera’s six photos, one per mission. A class WhatsApp forward with the last date circled; a notebook page of user ID, password and application number beside her phone; the cybercafé counter with the owner’s hand on the mouse and her certificate on the scanner; her certificate becoming a phone photo and then a PDF; her father’s phone on a shelf with a paper slip that says OTP; and the portal’s red “Pending” beside the government emblem. Each has the three answers in her words and an Observed or Reported tag. A note says “Setting” came up in her own words and goes to Component 3 for thick translation.',
-          note: 'Illustrative example. Photos are described, not shown. Use your participants’ real photos, with consent.',
+          note: 'Illustrative example. Photos are described, not shown. Mission labels follow the FigJam template; the booklet page uses an earlier wording for three of them. Use your participants’ real photos, with consent.',
         },
         blank: {
           page: '2.05',
           alt: 'Blank mission cards and photo slips: six mission cards to cut out, each with its follow-up question, and two photo slips with the three questions, an answer-in-any-language line and an Observed or Reported tag.',
           pdf: 'c2-show-missions-blank.pdf',
           printed: 'p.2.05',
-          note: 'Print on card. Cut out. Give one set to each participant. Print a photo slip for every photo at the talk-back.',
+          note: 'The booklet’s page, with an earlier wording of three missions. For the current wording, print the capture cards (under Print) or use the FigJam board. Print on card, cut out, one set per participant, and a photo slip for every photo at the talk-back.',
         },
         steps: [
           'Hand out the six missions. Show no example photos.',
@@ -604,6 +546,7 @@ export const tools: Tool[] = [
     number: 2,
     of: 4,
     name: 'Read',
+    kind: 'Affinity',
     question: 'What keeps happening, and what makes it possible?',
     time: '60–90 min',
     group: 'Team of 2–4',
@@ -682,6 +625,7 @@ export const tools: Tool[] = [
     number: 3,
     of: 4,
     name: 'Build',
+    kind: 'Build · Verify',
     question: 'What situation are we actually designing for?',
     time: '45 min',
     group: 'Pair or team',
@@ -716,8 +660,8 @@ export const tools: Tool[] = [
         ],
       },
       {
-        title: 'The edge-case check',
-        body: 'Don’t write “this is not an edge case”. Write: “This was treated as ___, but the evidence shows ___.” If you only have one image, call it a situation, not a pattern.',
+        title: 'The edge-case check (Verify)',
+        body: 'Challenge every scenario with one question before you trust it: is this really unusual, or did we almost call it “extra”? Don’t write “this is not an edge case”. Write: “This was treated as ___, but the evidence shows ___.” If you only have one image, call it a situation, not a pattern.',
       },
       {
         title: 'The visual reading',
@@ -760,6 +704,7 @@ export const tools: Tool[] = [
     number: 4,
     of: 4,
     name: 'Hand off',
+    kind: 'Scenario',
     question: 'What does this tell us about the system, not the person?',
     time: '30 min',
     group: 'Pair or team',
@@ -775,7 +720,7 @@ export const tools: Tool[] = [
     words: [
       { term: 'Context Profile', def: 'Trying to, depends on, checks, converts, works around…' },
       { term: 'Don’t conclude', def: 'A claim about the person: “students depend on seniors.”' },
-      { term: 'Ask instead', def: 'A question about the system: “what does the senior know that the system hides?”' },
+      { term: 'Ask instead', def: 'A question about the system: “What does the senior know that the system hasn’t made legible?”' },
       { term: 'Hand off', def: 'Where the reading goes next.' },
     ],
     extras: [
@@ -863,7 +808,7 @@ export const closing = {
     },
     {
       sign: 'Your reading describes the person, not the system.',
-      fix: 'Rewrite it as “the system hasn’t made ___ visible”.',
+      fix: 'Rewrite it as “the system hasn’t made ___ legible”.',
     },
   ],
   line: 'What looks like an edge case from the interface may be an ordinary situation from the user’s side.',

@@ -5,7 +5,7 @@ import GoalIndex from '../../../components/GoalIndex.astro';
 import RouteList from '../../../components/RouteList.astro';
 import DownloadCard from '../../../components/DownloadCard.astro';
 import Icon from '../../../components/Icon.astro';
-import { overview, tools, why, readTheWorld, movements, movementsNote, make, evidenceMore, whenToUse, core, figjam } from '../../../data/booklet/visual-culture';
+import { overview, tools, why, readTheWorld, method, howToUse, movementsNote, make, evidenceMore, whenToUse, core, figjam } from '../../../data/booklet/visual-culture';
 import { goalsByComponent } from '../../../data/goals';
 import { componentById } from '../../../data/components';
 import { getDownloadById } from '../../../data/downloads';
@@ -37,8 +37,10 @@ const toolHref = (slug: string) => `${comp.href}${slug}/`;
   description={overview.descriptor}
   chips={['Component 2', overview.meta.time, overview.meta.mode]}
 >
-  <Section id="idea" eyebrow="Why this exists" title={why.title} split>
-    <p class="big">{why.intro[0]}</p>
+  <Section id="idea" eyebrow="What is it & why should I do it?" title={why.title} split>
+    <p class="big">{overview.idea[0]}</p>
+    <p class="body-p">{overview.idea[1]}</p>
+    <p class="body-p">{why.intro[0]}</p>
     <p class="body-p">{why.intro[1]}</p>
     <p class="body-p"><b>{why.start}</b></p>
 
@@ -102,26 +104,17 @@ const toolHref = (slug: string) => `${comp.href}${slug}/`;
         ))
       }
     </ul>
-    <h3 class="h3">The board’s capture cards</h3>
-    <ol class="jam-cards">
-      {
-        figjam.cards.map((c) => (
-          <li>
-            <span class="lbl">Card {c.n}</span>
-            <b>{c.title}</b>
-            <span>{c.body}</span>
-            <span class="ask"><span aria-hidden="true">→</span> {c.ask}</span>
-          </li>
-        ))
-      }
-    </ol>
+    <p class="body-p">
+      The board’s six capture cards are the six missions on <a href={url(`${toolHref('show')}#missions`)}>Tool 1 · Show</a>, word for word, with a
+      printable sheet.
+    </p>
     <h3 class="h3">How to use it</h3>
     <ol class="how">
       {figjam.howTo.map((h) => <li>{h}</li>)}
     </ol>
     <p class="small">{figjam.alsoHolds}</p>
     <div class="callout callout--warn differs">
-      <strong>Where the board differs from the booklet</strong>
+      <strong>Where the booklet differs from the board</strong>
       {figjam.differs.map((d) => <p>{d}</p>)}
     </div>
   </Section>
@@ -131,13 +124,13 @@ const toolHref = (slug: string) => `${comp.href}${slug}/`;
     <GoalIndex groups={goalsByComponent('c2')} variant="list" search={false} />
   </Section>
 
-  <Section id="route" eyebrow="The route" title="Six movements, four tools." split>
-    <p class="big">Participants photograph their own world. You read the photos together, build one situation, and hand it on as a question about the system.</p>
-    <ol class="moves" aria-label="The six movements">
+  <Section id="route" eyebrow="The route" title="Five steps, four tools." split>
+    <p class="big">Participants photograph their own world. You group the photos, build one situation, challenge it, and hand it on as a question about the system.</p>
+    <ol class="moves" aria-label="The method flow, from the FigJam template">
       {
-        movements.map((m, i) => (
+        method.map((m) => (
           <li>
-            <span class="n" aria-hidden="true">{i + 1}</span>
+            <span class="n" aria-hidden="true">{m.n}</span>
             <div>
               <b>{m.name}</b>
               <span>{m.body}</span>
@@ -147,6 +140,16 @@ const toolHref = (slug: string) => `${comp.href}${slug}/`;
         ))
       }
     </ol>
+    <div class="how-use">
+      <div class="card">
+        <p class="lbl">Students</p>
+        <p>{howToUse.student}</p>
+      </div>
+      <div class="card">
+        <p class="lbl">The designer</p>
+        <p>{howToUse.designer}</p>
+      </div>
+    </div>
     <p class="small">{movementsNote}</p>
     <RouteList items={route} />
     <div class="need">
@@ -392,29 +395,17 @@ const toolHref = (slug: string) => `${comp.href}${slug}/`;
     color: var(--ink-soft);
     max-width: 48rem;
   }
-  .jam-cards {
-    list-style: none;
-    margin: 0 0 var(--sp-4);
-    padding: 0;
+  .how-use {
     display: grid;
     gap: var(--sp-2);
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    margin-bottom: var(--sp-3);
   }
-  .jam-cards li {
-    display: grid;
-    gap: var(--sp-1);
-    align-content: start;
-    background: var(--surface);
-    border: 1px solid var(--line-strong);
-    border-radius: var(--r-md);
-    padding: var(--sp-3);
+  .how-use p {
+    margin: 0;
   }
-  .jam-cards span {
-    color: var(--ink-soft);
-  }
-  .jam-cards .ask {
-    color: var(--ink);
-    font-weight: 600;
+  .how-use .lbl {
+    margin-bottom: var(--sp-1);
   }
   .how {
     margin: 0 0 var(--sp-2);

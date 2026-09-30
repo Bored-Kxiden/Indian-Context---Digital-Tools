@@ -161,6 +161,23 @@ templateEntries.splice(
     page: C2,
   },
 );
+// Component 2's capture cards, printed from the FigJam template's wording (npm run build:capture-cards), right after the board.
+templateEntries.splice(
+  templateEntries.findIndex((e) => e.id === 'visual-culture-figjam') + 1,
+  0,
+  {
+    id: 'c2-capture-cards',
+    title: 'Show · Capture cards and photo slips',
+    description:
+      'The six missions as the FigJam template words them, one per card with its own question, to cut out; and photo slips with the three prompts, the card’s question and the evidence tag.',
+    file: 'templates/c2-capture-cards.pdf',
+    format: 'PDF',
+    group: 'templates',
+    component: 'c2',
+    note: 'A4 landscape · 2 pages · one set per participant',
+    page: `${C2}show/`,
+  },
+);
 // Component 1's Figma file (a .fig): every page of the component, first among its templates.
 templateEntries.unshift({
   id: 'existing-products-figma',

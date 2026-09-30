@@ -1,6 +1,6 @@
 import { components, type ComponentId } from './components';
 import { tools as c1Tools, figmaFile } from './booklet/existing-products';
-import { tools as c2Tools, overview as c2, structures, missions, movements, figjam, make, openInvitation } from './booklet/visual-culture';
+import { tools as c2Tools, overview as c2, structures, missions, method, howToUse, figjam, make, promptsLine, captureStage, showOutput } from './booklet/visual-culture';
 import { tools as c3Tools, reverseThickTranslation as rtt, beforeYouStart as c3Before, overview as c3 } from './booklet/language';
 import { tools as c4Tools, overview as c4, participants } from './booklet/material-reality';
 import { overview as refl, after as reflAfter, summarise, wheel, consequences, lookBack } from './reflection';
@@ -581,15 +581,20 @@ add({
   see: ['evidence-status'],
 });
 add({
-  id: 'six-movements',
-  term: 'The six movements',
-  aka: ['movements', 'show find read build challenge hand off'],
+  id: 'method-flow',
+  term: 'The method flow',
+  aka: ['capture affinity build verify scenario', 'five steps', 'method', 'affinity', 'capture', 'verify'],
   kind: 'Term',
   scope: 'c2',
-  context: 'Component 2 · the route',
-  def: 'Show, Find, Read, Build, Challenge, Hand off. The sequence is a guide, not a rigid research law: you may move backwards, return to participants, or investigate first.',
-  list: movements.map((m) => `${m.name}: ${m.body} (${m.where})`),
+  context: 'Component 2 · the FigJam template',
+  def: 'Five steps: Capture, Affinity, Build, Verify, Scenario. On this site they happen in the four tools.',
+  list: method.map((m) => `${m.n} · ${m.name}: ${m.body} (${m.where})`),
+  facts: [
+    { k: 'Students', v: howToUse.student },
+    { k: 'The designer', v: howToUse.designer },
+  ],
   href: `${C2}#route`,
+  see: ['the-six-missions', 'edge-case-check', 'context-scenario'],
 });
 add({
   id: 'the-six-missions',
@@ -598,21 +603,23 @@ add({
   kind: 'Method',
   scope: 'c2',
   context: 'Component 2 · Tool 1 · Show',
-  def: 'Six photo briefs for participants to photograph their own world for a week. They are suggestions, not a checklist every participant must complete. Never show example photos first.',
-  list: missions.map((m) => `${m.n} · ${m.title}. Ask: ${m.ask}`),
+  def: 'Six photo briefs for participants to photograph their own world for a week: never the task itself, but what surrounds it. They are suggestions, not requirements. If you want the photographs to emerge with as little direction as possible, do not use them. Never show example photos first.',
+  list: missions.map((m) => `${m.n} · ${m.title}. ${m.body} Ask: ${m.ask}`),
+  facts: [{ k: 'Every photo', v: promptsLine }],
   href: `${C2}show/#missions`,
   see: ['mission', 'three-questions', 'capture-rule'],
 });
 add({
-  id: 'open-invitation',
-  term: 'What else should we know?',
-  aka: ['open invitation', 'fourth question'],
+  id: 'capture-stage',
+  term: 'The capture stage',
+  aka: ['capture stage', 'photo slip', 'the image'],
   kind: 'Term',
   scope: 'c2',
   context: 'Component 2 · Tool 1 · Show',
-  def: `${openInvitation} An open invitation after the three questions about every photo, not a fourth question to probe.`,
+  def: `${captureStage.lead}: ${captureStage.items.join(', ')} ${captureStage.note}`,
+  facts: [{ k: showOutput.title, v: `${showOutput.body} ${showOutput.ready}` }],
   href: `${C2}show/`,
-  see: ['three-questions'],
+  see: ['three-questions', 'the-six-missions'],
 });
 add({
   id: 'talk-back',
@@ -624,7 +631,7 @@ add({
   def: 'After the week of photos, sit with each participant and ask the three questions about every photo, so you never have to guess what an image means. Write their answers in their words, any language, and tag each Observed or Reported.',
   facts: [{ k: 'Time', v: '45 min' }],
   href: `${C2}show/`,
-  see: ['three-questions', 'own-words'],
+  see: ['three-questions', 'capture-stage', 'own-words'],
 });
 add({
   id: 'cluster',
@@ -750,7 +757,7 @@ add({
   list: figjam.sections.map((f) => `${f.name}: ${f.what}`),
   facts: [{ k: 'Differs from the booklet', v: figjam.differs.join(' ') }],
   href: `${C2}#template`,
-  see: ['the-six-missions', 'context-profile', 'cluster'],
+  see: ['the-six-missions', 'method-flow', 'context-profile', 'cluster'],
 });
 
 // ---------------------------------------------------------------------------------------------
@@ -1156,9 +1163,9 @@ add({
   kind: 'Term',
   scope: 'c4',
   context: 'Component 4 · Before you start (p.4.05)',
-  def: 'What Component 4 builds on: participants photograph and film their surroundings and tag each picture with a lens. Sort each one as person ●, thing ■ or place ▲, note how easy it is to reach, print them small and bring them to the Loop. No Visual Toolkit? Ask the person to walk you through the task and sketch what they point to.',
+  def: 'Component 2 · Reading Visual Culture: its FigJam board is called “Visual Toolkit”. Component 4 builds on what it produces: the participants’ photos with their own accounts, each tagged Observed or Reported, and the clusters from Read. Sort each photo as person ●, thing ■ or place ▲, note how easy it is to reach, print them small and bring them to the Loop. No photos yet? Ask the person to walk you through the task and sketch what they point to.',
   href: `${C4}before-you-start/`,
-  see: ['component-visual-culture', 'loop'],
+  see: ['component-visual-culture', 'figjam-template', 'loop'],
 });
 add({
   id: 'rings',

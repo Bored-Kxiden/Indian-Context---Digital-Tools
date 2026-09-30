@@ -9,7 +9,7 @@ The toolkit is built in **components**. Each is a different way of reading the w
 | Component | Status | What it reads |
 | --- | --- | --- |
 | **1 · Reading Existing Products** | Live | Whose user is built into a product, and who pays when it is wrong. Media & Gossip, History, The Break, Power, Synthesis. With a card kit. |
-| **2 · Reading Visual Culture** | Live | What people have learned to notice, trust and act on. Show, Read, Build, Hand off. Six photo missions the participants take. |
+| **2 · Reading Visual Culture** | Live | What people have learned to notice, trust and act on. Follows the owner's FigJam board: Capture, Affinity, Build, Verify, Scenario, over four tools (Show, Read, Build, Hand off). Six photo missions the participants take. |
 | **3 · Reading Language** | Live | What was meant, not only what was said. Before you start, then Listen, Translate (thick, and reverse thick, translation), Test, Library and the Kahavat Relay. Under them sit the Meaning Card, Physical Field Kit, Fidelity Protocol, Language Lens Audit and the two libraries. |
 | **4 · Reading Material Reality** | Live | What people have around them, what it costs, and who they lean on. Build, Break, Weigh, Say. |
 | **Claim & Reflection** | Live | Runs through all four: a Before and After page in each component, and three Look back pages at the end. |
@@ -40,6 +40,7 @@ npm run build            # static site into ./dist
 npm run preview          # serve ./dist locally
 npm run build:templates  # regenerate the Component 3 PDFs and CSV (see below)
 npm run build:reflection  # regenerate the twelve Claim & Reflection sheets and previews from templates/reflection/
+npm run build:capture-cards  # regenerate Component 2's capture cards and photo slips from templates/visual-culture/capture-cards.json
 python3 scripts/extract-booklet-assets.py   # regenerate page images and split PDFs from the booklet (see below)
 ```
 

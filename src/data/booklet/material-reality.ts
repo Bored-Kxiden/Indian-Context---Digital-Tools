@@ -74,6 +74,12 @@ export const beforeYouStart = {
       title: 'Also bring your inferences',
       body: 'Turn each one into a question for the Ladder. “The router is shared by 40 rooms” becomes: does Wi-Fi keep working when she needs it?',
     },
+    // The booklet's "Visual Toolkit" is Component 2: its FigJam board is named "VISUAL TOOLKIT" (D37).
+    isComponent2: {
+      title: 'The Visual Toolkit is Component 2',
+      body: 'Reading Visual Culture, whose FigJam board is named “Visual Toolkit”. Bring what it produces: the participants’ photos with their own accounts (what it is, why they showed it, what they were doing, and the card’s question), each tagged Observed or Reported, and your clusters from Tool 2 · Read. Where this page says “lens”, use those.',
+      href: '/components/visual-culture/',
+    },
     noVisualToolkit: {
       title: 'No Visual Toolkit?',
       body: 'Tool 1 still works. Ask the person to walk you through the task and sketch what they point to.',

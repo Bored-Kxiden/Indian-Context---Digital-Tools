@@ -1,9 +1,11 @@
 ---
 import ExFrame from './ExFrame.astro';
 import Lines from './Lines.astro';
-
 // Booklet p.2.04 · Tool 1 Show, Part A: Meera's photos, one per mission (filled example).
-// Photos are described, not shown, as in the booklet.
+// Photos are described, not shown, as in the booklet. The mission labels follow the FigJam template's capture cards
+// (D37); the booklet page labels three of them with its earlier wording. Meera's answers are the booklet's.
+import capture from '../../../templates/visual-culture/capture-cards.json';
+const label = (n: string) => capture.missions.find((m) => m.n === n)!.short;
 interface Props {
   alt: string;
   caption: string;
@@ -14,7 +16,7 @@ const cards = [
   {
     n: 'M01',
     photo: ['Screenshot of a class WhatsApp', 'group: a forwarded notice with', 'the last date circled.'],
-    title: 'Where you learn',
+    title: label('01'),
     rows: [
       ['What is this?', 'Class group message.'],
       ['Why show us?', 'This is where I found out. Not the website.'],
@@ -25,7 +27,7 @@ const cards = [
   {
     n: 'M02',
     photo: ['A notebook page with user ID,', 'password and application', 'number in pen, next to her phone.'],
-    title: 'What you keep beside you',
+    title: label('02'),
     rows: [
       ['What is this?', 'My notebook.'],
       ['Why show us?', 'I write the IDs here. The SMS gets deleted.'],
@@ -36,7 +38,7 @@ const cards = [
   {
     n: 'M03',
     photo: ['The cybercafé counter. The', 'owner’s hand on the mouse, her', 'certificate on the scanner.'],
-    title: 'Who or what helps',
+    title: label('03'),
     rows: [
       ['What is this?', 'Bhaiya ki dukaan.'],
       ['Why show us?', '“Unko setting pata hai” (he knows the setting).'],
@@ -47,7 +49,7 @@ const cards = [
   {
     n: 'M04',
     photo: ['Three steps in one frame: paper', 'certificate, its phone photo, the', 'PDF on the café screen.'],
-    title: 'When information changes',
+    title: label('04'),
     rows: [
       ['What is this?', 'My certificate becoming a PDF.'],
       ['Why show us?', 'It changes three times before it’s accepted.'],
@@ -58,7 +60,7 @@ const cards = [
   {
     n: 'M05',
     photo: ['Her father’s phone on a shelf at', 'home, with a paper slip that says', '“OTP” in her writing.'],
-    title: 'When the expected way fails',
+    title: label('05'),
     rows: [
       ['What is this?', 'Papa’s phone.'],
       ['Why show us?', 'The OTP goes here, not to me.'],
@@ -69,7 +71,7 @@ const cards = [
   {
     n: 'M06',
     photo: ['The portal page. Her finger on the', 'small red “Pending” next to the', 'government emblem.'],
-    title: 'What you know to look at',
+    title: label('06'),
     rows: [
       ['What is this?', 'The emblem and the status.'],
       ['Why show us?', 'If it has the emblem, it’s real. Red means something’s wrong.'],

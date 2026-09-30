@@ -1,27 +1,27 @@
 ---
 import Icon from '../Icon.astro';
-import { missions, threeQuestions } from '../../data/booklet/visual-culture';
+import { missions, threeQuestions, promptsOptional } from '../../data/booklet/visual-culture';
 import { getDownloadById } from '../../data/downloads';
 import { url } from '../../utils/url';
 
-// Component 2 · Show: the six missions as text (the printable cards are under Blank template).
-const dl = getDownloadById('tpl-c2-show-missions-blank');
+// Component 2 · Show: the six missions as the FigJam template's capture cards word them (D37), and their printable sheet.
+const dl = getDownloadById('c2-capture-cards');
 ---
 
 <div class="ms">
   <div class="intro">
-    <p class="big">Give participants all six. Don’t explain what a “good” photo should look like, and don’t show example photos first.</p>
-    <p>
-      For every photo, ask only the same three questions:
-    </p>
+    <p class="big">{promptsOptional[0]} {promptsOptional[1]}</p>
+    <p>{promptsOptional[2]} {promptsOptional[3]} Don’t explain what a “good” photo should look like, and don’t show example photos first.</p>
+    <p>Every photo gets three prompts, and only three:</p>
     <ol class="three">
       {threeQuestions.map((q) => <li>{q}</li>)}
     </ol>
+    <p>Plus the card’s own question, below each mission.</p>
     <p class="small">Answers can be written in any language or script.</p>
     {
       dl && (
         <a class="btn btn--accent" href={url(dl.href)} download>
-          <Icon name="download" size={20} /> Download mission cards
+          <Icon name="download" size={20} /> Print the capture cards
           <span class="meta">{dl.format} · {dl.size}</span>
         </a>
       )
