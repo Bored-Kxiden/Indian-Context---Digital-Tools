@@ -10,7 +10,11 @@ import { componentById } from '../../../data/components';
 import { url } from '../../../utils/url';
 
 const comp = componentById['existing-products'];
-const items = route.map((r) => ({ ...r, href: `${comp.href}${r.href}/` }));
+const items = [
+  { label: 'Reflect: before (R·1A)', href: `${comp.href}reflect-before/`, blurb: 'Say where you stand and what you expect to find, before Tool 1.' },
+  ...route.map((r) => ({ ...r, href: `${comp.href}${r.href}/` })),
+  { label: 'Reflect: after (R·1B)', href: `${comp.href}reflect-after/`, blurb: 'Say what the process actually gave you, then check it against your own bias.' },
+];
 ---
 
 <ComponentLayout
@@ -21,7 +25,8 @@ const items = route.map((r) => ({ ...r, href: `${comp.href}${r.href}/` }));
   lead={comp.blurb}
   chips={['Component 1', '3–4 hours', 'Paper or card kit']}
 >
-  <Section id="idea" eyebrow="The idea" title="Every product has a user built into it." split>
+  <Section id="idea" eyebrow="The idea" title="Every product was designed for someone." split>
+    <p class="big">{overview.lead}</p>
     {overview.intro.map((p) => <p class="big">{p}</p>)}
     <div class="callout">
       <strong>{overview.notAnAudit.title}</strong>
@@ -35,7 +40,7 @@ const items = route.map((r) => ({ ...r, href: `${comp.href}${r.href}/` }));
   </Section>
 
   <Section id="route" eyebrow="The route" title="Four tools, then one claim." split>
-    <p class="big">Do them in order for the full picture, or pick the one you need.</p>
+    <p class="big">About 3 hours. Do them in order for the full picture, or pick the one you need: each tool also works on its own. Every page is a template with Meera’s example in [brackets].</p>
     <RouteList items={items} />
   </Section>
 
@@ -83,6 +88,7 @@ const items = route.map((r) => ({ ...r, href: `${comp.href}${r.href}/` }));
       </article>
     </div>
     <p class="small">{overview.twoWays.note}</p>
+    <p class="small">{overview.team}</p>
   </Section>
 
   <Section id="claim" eyebrow="Where it ends" title="One design claim." tone="c1" split>

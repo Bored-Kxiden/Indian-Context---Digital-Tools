@@ -1,0 +1,139 @@
+---
+import ComponentLayout from '../../../layouts/ComponentLayout.astro';
+import Section from '../../../components/Section.astro';
+import StepCard from '../../../components/reflection/StepCard.astro';
+import ReflectFlow from '../../../components/reflection/ReflectFlow.astro';
+import ReflectPrint from '../../../components/reflection/ReflectPrint.astro';
+import Icon from '../../../components/Icon.astro';
+import { lookBack, lookBackWhen, summarise, stops } from '../../../data/reflection';
+import { url } from '../../../utils/url';
+
+const page = lookBack[0];
+const colour = { 'existing-products': 'c1', 'visual-culture': 'c2', language: 'c3', 'material-reality': 'c4' } as const;
+---
+
+<ComponentLayout
+  component="reflection"
+  current="summarise"
+  title={page.title}
+  heading={page.title}
+  lead={`${page.opening[0]} ${summarise.keep}`}
+  chips={['Claim & Reflection', 'Step 5', 'Look back 1 of 3', page.code]}
+  crumb={page.title}
+>
+  <Section id="where" eyebrow="Where it goes" title="Do it once, at the very end." split>
+    <ReflectFlow prev={{ label: 'R·4B · After Component 4', href: `${stops[3].href}reflect-after/` }} here={`${page.code} · ${page.short}`} next={{ label: 'R·E2 · Wheel', href: '/components/reflection/wheel/' }} when={lookBackWhen} />
+  </Section>
+
+  <Section id="predictions" eyebrow="Return to your predictions" title="Open your four Before pages." tone="white" split>
+    <ul class="back">
+      {
+        stops.map((s) => (
+          <li data-c={colour[s.id]}>
+            <a href={url(`${s.href}reflect-before/`)}>
+              <span class="dot" aria-hidden="true">C{s.n}</span>
+              <span class="t">
+                <b>{s.before.code} · Before Component {s.n}</b>
+                <small>You predicted {s.before.predict.replace(/\.$/, '')}.</small>
+              </span>
+              <Icon name="arrow" size={20} />
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <div class="callout callout--ink">
+      <strong>{summarise.note.lead}</strong>
+      <p>{summarise.note.body}</p>
+    </div>
+  </Section>
+
+  <Section id="steps" eyebrow="Three prompts" title="What surprised you, and what you’ll carry.">
+    <div class="three">
+      <StepCard n={summarise.surprise.n} name={summarise.surprise.name}>
+        <p class="ask">{summarise.surprise.ask}</p>
+      </StepCard>
+      <StepCard n={summarise.mundane.n} name={summarise.mundane.name}>
+        <p class="ask">{summarise.mundane.ask}</p>
+      </StepCard>
+      <StepCard n={summarise.compass.n} name={summarise.compass.name} tone="tint">
+        <p>{summarise.compass.intro}</p>
+        <ul class="write" aria-label="Finish each line">
+          {summarise.compass.lines.map((l) => <li>{l}</li>)}
+        </ul>
+      </StepCard>
+    </div>
+  </Section>
+
+  <Section id="print" eyebrow="Print it" title="Fill it on paper." tone="white" split>
+    <ReflectPrint id={`reflection-${page.image}`} image={page.image} code={page.code} title={page.title}>
+      Have your Before and After pages in front of you.
+    </ReflectPrint>
+  </Section>
+
+  <Section id="next" eyebrow="Look back 2 of 3" title="Next: map what you could reach." split>
+    <p class="go"><a class="btn btn--accent" href={url('/components/reflection/wheel/')}>R·E2 · Wheel <Icon name="arrow" size={20} /></a></p>
+  </Section>
+</ComponentLayout>
+
+<style>
+  .three {
+    display: grid;
+    gap: var(--sp-3);
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+  @media (min-width: 64rem) {
+    .three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .back {
+    list-style: none;
+    margin: 0 0 var(--sp-3);
+    padding: 0;
+    display: grid;
+    gap: var(--sp-1);
+  }
+  .back li {
+    margin: 0;
+  }
+  .back a {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--sp-2);
+    min-height: 64px;
+    padding: var(--sp-1) var(--sp-2);
+    border-radius: var(--r-md);
+    background: var(--accent-tint);
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .back a:hover {
+    outline: 2px solid var(--accent-deep);
+  }
+  .dot {
+    display: grid;
+    place-items: center;
+    min-width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-weight: 800;
+    font-size: var(--fs-sm);
+  }
+  .t b {
+    display: block;
+    line-height: 1.2;
+  }
+  .t small {
+    display: block;
+    color: var(--ink-soft);
+    font-size: var(--fs-sm);
+  }
+  .go {
+    margin: 0;
+  }
+</style>

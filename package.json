@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Public website for Designing for the Indian Context: a toolkit for reading products, visual culture, language and material reality (BITSDES 2024–28).",
+  "description": "Public website for Beyond the Edge Case: a toolkit for designing in Indian contexts by questioning the universal assumptions behind what gets treated as an exception (BITSDES 2024–28).",
   "license": "MIT",
   "engines": {
     "node": ">=22.12.0"
@@ -12,7 +12,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "build:templates": "node scripts/build-templates.mjs"
+    "build:templates": "node scripts/build-templates.mjs",
+    "build:reflection": "node scripts/build-reflection-pdfs.mjs"
   },
   "dependencies": {
     "astro": "^7.3.5"

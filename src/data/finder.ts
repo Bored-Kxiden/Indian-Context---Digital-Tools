@@ -5,6 +5,7 @@ import { tools as c2Tools } from './booklet/visual-culture';
 import { tools as c3Tools } from './booklet/language';
 import { tools as c4Tools } from './booklet/material-reality';
 import { referencePages, referenceHref, parentLabel } from './tools';
+import { lookBack, stops as reflectStops } from './reflection';
 
 // Everything the "Find a tool" search can open, built from the same data as the pages.
 // Order = order of the result groups.
@@ -45,6 +46,8 @@ const tools: FinderItem[] = [
     href: `${C2}${t.slug}/`,
     c: 'c2' as const,
   })),
+  { title: 'Before you start', hint: 'Visual culture · a context, participants, an activity and their explanations', href: `${C2}before-you-start/`, c: 'c2' as const },
+  { title: 'The Figma template', hint: 'Visual culture · the main file to follow, as a .fig', href: `${C2}#template`, c: 'c2' as const },
   { title: 'The six photo missions', hint: 'Show · what to ask participants to photograph', href: `${C2}show/#missions`, c: 'c2' as const },
   { title: 'Before you start', hint: 'Language · understand the context first', href: `${C3}before-you-start/`, c: 'c3' as const },
   ...c3Tools.map((t) => ({
@@ -80,23 +83,32 @@ const tools: FinderItem[] = [
   })),
 ];
 
+// Reflection: the Before and After page in every component, and the three Look back pages.
+const reflect: FinderItem[] = [
+  ...reflectStops.flatMap((s) => [
+    { title: `Before Component ${s.n} · ${s.before.code}`, hint: `Reflection · position and prediction, before ${s.short}`, href: `${s.href}reflect-before/`, c: 'ink' as const },
+    { title: `After Component ${s.n} · ${s.after.code}`, hint: `Reflection · claim and redaction, after ${s.short}`, href: `${s.href}reflect-after/`, c: 'ink' as const },
+  ]),
+  ...lookBack.map((p) => ({ title: `${p.title} · ${p.code}`, hint: `Reflection · ${p.sub.replace(/^Step 5 · /, '')}`, href: `/components/reflection/${p.slug}/`, c: 'ink' as const })),
+];
+
 const pages: FinderItem[] = [
   ...components.map((c) => ({
     title: c.number ? `${c.number} · ${c.name}` : c.name,
-    hint: c.status === 'soon' ? 'Coming next' : c.blurb,
+    hint: c.blurb,
     href: c.href,
     c: c.c,
   })),
   { title: 'Card kit', hint: 'Boards B1 to B7 and card sheets S1 to S8', href: '/card-kit/', c: 'c1' },
   { title: 'The guideline', hint: 'Be specific: one real person, one real thing', href: '/guideline/', c: 'ink' },
-  { title: 'How to read a tool', hint: 'Guide, Example, Blank template, Card kit', href: '/guideline/#how-to-read', c: 'ink' },
+  { title: 'How to read a tool', hint: 'Guide, Example, Template, Card kit', href: '/guideline/#how-to-read', c: 'ink' },
   { title: 'Meet Meera', hint: 'The running example', href: '/guideline/#meera', c: 'ink' },
-  { title: 'Downloads', hint: 'Booklet, card kit, blank templates', href: '/downloads/', c: 'ink' },
+  { title: 'Downloads', hint: 'Booklet, card kit, templates', href: '/downloads/', c: 'ink' },
   { title: 'About', hint: 'Who it is for, and what comes after', href: '/about/', c: 'ink' },
 ];
 
 export const finderGroups: FinderGroup[] = [
   { id: 'want', title: 'I want to…', items: iWantTo },
-  { id: 'tools', title: 'Tools', items: tools },
+  { id: 'tools', title: 'Tools', items: [...tools, ...reflect] },
   { id: 'pages', title: 'Pages', items: pages },
 ];

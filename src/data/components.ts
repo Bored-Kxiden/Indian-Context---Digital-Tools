@@ -29,7 +29,7 @@ export const components: ToolkitComponent[] = [
     c: 'c1',
     name: 'Reading Existing Products',
     short: 'Existing products',
-    blurb: 'Whose user is built into a product, and who pays when the product is wrong about them.',
+    blurb: 'Whose user is built into a product, and who pays when it’s wrong about them.',
     hours: '3–4 hours',
     status: 'live',
     href: '/components/existing-products/',
@@ -74,15 +74,16 @@ export const components: ToolkitComponent[] = [
     id: 'reflection',
     number: null,
     c: 'ink',
-    name: 'Reflection',
+    name: 'Claim & Reflection',
     short: 'Reflection',
-    blurb: 'Looking back at what you made and what it changed.',
-    status: 'soon',
+    blurb: 'What did the process give you that you did not already have? Write down where you stand before each component, and check your claim against your own bias after it.',
+    status: 'live',
     href: '/components/reflection/',
-    tags: [],
+    tags: ['Position', 'Prediction', 'Claim', 'Redaction', 'Summarise'],
   },
 ];
 
 export const componentById = Object.fromEntries(components.map((c) => [c.id, c])) as Record<ComponentId, ToolkitComponent>;
-export const liveComponents = components.filter((c) => c.status === 'live');
+/** The four reading components. Reflection runs through them, so it is shown apart. */
+export const liveComponents = components.filter((c) => c.status === 'live' && c.id !== 'reflection');
 export const soonComponents = components.filter((c) => c.status === 'soon');

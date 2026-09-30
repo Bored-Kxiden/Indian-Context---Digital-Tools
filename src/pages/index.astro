@@ -5,6 +5,8 @@ import Section from '../components/Section.astro';
 import VennHero from '../components/VennHero.astro';
 import GoalIndex from '../components/GoalIndex.astro';
 import ComponentCards from '../components/ComponentCards.astro';
+import EdgeIntro from '../components/EdgeIntro.astro';
+import CentralLine from '../components/CentralLine.astro';
 import { goals } from '../data/goals';
 import { site } from '../data/site';
 import { whyThisExists, howToRead, guideline, meera } from '../data/booklet/shared';
@@ -21,7 +23,7 @@ const ways = howToRead.everyTool.parts;
           <span class="chip chip--quiet">Toolkit</span>
           <span class="chip chip--quiet">BITSDES 2024–28</span>
         </div>
-        <h1 id="hero-h" class="rise" style="--i: 1">Designing for the Indian Context</h1>
+        <h1 id="hero-h" class="rise" style="--i: 1">{site.name}</h1>
         <p class="lead rise" style="--i: 2">{site.tagline}</p>
         <div class="btn-row rise" style="--i: 3">
           <a class="btn" href="#i-want-to">Find your tool <Icon name="arrow" size={20} /></a>
@@ -35,6 +37,10 @@ const ways = howToRead.everyTool.parts;
       </div>
     </div>
   </section>
+
+  <EdgeIntro />
+
+  <CentralLine />
 
   <Section id="i-want-to" eyebrow="Start here" title="I want to…" tone="white">
     <p slot="lead" class="lead-text">

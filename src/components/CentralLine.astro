@@ -1,0 +1,76 @@
+---
+import { intro } from '../data/site';
+
+// The toolkit's central statement and the larger idea that follows it. It sits on the home page and
+// the About page; the words come from `intro` in site.ts.
+interface Props {
+  id?: string;
+  /** Put the larger idea under the central line (the home page does; a page that already says it can leave it off). */
+  withIdea?: boolean;
+}
+const { id = 'central', withIdea = true } = Astro.props;
+---
+
+<section class="central on-dark" id={id} aria-labelledby={`${id}-h`}>
+  <div class="wrap grid">
+    <p class="eb">The central idea</p>
+    <h2 id={`${id}-h`}>{intro.central}</h2>
+    {
+      withIdea && (
+        <div class="idea">
+          <p class="first">{intro.idea[0]}</p>
+          <p>{intro.idea[1]}</p>
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .central {
+    background: var(--ink);
+    color: #fff;
+    padding-block: clamp(var(--sp-8), 7vw, var(--sp-12));
+  }
+  .grid {
+    display: grid;
+    gap: var(--sp-3) var(--sp-8);
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+  .eb {
+    color: #b9b1a0;
+    margin: 0;
+  }
+  h2 {
+    font-size: var(--fs-h1);
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    max-width: 20ch;
+    margin: 0;
+  }
+  .idea p {
+    margin: 0 0 var(--sp-2);
+    font-size: var(--fs-lead);
+    color: var(--on-dark);
+    max-width: 40rem;
+  }
+  .idea .first {
+    color: #fff;
+    font-weight: 700;
+    font-size: var(--fs-h3);
+    line-height: 1.25;
+  }
+  @media (min-width: 64rem) {
+    .grid {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      grid-template-areas:
+        'eb eb'
+        'h2 idea';
+      row-gap: var(--sp-3);
+    }
+    .eb { grid-area: eb; }
+    h2 { grid-area: h2; }
+    .idea { grid-area: idea; align-self: end; }
+  }
+</style>

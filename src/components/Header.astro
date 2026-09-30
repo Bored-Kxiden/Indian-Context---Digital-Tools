@@ -57,7 +57,7 @@ const current = Astro.url.pathname;
               components.map((c) => (
                 <li>
                   <a href={url(c.href)} data-c={c.c} aria-current={isActive(current, c.href) ? 'page' : undefined}>
-                    <span class="dot" aria-hidden="true">{c.number ?? '↺'}</span>
+                    <span class="dot" aria-hidden="true">{c.number ?? 'R'}</span>
                     <span>{c.name}</span>
                     {c.status === 'soon' && <small>Soon</small>}
                   </a>

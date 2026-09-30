@@ -1,6 +1,8 @@
-# Designing for the Indian Context
+# Beyond the Edge Case
 
-A public website for **Designing for the Indian Context**, a toolkit from BITSDES 2024–28: tools for reading products, pictures, language and people's material lives, before you design for them. It is for design students, product teams, NGO and public-service teams, and field researchers.
+A public website for **Beyond the Edge Case**, a toolkit from BITSDES 2024–28 for designing in Indian contexts by questioning the universal assumptions behind what gets treated as an exception. It is for design students, product teams, NGO and public-service teams, and field researchers.
+
+> What gets classified as an edge case depends on the baseline we design from.
 
 The toolkit is built in **components**. Each is a different way of reading the world a product will land in, and each works on its own.
 
@@ -37,6 +39,7 @@ Other commands:
 npm run build            # static site into ./dist
 npm run preview          # serve ./dist locally
 npm run build:templates  # regenerate the Component 3 PDFs and CSV (see below)
+npm run build:reflection  # regenerate the twelve Claim & Reflection sheets and previews from templates/reflection/
 python3 scripts/extract-booklet-assets.py   # regenerate page images and split PDFs from the booklet (see below)
 ```
 
@@ -52,14 +55,15 @@ python3 scripts/extract-booklet-assets.py   # regenerate page images and split P
 │   ├── card-kit/                  one WebP per card sheet and board (S1…S8, B1…B7)
 │   ├── fonts/                     Bricolage Grotesque and IBM Plex Mono (SIL OFL), self-hosted
 │   └── downloads/                 every downloadable file
-│       ├── designing-for-the-indian-context-booklet.pdf
-│       ├── component-1-card-kit.pdf
-│       ├── templates/             single-page blank templates cut from the booklet
+│       ├── designing-for-the-indian-context-booklet.pdf   the final booklet, 107 pages, all four components
+│       ├── component-1-card-kit.pdf                       the card-kit pages (1.12–1.27) as one file
+│       ├── templates/             single-page templates cut from the booklet, and the Claim & Reflection pages
 │       └── card-kit/              each sheet, each board, all sheets, all boards
 ├── scripts/
-│   ├── extract-booklet-assets.py  booklet + card-kit PDFs → images, blanks, split PDFs (`--c23-only` for Components 2 and 3)
-│   └── build-templates.mjs        Component 3 PDFs and CSV from /templates
-├── templates/                     source definitions for the Component 3 printable cards
+│   ├── extract-booklet-assets.py  the final booklet → page images, templates, card-kit sheets and boards, split PDFs
+│   ├── build-templates.mjs        Component 3 PDFs and CSV from /templates
+│   └── build-reflection-pdfs.mjs  the twelve Claim & Reflection A4 sheets, one file of all twelve, and page previews
+├── templates/                     source definitions for the Component 3 printable cards, and reflection/ (the twelve-page layout)
 └── src/
     ├── components/                Header, ComponentNav (sticky strip), Finder (search), ComponentStepper, Section, PageHead,
     │                              GoalIndex, PageFigure, DownloadCard, Footer, …
@@ -73,7 +77,8 @@ python3 scripts/extract-booklet-assets.py   # regenerate page images and split P
     │   ├── booklet/               Components 1 to 4: tools, parts, steps, words, examples (from the two booklets)
     │   ├── card-kit.ts            card sheets S1–S8 and boards B1–B7
     │   ├── downloads.ts           every downloadable file
-    │   ├── rail.ts                the step bar on component pages (Components 1 to 4)
+    │   ├── reflection.ts          Claim & Reflection: the steps, the Before and After worksheets, the three Look back pages
+│   ├── rail.ts                the step bar on component pages (Components 1 to 4 and Reflection)
     │   ├── finder.ts              everything the "Find a tool" search can open
     │   ├── tools.ts               Component 3 deeper pages (Meaning Card, Field Kit, …) and the tool each belongs to
     │   └── library.ts, *.json     Component 3 Expression and Design Language libraries
@@ -128,11 +133,11 @@ The workflow sets both for the GitHub Pages project URL. Internal links go throu
 
 ## Content from the booklet
 
-Components 1 and 4 come from the **Toolkit Booklet** and the **Component 1 Card Kit**, and Components 2 and 3 from the **Components 2 + 3 booklet** (PDFs in `public/downloads/`). An earlier six-page Component 2 draft repeated most of that booklet; its extra detail is folded in once (see D26 in `CONTEXT.md`).
+All four components come from the **final booklet**, one 107-page PDF (`public/downloads/designing-for-the-indian-context-booklet.pdf`), which now holds the Component 1 card kit (p.1.11–1.27) and the Claim & Reflection pages. Component 2 also follows the write-up "Reading Visual Culture". An earlier six-page Component 2 draft repeated most of the booklet; its extra detail is folded in once (see D26 in `CONTEXT.md`).
 
 - **Words are copied from the booklet**, not paraphrased, and live in `src/data/booklet/`. Where the site adds text (a few card-kit intros, the Component 1 "I want to…" phrases, UI labels), `CONTEXT.md` says so.
-- **Examples are rebuilt as HTML** from the booklet's own geometry and text (see `src/components/examples/` and D25 in `CONTEXT.md`), with the original page one click away under "Compare with the booklet page". **Blank templates are the booklet's own pages**, shown as images with a text alternative and the steps beside them. Filled examples are illustrative, as the booklet says. Never invent quotes or data on the site.
-- **`scripts/extract-booklet-assets.py`** renders every booklet and card-kit page to WebP, cuts the blank templates and card-kit sheets and boards into their own PDFs, and writes `src/data/booklet-assets.json`. Run it only when the source PDFs change (`pip install pymupdf pillow`); commit the outputs.
+- **Examples are rebuilt as HTML** from the booklet's own geometry and text (see `src/components/examples/` and D25 in `CONTEXT.md`), with the original page one click away under "Compare with the booklet page". **Templates are the booklet's own pages** (anything in [brackets] on them is an example), shown as images with a text alternative and the steps beside them. In Component 1 the page is both example and template, so a tool has one Template tab. Filled examples are illustrative, as the booklet says. Never invent quotes or data on the site.
+- **`scripts/extract-booklet-assets.py`** renders every booklet page (and the card-kit sheets and boards) to WebP, cuts the templates and card-kit sheets and boards into their own PDFs, and writes `src/data/booklet-assets.json`. It holds the page map for the 107-page booklet and stops if the page count changes. Run it only when the source PDF changes (`pip install pymupdf pillow`); commit the outputs.
 - **Page ids** follow the printed page numbers: `1.06` is the Media Story example, `4.12` is in Component 4, `2.07` is the three passes and `3.09` is the thick translation. Card-kit ids are `S1`…`S8` and `B1`…`B7`.
 
 To change a tool's wording, edit `src/data/booklet/existing-products.ts`, `visual-culture.ts`, `language.ts` or `material-reality.ts`. The tool page, the rail, the "I want to…" index (Component 4) and the download list all read from those files.
@@ -152,7 +157,7 @@ Each filled example is one Astro component in `src/components/examples/`, wrappe
 Every download is listed in one place, `src/data/downloads.ts`. The Downloads page and the tool pages read from it, and file sizes are measured at build time. The blank templates and the card-kit sheets and boards are derived from the content data, so they need no entry of their own.
 
 1. Put the file in `public/downloads/`.
-2. Add an entry to `downloadEntries` in `src/data/downloads.ts` (see the Component 3 entries for the shape): `id`, `title`, `description`, `file` (relative to `public/downloads`), `format` (`'PDF' | 'CSV' | 'JSON'`), `group` (`'booklet' | 'card-kit' | 'templates' | 'language'`), optionally `component` (`'c1' | 'c2' | 'c3' | 'c4'`, for colour), `page` (the site path of the page it belongs to), `note`, `status`.
+2. Add an entry to `downloadEntries` in `src/data/downloads.ts` (see the Component 3 entries for the shape): `id`, `title`, `description`, `file` (relative to `public/downloads`), `format` (`'PDF' | 'CSV' | 'JSON' | 'FIG'`), `group` (`'booklet' | 'card-kit' | 'templates' | 'language' | 'reflection'`), optionally `component` (`'c1' | 'c2' | 'c3' | 'c4' | 'ink'`, for colour), `page` (the site path of the page it belongs to), `note`, `status`.
 3. Run `npm run build`. If the file is missing, the build fails with a message naming the entry, so a broken link can never be published.
 
 ### Regenerating the Component 3 printable cards

@@ -53,8 +53,15 @@ import { url } from '../../utils/url';
         ))
       }
     </ol>
+    <h3 class="sub how-h">How the survey runs</h3>
+    <ol class="survey">
+      {rtt.survey.map((s) => <li>{s}</li>)}
+    </ol>
     <p class="record">
       {rtt.record}
+    </p>
+    <p class="sheets">
+      The survey sheet (p.3.12) and the tally and support check (p.3.13) are under <a href="#blank">Template</a>.
     </p>
   </section>
 
@@ -248,6 +255,25 @@ import { url } from '../../utils/url';
     margin: var(--sp-3) 0 0;
     max-width: 52rem;
     font-weight: 600;
+  }
+  .how-h {
+    margin-top: var(--sp-4);
+  }
+  .survey {
+    margin: 0;
+    padding-left: var(--sp-4);
+    max-width: 52rem;
+    display: grid;
+    gap: var(--sp-1);
+    font-size: var(--fs-lead);
+  }
+  .survey li {
+    margin: 0;
+  }
+  .sheets {
+    margin: var(--sp-2) 0 0;
+    color: var(--muted);
+    max-width: 52rem;
   }
 
   .two {

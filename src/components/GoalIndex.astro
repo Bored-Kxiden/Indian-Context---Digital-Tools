@@ -26,7 +26,7 @@ for (const g of groups) {
   byComponent[g.component].groups.push(g);
 }
 const cards = order.map((k) => byComponent[k]);
-const numeral = (c: string) => c.replace('c', '');
+const numeral = (c: string) => (c === 'ink' ? 'R' : c.replace('c', ''));
 const nameOf = (label: string) => label.split('·')[1]?.trim() ?? label;
 ---
 
@@ -51,7 +51,7 @@ const nameOf = (label: string) => label.split('·')[1]?.trim() ?? label;
           <header class="gh">
             <span class="num" aria-hidden="true">{numeral(card.c)}</span>
             <div>
-              <p class="eb">Component {numeral(card.c)}</p>
+              <p class="eb">{card.c === 'ink' ? 'Runs through every component' : `Component ${numeral(card.c)}`}</p>
               <h3>{nameOf(card.label)}</h3>
             </div>
           </header>
@@ -169,7 +169,8 @@ const nameOf = (label: string) => label.split('·')[1]?.trim() ?? label;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       grid-template-areas:
         'c1 c2'
-        'c3 c4';
+        'c3 c4'
+        'ink ink';
       align-items: stretch;
     }
     .board [data-card='c1'] {
@@ -183,6 +184,9 @@ const nameOf = (label: string) => label.split('·')[1]?.trim() ?? label;
     }
     .board [data-card='c4'] {
       grid-area: c4;
+    }
+    .board [data-card='ink'] {
+      grid-area: ink;
     }
     .board .gcard {
       align-self: stretch;

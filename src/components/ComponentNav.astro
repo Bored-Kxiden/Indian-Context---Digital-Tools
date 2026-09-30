@@ -17,7 +17,7 @@ const path = Astro.url.pathname;
           return (
             <li>
               <a href={url(c.href)} data-c={c.c} class:list={{ here, soon: c.status === 'soon' }} aria-current={here ? 'page' : undefined}>
-                <span class="dot" aria-hidden="true">{c.number ?? '↺'}</span>
+                <span class="dot" aria-hidden="true">{c.number ?? 'R'}</span>
                 <span class="name">{c.short}</span>
                 {c.status === 'soon' && <span class="soon-tag">Soon</span>}
               </a>

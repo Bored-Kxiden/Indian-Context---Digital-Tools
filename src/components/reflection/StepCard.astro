@@ -1,0 +1,88 @@
+---
+// One numbered step of a Reflection page: a card with a number badge, a name and its prompts.
+interface Props {
+  n: number;
+  name: string;
+  /** Kicker above the name, e.g. "Step 1". */
+  tone?: 'plain' | 'tint';
+}
+const { n, name, tone = 'plain' } = Astro.props;
+---
+
+<section class:list={['step', `step--${tone}`]}>
+  <h3><span class="badge" aria-hidden="true">{n}</span><span>{name}</span></h3>
+  <div class="in"><slot /></div>
+</section>
+
+<style>
+  .step {
+    background: var(--surface);
+    border: 2px solid var(--line-strong);
+    border-radius: var(--r-lg);
+    padding: var(--sp-3) var(--sp-4) var(--sp-4);
+    min-width: 0;
+  }
+  .step--tint {
+    background: var(--accent-tint);
+    border-color: transparent;
+  }
+  h3 {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    margin: 0 0 var(--sp-2);
+    font-family: var(--font-mono);
+    font-size: var(--fs-ui);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .badge {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-size: var(--fs-ui);
+    letter-spacing: 0;
+  }
+  .in :global(p) {
+    margin: 0 0 var(--sp-2);
+    max-width: 40rem;
+  }
+  .in :global(.ask) {
+    font-size: var(--fs-lead);
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--ink);
+  }
+  .in :global(.write) {
+    margin: 0 0 var(--sp-2);
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: var(--sp-1);
+  }
+  .in :global(.write li) {
+    margin: 0;
+    padding: var(--sp-1) var(--sp-2);
+    border-left: 4px solid var(--accent);
+    background: var(--ground);
+    border-radius: 0 var(--r-sm) var(--r-sm) 0;
+    font-weight: 600;
+  }
+  .in :global(.opts) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-1);
+    margin: 0 0 var(--sp-2);
+    padding: 0;
+    list-style: none;
+  }
+  .in :global(.opts li) {
+    margin: 0;
+  }
+</style>

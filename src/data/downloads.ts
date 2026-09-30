@@ -6,13 +6,14 @@ import { tools as c2Tools } from './booklet/visual-culture';
 import { tools as c3Tools, beforeYouStart as c3BeforeYouStart } from './booklet/language';
 import { tools as c4Tools, beforeYouStart, participants } from './booklet/material-reality';
 import { boards, sheets } from './card-kit';
+import { lookBack, overview as reflectionOverview, stops as reflectStops } from './reflection';
 
 // Every downloadable file on the site is listed here (or derived here from the content
 // data). Sizes are measured from disk at build time; a missing file fails the build.
 // To add a file: drop it in /public/downloads and add an entry.
 
-export type DownloadFormat = 'PDF' | 'CSV' | 'JSON';
-export type DownloadGroup = 'booklet' | 'card-kit' | 'templates' | 'language';
+export type DownloadFormat = 'PDF' | 'CSV' | 'JSON' | 'FIG';
+export type DownloadGroup = 'booklet' | 'card-kit' | 'templates' | 'language' | 'reflection';
 
 export interface DownloadEntry {
   id: string;
@@ -22,8 +23,8 @@ export interface DownloadEntry {
   file: string;
   format: DownloadFormat;
   group: DownloadGroup;
-  /** Which component it belongs to, for colour: c1 to c4, or none. */
-  component?: 'c1' | 'c2' | 'c3' | 'c4';
+  /** Which component it belongs to, for colour: c1 to c4, ink for Reflection, or none. */
+  component?: 'c1' | 'c2' | 'c3' | 'c4' | 'ink';
   note?: string;
   status?: 'Draft' | 'Final';
   pages?: number;
@@ -40,26 +41,19 @@ const C4 = '/components/material-reality/';
 const booklet: DownloadEntry[] = [
   {
     id: 'booklet',
-    title: 'Booklet · guideline, Components 1 and 4 (A4)',
-    description: 'The guideline, Meera, Component 1 and Component 4, with every example and blank template.',
+    title: 'The booklet · the whole toolkit (A4)',
+    description:
+      'The final booklet: the guideline, Meera, Claim & Reflection, Components 1 to 4 with every tool, worked example and template, and the Component 1 card kit.',
     file: 'designing-for-the-indian-context-booklet.pdf',
     format: 'PDF',
     group: 'booklet',
-    pages: 53,
-  },
-  {
-    id: 'booklet-2-3',
-    title: 'Booklet · Components 2 and 3 (A4)',
-    description: 'Reading Visual Culture and Reading Language: every tool, filled example and blank template.',
-    file: 'components-2-3-booklet.pdf',
-    format: 'PDF',
-    group: 'booklet',
-    pages: 36,
+    pages: 107,
+    note: 'Sheets and boards are A4 and A3 pages here; print them at A2 and on card (see the card kit).',
   },
   {
     id: 'card-kit-full',
     title: 'Component 1 card kit (all)',
-    description: 'Card sheets S1–S8 and boards B1–B7 as one file, exactly as laid out in the booklet.',
+    description: 'The card-kit page, sheets S1–S8 and boards B1–B7 as one file, exactly as laid out in the booklet (p.1.12–1.27).',
     file: 'component-1-card-kit.pdf',
     format: 'PDF',
     group: 'card-kit',
@@ -116,7 +110,8 @@ const boardEntries: DownloadEntry[] = boards.map((b) => ({
   page: '/card-kit/',
 }));
 
-// ---- Blank templates, derived from the tool data so they cannot drift
+// ---- Templates, derived from the tool data so they cannot drift. In the final booklet a template can carry
+// [bracketed] examples, so they are called templates, not blanks.
 const templateEntries: DownloadEntry[] = [];
 const seen = new Set<string>();
 const templateSources = [
@@ -132,9 +127,12 @@ for (const { tools, c, base } of templateSources) {
       seen.add(p.blank.pdf);
       templateEntries.push({
         id: `tpl-${p.blank.pdf.replace(/\.pdf$/, '')}`,
-        title: p.blank.downloadTitle ?? `${t.short}${t.parts.length > 1 ? ` · ${p.title}` : ''}: blank template`,
+        title: p.blank.downloadTitle ?? `${t.short}${t.parts.length > 1 ? ` · ${p.title}` : ''}: template`,
         description:
-          p.blank.downloadNote ?? (p.blank.shared ? 'Example above, blank below.' : 'Print it and fill it in for your person.'),
+          p.blank.downloadNote ??
+          (p.blank.shared
+            ? 'Example above, blank below.'
+            : 'Print it and fill it in for your person. Anything in [brackets] is an example: write over it.'),
         file: `templates/${p.blank.pdf}`,
         format: 'PDF',
         group: 'templates',
@@ -146,6 +144,19 @@ for (const { tools, c, base } of templateSources) {
     }
   }
 }
+// Component 2's main file: the Figma template (a .fig, opened in Figma)
+templateEntries.unshift({
+  id: 'visual-culture-figma',
+  title: 'Reading Visual Culture: the Figma template',
+  description:
+    'The template to follow, as a Figma file: the capture cards and photo slip, the Context scenario builder, the Context profile and the hand-off cards.',
+  file: 'visual-culture-framework.fig',
+  format: 'FIG',
+  group: 'templates',
+  component: 'c2',
+  note: 'Open it in Figma: drag the file into Drafts or a team project, or use Import. It is a working file: it also holds Component 1 layouts and reference material, and you only need the Component 2 frames.',
+  page: C2,
+});
 templateEntries.push(
   {
     id: 'tpl-before-you-start-c3',
@@ -184,6 +195,69 @@ templateEntries.push(
     page: `${C4}ask-your-participants/`,
   },
 );
+
+// ---- Claim & Reflection (generated by scripts/build-reflection-pdfs.mjs from templates/reflection/)
+// The eight Before and After pages sit with their component's blank templates; the intro page, the three
+// Look back pages and the whole set are under Claim & Reflection.
+const R = '/components/reflection/';
+const reflectionComponentColour = { 'existing-products': 'c1', 'visual-culture': 'c2', language: 'c3', 'material-reality': 'c4' } as const;
+const reflectionPages: DownloadEntry[] = reflectStops.flatMap((s) =>
+  (['before', 'after'] as const).map((k): DownloadEntry => {
+    const p = s[k];
+    return {
+      id: `reflection-${p.image}`,
+      title: `${k === 'before' ? 'Before' : 'After'} Component ${s.n} · ${p.code}: blank page`,
+      description:
+        k === 'before'
+          ? `Position and prediction, to fill before Component ${s.n}’s first tool. Keep it in view; don’t edit the prediction.`
+          : `Claim and redaction, to fill right after Component ${s.n}’s last page, while it is fresh.`,
+      file: `templates/${p.pdf}`,
+      format: 'PDF',
+      group: 'templates',
+      component: reflectionComponentColour[s.id],
+      pages: 1,
+      note: `A4 · Claim & Reflection ${p.code}`,
+      page: `${s.href}reflect-${k}/`,
+    };
+  }),
+);
+const reflectionEntries: DownloadEntry[] = [
+  {
+    id: 'reflection-all',
+    title: 'Claim & Reflection: all twelve pages (A4)',
+    description: 'The intro page, the Before and After pages for each component, and the three Look back pages, in order.',
+    file: reflectionOverview.pdfAll,
+    format: 'PDF',
+    group: 'reflection',
+    component: 'ink',
+    pages: 12,
+    page: R,
+  },
+  {
+    id: 'reflection-shared',
+    title: 'Claim & Reflection: the intro page',
+    description: 'What it is and why to do it, the five steps, and where each page goes. Read once, before you start any component.',
+    file: 'templates/reflection-shared.pdf',
+    format: 'PDF',
+    group: 'reflection',
+    component: 'ink',
+    pages: 1,
+    note: 'A4',
+    page: R,
+  },
+  ...lookBack.map((p): DownloadEntry => ({
+    id: `reflection-${p.image}`,
+    title: `${p.title} · ${p.code}: blank page`,
+    description: p.sub.replace(/^Step 5 · /, ''),
+    file: `templates/${p.pdf}`,
+    format: 'PDF',
+    group: 'reflection',
+    component: 'ink',
+    pages: 1,
+    note: `A4 · Claim & Reflection ${p.code}`,
+    page: `${R}${p.slug}/`,
+  })),
+];
 
 // ---- Component 3 · Language (generated by scripts/build-templates.mjs, plus a JSON template)
 const L = '/components/language/';
@@ -239,7 +313,7 @@ const language: DownloadEntry[] = [
   },
 ];
 
-export const downloadEntries: DownloadEntry[] = [...booklet, ...templateEntries, ...sheetEntries, ...boardEntries, ...language];
+export const downloadEntries: DownloadEntry[] = [...booklet, ...templateEntries, ...reflectionPages, ...reflectionEntries, ...sheetEntries, ...boardEntries, ...language];
 
 export interface Download extends DownloadEntry {
   bytes: number;

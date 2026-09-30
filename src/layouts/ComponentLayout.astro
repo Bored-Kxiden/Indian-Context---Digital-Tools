@@ -3,14 +3,14 @@ import BaseLayout from './BaseLayout.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
 import ComponentStepper from '../components/ComponentStepper.astro';
 import { componentById } from '../data/components';
-import { railFor } from '../data/rail';
+import { railFor, type RailComponentId } from '../data/rail';
 
 // Shell for a component's own pages: its overview, "Pick a product", "Before you start",
 // "Ask your participants". The step bar under the heading lists every page of the
 // component in order; the content is a stack of Sections that run the full width.
 
 interface Props {
-  component: 'existing-products' | 'visual-culture' | 'material-reality' | 'language';
+  component: RailComponentId;
   /** "overview", or the slug of the page (matches the step bar). */
   current: string;
   title: string;
@@ -26,7 +26,7 @@ interface Props {
 const { component, current, title, heading, lead, description, chips = [], crumb } = Astro.props;
 const comp = componentById[component];
 const rail = railFor(component);
-const compLabel = `${comp.number} · ${comp.short}`;
+const compLabel = comp.number ? `${comp.number} · ${comp.short}` : comp.short;
 const crumbs = [
   { label: 'Home', href: '/' },
   { label: 'Components', href: '/components/' },
@@ -45,7 +45,7 @@ const crumbs = [
         {lead && <p class="lead">{lead}</p>}
         <slot name="head" />
       </div>
-      <span class="bignum" aria-hidden="true">{comp.number}</span>
+      <span class="bignum" aria-hidden="true">{comp.number ?? 'R'}</span>
     </div>
   </div>
 

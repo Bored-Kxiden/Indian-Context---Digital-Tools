@@ -93,9 +93,10 @@ export interface Tool {
   kind?: string;
   question: string;
   time: string;
-  group: string;
-  effort: 1 | 2 | 3;
-  mode: string;
+  /** Who does it, how hard it is, and where: shown when the booklet gives them (Components 2 to 4). */
+  group?: string;
+  effort?: 1 | 2 | 3;
+  mode?: string;
   worksOnItsOwn: boolean;
   shows: string;
   done: string;
@@ -106,18 +107,21 @@ export interface Tool {
   sampleNote?: string;
   /** Under the Blank template heading. */
   blankNote?: string;
+  /** Component 2: which frame of the Figma template does this tool's work (see `figma` in visual-culture.ts). */
+  figmaFrame?: string;
   /** Deeper pages that belong to this tool. */
   refs?: Ref[];
   /** Extra tabs (rendered by src/components/panels). */
   panels?: PanelDef[];
   need: string;
   endUp: string;
-  /** Booklet page id of the tool's guide page. */
-  guidePage: string;
+  /** Booklet page id of the tool's guide page. Component 1 has none: its pages are templates. */
+  guidePage?: string;
   parts: Part[];
   cardKit?: ToolCardKit;
   /** Synthesis only: the "Is it working?" page. */
   isItWorking?: { good: string[]; warnings: { sign: string; fix: string }[] };
-  /** Synthesis only: the seven steps. */
-  sevenSteps?: { title: string; body: string }[];
+  /** Synthesis only: the numbered steps, and their heading ("The six steps"). */
+  stepsList?: { title: string; body: string }[];
+  stepsTitle?: string;
 }

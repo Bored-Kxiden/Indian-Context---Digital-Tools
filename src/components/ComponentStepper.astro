@@ -19,7 +19,7 @@ const { rail, current } = Astro.props;
     <ol data-stepper>
       <li>
         <a href={url(rail.overviewHref)} aria-current={current === 'overview' ? 'page' : undefined}>
-          <span class="n" aria-hidden="true">{rail.number ?? '·'}</span>
+          <span class="n" aria-hidden="true">{rail.number ?? 'R'}</span>
           <span class="t"><b>Overview</b></span>
         </a>
       </li>
@@ -27,7 +27,7 @@ const { rail, current } = Astro.props;
         rail.items.map((item) => (
           <li>
             <a href={url(item.href)} aria-current={item.slug === current ? 'page' : undefined}>
-              <span class="n" aria-hidden="true">{item.n ?? '›'}</span>
+              <span class="n" aria-hidden="true">{item.n ?? item.glyph ?? '›'}</span>
               <span class="t">
                 <b>{item.label}</b>
                 {item.meta && <small>{item.meta}</small>}

@@ -1,0 +1,205 @@
+---
+import ComponentLayout from './ComponentLayout.astro';
+import Section from '../components/Section.astro';
+import StepCard from '../components/reflection/StepCard.astro';
+import ReflectFlow from '../components/reflection/ReflectFlow.astro';
+import ReflectPrint from '../components/reflection/ReflectPrint.astro';
+import Icon from '../components/Icon.astro';
+import { stopById, before, after, type ReflectComponent } from '../data/reflection';
+import { url } from '../utils/url';
+
+// The Before and After page that sits inside each component. Same questions everywhere; only the
+// prediction prompt and the place in the component change. The page keeps its component's colour.
+interface Props {
+  id: ReflectComponent;
+  kind: 'before' | 'after';
+}
+const { id, kind } = Astro.props;
+const stop = stopById[id];
+const isBefore = kind === 'before';
+const page = isBefore ? stop.before : stop.after;
+const name = isBefore ? `Before Component ${stop.n}` : `After Component ${stop.n}`;
+const w = isBefore ? before : after;
+const plain = (label: string) => label.replace(/^\d · /, '');
+const beforeHref = `${stop.href}reflect-before/`;
+const afterHref = `${stop.href}reflect-after/`;
+---
+
+<ComponentLayout
+  component={id}
+  current={isBefore ? 'reflect-before' : 'reflect-after'}
+  title={`${name} · Reflect`}
+  heading={name}
+  lead={w.opening.join(' ')}
+  chips={['Claim & Reflection', w.sub.split(' · ')[0], page.code]}
+  crumb={isBefore ? 'Reflect: before' : 'Reflect: after'}
+>
+  <Section id="where" eyebrow="Where it goes" title={isBefore ? `Fill it before ${plain(stop.before.before.label)}.` : `Fill it right after ${plain(stop.after.after.label)}.`} split>
+    {
+      isBefore ? (
+        <ReflectFlow prev={stop.before.after} here={`${page.code} · ${name}`} next={stop.before.before} when={w.when} />
+      ) : (
+        <ReflectFlow prev={stop.after.after} here={`${page.code} · ${name}`} next={stop.after.next} when={w.when} />
+      )
+    }
+  </Section>
+
+  {
+    isBefore ? (
+      <Section id="steps" eyebrow={before.sub} title="Say where you stand, then what you expect." tone="white">
+        <div class="two">
+          <StepCard n={before.position.n} name={before.position.name}>
+            <p>{before.position.intro}</p>
+            <ul class="write" aria-label="Write down">
+              {before.position.fields.map((f) => <li>{f}</li>)}
+            </ul>
+            <p class="ask">{before.position.usedAsk}</p>
+            <ul class="opts" aria-label="Choose one">
+              {before.position.used.map((u) => <li class="chip">{u}</li>)}
+            </ul>
+            <ul class="write" aria-label="Then write">
+              <li>{before.position.because}</li>
+            </ul>
+            <p class="ask">{before.position.also}</p>
+          </StepCard>
+          <StepCard n={before.prediction.n} name={before.prediction.name} tone="tint">
+            <div class="predict">
+              <p class="lbl">{before.prediction.lead}</p>
+              <p class="ask">{stop.before.predict}</p>
+            </div>
+            <ol class="qs">
+              {before.prediction.asks.map((q) => <li>{q}</li>)}
+            </ol>
+          </StepCard>
+        </div>
+        <div class="callout callout--ink keep">
+          <strong>{before.keep.lead}</strong>
+          <p>{before.keep.body}</p>
+        </div>
+      </Section>
+    ) : (
+      <Section id="steps" eyebrow={after.sub} title="Say what you got, then what holds up." tone="white">
+        <div class="three">
+          <StepCard n={after.stanza.n} name={after.stanza.name}>
+            <p class="ask">{after.stanza.lead}</p>
+            <p>{after.stanza.body}</p>
+          </StepCard>
+          <StepCard n={after.redaction.n} name={after.redaction.name}>
+            <p>{after.redaction.body}</p>
+            <ul class="write" aria-label="Then write">
+              <li>{after.redaction.write}</li>
+            </ul>
+          </StepCard>
+          <StepCard n={after.unknown.n} name={after.unknown.name} tone="tint">
+            <p>{after.unknown.body}</p>
+            <ul class="write" aria-label="Finish these two lines">
+              {after.unknown.write.map((l) => <li>{l}</li>)}
+            </ul>
+          </StepCard>
+        </div>
+      </Section>
+    )
+  }
+
+  <Section id="print" eyebrow="Print it" title="Fill it on paper." split>
+    <ReflectPrint id={`reflection-${page.image}`} image={page.image} code={page.code} title={name}>
+      {isBefore ? 'Keep it in view while you work. Do not edit the prediction until the component is done.' : 'Write the stanza first, then redact it.'}
+    </ReflectPrint>
+  </Section>
+
+  {
+    isBefore ? (
+      <Section id="next" eyebrow="When the component is done" title={`Next: After Component ${stop.n}.`} tone="white" split>
+        <p class="big">Come back to this page only to compare. The After page asks what the process actually gave you.</p>
+        <p><a class="btn btn--accent" href={url(afterHref)}>Open {stop.after.code} · After Component {stop.n} <Icon name="arrow" size={20} /></a></p>
+      </Section>
+    ) : (
+      <Section id="next" eyebrow="What next" title="Stop here, or go on." tone="white" split>
+        <ul class="go">
+          <li>
+            <b>{after.onlyOne}</b>
+            <a class="link-arrow" href={url('/components/reflection/summarise/')}>Look back: Summarise <Icon name="arrow" size={20} /></a>
+          </li>
+          <li>
+            <b>Using more? Clip this page to your Before Component {stop.n} page ({stop.before.code}).</b>
+            <a class="link-arrow" href={url(beforeHref)}>Open {stop.before.code} <Icon name="arrow" size={20} /></a>
+            <a class="link-arrow" href={url(stop.after.next.href)}>{stop.after.next.label} starts next <Icon name="arrow" size={20} /></a>
+          </li>
+        </ul>
+      </Section>
+    )
+  }
+</ComponentLayout>
+
+<style>
+  .two {
+    display: grid;
+    gap: var(--sp-3);
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+  .three {
+    display: grid;
+    gap: var(--sp-3);
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+  @media (min-width: 64rem) {
+    .two {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+    .three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .predict {
+    background: var(--surface);
+    border-radius: var(--r-md);
+    padding: var(--sp-2) var(--sp-3);
+    margin-bottom: var(--sp-3);
+  }
+  .predict .lbl {
+    margin: 0 0 var(--sp-1);
+  }
+  .predict .ask {
+    margin: 0;
+  }
+  .qs {
+    margin: 0;
+    padding-left: var(--sp-3);
+    display: grid;
+    gap: var(--sp-2);
+  }
+  .qs li {
+    margin: 0;
+    font-weight: 600;
+    max-width: 38rem;
+  }
+  .keep {
+    margin-top: var(--sp-3);
+  }
+  .big {
+    font-size: var(--fs-lead);
+    color: var(--ink-soft);
+    max-width: var(--measure);
+  }
+  .go {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--sp-3);
+  }
+  .go li {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1);
+    align-items: flex-start;
+  }
+  .go b {
+    font-size: var(--fs-lead);
+    font-weight: 700;
+    max-width: 40rem;
+  }
+</style>

@@ -9,6 +9,7 @@ import { iWantTo as c2Goals } from './booklet/visual-culture';
 //  - Every chip takes its own component's colour (D19): a tool never borrows another component's colour.
 //  - Component 2 items: the first line is the booklet's own (page 2.02); the four tool lines are ours.
 //  - Component 1 items are written by us, from each tool's subtitle (not in the booklet).
+//  - Reflection lists five broad goals, written by us from the reference pages (Before, After and the three Look back pages).
 //  - Component 3 (Language) lists its five broad themes only, each opening the tool that does it. The steps under each
 //    theme (the earlier Meaning-to-Interface phrases, re-pointed at the booklet's tools) are in `languageSteps` below,
 //    for search, and sit on the theme's own page.
@@ -40,6 +41,7 @@ const C1 = '/components/existing-products/';
 const C2 = '/components/visual-culture/';
 const C3 = '/components/language/';
 const C4 = '/components/material-reality/';
+const R = '/components/reflection/';
 
 
 export const goals: Goal[] = [
@@ -93,6 +95,19 @@ export const goals: Goal[] = [
       tone: 'c4' as Tone,
       href: `${C4}${g.tool}/${g.anchor}`,
     })),
+  },
+  {
+    id: 'reflection',
+    component: 'ink',
+    componentLabel: 'Reflection · Claim & Reflection',
+    title: 'Reflect on what I found',
+    items: [
+      { phrase: '…make my starting position and my prediction visible', tag: 'Before each component', tone: 'ink', href: `${R}#where` },
+      { phrase: '…test what I learned against my own bias', tag: 'After each component', tone: 'ink', href: `${R}#where` },
+      { phrase: '…go back to my predictions and see what changed', tag: 'Look back: Summarise', tone: 'ink', href: `${R}summarise/` },
+      { phrase: '…see which dimensions I never reached', tag: 'Look back: Wheel', tone: 'ink', href: `${R}wheel/` },
+      { phrase: '…ask what this could still get wrong', tag: 'Look back: Consequences', tone: 'ink', href: `${R}consequences/` },
+    ],
   },
 ];
 

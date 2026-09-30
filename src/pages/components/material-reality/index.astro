@@ -65,9 +65,11 @@ const routes = [overview.routes.quick, overview.routes.deep];
     <p class="big">Start by mapping the journey. Then build, break, weigh and say.</p>
     <RouteList
       items={[
+        { label: 'Reflect: before (R·4A)', href: `${comp.href}reflect-before/`, blurb: 'Say where you stand and what you expect to find, before the Journey Strip.' },
         { label: 'Before you start', href: `${comp.href}before-you-start/`, blurb: beforeYouStart.step1.title + ' Then bring the Visual Toolkit photos.' },
         ...toolRoute,
         { label: 'Ask your participants', href: `${comp.href}ask-your-participants/`, blurb: 'Field cards: questions, consent, care.' },
+        { label: 'Reflect: after (R·4B)', href: `${comp.href}reflect-after/`, blurb: 'Say what the process actually gave you, then check it against your own bias.' },
       ]}
     />
     <div class="routes">
