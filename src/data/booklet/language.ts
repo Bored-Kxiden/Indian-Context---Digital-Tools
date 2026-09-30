@@ -276,7 +276,7 @@ export const tools: Tool[] = [
         example: {
           page: '3.05',
           alt: 'Prime: six cue cards, to read once before the session. Body and posture; pause and silence; language switching; social dynamics; voice and tone; objects and environment. Each has what to notice and a question to ask yourself. Below them, the log symbols: body, pause, switch, gaze, object, voice, deflect and avoided.',
-          note: 'Read first. During the session, don’t interpret: just mark what you notice with a symbol.',
+          note: 'A print sheet, not a filled example. Read it once before the session and keep it beside you.',
         },
         blank: {
           page: '3.05',
@@ -586,7 +586,7 @@ export const tools: Tool[] = [
         example: {
           page: '3.20',
           alt: 'Idiom cards to print and cut: six Hindi examples, each with the idiom in Devanagari and in Latin script, what it literally says, what it usually means and the question “When has this happened to you?”. Ek anaar, sau beemar (one pomegranate, a hundred sick); Oont ke munh mein jeera (a cumin seed in a camel’s mouth); Naach na jaane, aangan tedha (can’t dance, blames the crooked courtyard); Door ke dhol suhaavne (distant drums sound sweet); Aasmaan se gira, khajoor mein atka (fell from the sky, stuck in a date palm); Jitni chaadar, utne pair pasaaro (stretch your legs only as far as the sheet). Below them, three blank cards for idioms from the participants’ own language.',
-          note: 'Better: collect idioms from the participants’ own language in Before you start, and check each meaning with your language collaborator. Don’t explain the meaning to the first person unless they ask.',
+          note: 'A print sheet, not a filled example. Print it and cut along the dashed lines.',
         },
         blank: {
           page: '3.20',

@@ -1,0 +1,274 @@
+---
+import ExFrame from './ExFrame.astro';
+import Lines from './Lines.astro';
+
+// Booklet p.2.04 · Tool 1 Show, Part A: Meera's photos, one per mission (filled example).
+// Photos are described, not shown, as in the booklet.
+interface Props {
+  alt: string;
+  caption: string;
+}
+const { alt, caption } = Astro.props;
+
+const cards = [
+  {
+    n: 'M01',
+    photo: ['Screenshot of a class WhatsApp', 'group: a forwarded notice with', 'the last date circled.'],
+    title: 'Where you learn',
+    rows: [
+      ['What is this?', 'Class group message.'],
+      ['Why show us?', 'This is where I found out. Not the website.'],
+      ['Doing?', 'Checking the last date again.'],
+    ],
+    tag: 'Reported',
+  },
+  {
+    n: 'M02',
+    photo: ['A notebook page with user ID,', 'password and application', 'number in pen, next to her phone.'],
+    title: 'What you keep beside you',
+    rows: [
+      ['What is this?', 'My notebook.'],
+      ['Why show us?', 'I write the IDs here. The SMS gets deleted.'],
+      ['Doing?', 'Logging in.'],
+    ],
+    tag: 'Observed',
+  },
+  {
+    n: 'M03',
+    photo: ['The cybercafé counter. The', 'owner’s hand on the mouse, her', 'certificate on the scanner.'],
+    title: 'Who or what helps',
+    rows: [
+      ['What is this?', 'Bhaiya ki dukaan.'],
+      ['Why show us?', '“Unko setting pata hai” (he knows the setting).'],
+      ['Doing?', 'Making the file small.'],
+    ],
+    tag: 'Reported',
+  },
+  {
+    n: 'M04',
+    photo: ['Three steps in one frame: paper', 'certificate, its phone photo, the', 'PDF on the café screen.'],
+    title: 'When information changes',
+    rows: [
+      ['What is this?', 'My certificate becoming a PDF.'],
+      ['Why show us?', 'It changes three times before it’s accepted.'],
+      ['Doing?', 'Converting.'],
+    ],
+    tag: 'Observed',
+  },
+  {
+    n: 'M05',
+    photo: ['Her father’s phone on a shelf at', 'home, with a paper slip that says', '“OTP” in her writing.'],
+    title: 'When the expected way fails',
+    rows: [
+      ['What is this?', 'Papa’s phone.'],
+      ['Why show us?', 'The OTP goes here, not to me.'],
+      ['Doing?', 'Waiting for him to call back.'],
+    ],
+    tag: 'Reported',
+  },
+  {
+    n: 'M06',
+    photo: ['The portal page. Her finger on the', 'small red “Pending” next to the', 'government emblem.'],
+    title: 'What you know to look at',
+    rows: [
+      ['What is this?', 'The emblem and the status.'],
+      ['Why show us?', 'If it has the emblem, it’s real. Red means something’s wrong.'],
+      ['Doing?', 'Checking if it’s fake.'],
+    ],
+    tag: 'Reported',
+  },
+];
+---
+
+<ExFrame page="2.04" alt={alt} caption={caption}>
+  <div class="e204">
+    <ol class="cards">
+      {
+        cards.map((c) => (
+          <li class="mc">
+            <div class="ph">
+              <span class="id">{c.n}</span>
+              <p class="d">
+                <svg viewBox="0 0 16 14" aria-hidden="true" focusable="false">
+                  <rect x="1" y="3.5" width="14" height="9" rx="1.6" />
+                  <path d="M5.3 3.5 6.4 1.6h3.2l1.1 1.9" />
+                  <circle cx="8" cy="8" r="2.4" />
+                </svg>
+                <span class="pt"><span class="visually-hidden">Photo: </span><Lines lines={c.photo} /></span>
+              </p>
+            </div>
+            <div class="bd">
+              <h4>{c.title}</h4>
+              <dl>
+                {
+                  c.rows.map(([k, v]) => (
+                    <div>
+                      <dt class="lbl">{k}</dt> <dd>{v}</dd>
+                    </div>
+                  ))
+                }
+              </dl>
+              <span class:list={['cp', c.tag === 'Observed' ? 'cp--o' : 'cp--r']}>{c.tag}</span>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+    <p class="to">
+      <span class="lbl">To Component 3</span>
+      <span>“Setting” came up in her own words. Log it for thick translation in Reading Language, Tool 2.</span>
+    </p>
+  </div>
+</ExFrame>
+
+<style is:global>
+  .e204 {
+    --bk-sand: #e6dfd3;
+    --bk-pink: #f0ddd6;
+    --bk-terra: #a8432a;
+    display: grid;
+    gap: calc(var(--u) * 8);
+  }
+  .e204 .cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: calc(var(--u) * 8);
+  }
+  .e204 .mc {
+    display: grid;
+    grid-template-rows: calc(var(--u) * 62) 1fr;
+    background: #fff;
+    border: calc(var(--u) * 1) solid var(--bk-ink);
+    border-radius: calc(var(--u) * 7);
+    overflow: hidden;
+  }
+  .e204 .ph {
+    position: relative;
+    background: var(--bk-sand);
+    padding: calc(var(--u) * 3.2) calc(var(--u) * 3.5) 0 calc(var(--u) * 6.5);
+  }
+  .e204 .id {
+    display: inline-block;
+    background: var(--bk-ink);
+    color: #fff;
+    font-family: var(--font-mono);
+    font-size: max(11px, calc(var(--u) * 7.1));
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: 0.04em;
+    padding: calc(var(--u) * 1.9) calc(var(--u) * 4.6);
+    border-radius: calc(var(--u) * 3.5);
+  }
+  .e204 .d {
+    display: grid;
+    grid-template-columns: calc(var(--u) * 17.5) 1fr;
+    margin-top: calc(var(--u) * -2.2);
+    font-style: italic;
+    font-variation-settings: 'opsz' 11;
+    font-size: max(13px, calc(var(--u) * 8.4));
+    line-height: 1.25;
+    color: #4a453d;
+  }
+  .e204 .pt {
+    white-space: nowrap;
+  }
+  .e204 .d svg {
+    width: calc(var(--u) * 8);
+    height: calc(var(--u) * 7);
+    min-width: 9px;
+    margin-top: calc(var(--u) * 5.6);
+    fill: none;
+    stroke: #6f695e;
+    stroke-width: 1.3;
+  }
+  .e204 .bd {
+    display: flex;
+    flex-direction: column;
+    padding: calc(var(--u) * 7) calc(var(--u) * 5) calc(var(--u) * 6) calc(var(--u) * 9.4);
+  }
+  .e204 h4 {
+    font-variation-settings: 'opsz' 14;
+    font-size: max(15px, calc(var(--u) * 10.3));
+    font-weight: 800;
+    line-height: 1.25;
+    margin-bottom: calc(var(--u) * 3.4);
+  }
+  .e204 dl {
+    display: grid;
+    gap: calc(var(--u) * 3);
+    margin: 0;
+  }
+  .e204 dl > div {
+    font-variation-settings: 'opsz' 12;
+    font-size: max(14px, calc(var(--u) * 9));
+    line-height: 1.36;
+  }
+  .e204 dt,
+  .e204 dd {
+    display: inline;
+    margin: 0;
+  }
+  .e204 dt.lbl {
+    display: inline;
+    font-size: max(11px, calc(var(--u) * 6.6));
+    letter-spacing: 0.08em;
+  }
+  .e204 .cp {
+    align-self: flex-start;
+    margin-top: calc(var(--u) * 5.5);
+    font-family: var(--font-mono);
+    font-size: max(11px, calc(var(--u) * 6.2));
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #fff;
+    padding: calc(var(--u) * 2.8) calc(var(--u) * 5);
+    border-radius: calc(var(--u) * 2.6);
+  }
+  .e204 .cp--o {
+    background: var(--bk-ink);
+  }
+  .e204 .cp--r {
+    background: var(--bk-terra);
+  }
+  .e204 .to {
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr);
+    column-gap: calc(var(--u) * 8);
+    align-items: baseline;
+    background: var(--bk-pink);
+    border-radius: calc(var(--u) * 10);
+    padding: calc(var(--u) * 10.5) calc(var(--u) * 13);
+    font-variation-settings: 'opsz' 14;
+    font-size: max(15px, calc(var(--u) * 10.3));
+    line-height: 1.32;
+  }
+  .e204 .to .lbl {
+    margin: 0;
+    color: var(--bk-terra);
+    font-size: max(11px, calc(var(--u) * 7.6));
+    font-weight: 500;
+  }
+  @container (max-width: 45rem) {
+    .e204 {
+      --u: 1.33px;
+    }
+    .e204 .cards {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .e204 .mc {
+      grid-template-rows: auto 1fr;
+    }
+    .e204 .ph {
+      padding-bottom: var(--sp-2);
+    }
+    .e204 .pt {
+      white-space: normal;
+    }
+    .e204 .to {
+      grid-template-columns: 1fr;
+      gap: var(--sp-half);
+    }
+  }
+</style>

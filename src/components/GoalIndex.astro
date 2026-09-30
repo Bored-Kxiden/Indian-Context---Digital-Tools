@@ -163,27 +163,29 @@ const nameOf = (label: string) => label.split('·')[1]?.trim() ?? label;
     grid-template-columns: minmax(0, 1fr);
     align-items: start;
   }
-  /* Home: Components 1, 2 and 4 stacked on the left, the longer Component 3 alongside. */
+  /* Home: two by two, in order. Each row is as tall as its taller card. */
   @media (min-width: 64rem) {
     .board .cards {
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      grid-template-rows: auto auto 1fr;
       grid-template-areas:
-        'c1 c3'
-        'c2 c3'
-        'c4 c3';
-    }
-    .board [data-card='c2'] {
-      grid-area: c2;
+        'c1 c2'
+        'c3 c4';
+      align-items: stretch;
     }
     .board [data-card='c1'] {
       grid-area: c1;
+    }
+    .board [data-card='c2'] {
+      grid-area: c2;
     }
     .board [data-card='c3'] {
       grid-area: c3;
     }
     .board [data-card='c4'] {
       grid-area: c4;
+    }
+    .board .gcard {
+      align-self: stretch;
     }
   }
 

@@ -9,8 +9,9 @@ import { iWantTo as c2Goals } from './booklet/visual-culture';
 //  - Every chip takes its own component's colour (D19): a tool never borrows another component's colour.
 //  - Component 2 items: the first line is the booklet's own (page 2.02); the four tool lines are ours.
 //  - Component 1 items are written by us, from each tool's subtitle (not in the booklet).
-//  - Component 3 (Language) items are ours: the earlier Meaning-to-Interface phrases, re-pointed at the booklet's tools,
-//    plus a few for the tools the booklet adds (cue cards, the provisional glossary, the Kahavat Relay).
+//  - Component 3 (Language) lists its five broad themes only, each opening the tool that does it. The steps under each
+//    theme (the earlier Meaning-to-Interface phrases, re-pointed at the booklet's tools) are in `languageSteps` below,
+//    for search, and sit on the theme's own page.
 //
 // To add an item, add it to a group below. `href` is a site path, optionally with an anchor.
 
@@ -69,61 +70,16 @@ export const goals: Goal[] = [
     })),
   },
   {
-    id: 'language-setting',
+    id: 'language',
     component: 'c3',
     componentLabel: 'Component 3 · Language',
-    title: 'Understand the setting',
+    title: 'Read language',
     items: [
-      { phrase: '…by noticing routines, relationships, language, and how people communicate', tag: 'Context Cards', tone: 'c3', href: `${C3}physical-field-kit/#context-cards` },
-      { phrase: '…by writing down where I am coming from, before I begin', tag: 'Positionality note', tone: 'c3', href: `${C3}before-you-start/#positionality` },
-      { phrase: '…by starting a provisional glossary, to correct after the interviews', tag: 'Provisional glossary', tone: 'c3', href: `${C3}before-you-start/#glossary` },
-    ],
-  },
-  {
-    id: 'language-capture',
-    component: 'c3',
-    componentLabel: 'Component 3 · Language',
-    title: 'Capture what people mean',
-    items: [
-      { phrase: '…by reading the cues beyond words before I go in', tag: 'Cue cards', tone: 'c3', href: `${C3}listen/#part-prime` },
-      { phrase: '…by running the conversation step by step, from consent to correction', tag: 'Interview Cards', tone: 'c3', href: `${C3}physical-field-kit/#interview-cards` },
-      { phrase: '…by recording a phrase, gesture, or pause worth a second look', tag: 'Meaning Card', tone: 'c3', href: `${C3}meaning-card/` },
-      { phrase: '…by carrying blank cards into the field', tag: 'Blank Meaning Cards', tone: 'c3', href: `${C3}physical-field-kit/#blank-meaning-cards` },
-      { phrase: '…by reflecting on what surprised me, straight after a session', tag: 'Reflection Cards', tone: 'c3', href: `${C3}physical-field-kit/#reflection-cards` },
-      { phrase: '…by reaching a meaning through a drawing when words won’t', tag: '5 · Kahavat Relay', tone: 'c3', href: `${C3}kahavat-relay/` },
-    ],
-  },
-  {
-    id: 'language-translate',
-    component: 'c3',
-    componentLabel: 'Component 3 · Language',
-    title: 'Translate without losing meaning',
-    items: [
-      { phrase: '…by translating what was said literally, in context, and with alternatives', tag: 'Thick translation', tone: 'c3', href: `${C3}translate/#part-thick` },
-      { phrase: '…by checking my translation with the people it came from, in both directions', tag: 'Reverse thick translation', tone: 'c3', href: `${C3}translate/#reverse` },
-      { phrase: '…by recording who interpreted, how, and whether a second reader agrees', tag: 'Fidelity Protocol', tone: 'c3', href: `${C3}fidelity-protocol/` },
-    ],
-  },
-  {
-    id: 'language-wording',
-    component: 'c3',
-    componentLabel: 'Component 3 · Language',
-    title: 'Test interface wording',
-    items: [
-      { phrase: '…by checking that someone new to the form understands the words', tag: 'Lens N · New', tone: 'c3', href: `${C3}language-lens-audit/#lens-n` },
-      { phrase: '…by checking it works read aloud and operated by someone else', tag: 'Lens P · Proxy', tone: 'c3', href: `${C3}language-lens-audit/#lens-p` },
-      { phrase: '…by checking it reads as official, not as a scam', tag: 'Lens T · Trust', tone: 'c3', href: `${C3}language-lens-audit/#lens-t` },
-      { phrase: '…by auditing portal or interface copy against all three lenses', tag: 'Language Lens Audit', tone: 'c3', href: `${C3}language-lens-audit/` },
-    ],
-  },
-  {
-    id: 'language-build-on',
-    component: 'c3',
-    componentLabel: 'Component 3 · Language',
-    title: 'Build on what we already know',
-    items: [
-      { phrase: '…by searching meanings that have already been validated', tag: 'Expression Library', tone: 'c3', href: `${C3}expression-library/` },
-      { phrase: '…by reusing wording that has already been tested, with its evidence', tag: 'Design Language Library', tone: 'c3', href: `${C3}design-language-library/` },
+      { phrase: '…understand the setting', tag: 'Before you start', tone: 'c3', href: `${C3}before-you-start/` },
+      { phrase: '…capture what people mean', tag: '1 · Listen', tone: 'c3', href: `${C3}listen/` },
+      { phrase: '…translate without losing meaning', tag: '2 · Translate', tone: 'c3', href: `${C3}translate/` },
+      { phrase: '…test interface wording', tag: '3 · Test', tone: 'c3', href: `${C3}test/` },
+      { phrase: '…build on what we already know', tag: '4 · Library', tone: 'c3', href: `${C3}library/` },
     ],
   },
   {
@@ -137,6 +93,57 @@ export const goals: Goal[] = [
       tone: 'c4' as Tone,
       href: `${C4}${g.tool}/${g.anchor}`,
     })),
+  },
+];
+
+/**
+ * The steps and ways of doing each Language theme. They are not in the "I want to…" index (that lists
+ * the five broad themes only); each sits on its theme's page, and they stay findable through the
+ * "Find a tool" search.
+ */
+export const languageSteps: { theme: string; items: GoalItem[] }[] = [
+  {
+    theme: 'Understand the setting',
+    items: [
+      { phrase: '…by noticing routines, relationships, language, and how people communicate', tag: 'Context Cards', tone: 'c3', href: `${C3}physical-field-kit/#context-cards` },
+      { phrase: '…by writing down where I am coming from, before I begin', tag: 'Positionality note', tone: 'c3', href: `${C3}before-you-start/#positionality` },
+      { phrase: '…by starting a provisional glossary, to correct after the interviews', tag: 'Provisional glossary', tone: 'c3', href: `${C3}before-you-start/#glossary` },
+    ],
+  },
+  {
+    theme: 'Capture what people mean',
+    items: [
+      { phrase: '…by reading the cues beyond words before I go in', tag: 'Cue cards', tone: 'c3', href: `${C3}listen/#part-prime` },
+      { phrase: '…by running the conversation step by step, from consent to correction', tag: 'Interview Cards', tone: 'c3', href: `${C3}physical-field-kit/#interview-cards` },
+      { phrase: '…by recording a phrase, gesture, or pause worth a second look', tag: 'Meaning Card', tone: 'c3', href: `${C3}meaning-card/` },
+      { phrase: '…by carrying blank cards into the field', tag: 'Blank Meaning Cards', tone: 'c3', href: `${C3}physical-field-kit/#blank-meaning-cards` },
+      { phrase: '…by reflecting on what surprised me, straight after a session', tag: 'Reflection Cards', tone: 'c3', href: `${C3}physical-field-kit/#reflection-cards` },
+      { phrase: '…by reaching a meaning through a drawing when words won’t', tag: '5 · Kahavat Relay', tone: 'c3', href: `${C3}kahavat-relay/` },
+    ],
+  },
+  {
+    theme: 'Translate without losing meaning',
+    items: [
+      { phrase: '…by translating what was said literally, in context, and with alternatives', tag: 'Thick translation', tone: 'c3', href: `${C3}translate/#part-thick` },
+      { phrase: '…by checking my translation with the people it came from, in both directions', tag: 'Reverse thick translation', tone: 'c3', href: `${C3}translate/#reverse` },
+      { phrase: '…by recording who interpreted, how, and whether a second reader agrees', tag: 'Fidelity Protocol', tone: 'c3', href: `${C3}fidelity-protocol/` },
+    ],
+  },
+  {
+    theme: 'Test interface wording',
+    items: [
+      { phrase: '…by checking that someone new to the form understands the words', tag: 'Lens N · New', tone: 'c3', href: `${C3}language-lens-audit/#lens-n` },
+      { phrase: '…by checking it works read aloud and operated by someone else', tag: 'Lens P · Proxy', tone: 'c3', href: `${C3}language-lens-audit/#lens-p` },
+      { phrase: '…by checking it reads as official, not as a scam', tag: 'Lens T · Trust', tone: 'c3', href: `${C3}language-lens-audit/#lens-t` },
+      { phrase: '…by auditing portal or interface copy against all three lenses', tag: 'Language Lens Audit', tone: 'c3', href: `${C3}language-lens-audit/` },
+    ],
+  },
+  {
+    theme: 'Build on what we already know',
+    items: [
+      { phrase: '…by searching meanings that have already been validated', tag: 'Expression Library', tone: 'c3', href: `${C3}expression-library/` },
+      { phrase: '…by reusing wording that has already been tested, with its evidence', tag: 'Design Language Library', tone: 'c3', href: `${C3}design-language-library/` },
+    ],
   },
 ];
 

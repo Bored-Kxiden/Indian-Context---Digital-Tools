@@ -64,7 +64,7 @@ python3 scripts/extract-booklet-assets.py   # regenerate page images and split P
     ├── components/                Header, ComponentNav (sticky strip), Finder (search), ComponentStepper, Section, PageHead,
     │                              GoalIndex, PageFigure, DownloadCard, Footer, …
     │   ├── panels/                the extra tabs a tool can have (the six missions, reverse thick translation), and index.ts
-    │   └── examples/              the 14 filled examples as HTML (Ex106, Ex108, … Ex420), ExFrame (frame + "compare with the
+    │   └── examples/              the 25 filled examples as HTML (Ex106, Ex108, … Ex420), ExFrame (frame + "compare with the
     │                              booklet page"), Tag, Lines, and index.ts (booklet page id → component)
     ├── data/
     │   ├── components.ts          the components (order, colour, status, blurb)

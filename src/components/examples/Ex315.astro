@@ -1,0 +1,169 @@
+---
+import ExFrame from './ExFrame.astro';
+
+// Booklet p.3.15 · Tool 4 Library, Part A: two linked entries (filled example).
+interface Props {
+  alt: string;
+  caption: string;
+}
+const { alt, caption } = Astro.props;
+
+type Row = { k: string; v: string; hi?: boolean; dev?: string; lat?: string };
+const expression: Row[] = [
+  { k: 'Expression', v: '', dev: 'ऊपर वाले की मर्ज़ी', lat: 'upar wale ki marzi' },
+  { k: 'Language', v: 'Hindi, used inside Hinglish speech' },
+  { k: 'Literal', v: 'The wish of the one above' },
+  { k: 'Implied', v: 'Out of my hands; I don’t know who decides' },
+  { k: 'Heard when', v: 'Waiting on an institution after submitting' },
+  { k: 'Evidence', v: '3 participants · collaborator + second reader · supported' },
+  { k: 'Don’t use for', v: 'Religious meaning in every context. Ask first.' },
+];
+const design: Row[] = [
+  { k: 'Moment', v: 'Application status, after submitting' },
+  { k: 'Replaces', v: 'Status: Pending' },
+  { k: 'English', v: 'Your college is checking your documents · day 3 of 15' },
+  { k: 'Hindi', v: 'आपका कॉलेज आपके दस्तावेज़ जाँच रहा है · दिन 3 / 15', hi: true },
+  { k: 'Tested with', v: 'First-gen students on phones; fathers by phone' },
+  { k: 'Lenses', v: 'N ✓ · P ✓ · T ✓ (round 2)' },
+  { k: 'Linked to', v: 'EX-014 · tone: calm, specific, no urgency' },
+];
+---
+
+<ExFrame page="3.15" alt={alt} caption={caption}>
+  <div class="e315">
+    <div class="pair">
+      <article class="en e--x" aria-labelledby="e315-x">
+        <h4 id="e315-x">Expression Library · EX-014</h4>
+        <dl>
+          {
+            expression.map((r) => (
+              <div class="rw">
+                <dt class="lbl">{r.k}</dt>
+                <dd>
+                  {r.dev ? (
+                    <>
+                      <span lang="hi">{r.dev}</span> · {r.lat}
+                    </>
+                  ) : (
+                    r.v
+                  )}
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+      </article>
+      <article class="en e--d" aria-labelledby="e315-d">
+        <h4 id="e315-d">Design Language Library · DL-031</h4>
+        <dl>
+          {
+            design.map((r) => (
+              <div class="rw">
+                <dt class="lbl">{r.k}</dt>
+                <dd>{r.hi ? <span lang="hi">{r.v}</span> : r.v}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </article>
+    </div>
+    <p class="grow">
+      <b>Grows into a language system.</b> Once there are enough tested entries, group them by moment (errors, waiting, success)
+      and by voice (how formal, how warm), just like components in a design system.
+    </p>
+  </div>
+</ExFrame>
+
+<style is:global>
+  .e315 {
+    --bk-terra: #a8432a;
+    display: grid;
+    gap: calc(var(--u) * 12);
+  }
+  .e315 .pair {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: calc(var(--u) * 10);
+  }
+  .e315 .en {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border: calc(var(--u) * 1) solid var(--bk-ink);
+    border-radius: calc(var(--u) * 10);
+    overflow: hidden;
+  }
+  .e315 .en h4 {
+    margin: 0;
+    padding: calc(var(--u) * 7) calc(var(--u) * 10);
+    color: #fff;
+    font-family: var(--font-mono);
+    font-size: max(11px, calc(var(--u) * 7.8));
+    font-weight: 400;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    line-height: 1.3;
+  }
+  .e315 .e--x h4 {
+    background: var(--bk-terra);
+  }
+  .e315 .e--d h4 {
+    background: var(--bk-ink);
+  }
+  .e315 .en dl {
+    margin: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .e315 .rw {
+    display: grid;
+    grid-template-columns: calc(var(--u) * 107) minmax(0, 1fr);
+    padding: calc(var(--u) * 3.6) calc(var(--u) * 2) calc(var(--u) * 3.6) 0;
+    border-top: calc(var(--u) * 0.7) solid #dfd9d0;
+    align-items: baseline;
+  }
+  .e315 .rw:first-child {
+    border-top: 0;
+  }
+  .e315 .rw dt.lbl {
+    margin: 0;
+    padding-left: calc(var(--u) * 10);
+    font-size: max(11px, calc(var(--u) * 6.9));
+    letter-spacing: 0.1em;
+    color: #6f695e;
+  }
+  .e315 .rw dd {
+    margin: 0;
+    font-variation-settings: 'opsz' 13;
+    font-size: max(14px, calc(var(--u) * 9.8));
+    line-height: 1.44;
+  }
+  .e315 .grow {
+    border: calc(var(--u) * 1) dashed var(--bk-ink);
+    border-radius: calc(var(--u) * 10);
+    padding: calc(var(--u) * 11) calc(var(--u) * 13);
+    font-variation-settings: 'opsz' 14;
+    font-size: max(15px, calc(var(--u) * 10.6));
+    line-height: 1.5;
+  }
+  .e315 .grow b {
+    font-weight: 700;
+  }
+  @container (max-width: 45rem) {
+    .e315 {
+      --u: 1.33px;
+    }
+    .e315 .pair {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .e315 .rw {
+      grid-template-columns: minmax(0, 1fr);
+      padding-left: calc(var(--u) * 10);
+      gap: 0;
+    }
+    .e315 .rw dt.lbl {
+      padding-left: 0;
+    }
+  }
+</style>

@@ -1,0 +1,182 @@
+---
+import ExFrame from './ExFrame.astro';
+
+// Booklet p.2.10 · Tool 3 Build, Part A: a Context Scenario (filled example).
+interface Props {
+  alt: string;
+  caption: string;
+}
+const { alt, caption } = Astro.props;
+
+const status = { O: 'Observed', R: 'Reported', I: 'Inferred' } as const;
+
+const boxes = [
+  { n: '01', name: 'The moment', tag: 'R', q: 'What is actually happening?', a: 'Exam week, 9 pm. Uploading the income certificate two days before the deadline.' },
+  { n: '02', name: 'The world around them', tag: 'O', q: 'What do they see?', a: 'A class WhatsApp thread, a notebook of IDs, a phone at 12%. The portal comes last.' },
+  { n: '03', name: 'Information journey', tag: 'R', q: 'Where does it come from?', a: 'Notice → class group → senior → Meera → café owner → portal.' },
+  { n: '04', name: 'The visual cue', tag: 'R', q: 'What tells them what to trust?', a: 'The government emblem. Red text means “something is wrong”.' },
+  { n: '05', name: 'People around them', tag: 'R', q: 'Who else is involved?', a: 'A senior (explains), the café owner (converts), her father (holds the OTP).' },
+  { n: '06', name: 'What they already know', tag: 'I', q: 'What does it assume?', a: 'What a PDF is, which number is registered, that “pending” can mean weeks.' },
+  { n: '07', name: 'The hidden work', tag: 'O', q: 'What happens off-screen?', a: 'Photographing, travelling, paying ₹30–50, waiting for a call back.' },
+  { n: '08', name: 'The condition', tag: 'I', q: 'What combination keeps appearing?', a: 'Deadline pressure + a paper document + a helper with a device + someone else’s phone.' },
+  { n: '09', name: 'The consequence', tag: 'R', q: 'What breaks if one condition goes?', a: 'No café open at night → no PDF → misses the deadline. Seen in 2 of 4 participants.' },
+] as const;
+---
+
+<ExFrame page="2.10" alt={alt} caption={caption}>
+  <div class="e210">
+    <ol class="grid9">
+      {
+        boxes.map((b) => (
+          <li class="sbox">
+            <div class="top">
+              <span class="nm">{b.n} · {b.name}</span>
+              <span class={`sg sg--${b.tag}`}>
+                <span aria-hidden="true">{b.tag}</span>
+                <span class="visually-hidden">{status[b.tag]}</span>
+              </span>
+            </div>
+            <h4>{b.q}</h4>
+            <p>{b.a}</p>
+          </li>
+        ))
+      }
+    </ol>
+    <div class="pair">
+      <div class="edge">
+        <span class="lbl">Edge-case check</span>
+        <p>
+          This was treated as <b>“a student with a slow internet connection”</b>, but the evidence shows
+          {' '}<b>an upload that needs three places and two other people</b>.
+        </p>
+      </div>
+      <div class="read">
+        <span class="lbl">The visual reading</span>
+        <p>She has learned to trust the emblem and the class group, and to distrust anything red, before she reads a single word.</p>
+      </div>
+    </div>
+  </div>
+</ExFrame>
+
+<style is:global>
+  .e210 {
+    --bk-terra: #a8432a;
+    display: grid;
+    gap: calc(var(--u) * 9.8);
+  }
+  .e210 .grid9 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: calc(var(--u) * 7);
+  }
+  .e210 .sbox {
+    background: #fff;
+    border: calc(var(--u) * 1) solid var(--bk-ink);
+    border-radius: calc(var(--u) * 7.5);
+    padding: calc(var(--u) * 7) calc(var(--u) * 9) calc(var(--u) * 5);
+  }
+  .e210 .top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: calc(var(--u) * 4);
+    min-height: calc(var(--u) * 10);
+    margin-right: calc(var(--u) * 0.4);
+  }
+  .e210 .nm {
+    font-family: var(--font-mono);
+    font-size: max(11px, calc(var(--u) * 6.8));
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a6a14;
+    line-height: 1.2;
+  }
+  .e210 .sg {
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    width: calc(var(--u) * 11.2);
+    height: calc(var(--u) * 11.2);
+    min-width: 14px;
+    min-height: 14px;
+    border-radius: calc(var(--u) * 3.6);
+    font-family: var(--font-mono);
+    font-size: max(10px, calc(var(--u) * 6.4));
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+  }
+  .e210 .sg--O {
+    background: var(--bk-ink);
+  }
+  .e210 .sg--R {
+    background: var(--bk-terra);
+  }
+  .e210 .sg--I {
+    background: #fff;
+    color: var(--bk-ink);
+    border: calc(var(--u) * 0.9) solid var(--bk-ink);
+  }
+  .e210 h4 {
+    margin-top: calc(var(--u) * 2.6);
+    font-variation-settings: 'opsz' 12;
+    font-size: max(14px, calc(var(--u) * 9.2));
+    font-weight: 700;
+    line-height: 1.3;
+  }
+  .e210 .sbox p {
+    margin-top: calc(var(--u) * 2.4);
+    font-variation-settings: 'opsz' 12;
+    font-size: max(14px, calc(var(--u) * 9.4));
+    line-height: 1.37;
+    color: #3a362f;
+  }
+  .e210 .pair {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: calc(var(--u) * 8);
+  }
+  .e210 .edge,
+  .e210 .read {
+    border-radius: calc(var(--u) * 10);
+    padding: calc(var(--u) * 10) calc(var(--u) * 10) calc(var(--u) * 10);
+    min-height: calc(var(--u) * 90);
+  }
+  .e210 .edge {
+    background: #f8e5c0;
+  }
+  .e210 .read {
+    background: var(--bk-ink);
+    color: #fff;
+  }
+  .e210 .pair .lbl {
+    margin: 0 0 calc(var(--u) * 2.5);
+    font-size: max(11px, calc(var(--u) * 7.3));
+    letter-spacing: 0.1em;
+    color: #6b4f0a;
+  }
+  .e210 .read .lbl {
+    color: #e3a72f;
+  }
+  .e210 .pair p {
+    font-variation-settings: 'opsz' 14;
+    font-size: max(15px, calc(var(--u) * 10.2));
+    line-height: 1.42;
+  }
+  .e210 .pair b {
+    font-weight: 700;
+  }
+  @container (max-width: 45rem) {
+    .e210 {
+      --u: 1.33px;
+    }
+    .e210 .grid9,
+    .e210 .pair {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .e210 .edge,
+    .e210 .read {
+      min-height: 0;
+    }
+  }
+</style>

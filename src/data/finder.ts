@@ -1,4 +1,4 @@
-import { goals } from './goals';
+import { goals, languageSteps } from './goals';
 import { components } from './components';
 import { tools as c1Tools } from './booklet/existing-products';
 import { tools as c2Tools } from './booklet/visual-culture';
@@ -60,6 +60,18 @@ const tools: FinderItem[] = [
     c: 'c3' as const,
   },
   ...referencePages.map((p) => ({ title: p.name, hint: `${parentLabel(p.parent)} · go deeper`, href: referenceHref(p.slug), c: 'c3' as const })),
+  // The steps under each Language theme. They are not in the "I want to…" index; search still finds them.
+  // (The deeper pages are already listed above, so they are skipped here.)
+  ...languageSteps.flatMap((g) =>
+    g.items
+      .filter(
+        (i) =>
+          i.tag !== 'Reverse thick translation' &&
+          !referencePages.some((p) => referenceHref(p.slug) === i.href) &&
+          !c3Tools.some((t) => `${C3}${t.slug}/` === i.href),
+      )
+      .map((i) => ({ title: i.tag, hint: `Language · ${g.theme} · ${i.phrase.replace(/^…/, '')}`, href: i.href, c: 'c3' as const })),
+  ),
   ...c4Tools.map((t) => ({
     title: t.number ? `${t.number} · ${t.name}` : t.name,
     hint: t.question,

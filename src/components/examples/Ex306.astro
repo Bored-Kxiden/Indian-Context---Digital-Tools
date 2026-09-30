@@ -1,0 +1,290 @@
+---
+import ExFrame from './ExFrame.astro';
+
+// Booklet p.3.06 · Tool 1 Listen, Part B: a log excerpt and a Meaning Card (filled example).
+interface Props {
+  alt: string;
+  caption: string;
+}
+const { alt, caption } = Astro.props;
+
+// The log symbols used here, drawn on a 16 × 16 grid (same set as p.3.05).
+const sym = {
+  switch: '<path d="M2 5.2h11.5M10.5 2.2l3 3-3 3M14 10.8H2.5M5.5 7.8l-3 3 3 3"/>',
+  pause: '<path d="M5.4 2.5v11M10.6 2.5v11" stroke-width="1.7"/>',
+  voice: '<path d="M8 1.8v12.4M4.6 5 8 1.6 11.4 5M4.6 11 8 14.4 11.4 11"/>',
+  gaze: '<circle cx="8" cy="8" r="6.2"/><circle cx="8" cy="8" r="2.8"/>',
+};
+
+const log = [
+  { s: 'switch', name: 'Switch', what: 'Hindi → English', quick: '“pending” · “status”', why: 'Asked about the result' },
+  { s: 'pause', name: 'Pause', what: '6 s pause', quick: 'before “Papa ka phone”', why: 'Asked who gets the OTP' },
+  { s: 'voice', name: 'Voice', what: 'voice drops', quick: '“upar wale ki marzi”', why: 'Asked what happens next' },
+  { s: 'gaze', name: 'Gaze', what: 'looks at roommate', quick: 'then answers', why: 'Asked about the café' },
+] as const;
+---
+
+<ExFrame page="3.06" alt={alt} caption={caption}>
+  <div class="e306">
+    <section aria-labelledby="e306-log">
+      <h4 class="sec" id="e306-log">Log excerpt · three words, no meaning yet</h4>
+      <div class="lgt" role="region" aria-label="Log excerpt: scroll sideways to see every column" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Sym</th>
+              <th scope="col">What</th>
+              <th scope="col">Quick log</th>
+              <th scope="col">Triggered by</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              log.map((r) => (
+                <tr>
+                  <td class="lsy">
+                    <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false" set:html={sym[r.s]} />
+                    <span class="visually-hidden">{r.name}</span>
+                  </td>
+                  <td>{r.what}</td>
+                  <td class="ql"><span>{r.quick}</span></td>
+                  <td class="tr">{r.why}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section aria-labelledby="e306-mc">
+      <h4 class="sec" id="e306-mc">
+        Meaning Card · for the moment marked
+        <svg class="mk" viewBox="0 0 16 16" aria-hidden="true" focusable="false" set:html={sym.voice} />
+        <span class="visually-hidden">(voice)</span>
+      </h4>
+      <div class="mcd">
+        <div class="tri">
+          <div class="c">
+            <span class="lbl">Said</span>
+            <p>“Form toh bhar diya, ab upar wale ki marzi.”</p>
+          </div>
+          <div class="c c--o">
+            <span class="lbl">Observed</span>
+            <p>Voice drops. She looks at the floor. Laughs once, short.</p>
+          </div>
+          <div class="c c--i">
+            <span class="lbl">Inferred</span>
+            <p>She feels she has no control over the result. Maybe also: officials, not God.</p>
+          </div>
+        </div>
+        <div class="dn">
+          <div class="asked">
+            <span class="lbl">Asked: what did that moment mean to you?</span>
+            <p>“Not God exactly. Whoever checks it. I don’t know who that is.”</p>
+          </div>
+          <div class="corr">
+            <span class="lbl">Her correction</span>
+            <p>“Upar wale” here means <b>an unknown official</b>, not God. Send to Tool 2.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</ExFrame>
+
+<style is:global>
+  .e306 {
+    display: grid;
+    gap: calc(var(--u) * 12);
+  }
+  .e306 .sec {
+    margin: 0 0 calc(var(--u) * 6);
+    font-family: var(--font-mono);
+    font-size: max(11px, calc(var(--u) * 7.8));
+    font-weight: 400;
+    line-height: 1.3;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: #6f695e;
+  }
+  .e306 .mk {
+    width: calc(var(--u) * 8);
+    height: calc(var(--u) * 8);
+    min-width: 11px;
+    min-height: 11px;
+    vertical-align: -0.12em;
+    margin-left: 0.3em;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* The log */
+  .e306 .lgt {
+    overflow-x: auto;
+    background: #fff;
+    border: calc(var(--u) * 1) solid var(--bk-ink);
+    border-radius: calc(var(--u) * 8);
+  }
+  .e306 .lgt table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    min-width: 30rem;
+  }
+  .e306 .lgt th {
+    background: var(--bk-ink);
+    color: #fff;
+    text-align: left;
+    font-family: var(--font-mono);
+    font-size: max(11px, calc(var(--u) * 6.9));
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: calc(var(--u) * 5.2) 0;
+    line-height: 1.2;
+  }
+  .e306 .lgt th:nth-child(1),
+  .e306 .lgt td:nth-child(1) {
+    width: calc(var(--u) * 41);
+    text-align: center;
+  }
+  .e306 .lgt th:nth-child(1) {
+    text-align: left;
+    padding-left: calc(var(--u) * 8);
+  }
+  .e306 .lgt th:nth-child(2),
+  .e306 .lgt td:nth-child(2) {
+    width: calc(var(--u) * 105);
+  }
+  .e306 .lgt th:nth-child(3),
+  .e306 .lgt td:nth-child(3) {
+    width: calc(var(--u) * 237);
+  }
+  .e306 .lgt td {
+    padding: calc(var(--u) * 5.1) 0;
+    border-top: calc(var(--u) * 0.7) solid #dfd9d0;
+    font-variation-settings: 'opsz' 13;
+    font-size: max(14px, calc(var(--u) * 9.8));
+    line-height: 1.3;
+    vertical-align: middle;
+  }
+  .e306 .lgt tbody tr:first-child td {
+    border-top: 0;
+  }
+  .e306 .lgt td.ql span {
+    display: block;
+    background: #fdf6e2;
+    margin-right: calc(var(--u) * 6);
+    padding: calc(var(--u) * 1.6) 0;
+  }
+  .e306 .lgt td.tr {
+    font-style: italic;
+    color: #4a453d;
+  }
+  .e306 .lgt svg {
+    width: calc(var(--u) * 10);
+    height: calc(var(--u) * 10);
+    min-width: 13px;
+    min-height: 13px;
+    fill: none;
+    stroke: var(--bk-ink);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vertical-align: middle;
+  }
+
+  /* The Meaning Card */
+  .e306 .mcd {
+    border-radius: calc(var(--u) * 10);
+  }
+  .e306 .tri {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    background: #fff;
+    border: calc(var(--u) * 1) solid var(--bk-ink);
+    border-radius: calc(var(--u) * 10);
+  }
+  .e306 .tri .c {
+    padding: calc(var(--u) * 12) calc(var(--u) * 11) calc(var(--u) * 10);
+    min-height: calc(var(--u) * 77);
+  }
+  .e306 .tri .c + .c {
+    border-left: calc(var(--u) * 1) solid var(--bk-ink);
+  }
+  .e306 .mcd .lbl {
+    margin: 0 0 calc(var(--u) * 3.6);
+    font-size: max(11px, calc(var(--u) * 7.2));
+    letter-spacing: 0.1em;
+    color: var(--bk-ink);
+  }
+  .e306 .c--o .lbl {
+    color: var(--bk-indigo);
+  }
+  .e306 .c--i .lbl {
+    color: #a8432a;
+  }
+  .e306 .mcd p {
+    font-variation-settings: 'opsz' 14;
+    font-size: max(15px, calc(var(--u) * 10.5));
+    line-height: 1.44;
+  }
+  .e306 .dn {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: calc(var(--u) * 8);
+  }
+  .e306 .asked,
+  .e306 .corr {
+    padding: calc(var(--u) * 10) calc(var(--u) * 10) calc(var(--u) * 12);
+    min-height: calc(var(--u) * 64);
+    border-radius: 0 0 calc(var(--u) * 10) calc(var(--u) * 10);
+  }
+  .e306 .asked {
+    background: #f8e5c0;
+  }
+  .e306 .asked .lbl {
+    color: #6b4f0a;
+  }
+  .e306 .corr {
+    background: var(--bk-ink);
+    color: #fff;
+  }
+  .e306 .corr .lbl {
+    color: #e3a72f;
+  }
+  .e306 .corr b {
+    font-weight: 700;
+  }
+  @container (max-width: 45rem) {
+    .e306 {
+      --u: 1.33px;
+    }
+    .e306 .tri {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .e306 .tri .c + .c {
+      border-left: 0;
+      border-top: calc(var(--u) * 1) solid var(--bk-ink);
+    }
+    .e306 .tri .c {
+      min-height: 0;
+    }
+    .e306 .dn {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+    }
+    .e306 .asked,
+    .e306 .corr {
+      min-height: 0;
+      border-radius: 0;
+    }
+    .e306 .corr {
+      border-radius: 0 0 var(--r-md) var(--r-md);
+    }
+  }
+</style>

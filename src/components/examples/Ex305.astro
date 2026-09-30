@@ -1,0 +1,200 @@
+---
+import ExFrame from './ExFrame.astro';
+
+// Booklet p.3.05 · Tool 1 Listen, Part A: Prime, six cue cards and the log symbols.
+// This one is a print sheet, not a filled example.
+interface Props {
+  alt: string;
+  caption: string;
+}
+const { alt, caption } = Astro.props;
+
+const cards = [
+  {
+    n: '01',
+    title: 'Body & posture',
+    body: 'Opening or closing as the topic changes. Taking less space often means deference, not agreement.',
+    ask: 'What makes this person comfortable, or guarded?',
+  },
+  {
+    n: '02',
+    title: 'Pause & silence',
+    body: 'A long pause is data. Does it cluster around one topic? Silence may be deference, not confusion.',
+    ask: 'Topics that make silence are often the ones design must address.',
+  },
+  {
+    n: '03',
+    title: 'Language switching',
+    body: 'A switch mid-sentence often marks a concept that doesn’t translate. Write the word exactly.',
+    ask: 'Which language carries the real feeling?',
+  },
+  {
+    n: '04',
+    title: 'Social dynamics',
+    body: 'Who else is in the room? A glance before answering is seeking approval. Someone answering for them is hierarchy.',
+    ask: 'Who else has a stake? Are they in the design?',
+  },
+  {
+    n: '05',
+    title: 'Voice & tone',
+    body: 'Faster: anxious or rehearsed. Slower: choosing words. Quieter: shame or privacy. Rising at the end: “is this right?”',
+    ask: 'What do they most need, or fear, from the product?',
+  },
+  {
+    n: '06',
+    title: 'Objects & environment',
+    body: 'Reaching for an object to explain something means the object may be the real interface.',
+    ask: 'Photograph it, with consent. Take it to Component 2.',
+  },
+];
+
+// The eight log symbols, drawn on a 16 × 16 grid.
+const symbols = [
+  { name: 'Body', d: '<path d="M8 1.6 14.4 8 8 14.4 1.6 8z" fill="currentColor" stroke="none"/>' },
+  { name: 'Pause', d: '<path d="M5.4 2.5v11M10.6 2.5v11" stroke-width="1.7"/>' },
+  { name: 'Switch', d: '<path d="M2 5.2h11.5M10.5 2.2l3 3-3 3M14 10.8H2.5M5.5 7.8l-3 3 3 3"/>' },
+  { name: 'Gaze', d: '<circle cx="8" cy="8" r="6.2"/><circle cx="8" cy="8" r="2.8"/>' },
+  { name: 'Object', d: '<rect x="3.6" y="3.6" width="8.8" height="8.8" fill="currentColor" stroke="none"/>' },
+  { name: 'Voice', d: '<path d="M8 1.8v12.4M4.6 5 8 1.6 11.4 5M4.6 11 8 14.4 11.4 11"/>' },
+  { name: 'Deflect', d: '<path d="M3.2 8.6c1.4-2.2 3-2.2 4.8 0s3.4 2.2 4.8 0" stroke-width="1.9"/>' },
+  { name: 'Avoided', d: '<path d="M3 3l10 10M13 3 3 13" stroke-width="1.7"/>' },
+];
+---
+
+<ExFrame page="3.05" alt={alt} caption={caption}>
+  <div class="e305">
+    <p class="pl">Read these once before the session. During it, don’t interpret. Just mark what you notice with a symbol.</p>
+
+    <ol class="cues">
+      {
+        cards.map((c) => (
+          <li class="cue">
+            <span class="cn">Card {c.n}</span>
+            <h4>{c.title}</h4>
+            <p class="bd">{c.body}</p>
+            <p class="ask"><span aria-hidden="true">→</span> {c.ask}</p>
+          </li>
+        ))
+      }
+    </ol>
+
+    <div class="sym">
+      <span class="lbl">Log symbols</span>
+      <ul>
+        {
+          symbols.map((s) => (
+            <li>
+              <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false" set:html={s.d} />
+              <span>{s.name}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</ExFrame>
+
+<style is:global>
+  .e305 {
+    --bk-terra: #a8432a;
+    display: grid;
+    gap: calc(var(--u) * 8);
+  }
+  .e305 .pl {
+    margin: calc(var(--u) * 3) 0 calc(var(--u) * 5);
+    font-variation-settings: 'opsz' 14;
+    font-size: max(15px, calc(var(--u) * 10.6));
+    line-height: 1.35;
+    color: #4a453d;
+  }
+  .e305 .cues {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: calc(var(--u) * 8);
+  }
+  .e305 .cue {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border: calc(var(--u) * 1) solid var(--bk-ink);
+    border-radius: calc(var(--u) * 10.5);
+    padding: calc(var(--u) * 9.5) calc(var(--u) * 11) calc(var(--u) * 9);
+  }
+  .e305 .cn {
+    font-family: var(--font-mono);
+    font-size: max(11px, calc(var(--u) * 7.2));
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--bk-indigo);
+    line-height: 1.2;
+  }
+  .e305 .cue h4 {
+    margin-top: calc(var(--u) * 5);
+    font-variation-settings: 'opsz' 19;
+    font-size: max(17px, calc(var(--u) * 13.8));
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .e305 .cue .bd {
+    margin-top: calc(var(--u) * 5.5);
+    font-variation-settings: 'opsz' 13;
+    font-size: max(14px, calc(var(--u) * 9.8));
+    line-height: 1.44;
+    color: #4a453d;
+  }
+  .e305 .cue .ask {
+    margin-top: auto;
+    padding-top: calc(var(--u) * 4.6);
+    font-variation-settings: 'opsz' 14;
+    font-size: max(14px, calc(var(--u) * 10.2));
+    font-weight: 700;
+    line-height: 1.12;
+    color: var(--bk-terra);
+  }
+  .e305 .sym {
+    background: #fff;
+    border: calc(var(--u) * 1) solid var(--bk-ink);
+    border-radius: calc(var(--u) * 10.5);
+    padding: calc(var(--u) * 10) calc(var(--u) * 13) calc(var(--u) * 10);
+  }
+  .e305 .sym .lbl {
+    margin: 0;
+    font-size: max(11px, calc(var(--u) * 7.3));
+    letter-spacing: 0.1em;
+    color: #6f695e;
+  }
+  .e305 .sym ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: calc(var(--u) * 11.4) calc(var(--u) * 21);
+    margin-top: calc(var(--u) * 8);
+  }
+  .e305 .sym li {
+    display: inline-flex;
+    align-items: center;
+    gap: calc(var(--u) * 6);
+    font-variation-settings: 'opsz' 13;
+    font-size: max(14px, calc(var(--u) * 9.8));
+    line-height: 1.2;
+  }
+  .e305 .sym svg {
+    width: calc(var(--u) * 10.5);
+    height: calc(var(--u) * 10.5);
+    min-width: 13px;
+    min-height: 13px;
+    flex: none;
+    fill: none;
+    stroke: var(--bk-ink);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  @container (max-width: 45rem) {
+    .e305 {
+      --u: 1.33px;
+    }
+    .e305 .cues {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>
