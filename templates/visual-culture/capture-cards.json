@@ -1,0 +1,68 @@
+{
+  "_note": "Component 2's six missions, word for word from the FigJam template (reading-visual-culture.jam, 'E3 · Capture Cards'), the primary source for Component 2 (CONTEXT.md, D37). The site (src/data/booklet/visual-culture.ts) and the printable sheet (npm run build:capture-cards) both read this file. `short` is the label used on Meera's filled example.",
+  "heading": "Suggested prompt cards",
+  "subheading": "Student photographs · one mission per card",
+  "prompts": ["What is this?", "Why did you show us this?", "What were you doing?"],
+  "promptsLine": "Every photo gets three prompts, and only three: What is this? Why did you show us this? What were you doing? Plus the card’s own question.",
+  "optional": [
+    "You can give the student prompts to guide what they photograph.",
+    "These are suggestions, not requirements.",
+    "If you want the photographs to emerge with as little direction as possible, do not use them.",
+    "Choose the level of direction that suits your research."
+  ],
+  "captureStage": {
+    "title": "The capture stage",
+    "lead": "The kinds of data you need the student to capture",
+    "items": ["The image", "What is this?", "Why did you show us that?", "What were you doing?"],
+    "note": "Each picture should have a context from their end."
+  },
+  "output": {
+    "title": "Output of Show",
+    "body": "A set of participant-generated images + participant accounts.",
+    "ready": "You are ready to move on when you have enough images to begin seeing relationships or repetitions, not when you have “covered the whole environment.”"
+  },
+  "missions": [
+    {
+      "n": "01",
+      "title": "Show me where you learn",
+      "short": "Where you learn",
+      "body": "Show me something that helps you know what to do. A message, a notice, a person, a document, a screenshot, a handwritten note, anything.",
+      "ask": "What did this help you understand?"
+    },
+    {
+      "n": "02",
+      "title": "Show me what you keep beside you",
+      "short": "What you keep beside you",
+      "body": "Don’t photograph the task. Photograph what’s around it: a certificate, another phone, a notebook, Aadhaar, a printout, another person.",
+      "ask": "Why do you need this?"
+    },
+    {
+      "n": "03",
+      "title": "Show me who helps",
+      "short": "Who helps",
+      "body": "Photograph the person, message, screen, note or place that helped you: whatever helped, when something or someone helped.",
+      "ask": "What did they help you do? Could you have done it alone?"
+    },
+    {
+      "n": "04",
+      "title": "Show me when information changes",
+      "short": "When information changes",
+      "body": "Paper → photo. Photo → PDF. English → explanation. Notice → WhatsApp. Show something you had to change before you could use it.",
+      "ask": "What did you have to do to make it usable?"
+    },
+    {
+      "n": "05",
+      "title": "Show me when the normal way doesn’t work",
+      "short": "When the normal way doesn’t work",
+      "body": "Not “what problems did you face”: show us the workaround. Asking someone, another device, a cyber café, a screenshot, a call, a repeat.",
+      "ask": "What made you do this instead?"
+    },
+    {
+      "n": "06",
+      "title": "Show me what you check again",
+      "short": "What you check again",
+      "body": "Show something you check more than once: before you trust it, before you act on it, before you submit it.",
+      "ask": "What are you checking for? What makes you feel sure?"
+    }
+  ]
+}

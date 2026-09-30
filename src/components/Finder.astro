@@ -43,6 +43,14 @@ import { url } from '../utils/url';
           </section>
         ))
       }
+      <a class="ask-row" href={url('/ask/')} data-finder-ask hidden>
+        <span class="dot" aria-hidden="true" />
+        <span class="t">
+          Ask the toolkit: <b data-finder-ask-q></b>
+          <small>Answers come from the toolkit’s own pages</small>
+        </span>
+        <Icon name="arrow" size={18} />
+      </a>
     </div>
   </div>
 </dialog>
@@ -57,8 +65,13 @@ import { url } from '../utils/url';
     const total = items.length;
     let opener: HTMLElement | null = null;
 
-    const visibleLinks = () =>
-      items.filter((i) => !i.hidden).map((i) => i.querySelector<HTMLAnchorElement>('a')).filter((a): a is HTMLAnchorElement => !!a);
+    const askRow = dialog.querySelector<HTMLAnchorElement>('[data-finder-ask]');
+    const askQ = dialog.querySelector<HTMLElement>('[data-finder-ask-q]');
+    const askBase = askRow?.getAttribute('href') ?? '';
+    const visibleLinks = () => [
+      ...items.filter((i) => !i.hidden).map((i) => i.querySelector<HTMLAnchorElement>('a')).filter((a): a is HTMLAnchorElement => !!a),
+      ...(askRow && !askRow.hidden ? [askRow] : []),
+    ];
 
     const filter = () => {
       const term = (q?.value ?? '').trim().toLowerCase();
@@ -71,12 +84,17 @@ import { url } from '../utils/url';
         if (ok) shown += 1;
       }
       for (const g of groups) g.hidden = !g.querySelector('[data-finder-item]:not([hidden])');
+      if (askRow && askQ) {
+        askRow.hidden = !term;
+        askQ.textContent = `“${(q?.value ?? '').trim()}”`;
+        askRow.href = `${askBase}?q=${encodeURIComponent((q?.value ?? '').trim())}`;
+      }
       if (count) {
         count.textContent = !term
           ? `${total} places to go. Type to narrow them down.`
           : shown
             ? `${shown} ${shown === 1 ? 'result' : 'results'}`
-            : 'Nothing matches. Try “translate”, “blame”, “phone” or “trust”.';
+            : 'Nothing matches. Press Enter to ask the toolkit instead.';
       }
     };
 

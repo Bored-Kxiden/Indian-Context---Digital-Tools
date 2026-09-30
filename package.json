@@ -3,22 +3,24 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Public website for Beyond the Edge Case: a toolkit for designing in Indian contexts by questioning the universal assumptions behind what gets treated as an exception (BITSDES 2024–28).",
+  "description": "Public website for Beyond the Edge Case: a toolkit for designing in Indian contexts by questioning the universal assumptions behind what gets treated as an exception (BITSDES 2024\u201328).",
   "license": "MIT",
   "engines": {
     "node": ">=22.12.0"
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && node scripts/build-chat-index.mjs",
     "preview": "astro preview",
     "build:templates": "node scripts/build-templates.mjs",
-    "build:reflection": "node scripts/build-reflection-pdfs.mjs"
+    "build:reflection": "node scripts/build-reflection-pdfs.mjs",
+    "build:capture-cards": "node scripts/build-capture-cards.mjs"
   },
   "dependencies": {
     "astro": "^7.3.5"
   },
   "devDependencies": {
+    "node-html-parser": "^9.0.4",
     "playwright-core": "^1.63.0"
   }
 }

@@ -5,14 +5,14 @@ import GoalIndex from '../../../components/GoalIndex.astro';
 import RouteList from '../../../components/RouteList.astro';
 import DownloadCard from '../../../components/DownloadCard.astro';
 import Icon from '../../../components/Icon.astro';
-import { overview, tools, why, readTheWorld, movements, movementsNote, make, evidenceMore, whenToUse, core, figma } from '../../../data/booklet/visual-culture';
+import { overview, tools, why, readTheWorld, method, howToUse, movementsNote, make, evidenceMore, whenToUse, core, figjam } from '../../../data/booklet/visual-culture';
 import { goalsByComponent } from '../../../data/goals';
 import { componentById } from '../../../data/components';
 import { getDownloadById } from '../../../data/downloads';
 import { url } from '../../../utils/url';
 
 const comp = componentById['visual-culture'];
-const figmaDl = getDownloadById(figma.id)!;
+const figjamDl = getDownloadById(figjam.id)!;
 const route = [
   { label: 'Before you start', href: `${comp.href}before-you-start/`, blurb: 'A specific context, participants who show you their reality, a real activity, and a way to keep their explanation.' },
   { label: 'Reflect: before (R·2A)', href: `${comp.href}reflect-before/`, blurb: 'Say where you stand and what you expect to find, before Tool 1 · Show.' },
@@ -37,8 +37,10 @@ const toolHref = (slug: string) => `${comp.href}${slug}/`;
   description={overview.descriptor}
   chips={['Component 2', overview.meta.time, overview.meta.mode]}
 >
-  <Section id="idea" eyebrow="Why this exists" title={why.title} split>
-    <p class="big">{why.intro[0]}</p>
+  <Section id="idea" eyebrow="What is it & why should I do it?" title={why.title} split>
+    <p class="big">{overview.idea[0]}</p>
+    <p class="body-p">{overview.idea[1]}</p>
+    <p class="body-p">{why.intro[0]}</p>
     <p class="body-p">{why.intro[1]}</p>
     <p class="body-p"><b>{why.start}</b></p>
 
@@ -83,33 +85,37 @@ const toolHref = (slug: string) => `${comp.href}${slug}/`;
     </div>
   </Section>
 
-  <Section id="template" eyebrow="Your main file" title={figma.title} split>
-    <p class="big">{figma.lead}</p>
-    <div class="dl"><DownloadCard item={figmaDl} /></div>
-    <h3 class="h3">What is in it</h3>
+  <Section id="template" eyebrow="Your main file" title={figjam.title} split>
+    <p class="big">{figjam.lead}</p>
+    <div class="dl"><DownloadCard item={figjamDl} /></div>
+    <h3 class="h3">What is on the board</h3>
     <ul class="frames">
       {
-        figma.frames.map((f) => (
+        figjam.sections.map((f) => (
           <li>
             <div>
               <b>{f.name}</b>
               <span>{f.what}</span>
             </div>
-            <a class="link-arrow" href={url(toolHref(f.tool))}>
-              {f.tool === 'show' ? 'Tool 1 · Show' : f.tool === 'build' ? 'Tool 3 · Build' : 'Tool 4 · Hand off'} <Icon name="arrow" size={20} />
+            <a class="link-arrow" href={url(f.tool ? toolHref(f.tool) : `${comp.href}#route`)}>
+              {f.tool === 'show' ? 'Tool 1 · Show' : f.tool === 'read' ? 'Tool 2 · Read' : f.tool === 'hand-off' ? 'Tool 4 · Hand off' : 'The route'} <Icon name="arrow" size={20} />
             </a>
           </li>
         ))
       }
     </ul>
+    <p class="body-p">
+      The board’s six capture cards are the six missions on <a href={url(`${toolHref('show')}#missions`)}>Tool 1 · Show</a>, word for word, with a
+      printable sheet.
+    </p>
     <h3 class="h3">How to use it</h3>
     <ol class="how">
-      {figma.howTo.map((h) => <li>{h}</li>)}
+      {figjam.howTo.map((h) => <li>{h}</li>)}
     </ol>
-    <p class="small">{figma.alsoHolds}</p>
+    <p class="small">{figjam.alsoHolds}</p>
     <div class="callout callout--warn differs">
-      <strong>Where the template differs from the booklet</strong>
-      <p>{figma.differs}</p>
+      <strong>Where the booklet differs from the board</strong>
+      {figjam.differs.map((d) => <p>{d}</p>)}
     </div>
   </Section>
 
@@ -118,13 +124,13 @@ const toolHref = (slug: string) => `${comp.href}${slug}/`;
     <GoalIndex groups={goalsByComponent('c2')} variant="list" search={false} />
   </Section>
 
-  <Section id="route" eyebrow="The route" title="Six movements, four tools." split>
-    <p class="big">Participants photograph their own world. You read the photos together, build one situation, and hand it on as a question about the system.</p>
-    <ol class="moves" aria-label="The six movements">
+  <Section id="route" eyebrow="The route" title="Five steps, four tools." split>
+    <p class="big">Participants photograph their own world. You group the photos, build one situation, challenge it, and hand it on as a question about the system.</p>
+    <ol class="moves" aria-label="The method flow, from the FigJam template">
       {
-        movements.map((m, i) => (
+        method.map((m) => (
           <li>
-            <span class="n" aria-hidden="true">{i + 1}</span>
+            <span class="n" aria-hidden="true">{m.n}</span>
             <div>
               <b>{m.name}</b>
               <span>{m.body}</span>
@@ -134,6 +140,16 @@ const toolHref = (slug: string) => `${comp.href}${slug}/`;
         ))
       }
     </ol>
+    <div class="how-use">
+      <div class="card">
+        <p class="lbl">Students</p>
+        <p>{howToUse.student}</p>
+      </div>
+      <div class="card">
+        <p class="lbl">The designer</p>
+        <p>{howToUse.designer}</p>
+      </div>
+    </div>
     <p class="small">{movementsNote}</p>
     <RouteList items={route} />
     <div class="need">
@@ -378,6 +394,18 @@ const toolHref = (slug: string) => `${comp.href}${slug}/`;
   .frames span {
     color: var(--ink-soft);
     max-width: 48rem;
+  }
+  .how-use {
+    display: grid;
+    gap: var(--sp-2);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    margin-bottom: var(--sp-3);
+  }
+  .how-use p {
+    margin: 0;
+  }
+  .how-use .lbl {
+    margin-bottom: var(--sp-1);
   }
   .how {
     margin: 0 0 var(--sp-2);

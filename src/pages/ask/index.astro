@@ -1,0 +1,727 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHead from '../../components/PageHead.astro';
+import Icon from '../../components/Icon.astro';
+import { functionsUrl } from '../../data/backend';
+import { glossary } from '../../data/glossary';
+import { url } from '../../utils/url';
+
+// "Ask the toolkit". No language model: the engine (src/scripts/ask/engine.ts) arranges the toolkit's own
+// terms, tools, "I want to…" lines and page passages into an answer. Passages come from the Supabase `ask`
+// function (meaning + keywords) or, if that cannot be reached, from a keyword search over /chat-index.json
+// in the browser. Without JavaScript the page offers the glossary and the search instead.
+
+const tries = [
+  'What is reverse thick translation?',
+  'How do I run the Villain Story?',
+  'Which tool shows who people depend on?',
+  'Where is the template for the Loop?',
+  'Difference between Observed and Inferred',
+  'Kahavat kya hai?',
+  'What does Lens P mean?',
+  'What do I need for Weigh?',
+];
+---
+
+<BaseLayout title="Ask the toolkit" description="Ask about any tool, step or term. Answers are put together from the toolkit’s own pages, with links.">
+  <PageHead
+    crumbs={[{ label: 'Home', href: '/' }, { label: 'Ask the toolkit' }]}
+    heading="Ask the toolkit"
+    lead="Ask about any tool, step or term. Answers are put together from the toolkit’s own pages, with a link to each, so nothing is made up. When it can’t find something, it says so."
+  />
+
+  <div class="wrap ask" data-functions={functionsUrl} data-base={url('/')}>
+    <div class="main">
+      <h2 class="visually-hidden">Questions and answers</h2>
+      <ol class="log" id="ask-log" aria-label="Questions and answers"></ol>
+
+      <form class="box" id="ask-form" autocomplete="off">
+        <label for="ask-q" class="lbl">Your question</label>
+        <div class="row">
+          <input id="ask-q" name="q" type="text" maxlength="300" required placeholder="e.g. How do I run the Villain Story?" />
+          <button class="btn btn--accent" type="submit">
+            Ask <Icon name="arrow" size={20} />
+          </button>
+        </div>
+        <p class="hint">
+          English, Hindi or Hinglish. Don’t type participants’ names or personal details: questions go to the toolkit’s search service to find
+          passages, and are not stored.
+        </p>
+      </form>
+      <p class="visually-hidden" role="status" aria-live="polite" id="ask-status"></p>
+      <noscript>
+        <p class="card nojs">
+          This page needs JavaScript. You can still <a href={url('/glossary/')}>browse the glossary</a> ({glossary.length} terms) or use the search
+          in the header.
+        </p>
+      </noscript>
+    </div>
+
+    <aside class="side" aria-label="About this page">
+      <section class="card">
+        <h2 class="side-h">Try asking</h2>
+        <ul class="tries">
+          {
+            tries.map((t) => (
+              <li>
+                <button type="button" class="chip try" data-try={t}>
+                  {t}
+                </button>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+      <section class="card how">
+        <h2 class="side-h">How it answers</h2>
+        <ul>
+          <li><b>Terms</b> come from the <a href={url('/glossary/')}>glossary</a>, down to the words on each tool’s guide.</li>
+          <li><b>“How do I…”</b> answers are the tool’s own steps, time, what you need and its template.</li>
+          <li><b>Everything else</b> is quoted from the pages, with the words you asked about marked.</li>
+        </ul>
+        <p class="small" id="ask-mode">There is no AI model writing answers. It only finds and arranges what the toolkit already says.</p>
+      </section>
+    </aside>
+  </div>
+</BaseLayout>
+
+<script>
+  import { Engine, type Answer, type AskData, type Block, type Passage, type TermLite, type ToolLite } from '../../scripts/ask/engine';
+
+  const root = document.querySelector<HTMLElement>('.ask')!;
+  const log = document.querySelector<HTMLOListElement>('#ask-log')!;
+  const form = document.querySelector<HTMLFormElement>('#ask-form')!;
+  const input = document.querySelector<HTMLInputElement>('#ask-q')!;
+  const status = document.querySelector<HTMLElement>('#ask-status')!;
+  const modeNote = document.querySelector<HTMLElement>('#ask-mode')!;
+  const functionsUrl = root.dataset.functions ?? '';
+  const base = (root.dataset.base ?? '/').replace(/\/$/, '');
+  const link = (path: string) => (/^https?:/.test(path) ? path : `${base}${path}`);
+
+  let engine: Engine | null = null;
+  let loadingPassages: Promise<void> | null = null;
+  let semanticDown = !functionsUrl;
+  let failures = 0;
+
+  async function ready(): Promise<Engine> {
+    if (engine) return engine;
+    const res = await fetch(link('/ask-data.json'));
+    if (!res.ok) throw new Error('data');
+    engine = new Engine((await res.json()) as AskData);
+    return engine;
+  }
+
+  /** The in-browser keyword search over every page passage, loaded only when it is needed. */
+  function localPassages(e: Engine) {
+    if (e.hasPassages) return Promise.resolve();
+    loadingPassages ??= fetch(link('/chat-index.json'))
+      .then((r) => r.json())
+      .then((j: { chunks: Passage[] }) => e.setPassages(j.chunks));
+    return loadingPassages;
+  }
+
+  /** Passages by meaning and keywords from Supabase; null when it cannot answer. */
+  async function semantic(question: string): Promise<Passage[] | null> {
+    if (semanticDown) return null;
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 9000);
+    try {
+      const res = await fetch(`${functionsUrl}/ask`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question }),
+        signal: ctrl.signal,
+      });
+      const j = await res.json().catch(() => ({}));
+      if (res.status === 429 && j?.limit !== 'minute') semanticDown = true;
+      if (!res.ok) return null;
+      failures = 0;
+      return Array.isArray(j?.passages) ? (j.passages as Passage[]) : [];
+    } catch {
+      // Out of reach (offline, blocked, too slow): after two tries, search in the browser for the rest of the visit.
+      if (++failures >= 2) semanticDown = true;
+      return null;
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  // ---- Rendering (DOM only; nothing is inserted as HTML)
+
+  function el<K extends keyof HTMLElementTagNameMap>(tag: K, cls?: string, text?: string) {
+    const n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text !== undefined) n.textContent = text;
+    return n;
+  }
+  function a(href: string, text: string, cls = 'link-arrow') {
+    const n = el('a', cls, text);
+    n.href = link(href);
+    if (/^https?:/.test(href)) n.rel = 'noopener';
+    return n;
+  }
+  const scopeC = (s: string) => (s === 'toolkit' || s === 'general' ? '' : s);
+
+  function termCard(t: TermLite, also: TermLite[] = [], compact = false) {
+    const card = el('article', 'ans term');
+    if (scopeC(t.scope)) card.dataset.c = scopeC(t.scope);
+    card.append(el('p', 'kind', t.scope === 'general' ? 'General term · not from the toolkit' : `${t.kind}${t.context ? ` · ${t.context}` : ''}`));
+    card.append(el('h3', '', t.term));
+    card.append(el('p', 'def', t.def));
+    if (!compact) {
+      if (t.facts.length) {
+        const dl = el('dl', 'facts');
+        for (const f of t.facts) {
+          const d = el('div');
+          d.append(el('dt', '', f.k), el('dd', '', f.v));
+          dl.append(d);
+        }
+        card.append(dl);
+      }
+      if (t.list.length) {
+        const ul = el('ul', 'items');
+        for (const x of t.list) ul.append(el('li', '', x));
+        card.append(ul);
+      }
+    }
+    const foot = el('p', 'links');
+    if (t.href) foot.append(a(t.href, t.scope === 'general' ? 'Where the toolkit uses it' : 'Where it’s used'));
+    foot.append(a(`/glossary/#${t.id}`, 'In the glossary'));
+    if (t.source?.href) foot.append(a(t.source.href, t.source.label));
+    card.append(foot);
+    if (t.source && !t.source.href) card.append(el('p', 'small', `Source: ${t.source.label}`));
+    if (also.length) {
+      const p = el('p', 'also');
+      p.append(el('span', 'k', 'Also means'));
+      for (const o of also) {
+        const b = el('button', 'chip', `${o.term}${o.context ? ` (${o.context})` : ''}`) as HTMLButtonElement;
+        b.type = 'button';
+        b.addEventListener('click', () => showTerm(o));
+        p.append(b);
+      }
+      card.append(p);
+    }
+    return card;
+  }
+
+  function toolCard(t: ToolLite, focus: string, part: number | null) {
+    const card = el('article', 'ans tool');
+    card.dataset.c = scopeC(t.scope);
+    card.append(el('p', 'kind', `${t.component}${t.number ? ` · Tool ${t.number}` : ''}`));
+    card.append(el('h3', '', t.name));
+    card.append(el('p', 'q', t.question));
+    const meta = el('ul', 'meta');
+    for (const m of [t.time, t.group, t.mode].filter(Boolean) as string[]) meta.append(el('li', 'chip chip--quiet', m));
+    card.append(meta);
+
+    const show = (k: string, v: string) => {
+      const d = el('div', 'fact');
+      d.append(el('p', 'k', k), el('p', '', v));
+      card.append(d);
+    };
+    if (focus === 'need') show('You need', t.need);
+    if (focus === 'output') {
+      show('You end up with', t.endUp);
+      show('Done when', t.done);
+    }
+    if (focus === 'time') show('Time', `${t.time}${t.group ? ` · ${t.group}` : ''}`);
+    if (focus === 'general' || focus === 'how' || focus === 'define' || focus === 'why') card.append(el('p', 'def', t.what.join(' ')));
+
+    const parts = part !== null && t.parts[part] ? [t.parts[part]] : t.parts;
+    if (focus !== 'template' && focus !== 'need' && focus !== 'time') {
+      if (t.stepsList?.length) {
+        card.append(el('h4', '', t.stepsTitle ?? 'Steps'));
+        const ol = el('ol', 'steps');
+        for (const s of t.stepsList) {
+          const li = el('li');
+          li.append(el('b', '', `${s.title}. `), document.createTextNode(s.body));
+          ol.append(li);
+        }
+        card.append(ol);
+      } else {
+        for (const p of parts) {
+          card.append(el('h4', '', t.parts.length > 1 ? `${p.label} · ${p.title}` : `Steps · ${p.title}`));
+          const ol = el('ol', 'steps');
+          for (const s of p.steps) ol.append(el('li', '', s));
+          card.append(ol);
+        }
+      }
+    }
+    if (focus !== 'need' && focus !== 'output' && focus !== 'time') {
+      const tpls = parts.map((p) => p.template).filter(Boolean) as NonNullable<ToolLite['parts'][number]['template']>[];
+      if (tpls.length && (focus === 'template' || focus === 'how')) {
+        card.append(el('h4', '', 'Templates'));
+        const ul = el('ul', 'tpls');
+        for (const x of tpls) {
+          const li = el('li');
+          const d = a(x.href, `${x.title}`, 'dl');
+          d.setAttribute('download', '');
+          li.append(d, el('span', 'small', ` ${x.format} · ${x.size} · ${x.printed}`));
+          ul.append(li);
+        }
+        card.append(ul);
+      }
+    }
+    if (focus === 'how' || focus === 'general') show('You need', t.need);
+    const foot = el('p', 'links');
+    foot.append(a(t.href, 'Open the tool'), a(`${t.href}#example`, 'See the example'));
+    card.append(foot);
+    return card;
+  }
+
+  function block(b: Block): HTMLElement {
+    switch (b.type) {
+      case 'term':
+        return termCard(b.term, b.also);
+      case 'tool':
+        return toolCard(b.tool, b.focus, b.part);
+      case 'compare': {
+        const w = el('div', 'ans compare');
+        for (const t of b.terms) w.append(termCard(t, [], true));
+        return w;
+      }
+      case 'goals': {
+        const w = el('section', 'ans goals');
+        w.append(el('h3', 'sub', 'Where to start'));
+        const ul = el('ul');
+        for (const g of b.goals) {
+          const li = el('li');
+          if (scopeC(g.scope)) li.dataset.c = scopeC(g.scope);
+          const x = a(g.href, g.phrase, 'goal');
+          li.append(x, el('span', 'chip chip--solid', g.tag));
+          ul.append(li);
+        }
+        w.append(ul);
+        return w;
+      }
+      case 'passages': {
+        const w = el('section', 'ans passages');
+        w.append(el('h3', 'sub', 'From the pages'));
+        const ul = el('ul');
+        for (const p of b.passages) {
+          const li = el('li');
+          const head = a(p.url, [p.title, p.section].filter(Boolean).join(' › '), 'src');
+          const q = el('blockquote');
+          for (const part of p.parts) q.append(part.mark ? el('mark', '', part.text) : document.createTextNode(part.text));
+          li.append(head, q);
+          ul.append(li);
+        }
+        w.append(ul);
+        return w;
+      }
+      case 'none': {
+        const w = el('section', 'ans none');
+        w.append(el('p', 'def', 'I couldn’t find that in the toolkit.'));
+        if (b.suggestions.length) {
+          const p = el('p', 'also');
+          p.append(el('span', 'k', 'Did you mean'));
+          for (const t of b.suggestions) {
+            const x = el('button', 'chip', t.term) as HTMLButtonElement;
+            x.type = 'button';
+            x.addEventListener('click', () => showTerm(t));
+            p.append(x);
+          }
+          w.append(p);
+        }
+        const foot = el('p', 'links');
+        foot.append(a('/glossary/', 'Browse the glossary'), a('/components/', 'See the components'));
+        w.append(foot);
+        return w;
+      }
+    }
+  }
+
+  function render(turn: HTMLElement, ans: Answer, note?: string) {
+    const body = turn.querySelector<HTMLElement>('.a')!;
+    body.replaceChildren(...ans.blocks.map(block));
+    if (note) body.append(el('p', 'small note', note));
+    if (ans.followUps.length) {
+      const p = el('p', 'follow');
+      p.append(el('span', 'k', 'Ask next'));
+      for (const f of ans.followUps) {
+        const b = el('button', 'chip', f) as HTMLButtonElement;
+        b.type = 'button';
+        b.addEventListener('click', () => ask(f));
+        p.append(b);
+      }
+      body.append(p);
+    }
+  }
+
+  function newTurn(question: string) {
+    const li = el('li', 'turn');
+    li.setAttribute('aria-busy', 'true');
+    const q = el('p', 'q');
+    q.append(el('span', 'visually-hidden', 'You asked: '), document.createTextNode(question));
+    const body = el('div', 'a');
+    body.append(el('p', 'wait', 'Looking through the toolkit…'));
+    li.append(q, body);
+    log.append(li);
+    li.scrollIntoView({ block: 'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    return li;
+  }
+
+  async function ask(question: string) {
+    const q = question.trim();
+    if (!q) return;
+    const turn = newTurn(q);
+    status.textContent = 'Looking…';
+    try {
+      const e = await ready();
+      // Terms and tools answer at once; page passages follow.
+      const quick = e.answer(q, []);
+      if (quick.blocks.some((b) => b.type === 'term' || b.type === 'tool' || b.type === 'compare')) render(turn, quick);
+      let sem = await semantic(q);
+      let note: string | undefined;
+      if (sem === null) {
+        await localPassages(e);
+        note = functionsUrl ? 'Searched in your browser: the toolkit’s search service is busy or out of reach, so this search goes by keywords only.' : undefined;
+        modeNote.textContent = 'Searching in your browser, by keywords. There is no AI model writing answers.';
+      } else {
+        modeNote.textContent = 'Searching by meaning and keywords. There is no AI model writing answers: it only finds and arranges what the toolkit already says.';
+      }
+      const ans = e.answer(q, sem);
+      render(turn, ans, note);
+      const first = ans.blocks[0];
+      status.textContent =
+        first.type === 'none'
+          ? 'No answer found in the toolkit.'
+          : `Answer ready${first.type === 'term' ? `: ${first.term.term}` : first.type === 'tool' ? `: ${first.tool.name}` : ''}.`;
+    } catch {
+      turn.querySelector('.a')!.replaceChildren(el('p', 'def', 'Something went wrong loading the answers. Try again, or browse the glossary.'));
+      status.textContent = 'Something went wrong.';
+    } finally {
+      turn.removeAttribute('aria-busy');
+    }
+  }
+
+  function showTerm(t: TermLite) {
+    const turn = newTurn(`What is ${t.term}${t.context ? ` (${t.context})` : ''}?`);
+    render(turn, { question: t.term, intent: 'define', blocks: [{ type: 'term', term: t, also: [] }], followUps: [] });
+    turn.removeAttribute('aria-busy');
+    status.textContent = `Answer ready: ${t.term}.`;
+  }
+
+  form.addEventListener('submit', (ev) => {
+    ev.preventDefault();
+    const q = input.value;
+    input.value = '';
+    ask(q);
+  });
+  document.querySelectorAll<HTMLButtonElement>('[data-try]').forEach((b) => b.addEventListener('click', () => ask(b.dataset.try ?? '')));
+
+  const initial = new URLSearchParams(location.search).get('q');
+  if (initial) ask(initial);
+</script>
+
+<style>
+  .ask {
+    display: grid;
+    gap: var(--sp-4);
+    grid-template-columns: minmax(0, 1fr);
+    padding-block: var(--sp-4) var(--sp-12);
+    align-items: start;
+  }
+  @media (min-width: 64rem) {
+    .ask {
+      grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
+    }
+    .side {
+      position: sticky;
+      top: calc(var(--strip-h) + var(--sp-2));
+    }
+  }
+  .main {
+    display: grid;
+    gap: var(--sp-3);
+    max-width: 60rem;
+  }
+  .log {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--sp-4);
+  }
+  .log:empty {
+    display: none;
+  }
+  .log :global(.turn) {
+    display: grid;
+    gap: var(--sp-2);
+  }
+  .log :global(.turn > .q) {
+    justify-self: end;
+    max-width: 80%;
+    margin: 0;
+    background: var(--ink);
+    color: #fff;
+    padding: var(--sp-1) var(--sp-2);
+    border-radius: var(--r-md) var(--r-md) 4px var(--r-md);
+    font-weight: 600;
+  }
+  .log :global(.turn > .a) {
+    display: grid;
+    gap: var(--sp-2);
+  }
+  .log :global(.wait) {
+    margin: 0;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+  }
+  .box {
+    background: var(--surface);
+    border: 1.5px solid var(--ink);
+    border-radius: var(--r-md);
+    padding: var(--sp-2) var(--sp-3) var(--sp-3);
+    display: grid;
+    gap: var(--sp-1);
+  }
+  .row {
+    display: flex;
+    gap: var(--sp-1);
+    flex-wrap: wrap;
+  }
+  .row input {
+    flex: 1 1 16rem;
+    min-width: 0;
+    min-height: 48px;
+    font: inherit;
+    font-size: var(--fs-ui);
+    padding: 0 var(--sp-2);
+    border: 1.5px solid var(--field);
+    border-radius: var(--r-sm);
+    background: var(--surface);
+  }
+  .row input:focus-visible {
+    outline: 3px solid var(--ink);
+    outline-offset: 2px;
+  }
+  .hint {
+    margin: 0;
+    font-size: var(--fs-sm);
+    color: var(--muted);
+  }
+  .nojs {
+    margin: 0;
+  }
+
+  .side {
+    display: grid;
+    gap: var(--sp-2);
+  }
+  .side-h {
+    font-size: var(--fs-h4);
+    margin-bottom: var(--sp-2);
+  }
+  .tries {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-1);
+  }
+  .try {
+    cursor: pointer;
+    text-transform: none;
+    letter-spacing: 0;
+    font-family: var(--font-body);
+    font-size: var(--fs-sm);
+    white-space: normal;
+    text-align: left;
+    min-height: 36px;
+  }
+  .try:hover {
+    background: var(--ink);
+    color: #fff;
+  }
+  .how ul {
+    margin: 0 0 var(--sp-2);
+    padding-left: 1.1em;
+    font-size: var(--fs-sm);
+    display: grid;
+    gap: var(--sp-1);
+  }
+  .small {
+    font-size: var(--fs-sm);
+    color: var(--muted);
+    margin: 0;
+  }
+
+  /* Answers (built by the script, so the styles reach them with :global) */
+  .log :global(.a .ans) {
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-md);
+    padding: var(--sp-3);
+  }
+  .log :global(.a .term),
+  .log :global(.a .tool) {
+    border-left: 6px solid var(--accent, var(--ink));
+  }
+  .log :global(.a .kind) {
+    margin: 0 0 var(--sp-half);
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .log :global(.a h3) {
+    font-size: var(--fs-h3);
+    margin: 0;
+  }
+  .log :global(.a h3.sub) {
+    font-size: var(--fs-h4);
+    margin-bottom: var(--sp-2);
+  }
+  .log :global(.a h4) {
+    font-size: var(--fs-ui);
+    margin: var(--sp-3) 0 var(--sp-1);
+  }
+  .log :global(.a .def),
+  .log :global(.a .q) {
+    margin: var(--sp-2) 0 0;
+  }
+  .log :global(.a .tool .q) {
+    font-size: var(--fs-lead);
+    color: var(--ink-soft);
+  }
+  .log :global(.a .meta) {
+    list-style: none;
+    margin: var(--sp-2) 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-1);
+  }
+  .log :global(.a .meta .chip) {
+    text-transform: none;
+    letter-spacing: 0;
+    white-space: normal;
+  }
+  .log :global(.a .facts) {
+    margin: var(--sp-2) 0 0;
+    display: grid;
+    gap: var(--sp-1);
+  }
+  .log :global(.a .facts dt),
+  .log :global(.a .k) {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0;
+  }
+  .log :global(.a .facts dd) {
+    margin: 0;
+  }
+  .log :global(.a .fact) {
+    margin-top: var(--sp-2);
+  }
+  .log :global(.a .fact p) {
+    margin: 0;
+  }
+  .log :global(.a .items),
+  .log :global(.a .steps) {
+    margin: var(--sp-2) 0 0;
+    padding-left: 1.4em;
+    display: grid;
+    gap: var(--sp-half);
+  }
+  .log :global(.a .tpls) {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--sp-1);
+  }
+  .log :global(.a .tpls a) {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .log :global(.a .links) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-1) var(--sp-3);
+    margin: var(--sp-3) 0 0;
+    padding-top: var(--sp-2);
+    border-top: 1px solid var(--line);
+  }
+  .log :global(.a .also),
+  .log :global(.a .follow) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-1);
+    margin: var(--sp-2) 0 0;
+  }
+  .log :global(.a .also .chip),
+  .log :global(.a .follow .chip),
+  .log :global(.a .none .chip) {
+    cursor: pointer;
+    text-transform: none;
+    letter-spacing: 0;
+    font-family: var(--font-body);
+    font-size: var(--fs-sm);
+    white-space: normal;
+    text-align: left;
+    min-height: 36px;
+    background: var(--surface);
+  }
+  .log :global(.a .also .chip:hover),
+  .log :global(.a .follow .chip:hover),
+  .log :global(.a .none .chip:hover) {
+    background: var(--ink);
+    color: #fff;
+  }
+  .log :global(.a .compare) {
+    display: grid;
+    gap: var(--sp-2);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    background: transparent;
+    border: 0;
+    padding: 0;
+  }
+  .log :global(.a .goals ul),
+  .log :global(.a .passages ul) {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--sp-2);
+  }
+  .log :global(.a .goals li) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-1) var(--sp-2);
+    align-items: center;
+    justify-content: space-between;
+  }
+  .log :global(.a .goal) {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .log :global(.a .passages .src) {
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .log :global(.a blockquote) {
+    margin: var(--sp-1) 0 0;
+    padding-left: var(--sp-2);
+    border-left: 3px solid var(--line-strong);
+    color: var(--ink-soft);
+  }
+  .log :global(.a mark) {
+    background: var(--note-yellow);
+    color: var(--ink);
+    padding: 0 2px;
+    border-radius: 3px;
+  }
+  .log :global(.a .note) {
+    margin: 0;
+  }
+</style>

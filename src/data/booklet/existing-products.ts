@@ -62,6 +62,40 @@ export const overview = {
   },
 };
 
+/**
+ * Component 1's Figma file (reading-existing-products.fig). It was first attached, and published, as Component 2's
+ * template by mistake (the owner shared it as "Visual_Culture_framework.fig"); it is Component 1's. Page and frame
+ * names are read from the file (see CONTEXT.md, D35).
+ */
+export const figmaFile = {
+  id: 'existing-products-figma',
+  title: 'The Figma file',
+  lead: 'Every page of this component as a Figma file, to adapt to your project, translate, or print.',
+  pages: [
+    { name: 'D1 · Cover', tool: '' },
+    { name: 'D2 · What & How', tool: '' },
+    { name: 'D3 · Tool 1 · Media & Gossip', tool: 'media-gossip' },
+    { name: 'D4 · Media Story (blank)', tool: 'media-gossip' },
+    { name: 'D5 · Gossip Venn (blank)', tool: 'media-gossip' },
+    { name: 'D6 · Tool 2 · History', tool: 'history' },
+    { name: 'D7 · Timeline (blank)', tool: 'history' },
+    { name: 'D8 · Tool 3 · The Break', tool: 'the-break' },
+    { name: 'D9 · Ideal Flow + Needs (blank)', tool: 'the-break' },
+    { name: 'D10 · Villain Walk + Blame Scale (blank)', tool: 'the-break' },
+    { name: 'D11 · Tool 4 · Power', tool: 'power' },
+    { name: 'D12 · Three Lenses + Findings (blank)', tool: 'power' },
+    { name: 'D13 · Synthesis (blank)', tool: 'synthesis' },
+    { name: 'D14 · Is It Working?', tool: 'synthesis' },
+  ],
+  howTo: [
+    'Open Figma and drag the .fig file into Drafts or a team project (or use Import file). You get your own editable copy.',
+    'Go to the page called “final designs”. Its fourteen frames, D1 to D14, are the component’s pages.',
+    'Copy a frame for each product or team, and work on the copy.',
+  ],
+  alsoHolds:
+    'The file’s first page holds the booklet page layouts the final designs were drawn from, and reference material. You only need the final designs page.',
+};
+
 /** The route on the Start here page (1.02). The times are the booklet's own. */
 export const route = [
   { label: 'Pick a product', time: '', href: 'pick-a-product', blurb: 'Step 0: one product you can open right now.', page: 'p.1.02' },

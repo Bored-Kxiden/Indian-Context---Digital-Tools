@@ -1,0 +1,416 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHead from '../../components/PageHead.astro';
+import Icon from '../../components/Icon.astro';
+import { glossary, termById, letterOf, scopeLabel, type TermScope } from '../../data/glossary';
+import { url } from '../../utils/url';
+
+// Every term the toolkit uses, A–Z, from src/data/glossary.ts. One <article> per term, with its
+// id as the anchor, so a link like /glossary/#reverse-thick-translation opens that term, and the
+// chat index gets one passage per term. The filter works without a server; without JavaScript the
+// whole list shows.
+
+const letters = [...new Set(glossary.map(letterOf))];
+const byLetter = letters.map((l) => ({ l, terms: glossary.filter((t) => letterOf(t) === l) }));
+const scopes: TermScope[] = ['toolkit', 'c1', 'c2', 'c3', 'c4', 'ink', 'general'];
+const colour = (s: TermScope) => (s === 'toolkit' || s === 'general' ? undefined : s);
+const external = (h?: string) => !!h && /^https?:/.test(h);
+// Other names worth showing: short ones that are not just the term again. Longer aliases only help the search.
+const shownAka = (t: (typeof glossary)[number]) =>
+  [...new Set(t.aka ?? [])].filter((a) => a.length <= 28 && a.toLowerCase() !== t.term.toLowerCase()).slice(0, 6);
+---
+
+<BaseLayout title="Glossary" description="Every term the toolkit uses, down to the words on each tool’s guide, with where each one is used.">
+  <PageHead
+    crumbs={[{ label: 'Home', href: '/' }, { label: 'Glossary' }]}
+    heading="Glossary"
+    lead={`Every term the toolkit uses, down to the words on each tool’s guide: ${glossary.length} of them. Each one links to where it is used. General terms the toolkit borrows are marked, with where to read more.`}
+  >
+    <div slot="aside" class="tools">
+      <label class="search">
+        <span class="lbl">Filter the glossary</span>
+        <span class="field">
+          <Icon name="search" size={20} />
+          <input type="search" id="gl-q" placeholder="e.g. ladder, OTP, lens" autocomplete="off" spellcheck="false" />
+        </span>
+      </label>
+      <div class="scopes" role="group" aria-label="Show terms from">
+        <button type="button" class="chip scope" aria-pressed="true" data-scope="all">All</button>
+        {
+          scopes.map((s) => (
+            <button type="button" class="chip scope" aria-pressed="false" data-scope={s} data-c={colour(s)}>
+              {colour(s) && <span class="dot" aria-hidden="true" />}
+              {scopeLabel[s]}
+            </button>
+          ))
+        }
+      </div>
+      <p class="count" id="gl-count" role="status" aria-live="polite"></p>
+      <a class="link-arrow ask" href={url('/ask/')}>Ask the toolkit a question instead <Icon name="arrow" size={20} /></a>
+    </div>
+  </PageHead>
+
+  <nav class="letters wrap" aria-label="Jump to a letter">
+    <ul>
+      {byLetter.map((g) => <li><a href={`#letter-${g.l === '#' ? 'sym' : g.l}`}>{g.l}</a></li>)}
+    </ul>
+  </nav>
+
+  <div class="wrap list">
+    {
+      byLetter.map((g) => (
+        <section class="letter" aria-labelledby={`letter-${g.l === '#' ? 'sym' : g.l}`} data-letter>
+          <h2 id={`letter-${g.l === '#' ? 'sym' : g.l}`} class="lh" data-no-index>
+            {g.l}
+          </h2>
+          <div class="terms">
+            {g.terms.map((t) => (
+              <article
+                class="term"
+                id={t.id}
+                data-c={colour(t.scope)}
+                data-scope={t.scope}
+                data-text={[t.term, ...(t.aka ?? []), t.context ?? '', t.def, ...(t.list ?? [])].join(' ').toLowerCase()}
+              >
+                <header>
+                  <h3>{t.term}</h3>
+                  <p class="meta">
+                    <span class="kind">{t.scope === 'general' ? 'General term · not from the toolkit' : `${t.kind} · ${scopeLabel[t.scope]}`}</span>
+                  </p>
+                  {t.context && t.context !== 'General term' && <p class="ctx">{t.context}</p>}
+                </header>
+                <p class="def">{t.def}</p>
+                {shownAka(t).length > 0 && (
+                  <p class="aka">
+                    <span class="k">Also:</span> {shownAka(t).join(' · ')}
+                  </p>
+                )}
+                {t.facts && t.facts.length > 0 && (
+                  <dl class="facts">
+                    {t.facts.map((f) => (
+                      <div>
+                        <dt>{f.k}</dt>
+                        <dd>{f.v}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                )}
+                {t.list && t.list.length > 0 && (
+                  <ul class="items">
+                    {t.list.map((x) => (
+                      <li>{x}</li>
+                    ))}
+                  </ul>
+                )}
+                <footer>
+                  {t.href && (
+                    <a class="link-arrow" href={url(t.href)}>
+                      {t.scope === 'general' ? 'Where the toolkit uses it' : 'Where it’s used'} <Icon name="arrow" size={18} />
+                    </a>
+                  )}
+                  {t.source && (
+                    <p class="src">
+                      Read more:{' '}
+                      {external(t.source.href) ? (
+                        <a href={t.source.href} rel="noopener">
+                          {t.source.label}
+                        </a>
+                      ) : (
+                        t.source.label
+                      )}
+                    </p>
+                  )}
+                  {t.see && t.see.length > 0 && (
+                    <p class="see">
+                      <span class="k">See also</span>
+                      {[...new Set(t.see)].filter((s) => termById[s]).map((s) => (
+                        <a href={`#${s}`}>{termById[s].term}</a>
+                      ))}
+                    </p>
+                  )}
+                </footer>
+              </article>
+            ))}
+          </div>
+        </section>
+      ))
+    }
+    <p class="empty" id="gl-empty" hidden>
+      Nothing in the glossary matches. Try fewer letters, or <a href={url('/ask/')} id="gl-ask">ask the toolkit</a>.
+    </p>
+  </div>
+</BaseLayout>
+
+<script>
+  const q = document.querySelector<HTMLInputElement>('#gl-q');
+  const count = document.querySelector<HTMLElement>('#gl-count');
+  const empty = document.querySelector<HTMLElement>('#gl-empty');
+  const askLink = document.querySelector<HTMLAnchorElement>('#gl-ask');
+  const buttons = [...document.querySelectorAll<HTMLButtonElement>('button[data-scope]')];
+  const terms = [...document.querySelectorAll<HTMLElement>('article.term')];
+  const sections = [...document.querySelectorAll<HTMLElement>('[data-letter]')];
+  const total = terms.length;
+  let scope = 'all';
+
+  const fold = (s: string) => s.normalize('NFKD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  for (const t of terms) t.dataset.text = fold(t.dataset.text ?? '');
+
+  function apply() {
+    const words = fold(q?.value ?? '').trim().split(/\s+/).filter(Boolean);
+    let shown = 0;
+    for (const t of terms) {
+      const ok = (scope === 'all' || t.dataset.scope === scope) && words.every((w) => (t.dataset.text ?? '').includes(w));
+      t.hidden = !ok;
+      if (ok) shown++;
+    }
+    for (const s of sections) s.hidden = !s.querySelector('article.term:not([hidden])');
+    if (count) count.textContent = shown === total ? `${total} terms` : `${shown} of ${total} terms`;
+    if (empty) empty.hidden = shown > 0;
+    if (askLink) askLink.href = `${askLink.pathname}${q?.value ? `?q=${encodeURIComponent(q.value)}` : ''}`;
+  }
+
+  for (const b of buttons) {
+    b.addEventListener('click', () => {
+      scope = b.dataset.scope ?? 'all';
+      for (const x of buttons) x.setAttribute('aria-pressed', String(x === b));
+      apply();
+    });
+  }
+  q?.addEventListener('input', apply);
+  const initial = new URLSearchParams(location.search).get('q');
+  if (q && initial) q.value = initial;
+  apply();
+</script>
+
+<style>
+  .tools {
+    display: grid;
+    gap: var(--sp-2);
+  }
+  .search .lbl {
+    display: block;
+    margin-bottom: var(--sp-1);
+  }
+  .field {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-1);
+    background: var(--surface);
+    border: 1.5px solid var(--field);
+    border-radius: var(--r-sm);
+    padding: 0 var(--sp-2);
+    min-height: 48px;
+  }
+  .field:focus-within {
+    outline: 3px solid var(--ink);
+    outline-offset: 2px;
+  }
+  .field input {
+    border: 0;
+    background: transparent;
+    font: inherit;
+    font-size: var(--fs-ui);
+    flex: 1;
+    min-width: 0;
+    padding: var(--sp-1) 0;
+    outline: none;
+  }
+  .scopes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-1);
+  }
+  .scope {
+    cursor: pointer;
+    min-height: 36px;
+    border-color: var(--line-strong);
+    color: var(--ink-soft);
+  }
+  .scope[aria-pressed='true'] {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: #fff;
+  }
+  .scope .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 1px solid var(--ink);
+  }
+  .count {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+    color: var(--muted);
+  }
+  .ask {
+    justify-self: start;
+  }
+
+  .letters {
+    position: sticky;
+    top: var(--strip-h);
+    z-index: 2;
+    background: var(--ground);
+    border-bottom: 1px solid var(--line);
+    padding-block: var(--sp-1);
+  }
+  .letters ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-half);
+  }
+  .letters a {
+    display: inline-grid;
+    place-items: center;
+    min-width: 36px;
+    min-height: 36px;
+    border-radius: var(--r-sm);
+    font-family: var(--font-mono);
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--ink);
+  }
+  .letters a:hover {
+    background: var(--ink);
+    color: #fff;
+  }
+
+  .list {
+    padding-block: var(--sp-4) var(--sp-12);
+  }
+  .letter {
+    display: grid;
+    gap: var(--sp-2) var(--sp-4);
+    grid-template-columns: minmax(0, 1fr);
+    padding-block: var(--sp-4);
+    border-top: 1px solid var(--line);
+    scroll-margin-top: calc(var(--scroll-offset) + 56px);
+  }
+  @media (min-width: 64rem) {
+    .letter {
+      grid-template-columns: 6rem minmax(0, 1fr);
+    }
+  }
+  .lh {
+    font-size: var(--fs-h2);
+    line-height: 1;
+    margin: 0;
+  }
+  .terms {
+    display: grid;
+    gap: var(--sp-2);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 26rem), 1fr));
+    align-items: start;
+  }
+  .term {
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    border-left: 6px solid var(--accent, var(--line-strong));
+    border-radius: var(--r-md);
+    padding: var(--sp-3);
+    scroll-margin-top: calc(var(--scroll-offset) + 64px);
+  }
+  .term[data-scope='toolkit'] {
+    border-left-color: var(--ink);
+  }
+  .term[data-scope='general'] {
+    border-left-style: dashed;
+    border-left-color: var(--field);
+  }
+  .term:target {
+    outline: 3px solid var(--ink);
+    outline-offset: 3px;
+  }
+  .term header {
+    display: flex;
+    flex-direction: column;
+  }
+  .meta {
+    order: -1;
+    margin: 0 0 var(--sp-half);
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .term h3 {
+    font-size: var(--fs-h4);
+    margin: 0;
+  }
+  .ctx {
+    margin: var(--sp-half) 0 0;
+    font-size: var(--fs-sm);
+    color: var(--muted);
+  }
+  .def {
+    margin: var(--sp-2) 0 0;
+  }
+  .aka,
+  .see,
+  .src {
+    font-size: var(--fs-sm);
+    color: var(--ink-soft);
+    margin: var(--sp-1) 0 0;
+  }
+  .k {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-right: var(--sp-half);
+  }
+  .facts {
+    margin: var(--sp-2) 0 0;
+    display: grid;
+    gap: var(--sp-1);
+  }
+  .facts div {
+    display: grid;
+    gap: 2px;
+  }
+  .facts dt {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .facts dd {
+    margin: 0;
+    font-size: var(--fs-sm);
+  }
+  .items {
+    margin: var(--sp-2) 0 0;
+    padding-left: 1.25em;
+    font-size: var(--fs-sm);
+  }
+  .items li + li {
+    margin-top: 2px;
+  }
+  footer {
+    margin-top: var(--sp-2);
+    padding-top: var(--sp-2);
+    border-top: 1px solid var(--line);
+  }
+  .see {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-half) var(--sp-2);
+    align-items: baseline;
+  }
+  .see a,
+  .src a {
+    color: var(--ink);
+  }
+  .empty {
+    font-size: var(--fs-lead);
+    padding-block: var(--sp-4);
+  }
+</style>
