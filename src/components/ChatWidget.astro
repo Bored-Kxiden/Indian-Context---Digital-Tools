@@ -4,43 +4,46 @@ import { functionsUrl } from '../data/backend';
 import { url } from '../utils/url';
 import '../styles/ask.css';
 
-// "Ask the toolkit" as a chat panel, on every page except /ask/ itself: a button at the bottom right that opens it.
-// The answer code and data load only when someone opens it (the page stays light on prepaid data), the conversation
+// "Ask the toolkit" as a chat popup, on every page except /ask/ itself: a round button at the bottom right opens a
+// small chat window just above it, on phones as well as on large screens. The page stays usable behind it (the popup
+// is not modal); the button closes it again, and so does Escape. The "Ask" links in the header, menu, footer and the
+// "Find a tool" search open the popup too (with a question, if the search had one); only the popup's expand link
+// goes to the full /ask/ page.
+// The answer code and data load only when someone opens it (pages stay light on prepaid data), the conversation
 // follows the reader from page to page for the visit, and on a tool page the suggestions are about that tool.
-// On a phone the panel fills the screen and the page behind it is inert; elsewhere it floats beside the page.
+// On a large screen an open popup stays open on the next page, so a link in an answer doesn't lose the chat.
 // Without JavaScript the button is a link to /ask/.
 
 const tries = ['What is reverse thick translation?', 'Which tool shows who people depend on?', 'Kahavat kya hai?', 'How do I run the Villain Story?'];
 ---
 
 <aside class="chat" aria-label="Ask the toolkit" data-chat data-functions={functionsUrl} data-base={url('/')}>
-  <a class="launcher" href={url('/ask/')} data-chat-open aria-controls="chat-panel" aria-expanded="false">
-    <Icon name="chat" size={22} />
-    <span class="lt">Ask</span>
-    <span class="visually-hidden">the toolkit</span>
-    <span class="dot" hidden data-chat-dot><span class="visually-hidden">(conversation in progress)</span></span>
-  </a>
-
-  <section class="panel" id="chat-panel" role="dialog" aria-labelledby="chat-title" hidden data-chat-panel>
+  <section class="pop" id="chat-panel" role="dialog" aria-labelledby="chat-title" aria-describedby="chat-sub" tabindex="-1" hidden data-chat-panel>
     <div class="ph">
+      <span class="av" aria-hidden="true"><Icon name="chat" size={20} /></span>
       <div class="pt">
         <h2 id="chat-title">Ask the toolkit</h2>
-        <p class="sub">Answers from the toolkit’s own pages. No AI model.</p>
+        <p class="sub" id="chat-sub">From the toolkit’s own pages · no AI</p>
       </div>
-      <a class="full" href={url('/ask/')}>Full page</a>
-      <button type="button" class="x" data-chat-close aria-label="Close the chat">
-        <Icon name="x" size={22} />
+      <a class="hb" href={url('/ask/')} title="Open as a full page">
+        <Icon name="expand" size={20} />
+        <span class="visually-hidden">Open as a full page</span>
+      </a>
+      <button type="button" class="hb" data-chat-close title="Close the chat">
+        <Icon name="chevron-down" size={22} />
+        <span class="visually-hidden">Close the chat</span>
       </button>
     </div>
 
     <div class="body" data-chat-scroll>
       <div class="intro" data-chat-intro>
-        <p>Ask about any tool, step or term, in English, Hindi or Hinglish.</p>
-        <ul class="tries" data-chat-tries aria-label="Try asking">
+        <p class="hello">Ask about any tool, step or term, in English, Hindi or Hinglish. Answers come from the toolkit’s own pages.</p>
+        <p class="tl" id="chat-tries">Try asking</p>
+        <ul class="tries" data-chat-tries aria-labelledby="chat-tries">
           {
             tries.map((t) => (
               <li>
-                <button type="button" class="chip try" data-try={t}>
+                <button type="button" class="try" data-try={t}>
                   {t}
                 </button>
               </li>
@@ -53,9 +56,10 @@ const tries = ['What is reverse thick translation?', 'Which tool shows who peopl
 
     <form class="bar" data-chat-form autocomplete="off">
       <label for="chat-q" class="visually-hidden">Your question</label>
-      <input id="chat-q" name="q" type="text" maxlength="300" required placeholder="Ask about a tool, step or term" />
-      <button class="send" type="submit" aria-label="Ask">
-        <Icon name="arrow" size={22} />
+      <input id="chat-q" name="q" type="text" maxlength="300" required placeholder="Type a question…" enterkeyhint="send" />
+      <button class="send" type="submit" title="Ask">
+        <Icon name="arrow" size={20} />
+        <span class="visually-hidden">Ask</span>
       </button>
     </form>
     <p class="fine">
@@ -64,12 +68,25 @@ const tries = ['What is reverse thick translation?', 'Which tool shows who peopl
     </p>
     <p class="visually-hidden" role="status" aria-live="polite" data-chat-status></p>
   </section>
+
+  <button type="button" class="launcher" hidden data-chat-open aria-controls="chat-panel" aria-expanded="false" title="Ask the toolkit">
+    <span class="ic ic-open"><Icon name="chat" size={26} /></span>
+    <span class="ic ic-close"><Icon name="x" size={24} /></span>
+    <span class="visually-hidden">Ask the toolkit</span>
+    <span class="dot" hidden data-chat-dot><span class="visually-hidden">(conversation in progress)</span></span>
+  </button>
+  <noscript>
+    <a class="launcher" href={url('/ask/')} title="Ask the toolkit">
+      <span class="ic ic-open"><Icon name="chat" size={26} /></span>
+      <span class="visually-hidden">Ask the toolkit</span>
+    </a>
+  </noscript>
 </aside>
 
 <script>
   const root = document.querySelector<HTMLElement>('[data-chat]');
   if (root) {
-    const launcher = root.querySelector<HTMLAnchorElement>('[data-chat-open]')!;
+    const launcher = root.querySelector<HTMLButtonElement>('[data-chat-open]')!;
     const panel = root.querySelector<HTMLElement>('[data-chat-panel]')!;
     const scroller = root.querySelector<HTMLElement>('[data-chat-scroll]')!;
     const log = root.querySelector<HTMLOListElement>('[data-chat-log]')!;
@@ -79,20 +96,41 @@ const tries = ['What is reverse thick translation?', 'Which tool shows who peopl
     const input = root.querySelector<HTMLInputElement>('#chat-q')!;
     const status = root.querySelector<HTMLElement>('[data-chat-status]')!;
     const dot = root.querySelector<HTMLElement>('[data-chat-dot]')!;
-    const phone = matchMedia('(max-width: 40rem)');
+    const small = matchMedia('(max-width: 40rem)');
+    // Touch screens: don't jump straight into the text box, or the keyboard covers the popup as it opens.
+    const touch = matchMedia('(pointer: coarse)');
+    const OPEN = 'bte-ask-open';
 
     type Chat = ReturnType<typeof import('../scripts/ask/ui').createAsk>;
     let chat: Chat | null = null;
     let starting: Promise<Chat> | null = null;
 
+    const session = {
+      get: (k: string) => {
+        try {
+          return sessionStorage.getItem(k);
+        } catch {
+          return null;
+        }
+      },
+      set: (k: string, v: string | null) => {
+        try {
+          if (v === null) sessionStorage.removeItem(k);
+          else sessionStorage.setItem(k, v);
+        } catch {
+          /* ignore */
+        }
+      },
+    };
     const saved = () => {
       try {
-        return (JSON.parse(sessionStorage.getItem('bte-ask-v1') ?? '[]') as unknown[]).length > 0;
+        return (JSON.parse(session.get('bte-ask-v1') ?? '[]') as unknown[]).length > 0;
       } catch {
         return false;
       }
     };
     dot.hidden = !saved();
+    launcher.hidden = false;
 
     const syncIntro = () => (intro.hidden = log.children.length > 0);
     new MutationObserver(syncIntro).observe(log, { childList: true });
@@ -110,7 +148,7 @@ const tries = ['What is reverse thick translation?', 'Which tool shows who peopl
               const li = document.createElement('li');
               const b = document.createElement('button');
               b.type = 'button';
-              b.className = 'chip try';
+              b.className = 'try';
               b.textContent = q;
               b.addEventListener('click', () => chat?.ask(q));
               li.append(b);
@@ -123,40 +161,37 @@ const tries = ['What is reverse thick translation?', 'Which tool shows who peopl
       return starting;
     }
 
-    // On a phone the panel covers the page: make everything behind it inert.
-    const behind = () => [...document.body.children].filter((n) => n !== root && n.tagName !== 'DIALOG' && n.tagName !== 'SCRIPT') as HTMLElement[];
-    const setInert = (on: boolean) => behind().forEach((n) => (on ? n.setAttribute('inert', '') : n.removeAttribute('inert')));
-
-    function open() {
+    function open(focus = true) {
+      if (!panel.hidden) {
+        if (focus) input.focus();
+        return;
+      }
       panel.hidden = false;
       root!.classList.add('is-open');
       launcher.setAttribute('aria-expanded', 'true');
-      if (phone.matches) setInert(true);
-      input.focus();
-      start();
+      launcher.title = 'Close the chat';
+      session.set(OPEN, '1');
+      if (focus) (touch.matches ? panel : input).focus();
+      return start();
     }
-    function close() {
+    function close(returnFocus = true) {
       panel.hidden = true;
       root!.classList.remove('is-open');
       launcher.setAttribute('aria-expanded', 'false');
-      setInert(false);
+      launcher.title = 'Ask the toolkit';
+      session.set(OPEN, null);
       dot.hidden = !saved();
-      launcher.focus();
+      if (returnFocus) launcher.focus();
     }
 
-    launcher.addEventListener('click', (e) => {
-      e.preventDefault();
-      if (panel.hidden) open();
-      else close();
-    });
-    root.querySelector('[data-chat-close]')!.addEventListener('click', close);
-    panel.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
+    launcher.addEventListener('click', () => (panel.hidden ? open() : close()));
+    root.querySelector('[data-chat-close]')!.addEventListener('click', () => close());
+    root.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !panel.hidden) {
         e.stopPropagation();
         close();
       }
     });
-    phone.addEventListener('change', () => setInert(!panel.hidden && phone.matches));
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -169,110 +204,156 @@ const tries = ['What is reverse thick translation?', 'Which tool shows who peopl
       (await start()).clear();
       input.focus();
     });
-    // Following a link inside an answer on a phone: close first, so the new page isn't hidden behind the panel.
+    // Following a link from an answer: on a phone the popup closes, so the new page isn't under it. On a large
+    // screen it stays open and opens again on the next page.
     log.addEventListener('click', (e) => {
       const link = (e.target as HTMLElement).closest('a');
-      if (link && phone.matches && !link.hasAttribute('download')) {
-        setInert(false);
-        panel.hidden = true;
-      }
+      if (link && small.matches && !link.hasAttribute('download')) close(false);
     });
+
+    // "Ask" links elsewhere on the page (header, menu, footer, "Find a tool") open the popup instead of the full page.
+    // A question in the link (?q=…) is asked straight away. Ctrl/Cmd-click still opens the full page.
+    document.addEventListener('click', async (e) => {
+      const a = (e.target as HTMLElement).closest<HTMLAnchorElement>('a[data-ask-open]');
+      if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      e.preventDefault();
+      const q = new URL(a.href, location.href).searchParams.get('q')?.trim();
+      // Let a menu or search dialog close first, then move focus into the popup.
+      await new Promise((r) => setTimeout(r));
+      await open(!q);
+      if (q) (await start()).ask(q);
+    });
+
+    // Open again after moving to another page, on a large screen only, without taking focus from the page.
+    if (session.get(OPEN) === '1' && !small.matches) open(false);
   }
 </script>
 
 <style>
   .chat {
+    --gap: var(--sp-2);
+    --btn: 60px;
     position: fixed;
-    right: max(var(--sp-2), env(safe-area-inset-right));
-    bottom: max(var(--sp-2), env(safe-area-inset-bottom));
+    right: max(var(--gap), env(safe-area-inset-right));
+    bottom: max(var(--gap), env(safe-area-inset-bottom));
     z-index: 60;
     font-size: var(--fs-ui);
   }
   @media (min-width: 64rem) {
     .chat {
-      right: var(--sp-3);
-      bottom: var(--sp-3);
+      --gap: var(--sp-3);
     }
   }
 
+  /* The round button */
   .launcher {
     position: relative;
-    display: inline-flex;
-    align-items: center;
-    gap: var(--sp-1);
-    min-height: 56px;
-    padding: 0 var(--sp-3) 0 var(--sp-2);
-    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    width: var(--btn);
+    height: var(--btn);
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
     background: var(--ink);
     color: #fff;
-    font-weight: 700;
+    cursor: pointer;
     text-decoration: none;
-    box-shadow: 0 10px 28px -10px rgb(22 20 15 / 0.55);
+    box-shadow: 0 10px 28px -10px rgb(22 20 15 / 0.6);
     transition:
       transform var(--t-fast) var(--ease),
       box-shadow var(--t-fast) var(--ease);
   }
+  .launcher[hidden] {
+    display: none;
+  }
   .launcher:hover {
     transform: translateY(-2px);
-    box-shadow: 0 14px 32px -12px rgb(22 20 15 / 0.65);
+    box-shadow: 0 14px 32px -12px rgb(22 20 15 / 0.7);
+  }
+  .launcher:active {
+    transform: scale(0.96);
   }
   .launcher:focus-visible {
     outline: 3px solid var(--ink);
     outline-offset: 3px;
     box-shadow: 0 0 0 3px #fff;
   }
-  .is-open .launcher {
-    display: none;
+  .ic {
+    grid-area: 1 / 1;
+    display: grid;
+    place-items: center;
+    transition:
+      opacity var(--t-fast) var(--ease),
+      transform var(--t-fast) var(--ease);
+  }
+  .ic-close,
+  .is-open .ic-open {
+    opacity: 0;
+    transform: rotate(-45deg) scale(0.6);
+  }
+  .is-open .ic-close {
+    opacity: 1;
+    transform: none;
   }
   .dot {
     position: absolute;
-    top: 6px;
-    right: 8px;
-    width: 12px;
-    height: 12px;
+    top: 4px;
+    right: 4px;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
     background: var(--c2);
     border: 2px solid var(--ink);
   }
-  .dot[hidden] {
+  .dot[hidden],
+  .is-open .dot {
     display: none;
   }
 
-  .panel {
-    position: fixed;
-    right: var(--sp-3);
-    bottom: var(--sp-3);
-    width: min(26rem, calc(100vw - 2 * var(--sp-3)));
-    height: min(40rem, calc(100dvh - var(--sp-4) - var(--sp-3)));
+  /* The popup, just above the button */
+  .pop {
+    position: absolute;
+    right: 0;
+    bottom: calc(var(--btn) + var(--sp-2));
+    width: min(24rem, calc(100vw - 2 * var(--gap)));
+    height: min(36rem, calc(100dvh - var(--btn) - var(--sp-2) - 2 * var(--gap) - var(--sp-2)));
     display: flex;
     flex-direction: column;
     background: var(--ground);
     border: 1.5px solid var(--ink);
     border-radius: var(--r-lg);
-    box-shadow: 0 24px 60px -24px rgb(22 20 15 / 0.55);
+    box-shadow: 0 24px 60px -20px rgb(22 20 15 / 0.5);
     overflow: hidden;
+    transform-origin: calc(100% - var(--btn) / 2) 100%;
   }
-  .panel[hidden] {
+  .pop[hidden] {
     display: none;
   }
+  .pop:focus {
+    outline: none;
+  }
+  .pop:focus-visible {
+    outline: 3px solid var(--ink);
+    outline-offset: 2px;
+  }
   @media (prefers-reduced-motion: no-preference) {
-    .panel:not([hidden]) {
-      animation: rise var(--t-med) var(--ease);
+    .pop:not([hidden]) {
+      animation: pop var(--t-med) var(--ease);
     }
-    @keyframes rise {
+    @keyframes pop {
       from {
         opacity: 0;
-        transform: translateY(12px);
+        transform: translateY(8px) scale(0.96);
       }
     }
   }
   @media (max-width: 40rem) {
-    .panel {
-      inset: 0;
-      width: 100%;
-      height: 100dvh;
-      border: 0;
-      border-radius: 0;
+    .chat {
+      --btn: 56px;
+    }
+    .pop {
+      height: min(32rem, calc(100dvh - var(--btn) - var(--sp-2) - 2 * var(--gap) - var(--sp-4)));
     }
   }
 
@@ -280,36 +361,38 @@ const tries = ['What is reverse thick translation?', 'Which tool shows who peopl
     display: flex;
     align-items: center;
     gap: var(--sp-1);
-    padding: var(--sp-2) var(--sp-1) var(--sp-2) var(--sp-3);
+    padding: var(--sp-1) var(--sp-half) var(--sp-1) var(--sp-2);
     background: var(--ink);
     color: #fff;
+  }
+  .av {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 0.14);
   }
   .pt {
     flex: 1;
     min-width: 0;
   }
   .ph h2 {
-    font-size: var(--fs-h4);
+    font-size: var(--fs-ui);
+    font-weight: 700;
+    line-height: 1.2;
     margin: 0;
     color: #fff;
   }
   .sub {
     margin: 2px 0 0;
     font-size: var(--fs-xs);
-    font-family: var(--font-mono);
-    letter-spacing: 0.04em;
     color: var(--on-dark);
+    line-height: 1.3;
   }
-  .full {
-    color: #fff;
-    font-size: var(--fs-sm);
-    font-weight: 600;
-    padding: var(--sp-1);
-    min-height: 44px;
-    display: inline-flex;
-    align-items: center;
-  }
-  .x {
+  .hb {
+    flex: none;
     display: inline-grid;
     place-items: center;
     width: 44px;
@@ -320,11 +403,10 @@ const tries = ['What is reverse thick translation?', 'Which tool shows who peopl
     color: #fff;
     cursor: pointer;
   }
-  .x:hover {
+  .hb:hover {
     background: rgb(255 255 255 / 0.12);
   }
-  .full:focus-visible,
-  .x:focus-visible {
+  .hb:focus-visible {
     outline: 3px solid #fff;
     outline-offset: -3px;
   }
@@ -335,36 +417,55 @@ const tries = ['What is reverse thick translation?', 'Which tool shows who peopl
     overscroll-behavior: contain;
     padding: var(--sp-2);
   }
-  .intro p {
-    margin: 0 0 var(--sp-2);
-    color: var(--ink-soft);
-  }
   .intro[hidden] {
     display: none;
+  }
+  /* The opening line reads as the toolkit's first message */
+  .hello {
+    margin: 0 0 var(--sp-2);
+    max-width: 90%;
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-md) var(--r-md) var(--r-md) 4px;
+    padding: var(--sp-1) var(--sp-2);
+    font-size: var(--fs-sm);
+    line-height: 1.5;
+  }
+  .tl {
+    margin: 0 0 var(--sp-1);
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
   }
   .tries {
     list-style: none;
     margin: 0;
     padding: 0;
-    display: grid;
+    display: flex;
+    flex-wrap: wrap;
     gap: var(--sp-1);
   }
   .body :global(.try) {
-    cursor: pointer;
-    text-transform: none;
-    letter-spacing: 0;
-    font-family: var(--font-body);
+    font: inherit;
     font-size: var(--fs-sm);
-    white-space: normal;
     text-align: left;
-    min-height: 40px;
+    min-height: 36px;
+    padding: var(--sp-half) var(--sp-2);
+    border: 1.5px solid var(--ink);
+    border-radius: 999px;
     background: var(--surface);
-    width: 100%;
-    justify-content: flex-start;
+    color: var(--ink);
+    cursor: pointer;
   }
   .body :global(.try:hover) {
     background: var(--ink);
     color: #fff;
+  }
+  .body :global(.try:focus-visible) {
+    outline: 3px solid var(--ink);
+    outline-offset: 2px;
   }
   .log {
     list-style: none;
@@ -375,19 +476,19 @@ const tries = ['What is reverse thick translation?', 'Which tool shows who peopl
   .bar {
     display: flex;
     gap: var(--sp-1);
-    padding: var(--sp-1) var(--sp-2) 0;
+    padding: var(--sp-1) var(--sp-1) 0 var(--sp-2);
     border-top: 1px solid var(--line-strong);
     background: var(--surface);
   }
   .bar input {
     flex: 1;
     min-width: 0;
-    min-height: 48px;
+    min-height: 44px;
     font: inherit;
-    font-size: var(--fs-ui);
+    font-size: 1rem; /* 16px or more, so phones don't zoom in on focus */
     padding: 0 var(--sp-2);
     border: 1.5px solid var(--field);
-    border-radius: var(--r-sm);
+    border-radius: 999px;
     background: var(--surface);
   }
   .bar input:focus-visible {
@@ -395,12 +496,13 @@ const tries = ['What is reverse thick translation?', 'Which tool shows who peopl
     outline-offset: 1px;
   }
   .send {
+    flex: none;
     display: inline-grid;
     place-items: center;
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
     border: 0;
-    border-radius: var(--r-sm);
+    border-radius: 50%;
     background: var(--ink);
     color: #fff;
     cursor: pointer;
@@ -411,7 +513,7 @@ const tries = ['What is reverse thick translation?', 'Which tool shows who peopl
   }
   .fine {
     margin: 0;
-    padding: var(--sp-1) var(--sp-2) max(var(--sp-1), env(safe-area-inset-bottom));
+    padding: var(--sp-half) var(--sp-1) var(--sp-half) var(--sp-2);
     background: var(--surface);
     font-size: var(--fs-xs);
     color: var(--muted);
@@ -424,28 +526,31 @@ const tries = ['What is reverse thick translation?', 'Which tool shows who peopl
     font: inherit;
     background: none;
     border: 0;
-    padding: 0 var(--sp-half);
+    padding: 0 var(--sp-1);
     min-height: 24px;
     color: var(--ink);
     text-decoration: underline;
     cursor: pointer;
   }
 
-  /* Answers, a little tighter than on the full page */
+  /* Answers, tighter than on the full page: questions on the right, answers on the left, as chat bubbles */
   .body :global(.askui) {
     gap: var(--sp-3);
   }
   .body :global(.askui .turn > .q) {
-    max-width: 90%;
+    max-width: 85%;
+    font-size: var(--fs-sm);
   }
   .body :global(.askui .a .ans) {
     padding: var(--sp-2);
+    border-radius: var(--r-md) var(--r-md) var(--r-md) 4px;
+    font-size: var(--fs-sm);
   }
   .body :global(.askui .a h3) {
-    font-size: var(--fs-h4);
+    font-size: var(--fs-ui);
   }
   .body :global(.askui .a .tool .q) {
-    font-size: var(--fs-ui);
+    font-size: var(--fs-sm);
   }
   .body :global(.askui .a .compare) {
     grid-template-columns: minmax(0, 1fr);
