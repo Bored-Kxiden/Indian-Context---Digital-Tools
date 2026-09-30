@@ -7,6 +7,8 @@ import ReflectPrint from '../../../components/reflection/ReflectPrint.astro';
 import Icon from '../../../components/Icon.astro';
 import { lookBack, lookBackWhen, summarise, stops } from '../../../data/reflection';
 import { url } from '../../../utils/url';
+import FillForm from '../../../components/fill/FillForm.astro';
+import { fillById } from '../../../data/fill/templates';
 
 const page = lookBack[0];
 const colour = { 'existing-products': 'c1', 'visual-culture': 'c2', language: 'c3', 'material-reality': 'c4' } as const;
@@ -63,6 +65,10 @@ const colour = { 'existing-products': 'c1', 'visual-culture': 'c2', language: 'c
         </ul>
       </StepCard>
     </div>
+  </Section>
+
+  <Section id="fill" eyebrow="Or fill it on screen" title="Fill it here.">
+    <FillForm t={fillById['reflection/look-back/summarise']} />
   </Section>
 
   <Section id="print" eyebrow="Print it" title="Fill it on paper." tone="white" split>

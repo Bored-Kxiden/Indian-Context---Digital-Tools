@@ -1,0 +1,113 @@
+---
+import type { Field } from '../../data/fill/types';
+
+// One field of a "Fill on screen" form. `name` is the field's key in the saved answers. Inside a repeat it
+// contains "[#]": the script (src/scripts/fill/store.ts) replaces it with the item number and rebuilds each
+// element's name, id, label `for` and hint id from the data-*-tpl patterns, so every item's fields stay unique.
+interface Props {
+  field: Field;
+  name: string;
+  uid: string;
+}
+const { field: f, name, uid } = Astro.props;
+const san = (n: string) => n.replace(/[^a-zA-Z0-9]+/g, '-');
+const inRepeat = name.includes('[#]');
+const key = f.kind === 'note' ? '' : `${name}.${f.id}`;
+const id = `${uid}-${san(key)}`;
+const hintId = `${id}-h`;
+const nameTpl = (k: string) => (inRepeat ? { 'data-name-tpl': k } : {});
+const bracket = (s?: string) => (s ? `[${s}]` : undefined);
+---
+
+{
+  f.kind === 'note' ? (
+    <p class="fnote">{f.text}</p>
+  ) : f.kind === 'text' ? (
+    <div class="ff">
+      <label for={id} data-for-tpl={inRepeat ? key : undefined}>
+        {f.label}
+      </label>
+      {f.hint && (
+        <p class="fhint" id={hintId} data-hint-tpl={inRepeat ? key : undefined}>
+          {f.hint}
+        </p>
+      )}
+      {(f.rows ?? 1) > 1 ? (
+        <textarea id={id} name={key} rows={f.rows} placeholder={bracket(f.example)} aria-describedby={f.hint ? hintId : undefined} {...nameTpl(key)} />
+      ) : (
+        <input type="text" id={id} name={key} placeholder={bracket(f.example)} aria-describedby={f.hint ? hintId : undefined} {...nameTpl(key)} />
+      )}
+    </div>
+  ) : f.kind === 'sentence' ? (
+    <div class="ff sentence" role="group" aria-label={f.label ?? 'Fill in the sentence'}>
+      {f.label && <p class="flabel">{f.label}</p>}
+      <p class="stext">
+        {f.parts.map((p, i) =>
+          typeof p === 'string' ? (
+            <span>{p}</span>
+          ) : (
+            <input
+              type="text"
+              class:list={['blank', `blank--${p.size ?? 'm'}`]}
+              name={`${key}.${p.id}`}
+              placeholder={bracket(p.example) ?? '…'}
+              aria-label={`${(f.parts.slice(0, i).filter((x) => typeof x === 'string') as string[]).join('…').trim() || 'Blank'} …`}
+              {...nameTpl(`${key}.${p.id}`)}
+            />
+          ),
+        )}
+      </p>
+    </div>
+  ) : f.kind === 'choice' ? (
+    <fieldset class="ff choice">
+      <legend>{f.label}</legend>
+      {f.hint && <p class="fhint">{f.hint}</p>}
+      <div class="opts">
+        {f.options.map((o) => (
+          <label class="opt">
+            <input type={f.multiple ? 'checkbox' : 'radio'} name={key} value={o} {...nameTpl(key)} />
+            <span>{o}</span>
+          </label>
+        ))}
+      </div>
+    </fieldset>
+  ) : f.kind === 'flag' ? (
+    <div class="ff flag">
+      <label class="opt">
+        <input type="checkbox" name={key} aria-describedby={f.hint ? hintId : undefined} {...nameTpl(key)} />
+        <span>
+          <b>{f.label}.</b> {f.text}
+        </span>
+      </label>
+      {f.hint && (
+        <p class="fhint" id={hintId} data-hint-tpl={inRepeat ? key : undefined}>
+          {f.hint}
+        </p>
+      )}
+    </div>
+  ) : f.kind === 'repeat' ? (
+    <div class="ff repeat" data-repeat={key} data-start={f.start ?? 1} data-csv={f.csv ? '' : undefined}>
+      <ol class="items" data-repeat-list aria-label={f.label} />
+      <template data-repeat-tpl>
+        <li class="item">
+          <div class="ih">
+            <span class="in" data-item-label={f.itemLabel}>
+              {f.itemLabel}
+            </span>
+            <button type="button" class="linkish" data-remove>
+              Remove
+            </button>
+          </div>
+          <div class="ib">
+            {f.fields.map((sub) => (
+              <Astro.self field={sub} name={`${key}[#]`} uid={uid} />
+            ))}
+          </div>
+        </li>
+      </template>
+      <button type="button" class="btn btn--outline btn--sm add" data-add>
+        + Add {f.itemLabel}
+      </button>
+    </div>
+  ) : null
+}

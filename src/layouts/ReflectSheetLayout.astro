@@ -7,6 +7,8 @@ import ReflectPrint from '../components/reflection/ReflectPrint.astro';
 import Icon from '../components/Icon.astro';
 import { stopById, before, after, type ReflectComponent } from '../data/reflection';
 import { url } from '../utils/url';
+import FillForm from '../components/fill/FillForm.astro';
+import { fillById } from '../data/fill/templates';
 
 // The Before and After page that sits inside each component. Same questions everywhere; only the
 // prediction prompt and the place in the component change. The page keeps its component's colour.
@@ -100,6 +102,10 @@ const afterHref = `${stop.href}reflect-after/`;
       </Section>
     )
   }
+
+  <Section id="fill" eyebrow="Or fill it on screen" title="Fill it here." tone="white">
+    <FillForm t={fillById[`reflection/${kind}/${id}`]} />
+  </Section>
 
   <Section id="print" eyebrow="Print it" title="Fill it on paper." split>
     <ReflectPrint id={`reflection-${page.image}`} image={page.image} code={page.code} title={name}>

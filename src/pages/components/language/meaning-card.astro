@@ -3,6 +3,8 @@ import ToolLayout from '../../../layouts/ToolLayout.astro';
 import MeaningCardMock from '../../../components/MeaningCardMock.astro';
 import fields from '../../../../templates/meaning-card-fields.json';
 import { url } from '../../../utils/url';
+import FillForm from '../../../components/fill/FillForm.astro';
+import { meaningCardFill } from '../../../data/fill/templates';
 
 const exampleFront = {
   momentId: 'P07-M03',
@@ -154,6 +156,14 @@ const shortCard: [string, string][] = [
         ))
       }
     </ol>
+  </section>
+
+  <section class="section" id="fill" aria-labelledby="fill-h">
+    <div class="section-head">
+      <h2 id="fill-h">Fill Meaning Cards on screen</h2>
+      <p>One card per moment, saved in this browser only. Download them as a spreadsheet when you are done, or print them.</p>
+    </div>
+    <FillForm t={meaningCardFill} />
   </section>
 
   <section class="section" aria-labelledby="example">

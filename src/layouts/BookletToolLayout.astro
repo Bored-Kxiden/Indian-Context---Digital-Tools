@@ -14,6 +14,8 @@ import { bookletImage, cardKitImage } from '../utils/assets';
 import { nativeExamples } from '../components/examples';
 import { toolPanels } from '../components/panels';
 import { url } from '../utils/url';
+import FillForm from '../components/fill/FillForm.astro';
+import { fillForTool } from '../data/fill/templates';
 
 // One page per tool in Components 1 to 4. Tabs, always in the same order:
 // Guide · (extra tabs a tool asks for) · Example · Template · Card kit (Component 1 only). Component 1's
@@ -55,6 +57,8 @@ const c1Figma = tool.component === 'existing-products' ? getDownloadById('existi
 const panels = (tool.panels ?? []).filter((p) => toolPanels[`${tool.component}/${tool.slug}/${p.id}`]);
 const afterGuide = panels.filter((p) => (p.after ?? 'guide') === 'guide');
 const atEnd = panels.filter((p) => p.after === 'end');
+// The same template as a form, saved in this browser (src/data/fill/). One per part that has a template.
+const fills = fillForTool(tool);
 const tabs = [
   { id: 'guide', label: 'Guide', icon: 'info' },
   ...afterGuide.map((p) => ({ id: p.id, label: p.label, icon: p.icon })),
@@ -64,6 +68,7 @@ const tabs = [
         { id: 'example', label: 'Example', icon: 'bulb' },
         { id: 'blank', label: 'Template', icon: 'file' },
       ]),
+  ...(fills.length ? [{ id: 'fill', label: 'Fill on screen', icon: 'pen' }] : []),
   ...atEnd.map((p) => ({ id: p.id, label: p.label, icon: p.icon })),
   ...(kit ? [{ id: 'card-kit', label: 'Card kit', icon: 'cards' }] : []),
 ];
@@ -413,6 +418,29 @@ const crumbs = [
         </div>
       </section>
       )}
+
+      <!-- Fill on screen -->
+      {
+        fills.length > 0 && (
+          <section class="panel" id="fill" data-panel="fill">
+            <h2 class="panel-h">Fill on screen</h2>
+            <div class="fill-intro" data-no-index>
+              <p class="body-p">
+                Rather type than print? Fill the template here. It saves as you go, in this browser only, under the name of what you are
+                working on. Print it or save it as a PDF when you are done, or download a copy to carry on elsewhere.
+              </p>
+              {fills.some((f) => !f.complete) && (
+                <p class="small">
+                  Where a page’s own fields are not on screen yet, tick off the steps and keep your notes here, then print the template.
+                </p>
+              )}
+            </div>
+            {fills.map((f) => (
+              <FillForm t={f} />
+            ))}
+          </section>
+        )
+      }
 
       {
         atEnd.map((pd) => {
@@ -1088,6 +1116,15 @@ const crumbs = [
     text-transform: uppercase;
     opacity: 0.9;
     margin-left: var(--sp-1);
+  }
+
+  /* Fill on screen */
+  .fill-intro {
+    max-width: 64rem;
+    margin-bottom: var(--sp-3);
+  }
+  .fill-intro .small {
+    margin-top: var(--sp-1);
   }
 
   /* Card kit */

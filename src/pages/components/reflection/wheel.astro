@@ -8,6 +8,8 @@ import ReflectionWheel from '../../../components/reflection/ReflectionWheel.astr
 import Icon from '../../../components/Icon.astro';
 import { lookBack, lookBackWhen, wheel } from '../../../data/reflection';
 import { url } from '../../../utils/url';
+import FillForm from '../../../components/fill/FillForm.astro';
+import { fillById } from '../../../data/fill/templates';
 
 const page = lookBack[1];
 ---
@@ -42,6 +44,10 @@ const page = lookBack[1];
         </div>
       </div>
     </div>
+  </Section>
+
+  <Section id="fill" eyebrow="Or fill it on screen" title="Fill it here." tone="white">
+    <FillForm t={fillById['reflection/look-back/wheel']} />
   </Section>
 
   <Section id="print" eyebrow="Print it" title="Draw it on paper." split>

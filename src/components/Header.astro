@@ -25,7 +25,7 @@ const current = Astro.url.pathname;
             .filter((item) => item.href !== '/components/')
             .map((item) => (
               <li>
-                <a href={url(item.href)} aria-current={isActive(current, item.href) ? 'page' : undefined}>
+                <a href={url(item.href)} aria-current={isActive(current, item.href) ? 'page' : undefined} data-ask-open={item.href === '/ask/' ? '' : undefined}>
                   {item.label}
                 </a>
               </li>
@@ -68,8 +68,9 @@ const current = Astro.url.pathname;
           <p class="eb">Use it</p>
           <ul class="link-list">
             <li><a href={url('/#i-want-to')}>I want to…</a></li>
-            <li><a href={url('/ask/')}>Ask the toolkit</a></li>
+            <li><a href={url('/ask/')} data-ask-open>Ask the toolkit</a></li>
             <li><a href={url('/glossary/')}>Glossary</a></li>
+            <li><a href={url('/my-work/')}>My work</a></li>
             <li><a href={url('/card-kit/')}>Card kit</a></li>
             <li><a href={url('/guideline/')}>The guideline</a></li>
             <li><a href={url('/guideline/#meera')}>Meet Meera</a></li>

@@ -1,0 +1,93 @@
+---
+import FillField from './FillField.astro';
+import Icon from '../Icon.astro';
+import type { FillTemplate } from '../../data/fill/types';
+import { url } from '../../utils/url';
+import '../../styles/fill.css';
+
+// A template, card or worksheet to fill on screen. Answers are saved in this browser only, under a project name,
+// and can be printed (or saved as PDF), downloaded as a file, loaded back, or cleared. See src/data/fill/.
+interface Props {
+  t: FillTemplate;
+  /** Heading level for the form's title. */
+  level?: 2 | 3;
+}
+const { t, level = 3 } = Astro.props;
+const H = level === 2 ? 'h2' : 'h3';
+const uid = `f-${t.id.replace(/[^a-zA-Z0-9]+/g, '-')}`;
+---
+
+<div class="fill" id={uid} data-no-index data-fill={t.id} data-uid={uid} data-c={t.c === 'ink' ? undefined : t.c} data-title={t.title}>
+  <div class="fbar">
+    <div class="ftitle">
+      <p class="eb">{t.context} · {t.source}</p>
+      <H class="fh">{t.title}</H>
+    </div>
+    <div class="fproj">
+      <label for={`${uid}-project`}>Working on</label>
+      <input id={`${uid}-project`} type="text" data-fill-project list="fill-projects" autocomplete="off" placeholder="Name it, e.g. NSP · Meera" />
+    </div>
+  </div>
+  <p class="fsaved" role="status" aria-live="polite" data-fill-status>Nothing filled in yet.</p>
+  <p class="fprivacy">
+    <Icon name="lock" size={18} />
+    <span>
+      Saved in this browser only: nothing is sent anywhere. Use codes, not names. Anything in [brackets] is Meera’s example: write over it
+      with your own.
+    </span>
+  </p>
+
+  {
+    t.steps && t.steps.length > 0 && (
+      <fieldset class="fsec fsteps">
+        <legend>Steps</legend>
+        <p class="flead">Tick each one as you do it.</p>
+        <ul>
+          {t.steps.map((s, i) => (
+            <li>
+              <label class="opt">
+                <input type="checkbox" name={`steps.${i}`} />
+                <span>{s}</span>
+              </label>
+            </li>
+          ))}
+        </ul>
+      </fieldset>
+    )
+  }
+
+  {
+    t.sections.map((sec) => (
+      <fieldset class="fsec">
+        <legend>{sec.title}</legend>
+        {sec.lead && <p class="flead">{sec.lead}</p>}
+        {sec.fields.map((f) => (
+          <FillField field={f} name={sec.id} uid={uid} />
+        ))}
+      </fieldset>
+    ))
+  }
+
+  <div class="factions">
+    <button type="button" class="btn btn--accent" data-fill-print><Icon name="print" size={20} /> Print or save as PDF</button>
+    <button type="button" class="btn btn--outline" data-fill-download><Icon name="download" size={20} /> Download a copy</button>
+    {
+      t.sections.some((s) => s.fields.some((f) => f.kind === 'repeat' && f.csv)) && (
+        <button type="button" class="btn btn--outline" data-fill-csv>
+          <Icon name="download" size={20} /> Download as a spreadsheet (CSV)
+        </button>
+      )
+    }
+    <label class="btn btn--outline fload">
+      Load a copy
+      <input type="file" accept="application/json,.json" data-fill-load class="visually-hidden" />
+    </label>
+    <button type="button" class="linkish" data-fill-clear>Clear this form</button>
+    <a class="linkish" href={url('/my-work/')}>All my work</a>
+  </div>
+</div>
+
+<script>
+  import { initFills } from '../../scripts/fill/store';
+  initFills();
+</script>

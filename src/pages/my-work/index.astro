@@ -1,0 +1,369 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHead from '../../components/PageHead.astro';
+import Icon from '../../components/Icon.astro';
+import { allFills } from '../../data/fill/templates';
+import { url } from '../../utils/url';
+
+// Everything the reader has filled on screen (src/components/fill/), per project, read from this browser's
+// storage by the script below. The list of forms is built here so it works as a map of what can be filled even
+// without JavaScript; the script adds what has been started, and handles download, load and delete.
+
+const groups: { label: string; forms: typeof allFills }[] = [];
+for (const f of allFills) {
+  const label = f.context.split(' · ')[0];
+  let g = groups.find((x) => x.label === label);
+  if (!g) groups.push((g = { label, forms: [] }));
+  g.forms.push(f);
+}
+const anchor = (id: string) => `f-${id.replace(/[^a-zA-Z0-9]+/g, '-')}`;
+const colourOf = (f: (typeof allFills)[number]) => (f.c === 'ink' ? undefined : f.c);
+---
+
+<BaseLayout title="My work" description="Everything you have filled on screen, in this browser: see it, download it, load it on another device, or delete it.">
+  <PageHead
+    crumbs={[{ label: 'Home', href: '/' }, { label: 'My work' }]}
+    eyebrow="Fill on screen"
+    heading="My work"
+    lead="Every template, card and worksheet you have filled on screen, kept in this browser under the name of what you are working on. Nothing here is sent anywhere: to move it to another device or share it, download a copy and load it there."
+  >
+    <div slot="aside" class="mw-tools">
+      <div class="mw-field">
+        <label for="mw-project">Working on</label>
+        <select id="mw-project" disabled>
+          <option>My project</option>
+        </select>
+      </div>
+      <p class="mw-count" id="mw-count" role="status" aria-live="polite">Open this page with JavaScript on to see what you have filled.</p>
+      <div class="mw-actions">
+        <button type="button" class="btn btn--accent btn--sm" id="mw-download" disabled><Icon name="download" size={20} /> Download everything</button>
+        <label class="btn btn--outline btn--sm mw-load">
+          Load a copy
+          <input type="file" accept="application/json,.json" id="mw-load" class="visually-hidden" />
+        </label>
+        <button type="button" class="linkish" id="mw-delete" disabled>Delete this project</button>
+      </div>
+    </div>
+  </PageHead>
+
+  <div class="wrap mw" data-no-index>
+    <p class="mw-privacy">
+      <Icon name="lock" size={20} />
+      <span>
+        Saved in this browser only. Clearing your browser’s data, or using a private window, removes it: download a copy of anything you want
+        to keep. Use codes for participants, never their names.
+      </span>
+    </p>
+
+    <div class="mw-filter" hidden id="mw-filter-wrap">
+      <label class="opt">
+        <input type="checkbox" id="mw-filter" checked />
+        <span>Show only what I have started</span>
+      </label>
+    </div>
+
+    <p class="mw-empty" id="mw-empty" hidden>
+      Nothing filled in yet for this project. Open any tool and choose <b>Fill on screen</b>, or start with the
+      <a href={url('/components/reflection/')}>Before pages</a> of Claim &amp; Reflection.
+    </p>
+
+    {
+      groups.map((g) => (
+        <section class="mw-group" aria-labelledby={`mw-${anchor(g.label)}`} data-group>
+          <h2 id={`mw-${anchor(g.label)}`} class="mw-gh">
+            {g.label}
+          </h2>
+          <ul class="mw-list">
+            {g.forms.map((f) => (
+              <li class="mw-row" data-row={f.id} data-c={colourOf(f)}>
+                <span class="mw-bar" aria-hidden="true" />
+                <div class="mw-main">
+                  <a href={`${url(f.page)}#${anchor(f.id)}`}>{f.title}</a>
+                  <span class="mw-ctx">
+                    {f.context.split(' · ').slice(1).join(' · ')} · {f.source}
+                    {!f.complete && ' · steps and notes'}
+                  </span>
+                  <span class="mw-state" data-state>
+                    Not started
+                  </span>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+  </div>
+</BaseLayout>
+
+<script>
+  import { allFor, currentProject, deleteProject, download, fileSlug, projects, save, setCurrentProject, type Saved } from '../../scripts/fill/store';
+
+  const select = document.getElementById('mw-project') as HTMLSelectElement;
+  const count = document.getElementById('mw-count')!;
+  const dl = document.getElementById('mw-download') as HTMLButtonElement;
+  const del = document.getElementById('mw-delete') as HTMLButtonElement;
+  const load = document.getElementById('mw-load') as HTMLInputElement;
+  const filter = document.getElementById('mw-filter') as HTMLInputElement;
+  const filterWrap = document.getElementById('mw-filter-wrap')!;
+  const empty = document.getElementById('mw-empty')!;
+  const rows = [...document.querySelectorAll<HTMLElement>('[data-row]')];
+  const groups = [...document.querySelectorAll<HTMLElement>('[data-group]')];
+
+  const when = (iso: string) =>
+    new Date(iso).toLocaleString(undefined, { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  const answered = (s: Saved) => Object.keys(s.values).filter((k) => !k.startsWith('steps.')).length;
+
+  function fillSelect(p: string) {
+    const list = projects();
+    if (!list.includes(p)) list.push(p);
+    select.replaceChildren(
+      ...list.map((name) => {
+        const o = document.createElement('option');
+        o.value = o.textContent = name;
+        o.selected = name === p;
+        return o;
+      }),
+    );
+    select.disabled = false;
+  }
+
+  function render() {
+    const p = currentProject();
+    fillSelect(p);
+    const saved = allFor(p);
+    let started = 0;
+    for (const r of rows) {
+      const s = saved[r.dataset.row!];
+      const state = r.querySelector<HTMLElement>('[data-state]')!;
+      const on = !!s && Object.keys(s.values).length > 0;
+      r.toggleAttribute('data-started', on);
+      if (on) {
+        started++;
+        const n = answered(s);
+        state.textContent = `${n ? `${n} answer${n === 1 ? '' : 's'}` : 'Steps ticked'} · ${when(s.updated)}`;
+      } else state.textContent = 'Not started';
+    }
+    count.textContent = started
+      ? `${started} of ${rows.length} started for “${p}”.`
+      : `Nothing filled in yet for “${p}”. ${rows.length} forms you can fill.`;
+    dl.disabled = del.disabled = started === 0;
+    filterWrap.hidden = started === 0;
+    empty.hidden = started > 0;
+    applyFilter(started > 0 && filter.checked);
+  }
+
+  function applyFilter(only: boolean) {
+    for (const r of rows) r.hidden = only && !r.hasAttribute('data-started');
+    for (const g of groups) g.hidden = only && !g.querySelector('[data-row]:not([hidden])');
+  }
+
+  select.addEventListener('change', () => {
+    setCurrentProject(select.value);
+    render();
+  });
+  filter.addEventListener('change', () => applyFilter(filter.checked));
+
+  dl.addEventListener('click', () => {
+    const p = currentProject();
+    const bundle = { kind: 'beyond-the-edge-case/fill-bundle', version: 1, project: p, exported: new Date().toISOString(), templates: allFor(p) };
+    download(`beyond-the-edge-case-${fileSlug(p)}.json`, JSON.stringify(bundle, null, 2));
+  });
+
+  del.addEventListener('click', () => {
+    const p = currentProject();
+    if (!confirm(`Delete everything filled in for “${p}” in this browser? This cannot be undone. Download a copy first if you want to keep it.`)) return;
+    deleteProject(p);
+    render();
+    count.textContent = `Deleted “${p}”. ${count.textContent}`;
+  });
+
+  load.addEventListener('change', async () => {
+    const file = load.files?.[0];
+    load.value = '';
+    if (!file) return;
+    try {
+      const data = JSON.parse(await file.text());
+      const list: Saved[] =
+        data?.kind === 'beyond-the-edge-case/fill-bundle'
+          ? Object.values(data.templates ?? {})
+          : data?.kind === 'beyond-the-edge-case/fill'
+            ? [data]
+            : [];
+      const ok = list.filter((s) => s && typeof s.template === 'string' && s.values && typeof s.values === 'object');
+      if (!ok.length) {
+        count.textContent = 'That file is not a copy of work from this site.';
+        return;
+      }
+      const p = String(data.project ?? ok[0].project ?? '').trim() || currentProject();
+      const existing = allFor(p);
+      const clash = ok.filter((s) => existing[s.template]).length;
+      if (clash && !confirm(`“${p}” already has ${clash} of these forms in this browser. Replace them with the copies in “${file.name}”?`)) return;
+      for (const s of ok) save({ ...s, project: p });
+      setCurrentProject(p);
+      render();
+      count.textContent = `Loaded ${ok.length} form${ok.length === 1 ? '' : 's'} into “${p}”. ${count.textContent}`;
+    } catch {
+      count.textContent = 'Could not read that file.';
+    }
+  });
+
+  render();
+</script>
+
+<style>
+  .mw-tools {
+    display: grid;
+    gap: var(--sp-2);
+  }
+  .mw-field {
+    display: grid;
+    gap: var(--sp-half);
+  }
+  .mw-field label {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .mw-field select {
+    font: inherit;
+    font-size: var(--fs-ui);
+    min-height: 44px;
+    padding: var(--sp-1) var(--sp-2);
+    border: 1.5px solid var(--field);
+    border-radius: var(--r-sm);
+    background: var(--surface);
+    color: var(--ink);
+  }
+  .mw-count {
+    margin: 0;
+    font-size: var(--fs-sm);
+  }
+  .mw-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-1) var(--sp-2);
+    align-items: center;
+  }
+  .mw-load {
+    cursor: pointer;
+  }
+  .mw-load:focus-within {
+    outline: 3px solid var(--ink);
+    outline-offset: 2px;
+  }
+  .linkish {
+    font: inherit;
+    font-size: var(--fs-sm);
+    background: none;
+    border: 0;
+    padding: 0;
+    color: var(--ink);
+    text-decoration: underline;
+    cursor: pointer;
+    min-height: 24px;
+  }
+  .linkish:disabled {
+    color: var(--muted);
+    text-decoration: none;
+    cursor: default;
+  }
+
+  .mw {
+    display: grid;
+    gap: var(--sp-4);
+    padding-block: var(--sp-4) var(--sp-8);
+  }
+  .mw-privacy {
+    margin: 0;
+    display: flex;
+    gap: var(--sp-1);
+    align-items: flex-start;
+    background: var(--sand);
+    border-radius: var(--r-sm);
+    padding: var(--sp-2);
+    max-width: 64rem;
+  }
+  .mw-privacy :global(svg) {
+    flex: none;
+    margin-top: 2px;
+  }
+  .mw-filter .opt {
+    display: inline-flex;
+    gap: var(--sp-1);
+    align-items: center;
+    min-height: 44px;
+    cursor: pointer;
+  }
+  .mw-filter input {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--ink);
+  }
+  .mw-empty {
+    margin: 0;
+    max-width: 64rem;
+    padding: var(--sp-3);
+    border: 1.5px dashed var(--field);
+    border-radius: var(--r-md);
+  }
+  .mw-group[hidden],
+  .mw-row[hidden] {
+    display: none;
+  }
+  .mw-gh {
+    font-size: var(--fs-h3);
+    margin: 0 0 var(--sp-1);
+  }
+  .mw-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 26rem), 1fr));
+    gap: var(--sp-1) var(--sp-2);
+  }
+  .mw-row {
+    display: grid;
+    grid-template-columns: 6px minmax(0, 1fr);
+    gap: var(--sp-2);
+    align-items: center;
+    padding: var(--sp-1) var(--sp-2) var(--sp-1) 0;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-sm);
+    background: var(--surface);
+    overflow: hidden;
+  }
+  .mw-bar {
+    align-self: stretch;
+    margin-block: calc(-1 * var(--sp-1));
+    background: var(--accent, var(--ink));
+  }
+  .mw-main {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+    padding-block: var(--sp-half);
+  }
+  .mw-main a {
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .mw-ctx {
+    font-size: var(--fs-sm);
+    color: var(--muted);
+  }
+  .mw-state {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    color: var(--muted);
+  }
+  .mw-row[data-started] {
+    border-color: var(--ink);
+  }
+  .mw-row[data-started] .mw-state {
+    color: var(--ink);
+  }
+</style>

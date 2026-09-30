@@ -46,7 +46,7 @@ const shownAka = (t: (typeof glossary)[number]) =>
         }
       </div>
       <p class="count" id="gl-count" role="status" aria-live="polite"></p>
-      <a class="link-arrow ask" href={url('/ask/')}>Ask the toolkit a question instead <Icon name="arrow" size={20} /></a>
+      <a class="link-arrow ask" href={url('/ask/')} data-ask-open>Ask the toolkit a question instead <Icon name="arrow" size={20} /></a>
     </div>
   </PageHead>
 
@@ -136,7 +136,7 @@ const shownAka = (t: (typeof glossary)[number]) =>
       ))
     }
     <p class="empty" id="gl-empty" hidden>
-      Nothing in the glossary matches. Try fewer letters, or <a href={url('/ask/')} id="gl-ask">ask the toolkit</a>.
+      Nothing in the glossary matches. Try fewer letters, or <a href={url('/ask/')} id="gl-ask" data-ask-open>ask the toolkit</a>.
     </p>
   </div>
 </BaseLayout>

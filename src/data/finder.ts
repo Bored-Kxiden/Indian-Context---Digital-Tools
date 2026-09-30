@@ -108,6 +108,7 @@ const pages: FinderItem[] = [
   { title: 'Downloads', hint: 'Booklet, card kit, templates', href: '/downloads/', c: 'ink' },
   { title: 'Ask the toolkit', hint: 'Ask a question; answers come from the toolkit’s own pages', href: '/ask/', c: 'ink' },
   { title: 'Glossary', hint: 'Every term the toolkit uses, A–Z', href: '/glossary/', c: 'ink' },
+  { title: 'My work', hint: 'Everything you filled on screen, in this browser', href: '/my-work/', c: 'ink' },
   { title: 'About', hint: 'Who it is for, and what comes after', href: '/about/', c: 'ink' },
 ];
 
