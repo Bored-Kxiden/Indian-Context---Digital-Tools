@@ -495,11 +495,12 @@ export class Engine {
     const want = new Set(a.stems);
     const hits = (p: Passage) => new Set(words(`${p.title} ${p.section ?? ''} ${p.content}`).map(stem).filter((w) => want.has(w))).size;
     // Only for "what is…"-style questions: "which tool…" and "how do I…" are answered by goals and tools.
-    const glossaryHit = passages.slice(0, semantic ? 3 : 1).find((p) => p.url.startsWith('/glossary/#'));
+    const strong = (p: Passage) => (semantic ? (p.similarity ?? 0) >= SEMANTIC_TERM_MIN : hits(p) >= a.stems.length);
+    // By meaning, a close glossary entry counts even when it shares few words ("passes the cost on" → Offload).
+    const glossaryHit = (semantic ?? passages).slice(0, semantic ? 3 : 1).find((p) => p.url.startsWith('/glossary/#') && strong(p));
     if (!blocks.length && glossaryHit && (a.intent === 'define' || a.intent === 'why' || a.intent === 'general')) {
-      const strong = semantic ? (glossaryHit.similarity ?? 0) >= SEMANTIC_TERM_MIN : hits(glossaryHit) >= a.stems.length;
       const t = this.byId.get(glossaryHit.url.slice('/glossary/#'.length));
-      if (t && strong) blocks.push({ type: 'term', term: t, also: [] });
+      if (t) blocks.push({ type: 'term', term: t, also: [] });
     }
 
     if (a.intent === 'which' || !blocks.length) {
