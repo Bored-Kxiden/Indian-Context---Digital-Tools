@@ -4,10 +4,12 @@ import { files } from '../data/components';
 import { site } from '../data/site';
 import { url } from '../utils/url';
 
-// The template's footer: "All files in the kit" as folders (the one you are in marked, the next one raised),
-// then a short row of links.
+// The template's footer: "All files in the kit" as folders (the one you are in faded, the next one raised; not on
+// the home page, which has the drawer), then a short row of links to the site's other pages.
 const path = Astro.url.pathname.replace(import.meta.env.BASE_URL.replace(/\/$/, ''), '');
 const current = files.find((f) => path.startsWith(f.href))?.id;
+// The home page has the drawer of folders instead (v3 template).
+const onHome = path === '/' || path === '';
 const links = [
   { href: '/components/', label: 'All tools' },
   { href: '/card-kit/', label: 'Card kit' },
@@ -20,7 +22,7 @@ const links = [
 ---
 
 <footer class="site-footer">
-  <FileRail current={current} />
+  {!onHome && <FileRail current={current} />}
   <div class="base">
     <nav aria-label="More pages">
       <ul>

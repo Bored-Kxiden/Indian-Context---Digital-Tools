@@ -1,6 +1,6 @@
 ---
-// A section of a file's paper, as in the owner's v3 template (D47): a rule, then the question in italics on the
-// left and the answer on the right. On narrower screens the answer goes under the question.
+// A section of a file's paper, as in the owner's v3 template (D47, D48): a thin rule, then the question in italics on
+// the left and the answer on the right. On narrower screens the answer goes under the question.
 interface Props {
   id: string;
   title: string;
@@ -19,39 +19,38 @@ const H = level === 2 ? 'h2' : 'h3';
 
 <style>
   .psec {
-    margin-top: clamp(var(--sp-6), 5vw, 56px);
+    margin-top: 56px;
     padding-top: 34px;
-    border-top: 1px solid var(--line);
-  }
-  @media (min-width: 64rem) {
-    .psec {
-      display: grid;
-      grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
-      gap: 50px;
-      align-items: start;
-    }
+    border-top: 1px solid #d9d5ca;
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    gap: 50px;
   }
   .ph {
     font-family: var(--font-read);
-    font-style: italic;
     font-weight: 400;
-    font-size: clamp(2rem, 1.4rem + 1.6vw, 2.875rem);
+    font-style: italic;
+    font-size: clamp(32px, 2.8vw, 46px);
     line-height: 1.05;
-    margin: 0 0 var(--sp-3);
-    max-width: 30ch;
-  }
-  @media (min-width: 64rem) {
-    .ph {
-      margin: 0;
-    }
+    margin: 0;
   }
   .pb {
     min-width: 0;
+    font-family: var(--font-read);
+    font-size: clamp(20px, 1.6vw, 25px);
+    line-height: 1.55;
+    text-wrap: pretty;
+  }
+  .pb :global(p) {
+    margin: 0 0 18px;
   }
   .pb > :global(:last-child) {
     margin-bottom: 0;
   }
-  .pb :global(p) {
-    max-width: var(--measure);
+  @media (max-width: 64rem) {
+    .psec {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 20px;
+    }
   }
 </style>

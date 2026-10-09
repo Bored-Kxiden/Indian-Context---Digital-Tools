@@ -1,12 +1,10 @@
 ---
 import ComponentLayout from '../../../layouts/ComponentLayout.astro';
-import PaperTop from '../../../components/file/PaperTop.astro';
 import FileBasics from '../../../components/file/FileBasics.astro';
 import PaperSection from '../../../components/file/PaperSection.astro';
 import { overview, why, figjam, core } from '../../../data/booklet/visual-culture';
 import { componentById } from '../../../data/components';
 import { getDownloadById } from '../../../data/downloads';
-import { bookletImage } from '../../../utils/assets';
 import { url } from '../../../utils/url';
 
 // File 03's overview, in the template's order and in plain words (D41, D42). The FigJam board stays the
@@ -26,12 +24,6 @@ const how = [
 ---
 
 <ComponentLayout component="visual-culture" current="overview" title={comp.name} heading={comp.name} description={overview.descriptor}>
-  <PaperTop slot="top" image={bookletImage('2.04')} alt="The Show worksheet from the booklet, filled in with Meera’s photos." caption="Meera’s photo missions · booklet p.2.04" text={comp.blurb}>
-    <Fragment slot="buttons">
-      <a class="btn btn--sm" href={url(pack.href)} download>Download PDF ↓</a>
-      <a class="btn btn--sm btn--outline" href={url(board.href)} download>FigJam template ↓</a>
-    </Fragment>
-  </PaperTop>
 
   <FileBasics
     comp={comp}

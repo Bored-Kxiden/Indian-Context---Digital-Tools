@@ -73,6 +73,14 @@
   font-weight: 600 800;
   font-display: swap;
 }
+/* The "№" in the paper's "File №" stamp (from the v3 template's font files) */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  src: url('/fonts/IBMPlexMono-SemiBold-numero.woff2') format('woff2');
+  font-weight: 600 800;
+  font-display: swap;
+  unicode-range: U+2116;
+}
 /* The booklet's typeface: only the rebuilt booklet examples use it, so it loads only on those pages. */
 @font-face {
   font-family: 'Bricolage Grotesque';

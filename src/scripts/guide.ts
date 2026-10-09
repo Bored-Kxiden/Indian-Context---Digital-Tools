@@ -63,6 +63,7 @@ if (ui) {
 
   /* ---------- Tour ---------- */
   type Step = { target: string; page: 'home' | 'file'; title: string; text: string; fold?: string };
+  // The owner's words from the v3 template. Step 5 leaves out "Same sheet, no reload": each step is its own page here.
   const steps: Step[] = [
     { target: 'guide', page: 'home', title: 'Hi, I’m the guide.', text: 'The bubble with eyes. Give me a minute and I’ll show you around. After that I sit up here as Ask the toolkit.' },
     { target: 'drawer', page: 'home', title: 'This is your drawer.', text: 'Each folder is a way of reading the people you design for. India isn’t one default user, so the kit starts from real, varied people instead of an assumed executive.' },
@@ -71,12 +72,14 @@ if (ui) {
       page: 'home',
       fold: 'existing-products',
       title: fine.matches ? 'Hover to peek.' : 'Tap to peek.',
-      text: fine.matches ? 'Point at a folder and it opens to show what is inside. Click “Open file” to go in.' : 'Tap “Show what’s inside” on a folder to see its steps. Tap “Open file” to go in.',
+      text: fine.matches
+        ? 'Point at a folder and the ones above it slide up while a preview opens. Click to open the file.'
+        : 'Tap a folder and the ones above it slide up while a preview opens. Tap “Open file” to go in.',
     },
-    { target: 'paper', page: 'file', title: 'A folder becomes paper.', text: 'Overview, pictures, downloads and steps sit on one punched sheet. The tabs on its edge hop to the other files.' },
-    { target: 'strip', page: 'file', title: 'Scroll the steps.', text: 'Each card is one step inside the file. Pick one and the sheet opens at that step, right here.' },
-    { target: 'search', page: 'file', title: 'Find a tool.', text: 'Type a name and jump straight to it. Press / on any page.' },
-    { target: 'guide', page: 'file', title: 'That’s me again.', text: 'Click me any time to ask the toolkit a question. I might pipe up now and then, too. “Tour” in the header shows you round again.' },
+    { target: 'paper', page: 'file', title: 'A folder becomes paper.', text: 'Overview, pictures, downloads and steps sit on one punched sheet. The side tabs hop to the other tools.' },
+    { target: 'strip', page: 'file', title: 'Scroll the steps.', text: 'Each card is one tool inside the folder. Click one and only what is below changes.' },
+    { target: 'search', page: 'file', title: 'Find a tool.', text: 'Type a name and jump straight to it.' },
+    { target: 'guide', page: 'file', title: 'That’s me again.', text: 'Click me any time to ask the toolkit a question. I might pipe up now and then, too.' },
   ];
   const KEY = 'bte-tour';
   const DONE = 'bte-tour-done';
@@ -97,10 +100,8 @@ if (ui) {
   let step = -1;
   let inerted: HTMLElement[] = [];
 
-  const targetOf = (s: Step) => {
-    const el = document.querySelector<HTMLElement>(`[data-tour="${s.target}"]`);
-    return el && el.getClientRects().length ? el : null;
-  };
+  // The first one that is showing (the search box on large screens, the magnifier on phones).
+  const targetOf = (s: Step) => [...document.querySelectorAll<HTMLElement>(`[data-tour="${s.target}"]`)].find((el) => el.getClientRects().length) ?? null;
   const pageOf = (s: Step) => (s.page === 'home' ? home : tourFile);
   const onPage = (s: Step) => (s.page === 'home' ? onHome : onTourFile);
 

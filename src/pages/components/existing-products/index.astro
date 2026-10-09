@@ -1,7 +1,5 @@
 ---
 import ComponentLayout from '../../../layouts/ComponentLayout.astro';
-import PaperTop from '../../../components/file/PaperTop.astro';
-import BoardOverview from '../../../components/file/BoardOverview.astro';
 import FileBasics from '../../../components/file/FileBasics.astro';
 import PaperSection from '../../../components/file/PaperSection.astro';
 import { overview, route, figmaFile } from '../../../data/booklet/existing-products';
@@ -14,27 +12,9 @@ const comp = componentById['existing-products'];
 const pack = getDownloadById('pack-existing-products')!;
 const figma = getDownloadById(figmaFile.id)!;
 const toolName = Object.fromEntries(route.map((r) => [r.href, r.label]));
-const plainStep: Record<string, string> = {
-  'pick-a-product': 'Choose one product you can open right now: “Google Maps”, not “navigation apps”.',
-  'media-gossip': 'Compare what the product promises with what people actually say about it.',
-  history: 'Find out what the product replaced, and who lost a role when it arrived.',
-  'the-break': 'Find where the ideal story breaks, and who gets blamed for it.',
-  power: 'See who gains power, and whose unpaid help keeps it running.',
-  synthesis: 'Put your findings side by side and write one design claim.',
-};
-const how = route.map((r) => ({ title: r.label.replace(/^\d · /, ''), meta: r.time || undefined, body: plainStep[r.href], href: `${comp.href}${r.href}/` }));
 ---
 
 <ComponentLayout component="existing-products" current="overview" title={comp.name} heading={comp.name}>
-  <Fragment slot="top">
-    <PaperTop text={comp.blurb}>
-      <Fragment slot="buttons">
-        <a class="btn btn--sm" href={url(pack.href)} download>Download PDF ↓</a>
-        <a class="btn btn--sm btn--outline" href={url(figma.href)} download>Figma template ↓</a>
-      </Fragment>
-    </PaperTop>
-    <BoardOverview />
-  </Fragment>
 
   <FileBasics
     comp={comp}
@@ -48,10 +28,14 @@ const how = route.map((r) => ({ title: r.label.replace(/^\d · /, ''), meta: r.t
       'Every product was designed for someone. This tool finds out who, and who pays when the product is wrong about them. It is not a usability audit.',
       'You pick one product you can open right now. Not a category: “Google Maps”, not “navigation apps”. Five tools read it from different sides, and at the end of each you write one line to carry forward. Synthesis uses those lines, so you never have to reread.',
     ]}
-    how={how}
-  >
-    <p slot="how" class="note-line">Every worksheet has Meera’s example in [brackets]. Write over it with your own. Each tool also works on its own.</p>
-  </FileBasics>
+    how={[
+      'Step 0: pick one product you can open right now.',
+      'Fill Before Component 1 (R·1A): your position and your prediction.',
+      'Work through the five tools in order, or pick the one you need.',
+      'At the end of each tool, write one line to carry forward.',
+      'Fill After Component 1 (R·1B): your claim, tested against your own bias.',
+    ]}
+  />
 
   <PaperSection id="need" title="What do I need?">
     <p>The product open on a phone or laptop, and pens. Sticky notes help, in three colours:</p>
@@ -92,11 +76,6 @@ const how = route.map((r) => ({ title: r.label.replace(/^\d · /, ''), meta: r.t
 </ComponentLayout>
 
 <style>
-  .note-line {
-    margin-top: var(--sp-3);
-    font-size: var(--fs-ui);
-    color: var(--muted);
-  }
   .stickies {
     list-style: none;
     margin: 0 0 var(--sp-3);

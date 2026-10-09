@@ -3,10 +3,10 @@ import type { Rail } from '../../data/rail';
 import { components } from '../../data/components';
 import { url } from '../../utils/url';
 
-// Every step of a file as a row of cards, as in the owner's v3 template (D47): a small picture of the step's
-// worksheet or board, its number and name, how demanding it is and how long it takes. The row scrolls sideways when
-// the cards don't fit; arrow buttons do the same (with JavaScript) and the card you are on is scrolled into view.
-// Each card opens its page at this same row (#steps), so picking a step feels like turning the sheet below it.
+// Every step of a file as a row of cards, exactly as in the owner's v3 template (D47, D48): a picture of the step's
+// worksheet or board, its number and name, how demanding it is and how long it takes. The row scrolls sideways; the
+// card you are on is highlighted and scrolled into view. Each card opens its page at this row (#steps, set by
+// FileShell), so only what is below it changes.
 interface Props {
   rail: Rail;
   /** Slug of the page being viewed, or "overview". */
@@ -14,198 +14,89 @@ interface Props {
 }
 const { rail, current } = Astro.props;
 const comp = components.find((c) => c.href === rail.overviewHref);
-const hours = comp?.hours;
-const items = [
-  { slug: 'overview', label: 'Overview', href: rail.overviewHref, thumb: rail.overviewThumb, level: comp?.level, meta: hours, n: undefined as number | undefined },
-  ...rail.items,
-];
+const items = [{ slug: 'overview', label: 'Overview', href: rail.overviewHref, thumb: rail.overviewThumb, level: comp?.level, meta: comp?.hours }, ...rail.items];
 const levels = ['', 'Light', 'Moderate', 'Complex'];
 const pad = (k: number) => String(k).padStart(2, '0');
-const here = items.findIndex((i) => i.slug === current);
-const cur = items[here];
-const tag = cur ? (cur.slug === 'overview' ? 'Overview' : cur.n ? `Tool ${cur.n}` : `Step ${pad(here)}`) + (cur.meta ? ` · ${cur.meta}` : '') : '';
-const steps = items.length - 1;
 ---
 
-<nav class="strip" id="steps" aria-labelledby="subs-h" data-tour="strip" data-strip>
-  <div class="sh">
-    <h2 id="subs-h">Overview, then {steps} steps. Pick one to switch the sheet below.</h2>
-    <div class="arrows" hidden data-strip-arrows>
-      <button type="button" class="arr" data-strip-go="-1" title="Earlier steps"><span aria-hidden="true">←</span><span class="visually-hidden">Scroll to earlier steps</span></button>
-      <button type="button" class="arr" data-strip-go="1" title="Later steps"><span aria-hidden="true">→</span><span class="visually-hidden">Scroll to later steps</span></button>
-    </div>
-  </div>
-  <ol class="cards" data-strip-row>
-    {
-      items.map((item, k) => {
-        const on = k === here;
-        return (
-          <li>
-            <a href={`${url(item.href)}#steps`} aria-current={on ? 'page' : undefined} data-strip-card>
-              <span class="th" aria-hidden="true">{item.thumb ? <img src={url(item.thumb)} alt="" width="400" height="250" loading="lazy" decoding="async" /> : <span class="stripes" />}</span>
-              <span class="nm">
-                <span class="n">{pad(k)}</span>
-                <b>{item.label}</b>
-              </span>
-              <span class="mt">
-                <span>{on ? 'You are here' : item.level ? levels[item.level] : ''}</span>
-                <span class="mn">{item.meta}</span>
-              </span>
-            </a>
-          </li>
-        );
-      })
-    }
-  </ol>
+<nav class="strip" aria-label="Steps in this file" data-tour="strip" data-strip>
   {
-    cur && (
-      <p class="now" aria-hidden="true">
-        <span class="now-t">{tag}</span>
-        <span class="now-n">{cur.label}</span>
-      </p>
-    )
+    items.map((item, k) => (
+      <a href={`${url(item.href)}#steps`} aria-current={item.slug === current ? 'page' : undefined}>
+        <span class="th" aria-hidden="true">{item.thumb ? <span class="im" style={`background-image:url(${url(item.thumb)})`} /> : <span class="stripes" />}</span>
+        <span class="nm">
+          <span class="n">{pad(k)}</span>
+          <span class="t">{item.label}</span>
+        </span>
+        <span class="mt">
+          <span>{item.level ? levels[item.level] : ''}</span>
+          <span class="mn">{item.meta}</span>
+        </span>
+      </a>
+    ))
   }
 </nav>
 
 <script>
-  // Arrow buttons, and the card you are on scrolled into view (without moving the page up or down).
-  document.querySelectorAll<HTMLElement>('[data-strip]').forEach((strip) => {
-    const row = strip.querySelector<HTMLElement>('[data-strip-row]')!;
-    const arrows = strip.querySelector<HTMLElement>('[data-strip-arrows]')!;
-    const [back, fwd] = [...arrows.querySelectorAll<HTMLButtonElement>('button')];
-    const sync = () => {
-      const max = row.scrollWidth - row.clientWidth;
-      arrows.hidden = max <= 2;
-      back.disabled = row.scrollLeft <= 2;
-      fwd.disabled = row.scrollLeft >= max - 2;
-      strip.classList.toggle('more-l', row.scrollLeft > 2);
-      strip.classList.toggle('more-r', row.scrollLeft < max - 2);
-    };
+  // If the card you are on is off to the right, scroll the row just far enough to show it (never the page itself).
+  document.querySelectorAll<HTMLElement>('[data-strip]').forEach((row) => {
     const on = row.querySelector<HTMLElement>('[aria-current="page"]');
-    if (on) row.scrollLeft = on.parentElement!.offsetLeft - (row.clientWidth - on.offsetWidth) / 2;
-    arrows.querySelectorAll<HTMLButtonElement>('[data-strip-go]').forEach((b) =>
-      b.addEventListener('click', () => {
-        const smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
-        row.scrollBy({ left: Number(b.dataset.stripGo) * row.clientWidth * 0.8, behavior: smooth ? 'smooth' : 'auto' });
-      }),
-    );
-    row.addEventListener('scroll', sync, { passive: true });
-    addEventListener('resize', sync);
-    sync();
+    if (!on) return;
+    const end = on.offsetLeft + on.offsetWidth + 40;
+    if (end > row.clientWidth) row.scrollLeft = end - row.clientWidth;
   });
 </script>
 
 <style>
   .strip {
-    margin: var(--sp-6) 0 0;
-    scroll-margin-top: calc(var(--header-h) + var(--sp-2));
-  }
-  .sh {
+    margin-top: 14px;
+    margin-right: -70px;
+    border-top: 1px solid #d9d5ca;
+    border-bottom: 1px solid #d9d5ca;
+    background: #fff;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: var(--sp-2);
-    flex-wrap: wrap;
-    margin-bottom: 14px;
-  }
-  .sh h2 {
-    font-family: var(--font-ui);
-    font-size: var(--fs-sm);
-    font-weight: 600;
-    line-height: 1.4;
-    margin: 0;
-  }
-  .arrows {
-    display: flex;
-    gap: 8px;
-  }
-  .arrows[hidden] {
-    display: none;
-  }
-  .arr {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    border: 1.5px solid var(--ink);
-    background: var(--white);
-    color: var(--ink);
-    font-size: 1.125rem;
-    cursor: pointer;
-  }
-  .arr:hover:not(:disabled) {
-    background: var(--ink);
-    color: var(--white);
-  }
-  .arr:disabled {
-    opacity: 0.3;
-    cursor: default;
-  }
-  .cards {
-    list-style: none;
-    margin: 0;
-    padding: 18px;
-    display: flex;
-    align-items: stretch;
+    align-items: flex-start;
     gap: 14px;
     overflow-x: auto;
-    overscroll-behavior-x: contain;
-    scroll-snap-type: x proximity;
-    scroll-padding: 18px;
-    background: var(--white);
-    border-top: 1px solid var(--line);
-    border-bottom: 1px solid var(--line);
-    scrollbar-width: thin;
-  }
-  /* A soft edge says there is more to scroll to */
-  .strip.more-r .cards {
-    mask-image: linear-gradient(to right, #000 calc(100% - 48px), transparent);
-  }
-  .strip.more-l .cards {
-    mask-image: linear-gradient(to left, #000 calc(100% - 48px), transparent);
-  }
-  .strip.more-l.more-r .cards {
-    mask-image: linear-gradient(to right, transparent, #000 48px, #000 calc(100% - 48px), transparent);
-  }
-  li {
-    margin: 0;
-    flex: 0 0 min(232px, 70vw);
-    scroll-snap-align: start;
+    overflow-y: hidden;
+    padding: 18px 40px 18px 18px;
+    position: relative;
   }
   a {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
+    flex: 0 0 232px;
+    display: block;
     padding: 10px;
-    border-radius: var(--r-sm);
-    color: var(--ink);
+    border-radius: 4px;
+    color: #1b1b1b;
     text-decoration: none;
-    transition: background-color var(--t-fast) var(--ease);
+    transition: background 0.2s;
   }
   a:hover {
-    background: var(--sand);
+    opacity: 0.85;
   }
   a[aria-current='page'] {
-    background: var(--accent-tint);
-    outline: 2px solid var(--accent-deep);
+    background: #e7efe9;
+    outline: 2px solid #2f5a48;
     outline-offset: -2px;
   }
   .th {
     display: block;
     aspect-ratio: 16 / 10;
     overflow: hidden;
-    background: var(--sand);
+    background: #ece8df;
+    position: relative;
     margin-bottom: 10px;
   }
-  .th img {
+  .im {
     display: block;
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    object-position: top;
+    background-size: cover;
+    background-position: top;
   }
   .stripes {
-    display: block;
-    height: 100%;
+    position: absolute;
+    inset: 0;
     background: repeating-linear-gradient(135deg, #e4e0d6 0 10px, #ebe7de 10px 20px);
   }
   .nm {
@@ -216,54 +107,39 @@ const steps = items.length - 1;
   }
   .n {
     font-family: var(--font-ui);
-    font-size: var(--fs-xs);
-    color: var(--muted);
+    font-size: 12px;
+    color: #5f5c56;
   }
-  .nm b {
+  .t {
     font-family: var(--font-read);
-    font-weight: 500;
-    font-size: 1.3125rem;
+    font-size: 21px;
     line-height: 1.15;
   }
   .mt {
-    margin-top: auto;
     display: flex;
     justify-content: space-between;
     gap: 8px;
     font-family: var(--font-ui);
-    font-size: var(--fs-xs);
-    color: var(--muted);
-  }
-  a[aria-current='page'] .n,
-  a[aria-current='page'] .mt {
-    color: var(--ink);
-  }
-  a[aria-current='page'] .mt span:first-child {
-    color: var(--accent-deep);
-    font-weight: 700;
+    font-size: 12px;
+    color: #5f5c56;
   }
   .mn {
     text-transform: uppercase;
     text-align: right;
   }
-  .now {
-    display: flex;
-    align-items: baseline;
-    flex-wrap: wrap;
-    gap: 6px 14px;
-    margin: var(--sp-6) 0 0;
+  @media (max-width: 64rem) {
+    .strip {
+      margin-right: -24px;
+    }
   }
-  .now-t {
-    font-family: var(--font-ui);
-    font-size: var(--fs-xs);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-  .now-n {
-    font-family: var(--font-read);
-    font-style: italic;
-    font-size: clamp(2.125rem, 1.5rem + 2vw, 3.375rem);
-    line-height: 1.05;
+  @media (max-width: 48rem) {
+    .strip {
+      margin-right: -16px;
+      margin-left: -16px;
+      padding: 14px 16px;
+    }
+    a {
+      flex-basis: 200px;
+    }
   }
 </style>

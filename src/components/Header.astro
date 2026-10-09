@@ -4,11 +4,15 @@ import { files, fileNo } from '../data/components';
 import { site } from '../data/site';
 import { isActive, url } from '../utils/url';
 
-// The template's header (v3, D47): the kit's name, "Tour", "Find a tool", the guide (the bubble with eyes, which is
-// "Ask the toolkit": it opens the chat popup) and a menu with the five files and everything else. Dark on the home
-// page (body[data-theme='night']). The guide's eyes, the tour and the nudges are in src/scripts/guide.ts.
+// The header, exactly as in the owner's v3 template (D47, D48): the kit's name, "Tour ↺", a "Find a tool" search box
+// with its results right under it, and the guide (the bubble with eyes, which is "Ask the toolkit": it opens the chat
+// popup). A small "Menu" pill in the same style keeps the site's other pages one click away. Dark on the home page
+// (body[data-theme='night']). The guide's eyes, the tour and the nudges are in src/scripts/guide.ts.
+// On phones the search box becomes a magnifier that opens the full search (Finder.astro).
+// Without JavaScript the search box asks the toolkit (/ask/?q=…) and the guide is a link to /ask/.
 const current = Astro.url.pathname;
 const more = [
+  { href: '/components/', label: 'All tools' },
   { href: '/card-kit/', label: 'Card kit' },
   { href: '/guideline/', label: 'How to use the kit' },
   { href: '/glossary/', label: 'Glossary' },
@@ -19,66 +23,83 @@ const more = [
 ---
 
 <header class="site-header">
-  <div class="bar">
-    <a class="logo" href={url('/')}>Beyond the Edge Case</a>
+  <a class="logo" href={url('/')}>Beyond the Edge Case</a>
 
-    <div class="acts">
-      <button type="button" class="tour" hidden data-tour-start>Tour <span aria-hidden="true">↺</span></button>
-      <a class="find" href={url('/components/')} data-finder-open data-tour="search">
-        <Icon name="search" size={16} />
-        <span class="find-l">Find a tool</span>
-        <kbd class="find-k" aria-hidden="true">/</kbd>
-      </a>
-      <details class="menu">
-        <summary>
-          <Icon name="menu" size={18} />
-          <span>Menu</span>
-        </summary>
-        <div class="panel">
-          <p class="mh">All files</p>
-          <ul class="files">
-            {
-              files.map((c) => (
-                <li>
-                  <a href={url(c.href)} data-c={c.c} aria-current={isActive(current, c.href) ? 'page' : undefined}>
-                    <span class="sq" aria-hidden="true" />
-                    <span class="no">{fileNo(c)}</span>
-                    <span class="nm">{c.name}</span>
-                  </a>
-                </li>
-              ))
-            }
-          </ul>
-          <p class="mh">More</p>
-          <ul class="more">
-            {
-              more.map((m) => (
-                <li>
-                  <a href={url(m.href)} aria-current={isActive(current, m.href) ? 'page' : undefined}>
-                    {m.label}
-                  </a>
-                </li>
-              ))
-            }
-          </ul>
-          <button type="button" class="mtour" hidden data-tour-start>Take the tour <span aria-hidden="true">↺</span></button>
-          <a class="btn btn--sm" href={url(site.bookletPdf)} download>
-            <Icon name="download" size={16} /> The whole booklet (PDF)
-          </a>
-        </div>
-      </details>
-      <a class="guide" href={url('/ask/')} data-chat-open data-tour="guide" title="Ask the toolkit">
-        <svg class="bub" width="50" height="58" viewBox="0 0 50 58" aria-hidden="true">
-          <path d="M10 4 H36 Q45 4 45 13 V34 Q45 42 37 42 H33 L28 53 Q26 56 24 53 L21 42 H13 Q5 42 5 34 V13 Q5 4 10 4 Z" />
-        </svg>
-        <span class="eyes" aria-hidden="true" data-eyes>
-          <span class="eye"><i data-pupil></i></span>
-          <span class="eye"><i data-pupil></i></span>
-        </span>
-        <span class="visually-hidden">Ask the toolkit</span>
-        <span class="dot" hidden data-chat-dot><span class="visually-hidden">(conversation in progress)</span></span>
-      </a>
-    </div>
+  <div class="acts">
+    <button type="button" class="pill tour" hidden data-tour-start>Tour ↺</button>
+
+    <form class="srch" action={url('/ask/')} method="get" role="search" data-tour="search" data-hsearch>
+      <label class="box">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="6" cy="6" r="4.5"></circle><path d="M9.5 9.5L13 13"></path></svg>
+        <span class="visually-hidden">Find a tool</span>
+        <input
+          type="search"
+          name="q"
+          placeholder="Find a tool"
+          autocomplete="off"
+          spellcheck="false"
+          aria-describedby="hres-n"
+          data-hsearch-q
+        />
+      </label>
+      <div class="hres" id="hres" hidden data-hsearch-res>
+        <ul data-hsearch-list></ul>
+        <p class="none" hidden data-hsearch-none></p>
+      </div>
+      <p class="visually-hidden" id="hres-n" role="status" aria-live="polite" data-hsearch-n></p>
+    </form>
+    <a class="find-m" href={url('/components/')} data-finder-open data-tour="search" title="Find a tool">
+      <Icon name="search" size={18} />
+      <span class="visually-hidden">Find a tool</span>
+    </a>
+
+    <details class="menu">
+      <summary class="pill">
+        <span>Menu</span>
+      </summary>
+      <div class="panel">
+        <p class="mh">All files</p>
+        <ul class="files">
+          {
+            files.map((c) => (
+              <li>
+                <a href={url(c.href)} data-c={c.c} aria-current={isActive(current, c.href) ? 'page' : undefined}>
+                  <span class="sq" aria-hidden="true" />
+                  <span class="no">{fileNo(c)}</span>
+                  <span class="nm">{c.name}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+        <p class="mh">More</p>
+        <ul class="more">
+          {
+            more.map((m) => (
+              <li>
+                <a href={url(m.href)} aria-current={isActive(current, m.href) ? 'page' : undefined}>
+                  {m.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+        <button type="button" class="mtour" hidden data-tour-start>Take the tour ↺</button>
+        <a class="dl" href={url(site.bookletPdf)} download>The whole booklet (PDF) ↓</a>
+      </div>
+    </details>
+
+    <a class="guide" href={url('/ask/')} data-chat-open data-tour="guide" title="Ask the toolkit">
+      <svg class="bub" width="50" height="58" viewBox="0 0 50 58" aria-hidden="true">
+        <path d="M10 4 H36 Q45 4 45 13 V34 Q45 42 37 42 H33 L28 53 Q26 56 24 53 L21 42 H13 Q5 42 5 34 V13 Q5 4 10 4 Z" />
+      </svg>
+      <span class="eyes" aria-hidden="true" data-eyes>
+        <span class="eye"><i data-pupil></i></span>
+        <span class="eye"><i data-pupil></i></span>
+      </span>
+      <span class="visually-hidden">Ask the toolkit</span>
+      <span class="dot" hidden data-chat-dot><span class="visually-hidden">(conversation in progress)</span></span>
+    </a>
   </div>
 </header>
 
@@ -99,6 +120,110 @@ const more = [
       if (menu.open && !menu.contains(e.target as Node)) menu.open = false;
     });
   }
+
+  // "Find a tool": results drop down under the box as you type (the template's search). They come from the full
+  // search's list (Finder.astro), so every tool, step and page can be found. Enter opens the first result;
+  // the arrow keys move through them; Escape clears the box.
+  const form = document.querySelector<HTMLFormElement>('[data-hsearch]');
+  const finder = document.querySelector<HTMLDialogElement>('#finder');
+  if (form && finder) {
+    const q = form.querySelector<HTMLInputElement>('[data-hsearch-q]')!;
+    const res = form.querySelector<HTMLElement>('[data-hsearch-res]')!;
+    const list = form.querySelector<HTMLUListElement>('[data-hsearch-list]')!;
+    const none = form.querySelector<HTMLElement>('[data-hsearch-none]')!;
+    const n = form.querySelector<HTMLElement>('[data-hsearch-n]')!;
+    const items = [...finder.querySelectorAll<HTMLElement>('[data-finder-item]')];
+    const askBase = form.getAttribute('action') ?? '/ask/';
+    const MAX = 8;
+
+    const show = (on: boolean) => {
+      res.hidden = !on;
+    };
+    const links = () => [...list.querySelectorAll<HTMLAnchorElement>('a')];
+
+    function render() {
+      const term = q.value.trim().toLowerCase();
+      if (!term) {
+        show(false);
+        n.textContent = '';
+        return;
+      }
+      const words = term.split(/\s+/);
+      const hits = items.filter((i) => words.every((w) => (i.dataset.text ?? '').includes(w)));
+      list.replaceChildren(
+        ...hits.slice(0, MAX).map((i) => {
+          const src = i.querySelector<HTMLAnchorElement>('a')!;
+          const li = document.createElement('li');
+          const a = document.createElement('a');
+          a.href = src.href;
+          if (src.dataset.c) a.dataset.c = src.dataset.c;
+          const sq = document.createElement('span');
+          sq.className = 'sq';
+          sq.setAttribute('aria-hidden', 'true');
+          const t = document.createElement('span');
+          t.className = 'nm';
+          t.textContent = src.querySelector('.t')?.childNodes[0]?.textContent?.trim() ?? src.textContent ?? '';
+          const h = document.createElement('span');
+          h.className = 'hn';
+          h.textContent = src.querySelector('small')?.textContent ?? '';
+          const col = document.createElement('span');
+          col.className = 'col';
+          col.append(t, h);
+          a.append(sq, col);
+          li.append(a);
+          return li;
+        }),
+      );
+      // Always offer to ask the toolkit with the same words.
+      const li = document.createElement('li');
+      const ask = document.createElement('a');
+      ask.href = `${askBase}?q=${encodeURIComponent(q.value.trim())}`;
+      ask.dataset.askOpen = '';
+      ask.className = 'ask';
+      ask.textContent = `Ask the toolkit: “${q.value.trim()}”`;
+      li.append(ask);
+      list.append(li);
+      none.hidden = hits.length > 0;
+      none.textContent = `No tool matches “${q.value.trim()}”`;
+      n.textContent = hits.length ? `${hits.length} ${hits.length === 1 ? 'result' : 'results'}` : 'No tool matches';
+      show(true);
+    }
+
+    q.addEventListener('input', render);
+    q.addEventListener('focus', () => q.value.trim() && render());
+    form.addEventListener('submit', (e) => {
+      const first = links()[0];
+      if (first) {
+        e.preventDefault();
+        first.click();
+      }
+    });
+    form.addEventListener('keydown', (e) => {
+      const ls = links();
+      const at = ls.indexOf(document.activeElement as HTMLAnchorElement);
+      if (e.key === 'ArrowDown' && ls.length) {
+        e.preventDefault();
+        ls[Math.min(at + 1, ls.length - 1)].focus();
+      } else if (e.key === 'ArrowUp' && ls.length) {
+        e.preventDefault();
+        if (at <= 0) q.focus();
+        else ls[at - 1].focus();
+      } else if (e.key === 'Escape') {
+        q.value = '';
+        show(false);
+        q.focus();
+      }
+    });
+    list.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).closest('a')) {
+        show(false);
+        q.value = '';
+      }
+    });
+    document.addEventListener('click', (e) => {
+      if (!form.contains(e.target as Node)) show(false);
+    });
+  }
 </script>
 
 <style>
@@ -106,86 +231,302 @@ const more = [
     position: sticky;
     top: 0;
     z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    min-height: var(--header-h);
+    padding: 14px 32px;
     background: var(--ground);
     color: var(--ink);
     border-bottom: 1px solid rgb(27 27 27 / 0.13);
-    transition: background-color var(--t-slow) var(--ease);
+    font-family: var(--font-ui);
+    transition: background-color 0.5s;
+    --rule2: rgb(27 27 27 / 0.33);
   }
   :global(body[data-theme='night']) .site-header {
     background: var(--night);
     color: var(--on-night);
     border-bottom-color: #333;
     --focus: #fff;
-  }
-  .bar {
-    min-height: var(--header-h);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--sp-3);
-    padding: var(--sp-1) var(--gutter);
+    --rule2: #555;
   }
   .logo {
     font-family: var(--font-cover);
     font-weight: 400;
-    font-size: clamp(1.25rem, 0.9rem + 1.2vw, 1.75rem);
+    font-size: 28px;
     letter-spacing: 0.005em;
     text-transform: uppercase;
     color: inherit;
     text-decoration: none;
     white-space: nowrap;
-    min-height: 44px;
-    display: inline-flex;
-    align-items: center;
+  }
+  .logo:hover {
+    opacity: 0.85;
   }
   .acts {
     display: flex;
+    gap: 20px;
     align-items: center;
-    gap: var(--sp-2);
     flex-shrink: 0;
   }
-  .find,
-  .tour,
-  .menu summary {
+  .pill {
     display: inline-flex;
     align-items: center;
-    gap: var(--sp-1);
-    min-height: 44px;
     font-family: var(--font-ui);
-    font-size: var(--fs-sm);
-    font-weight: 700;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1.2;
+    white-space: nowrap;
     color: inherit;
-    text-decoration: none;
+    background: none;
+    border: 1px solid var(--rule2);
+    border-radius: 99px;
+    padding: 9px 14px;
     cursor: pointer;
   }
-  /* Every control in the header looks like a button: a pill with a border */
-  .tour,
-  .menu summary {
-    border: 2px solid rgb(27 27 27 / 0.25);
-    border-radius: 999px;
-    padding: 0 var(--sp-2);
-    transition:
-      background-color var(--t-fast) var(--ease),
-      border-color var(--t-fast) var(--ease);
-  }
-  :global(body[data-theme='night']) .tour,
-  :global(body[data-theme='night']) .menu summary {
-    border-color: #6a6964;
-  }
-  .tour:hover,
-  .menu summary:hover,
-  .menu[open] summary {
-    border-color: currentColor;
-  }
-  .tour {
-    background: none;
-    font-size: var(--fs-xs);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+  .pill:hover {
+    opacity: 0.85;
   }
   .tour[hidden],
   .mtour[hidden] {
     display: none;
+  }
+
+  /* Search box, results under it */
+  .srch {
+    position: relative;
+    margin: 0;
+  }
+  .box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid var(--rule2);
+    border-radius: 99px;
+    padding: 8px 16px;
+    width: 260px;
+  }
+  .box input {
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
+    height: auto;
+    width: auto;
+    background: none;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    outline: none;
+    line-height: 1.4;
+    color: inherit;
+    font-family: var(--font-ui);
+    font-size: 14px;
+    padding: 0;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .box input::placeholder {
+    color: inherit;
+    opacity: 0.55;
+  }
+  .box input::-webkit-search-cancel-button {
+    display: none;
+  }
+  .box:focus-within {
+    outline: 2px solid var(--focus, currentColor);
+    outline-offset: 2px;
+  }
+  .hres {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 340px;
+    max-height: calc(100dvh - var(--header-h) - 24px);
+    overflow-y: auto;
+    background: #f7f5ef;
+    color: #1b1b1b;
+    border-radius: 4px;
+    box-shadow: 0 18px 50px rgb(0 0 0 / 0.45);
+    padding: 6px;
+    --focus: #1b1b1b;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .hres:not([hidden]) {
+      animation: hpop 0.2s ease;
+    }
+    @keyframes hpop {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+    }
+  }
+  .hres ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .hres li {
+    margin: 0;
+  }
+  .hres :global(a) {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 3px;
+    color: inherit;
+    text-decoration: none;
+  }
+  .hres :global(a:hover),
+  .hres :global(a:focus-visible) {
+    background: #ece8df;
+  }
+  .hres :global(.sq) {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    background: var(--accent, #1b1b1b);
+    flex-shrink: 0;
+  }
+  .hres :global(.nm) {
+    font-family: var(--font-read);
+    font-size: 20px;
+    line-height: 1.15;
+  }
+  .hres :global(.col) {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+  .hres :global(.hn) {
+    font-family: var(--font-ui);
+    font-size: 11px;
+    line-height: 1.35;
+    color: #5f5c56;
+  }
+  .hres :global(.ask) {
+    font-size: 12px;
+    color: #4a4843;
+    border-top: 1px solid #d9d5ca;
+    border-radius: 0;
+    margin-top: 4px;
+  }
+  .none {
+    font-size: 12px;
+    color: #6f6c66;
+    padding: 12px;
+    margin: 0;
+  }
+  .find-m {
+    display: none;
+  }
+
+  /* Menu */
+  .menu {
+    position: relative;
+  }
+  .menu summary {
+    list-style: none;
+  }
+  .menu summary::-webkit-details-marker {
+    display: none;
+  }
+  .panel {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 8px);
+    width: min(22rem, calc(100vw - 32px));
+    max-height: calc(100dvh - var(--header-h) - var(--sp-2));
+    overflow-y: auto;
+    background: #f7f5ef;
+    color: #1b1b1b;
+    border-radius: 4px;
+    box-shadow: 0 18px 50px rgb(0 0 0 / 0.45);
+    padding: 14px;
+    display: grid;
+    gap: 6px;
+    --focus: #1b1b1b;
+  }
+  .mh {
+    margin: 6px 0 0;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #6f6c66;
+  }
+  .panel ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .panel li {
+    margin: 0;
+  }
+  .files a {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 12px;
+    border-radius: 3px;
+    color: inherit;
+    text-decoration: none;
+  }
+  .sq {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+  .no {
+    font-size: 12px;
+    color: #6f6c66;
+  }
+  .nm {
+    font-family: var(--font-read);
+    font-size: 20px;
+    line-height: 1.15;
+  }
+  .files a:hover,
+  .more a:hover,
+  .mtour:hover,
+  .files a[aria-current='page'],
+  .more a[aria-current='page'] {
+    background: #ece8df;
+  }
+  .more {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .more a,
+  .mtour,
+  .dl {
+    display: flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0 12px;
+    border-radius: 3px;
+    font-size: 13px;
+    color: inherit;
+    text-decoration: none;
+  }
+  .mtour {
+    border: 0;
+    background: none;
+    font-family: var(--font-ui);
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+  }
+  .dl {
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
 
   /* The guide: a speech bubble with eyes, tilted until you point at it. It is "Ask the toolkit". */
@@ -195,10 +536,10 @@ const more = [
     flex: none;
     width: 50px;
     height: 58px;
-    margin: -4px 0 -8px;
+    margin: -6px 0 -10px;
     color: inherit;
     transform: rotate(-6deg);
-    transition: transform var(--t-med) var(--ease);
+    transition: transform 0.25s;
   }
   .guide:hover,
   .guide[aria-expanded='true'] {
@@ -273,195 +614,52 @@ const more = [
   .guide[aria-expanded='true'] .dot {
     display: none;
   }
-  .mtour {
-    min-height: 44px;
-    padding: 0 var(--sp-1);
-    border: 0;
-    background: none;
-    color: var(--ink);
-    font-family: var(--font-ui);
-    font-size: var(--fs-sm);
-    font-weight: 700;
-    text-align: left;
-    border-radius: var(--r-sm);
-    cursor: pointer;
-  }
-  .mtour:hover {
-    background: var(--sand);
-  }
 
-  .find {
-    border: 2px solid rgb(27 27 27 / 0.25);
-    border-radius: 999px;
-    padding: 0 var(--sp-2);
-    width: clamp(12rem, 18vw, 16.25rem);
-  }
-  :global(body[data-theme='night']) .find {
-    border-color: #6a6964;
-  }
-  .find-l {
-    flex: 1;
-    opacity: 0.75;
-  }
-  .find-k {
-    font-size: var(--fs-xs);
-    background: transparent;
-    color: inherit;
-    border-color: currentColor;
-    opacity: 0.6;
-    padding: 0 6px;
-  }
-
-  .menu {
-    position: relative;
-  }
-  .menu summary {
-    list-style: none;
-  }
-  .menu summary::-webkit-details-marker {
-    display: none;
-  }
-  .panel {
-    position: absolute;
-    right: 0;
-    top: calc(100% + var(--sp-1));
-    width: min(22rem, calc(100vw - 2 * var(--gutter)));
-    max-height: calc(100dvh - var(--header-h) - var(--sp-2));
-    overflow-y: auto;
-    background: var(--surface);
-    color: var(--ink);
-    border-radius: var(--r-md);
-    box-shadow: 0 18px 50px rgb(0 0 0 / 0.35);
-    padding: var(--sp-2);
-    display: grid;
-    gap: var(--sp-1);
-    --focus: var(--ink);
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    .menu[open] .panel {
-      animation: rise var(--t-med) var(--ease);
-    }
-  }
-  .mh {
-    margin: var(--sp-1) 0 0;
-    font-family: var(--font-ui);
-    font-size: var(--fs-xs);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-  .panel ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .panel li {
-    margin: 0;
-  }
-  .files a {
-    display: grid;
-    grid-template-columns: 12px auto 1fr;
-    gap: var(--sp-1) 12px;
-    align-items: center;
-    min-height: 44px;
-    padding: 0 var(--sp-1);
-    border-radius: var(--r-sm);
-    color: var(--ink);
-    text-decoration: none;
-  }
-  .sq {
-    width: 12px;
-    height: 12px;
-    border-radius: 2px;
-    background: var(--accent);
-  }
-  .no {
-    font-family: var(--font-ui);
-    font-size: var(--fs-xs);
-    color: var(--muted);
-  }
-  .nm {
-    font-family: var(--font-display);
-    font-weight: 500;
-    font-size: 1.125rem;
-    line-height: 1.15;
-  }
-  .files a:hover,
-  .more a:hover {
-    background: var(--sand);
-  }
-  .files a[aria-current='page'],
-  .more a[aria-current='page'] {
-    background: var(--sand);
-    font-weight: 600;
-  }
-  .more {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-  }
-  .more a {
-    display: flex;
-    align-items: center;
-    min-height: 44px;
-    padding: 0 var(--sp-1);
-    border-radius: var(--r-sm);
-    font-family: var(--font-ui);
-    font-size: var(--fs-sm);
-    color: var(--ink);
-    text-decoration: none;
-  }
-  .panel .btn {
-    margin-top: var(--sp-1);
-  }
-
-  /* Phones: icons only; the labels stay for screen readers */
-  @media (max-width: 48rem) {
-    .tour {
-      display: none;
-    }
-    .find {
-      width: 44px;
-      padding: 0;
-      justify-content: center;
-      border-radius: 50%;
-    }
-    .find-k {
-      display: none;
-    }
-    .find-l {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      overflow: hidden;
-      clip-path: inset(50%);
-      white-space: nowrap;
+  /* Narrower screens: a smaller search box, then a magnifier that opens the full search */
+  @media (max-width: 64rem) {
+    .site-header {
+      padding: 12px 20px;
+      gap: 16px;
     }
     .acts {
-      gap: var(--sp-half);
+      gap: 12px;
+    }
+    .box {
+      width: 200px;
     }
   }
-  /* Small phones: the menu becomes an icon too */
-  @media (max-width: 26rem) {
-    .bar {
-      gap: var(--sp-1);
+  @media (max-width: 48rem) {
+    .tour,
+    .srch {
+      display: none;
     }
-    .logo {
-      white-space: normal;
-      line-height: 0.95;
-      max-width: 10ch;
+    .find-m {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--rule2);
+      border-radius: 50%;
+      color: inherit;
     }
     .menu summary {
-      width: 44px;
-      justify-content: center;
-      padding: 0;
+      min-height: 44px;
     }
-    .menu summary span {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      overflow: hidden;
-      clip-path: inset(50%);
-      white-space: nowrap;
+  }
+  @media (max-width: 26rem) {
+    .site-header {
+      padding: 10px 16px;
+      gap: 8px;
+    }
+    .acts {
+      gap: 8px;
+    }
+    .logo {
+      font-size: 22px;
+      white-space: normal;
+      line-height: 0.95;
+      max-width: 9ch;
     }
   }
 </style>

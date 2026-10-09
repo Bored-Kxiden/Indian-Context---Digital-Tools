@@ -1,0 +1,140 @@
+---
+import { c1Boards, c1BoardsFor, boardThumb, railFor, type RailComponentId } from '../../data/rail';
+import { componentById } from '../../data/components';
+import { url } from '../../utils/url';
+
+// The file at a glance, at the top of every page of a file, as in the owner's v3 template (D47, D48): a print laid on
+// the sheet, holding the file's boards or worksheets on a dotted canvas. Reading Existing Products shows its seven
+// boards (from the template); the other files show each step's worksheet. Each picture opens its step.
+interface Props {
+  id: RailComponentId;
+}
+const { id } = Astro.props;
+const comp = componentById[id];
+const rail = railFor(id);
+// Reading Existing Products counts Synthesis as its fifth tool, as the template does.
+const toolCount = id === 'existing-products' ? Object.keys(c1BoardsFor).length : rail.items.filter((i) => i.n).length;
+const cards =
+  id === 'existing-products'
+    ? c1Boards.map((b) => {
+        const slug = Object.entries(c1BoardsFor).find(([, ids]) => ids.includes(b.id))?.[0];
+        return { id: b.id, cap: b.title, thumb: boardThumb(b.id), href: `${comp.href}${slug}/` };
+      })
+    : rail.items.filter((i) => i.thumb).map((i, k) => ({ id: String(k + 1).padStart(2, '0'), cap: i.label, thumb: i.thumb!, href: i.href }));
+const what = id === 'existing-products' ? 'one Figma file' : id === 'visual-culture' ? 'one FigJam' : 'the worksheets';
+const count =
+  id === 'existing-products'
+    ? `${cards.length} boards · ${toolCount} tools`
+    : `${cards.length} ${id === 'reflection' ? 'sheets' : 'worksheets'}${toolCount ? ` · ${toolCount} tools` : ''}`;
+---
+
+<figure class="cvs">
+  <figcaption class="bh">
+    <span>{comp.name} · {what}</span>
+    <span class="cnt">{count}</span>
+  </figcaption>
+  <ul class="canvas">
+    {
+      cards.map((c) => (
+        <li>
+          <a href={`${url(c.href)}#steps`}>
+            <span class="im" style={`background-image:url(${url(c.thumb)})`} aria-hidden="true" />
+            <span class="cap">
+              <span class="id">{c.id}</span> {c.cap}
+            </span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</figure>
+
+<style>
+  .cvs {
+    margin: 56px 0 0;
+    position: relative;
+    transform: rotate(-0.4deg);
+    background: #fff;
+    padding: 14px 14px 18px;
+    box-shadow: 0 8px 24px rgb(0 0 0 / 0.13);
+  }
+  .bh {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    padding: 2px 4px 12px;
+    font-family: var(--font-ui);
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .cnt {
+    font-weight: 400;
+    color: #6f6c66;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+  .canvas {
+    list-style: none;
+    margin: 0;
+    background-color: #e9e6dc;
+    background-image: radial-gradient(#cfcabd 1.2px, transparent 1.2px);
+    background-size: 18px 18px;
+    padding: 26px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 22px;
+  }
+  li {
+    margin: 0;
+    width: calc(25% - 17px);
+    min-width: 180px;
+  }
+  a {
+    display: block;
+    color: #1b1b1b;
+    text-decoration: none;
+  }
+  a:hover {
+    opacity: 0.85;
+  }
+  .im {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1425 / 1101;
+    background-color: #f7f5ef;
+    background-size: cover;
+    background-position: top;
+    box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+  }
+  .cap {
+    display: block;
+    margin-top: 6px;
+    font-family: var(--font-ui);
+    font-size: 12px;
+  }
+  .id {
+    font-family: var(--font-ui);
+    color: #6f6c66;
+    margin-right: 8px;
+  }
+  @media (max-width: 48rem) {
+    .canvas {
+      padding: 14px;
+      gap: 14px;
+    }
+    li {
+      width: calc(50% - 7px);
+      min-width: 0;
+    }
+    .bh {
+      flex-wrap: wrap;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cvs {
+      transform: none;
+    }
+  }
+</style>

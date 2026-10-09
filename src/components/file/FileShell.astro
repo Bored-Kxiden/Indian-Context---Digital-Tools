@@ -1,46 +1,51 @@
 ---
-import { files, fileNo, type ToolkitComponent } from '../../data/components';
+import FileCanvas from './FileCanvas.astro';
+import SubBar from './SubBar.astro';
+import { files, fileNo } from '../../data/components';
+import { railFor, type RailComponentId } from '../../data/rail';
+import { getDownloadById } from '../../data/downloads';
 import { url } from '../../utils/url';
 
-// A file of the kit, as in the owner's template (D41): a title on the desk, then the file's coloured folder
-// holding a sheet of paper (punched holes, a margin rule, a "File №" stamp). Tabs down the folder's right
-// edge open the other files. Everything a page says goes on the paper (the default slot).
+// A file of the kit, exactly as in the owner's v3 template (D41, D47, D48). Every page of a file is the same sheet:
+// on the desk, "All files / Tool 0N of 05", the file's "I want to …" and its name; then the file's coloured folder
+// with tabs to the other files down its right edge, holding a punched sheet of paper (holes, a margin rule, a
+// "File №" stamp). On the paper: the file in one sentence (drop capital), the file at a glance (FileCanvas), its
+// downloads, the row of step cards (SubBar), and the step being viewed, as a tag and a title in italics. The page's
+// own content follows on the same paper (the default slot). Picking a step card changes only what is below the row.
 interface Props {
-  comp: ToolkitComponent;
-  /** Breadcrumb after "All files"; the last one is the page itself. */
-  crumbs: { label: string; href?: string }[];
-  /** "I want to …", shown in italics over the title. */
-  verb?: string;
-  title: string;
-  /** Under the title, one short line. */
-  lead?: string;
-  /** The stamp on the paper: "02" or "02.3". */
-  stamp?: string;
+  id: RailComponentId;
+  /** "overview", or the slug of the step being viewed (matches the step cards). */
+  current: string;
+  /** Title of the panel under the step cards, when the page is not one of the cards (e.g. a deeper page). */
+  stepName?: string;
+  stepTag?: string;
 }
-const { comp, crumbs, verb, title, lead, stamp = fileNo(comp) } = Astro.props;
+const { id, current, stepName, stepTag } = Astro.props;
+const rail = railFor(id);
+const comp = files.find((f) => f.id === id)!;
+const num = fileNo(comp);
+const at = rail.items.findIndex((i) => i.slug === current);
+const item = at >= 0 ? rail.items[at] : undefined;
+const name = stepName ?? (current === 'overview' || !item ? 'Overview' : item.label);
+const tag =
+  stepTag ??
+  (current === 'overview' || !item
+    ? ['Overview', comp.hours].filter(Boolean).join(' · ')
+    : [item.n ? `Tool ${item.n}` : `Step ${String(at + 1).padStart(2, '0')}`, item.meta].filter(Boolean).join(' · '));
+const pdf = getDownloadById(id === 'reflection' ? 'reflection-all' : `pack-${id}`);
+const digital = id === 'existing-products' ? getDownloadById('existing-products-figma') : id === 'visual-culture' ? getDownloadById('visual-culture-figjam') : undefined;
+const stripTitle = id === 'existing-products' ? 'Overview, then five tools. Pick one to switch the page below.' : 'Steps';
 ---
 
 <section class="fhead">
   <nav class="crumbs-f" aria-label="Breadcrumb">
-    <ol>
-      <li><a href={url('/')}>All files</a></li>
-      {
-        crumbs.map((c) => (
-          <li>
-            <span class="sep" aria-hidden="true">›</span>
-            {c.href ? <a href={url(c.href)}>{c.label}</a> : <span aria-current="page">{c.label}</span>}
-          </li>
-        ))
-      }
-    </ol>
+    <a href={url('/')}>All files</a><span aria-hidden="true">/</span><span>Tool <span class="mono">{num} of 05</span></span>
   </nav>
-  {verb && <p class="verb">“{verb}”</p>}
-  <h1>{title}</h1>
-  {lead && <p class="flead">{lead}</p>}
-  <slot name="head" />
+  <p class="verb">“{comp.verb}”</p>
+  <h1>{comp.name}</h1>
 </section>
 
-<div class="fwrap">
+<section class="fwrap">
   <div class="folder" data-c={comp.c}>
     <nav class="stabs" aria-label="Files">
       {
@@ -50,7 +55,6 @@ const { comp, crumbs, verb, title, lead, stamp = fileNo(comp) } = Astro.props;
               <path d="M0,0 C0,24 62,28 62,58 V242 C62,272 0,276 0,300 Z" />
             </svg>
             <span class="lg">{f.name.replace('Reading ', '')}</span>
-            <span class="sm">{fileNo(f)} {f.short.split(' ')[0]}</span>
           </a>
         ))
       }
@@ -58,68 +62,86 @@ const { comp, crumbs, verb, title, lead, stamp = fileNo(comp) } = Astro.props;
     <div class="paper" data-tour="paper">
       <span class="margin" aria-hidden="true"></span>
       <span class="holes" aria-hidden="true">{[0, 1, 2, 3, 4, 5].map(() => <i></i>)}</span>
-      <span class="stamp" aria-hidden="true">File {stamp}</span>
+      <span class="stamp" aria-hidden="true">File № {num}</span>
+
       <div class="sheet">
-        <slot />
+        <p class="desc">{comp.blurb}</p>
+
+        <FileCanvas id={id} />
+
+        <div class="sh" id="steps">
+          <p class="st">{stripTitle}</p>
+          <div class="sb">
+            {
+              digital && (
+                <a class="b-dark" href={url(digital.href)} download>
+                  {digital.format === 'JAM' ? 'FigJam' : 'Figma'} template ↓
+                </a>
+              )
+            }
+            {
+              pdf && (
+                <a class="b-line" href={url(pdf.href)} download>
+                  Printable PDF ↓
+                </a>
+              )
+            }
+          </div>
+        </div>
+        <SubBar rail={rail} current={current} />
+
+        <div class="panel">
+          <div class="ptitle">
+            <span class="tag">{tag}</span>
+            <h2>{name}</h2>
+          </div>
+          <slot />
+        </div>
       </div>
     </div>
   </div>
-</div>
+</section>
 
 <style>
+  /* ---------- On the desk: where you are, and the file's name ---------- */
   .fhead {
+    padding: 70px 48px 50px;
     max-width: 1500px;
     margin: 0 auto;
-    padding: clamp(var(--sp-5), 5vw, 70px) var(--gutter) clamp(var(--sp-4), 3.5vw, 50px);
   }
-  .crumbs-f ol {
-    list-style: none;
-    margin: 0 0 var(--sp-3);
-    padding: 0;
+  .crumbs-f {
     display: flex;
-    flex-wrap: wrap;
-    gap: var(--sp-half) var(--sp-1);
+    gap: 10px;
     font-family: var(--font-ui);
-    font-size: 0.9375rem;
-    font-weight: 600;
-    color: var(--muted);
-  }
-  .sep {
-    font-size: 1.1em;
-  }
-  .crumbs-f li {
-    margin: 0;
-    display: inline-flex;
-    gap: var(--sp-1);
-    align-items: center;
+    font-size: 13px;
+    color: #5f5c56;
+    margin-bottom: 34px;
   }
   .crumbs-f a {
     color: inherit;
+    text-decoration: underline;
     text-underline-offset: 3px;
-    min-height: 24px;
-    display: inline-flex;
-    align-items: center;
   }
   .verb {
     font-family: var(--font-read);
     font-style: italic;
-    font-weight: 400;
-    font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
-    color: var(--ink-soft);
-    margin: 0 0 var(--sp-1);
+    font-size: clamp(22px, 2vw, 30px);
+    margin: 0 0 6px;
   }
   .fhead h1 {
+    font-family: var(--font-cover);
+    font-weight: 400;
+    font-size: clamp(60px, 8vw, 140px);
+    line-height: 0.95;
     margin: 0;
-    max-width: 22ch;
-  }
-  .flead {
-    font-size: var(--fs-lead);
-    max-width: 44rem;
-    margin: var(--sp-2) 0 0;
-    color: var(--ink-soft);
+    text-transform: uppercase;
+    color: #1b1b1b;
+    max-width: none;
   }
 
+  /* ---------- The folder, its tabs and the paper ---------- */
   .fwrap {
+    padding: 0 120px 0 0;
     max-width: 1500px;
     margin: 0 auto;
     position: relative;
@@ -127,223 +149,306 @@ const { comp, crumbs, verb, title, lead, stamp = fileNo(comp) } = Astro.props;
   .folder {
     position: relative;
     background: var(--accent);
-    border-radius: var(--r-lg) var(--r-lg) var(--r-lg) var(--r-lg);
-    padding: var(--sp-1) var(--sp-1) var(--sp-4);
+    border-radius: 0 6px 0 0;
+    padding: 50px 0 80px 50px;
   }
-  .paper {
-    position: relative;
-    background: var(--surface);
-    color: var(--ink);
-    border-radius: var(--r-md);
-    box-shadow: 0 2px 0 rgb(0 0 0 / 0.13);
-    padding: var(--sp-6) var(--sp-2) var(--sp-6);
-    --focus: var(--ink);
-  }
-  .margin,
-  .holes {
-    display: none;
-  }
-  .stamp {
-    position: absolute;
-    top: var(--sp-2);
-    right: var(--sp-2);
-    border: 1.5px solid var(--accent-deep);
-    color: var(--accent-deep);
-    padding: 2px 8px;
-    font-family: var(--font-ui);
-    font-size: var(--fs-xs);
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    border-radius: 6px;
-    transform: rotate(3deg);
-  }
-  /* One left edge for everything on the paper */
-  .sheet {
-    position: relative;
-    min-width: 0;
-    max-width: 72rem;
-  }
-
-  /* Phones and tablets: the five files as tabs along the folder's top edge (they wrap, never scroll) */
   .stabs {
+    position: absolute;
+    top: 30px;
+    left: 100%;
     display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-    padding: 0 var(--sp-1);
-    margin-bottom: -2px;
+    flex-direction: column;
+    gap: 6px;
   }
   .stabs a {
     position: relative;
-    display: inline-flex;
+    width: 62px;
+    height: 250px;
+    display: flex;
     align-items: center;
-    min-height: 40px;
-    padding: 0 12px;
-    border-radius: 12px 12px 0 0;
-    background: var(--accent);
+    justify-content: center;
     color: var(--accent-ink);
-    font-family: var(--font-ui);
-    font-size: var(--fs-sm);
-    font-weight: 700;
     text-decoration: none;
-    transform: translateY(6px);
-    transition: transform var(--t-fast) var(--ease);
-  }
-  .stabs a:hover,
-  .stabs a.on {
-    transform: none;
   }
   .stabs a.on {
-    min-height: 46px;
-    text-decoration: underline;
-    text-underline-offset: 4px;
+    height: 300px;
   }
-  .stabs svg,
+  .stabs a:hover {
+    opacity: 0.85;
+  }
+  .stabs svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    fill: var(--accent);
+  }
   .stabs .lg {
-    display: none;
+    position: relative;
+    writing-mode: vertical-rl;
+    font-family: var(--font-read);
+    font-size: 21px;
+    white-space: nowrap;
+  }
+  .paper {
+    background: #f7f5ef;
+    color: #1b1b1b;
+    border-radius: 2px;
+    position: relative;
+    padding: 70px 70px 90px 130px;
+    box-shadow: 0 2px 0 rgb(0 0 0 / 0.13);
+    --focus: #1b1b1b;
+  }
+  .margin {
+    position: absolute;
+    left: 88px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: #d9d5ca;
+  }
+  .holes {
+    position: absolute;
+    left: 30px;
+    top: 120px;
+    bottom: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .holes i {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  .stamp {
+    position: absolute;
+    top: 28px;
+    right: 34px;
+    border: 1.5px solid var(--accent-deep);
+    color: var(--accent-deep);
+    padding: 4px 10px;
+    font-family: var(--font-ui);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transform: rotate(3deg);
+  }
+  .sheet {
+    position: relative;
+    min-width: 0;
   }
 
-  @media (min-width: 48rem) {
-    .folder {
-      padding: var(--sp-4) 0 var(--sp-8) var(--sp-4);
-    }
-    .paper {
-      padding: var(--sp-8) var(--sp-5) var(--sp-8) 96px;
-    }
-    .margin {
-      display: block;
-      position: absolute;
-      left: 72px;
-      top: 0;
-      bottom: 0;
-      width: 1px;
-      background: var(--line);
-    }
-    .holes {
-      position: absolute;
-      left: 24px;
-      top: 120px;
-      bottom: 120px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-    .holes i {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background: var(--accent);
-    }
-    .stamp {
-      top: 28px;
-      right: 34px;
-    }
+  /* ---------- On the paper ---------- */
+  .desc {
+    max-width: 880px;
+    font-family: var(--font-read);
+    font-size: clamp(20px, 1.7vw, 27px);
+    line-height: 1.5;
+    text-wrap: pretty;
+    margin: 0;
   }
-  @media (min-width: 64rem) {
-    .fwrap {
-      padding-right: 120px;
-    }
-    .folder {
-      padding: 50px 0 80px 50px;
-    }
-    .paper {
-      padding: 70px 70px 90px 130px;
-    }
-    .margin {
-      left: 88px;
-    }
-    .holes {
-      left: 30px;
-    }
-    .holes i {
-      width: 28px;
-      height: 28px;
-    }
-    /* Tabs down the folder's right edge, one per file; they slide out when you point at them */
-    .stabs {
-      position: absolute;
-      top: 30px;
-      left: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      padding: 0;
-      margin: 0;
-    }
-    .stabs a {
-      width: 62px;
-      height: 200px;
-      min-height: 0;
-      padding: 0;
-      justify-content: center;
-      border-radius: 0;
-      background: none;
-      transform: translateX(-6px);
-      transition:
-        transform var(--t-med) var(--ease),
-        height var(--t-med) var(--ease);
-    }
-    .stabs a:hover,
-    .stabs a:focus-visible {
-      transform: translateX(4px);
-    }
-    .stabs a.on {
-      height: 260px;
-      transform: none;
-      text-decoration: none;
-    }
-    .stabs svg {
-      display: block;
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      fill: var(--accent);
-    }
-    .stabs .sm {
-      display: none;
-    }
-    .stabs .lg {
-      display: block;
-      position: relative;
-      writing-mode: vertical-rl;
-      font-family: var(--font-display);
-      font-weight: 500;
-      font-size: 1.1875rem;
-      white-space: nowrap;
-    }
+  .desc::first-letter {
+    float: left;
+    font-size: 4.2em;
+    line-height: 0.82;
+    margin: 6px 14px 0 0;
+    font-weight: 600;
   }
-  @media (prefers-reduced-motion: no-preference) {
-    .folder {
-      animation: folderIn 0.7s var(--ease) both;
-    }
-    .paper {
-      animation: paperIn 0.8s 0.2s var(--ease) both;
-    }
-    @keyframes folderIn {
-      from {
-        opacity: 0;
-        transform: translateY(60px);
-      }
-    }
-    @keyframes paperIn {
-      from {
-        opacity: 0;
-        transform: translateY(40px) rotate(0.6deg);
-      }
-    }
+  .sh {
+    margin-top: 56px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    scroll-margin-top: calc(var(--header-h) + 16px);
   }
-
+  .st {
+    font-family: var(--font-ui);
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
+  }
+  .sb {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .b-dark,
+  .b-line {
+    display: inline-block;
+    padding: 7px 14px;
+    border-radius: 99px;
+    font-family: var(--font-ui);
+    font-size: 12px;
+    line-height: 1.3;
+    white-space: nowrap;
+    text-decoration: none;
+  }
+  .b-dark {
+    background: #1b1b1b;
+    color: #f7f5ef;
+  }
+  .b-line {
+    border: 1px solid #1b1b1b;
+    color: #1b1b1b;
+  }
+  .b-dark:hover,
+  .b-line:hover {
+    opacity: 0.85;
+  }
+  .panel {
+    margin-top: 56px;
+  }
+  .ptitle {
+    display: flex;
+    align-items: baseline;
+    gap: 6px 14px;
+    flex-wrap: wrap;
+    margin-bottom: 34px;
+  }
+  .tag {
+    font-family: var(--font-ui);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #6f6c66;
+  }
+  .ptitle h2 {
+    font-family: var(--font-read);
+    font-weight: 400;
+    font-style: italic;
+    font-size: clamp(34px, 3.4vw, 54px);
+    line-height: 1.05;
+    margin: 0;
+  }
   /* Anything placed on the paper: full-width bands become plain sections of the sheet */
   .sheet :global(.wrap) {
     max-width: none;
     padding-inline: 0;
   }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .folder {
+      animation: folderIn 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    }
+    .paper {
+      animation: paperIn 0.8s 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    }
+    @keyframes folderIn {
+      from {
+        opacity: 0;
+        transform: translateY(120px) scaleY(0.7);
+        transform-origin: bottom;
+      }
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+    @keyframes paperIn {
+      from {
+        opacity: 0;
+        transform: translateY(60px) rotate(1deg);
+      }
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  }
+
+  /* ---------- Smaller screens: the same sheet, tighter; the file tabs along the folder's top ---------- */
+  @media (max-width: 64rem) {
+    .fhead {
+      padding: 48px 24px 36px;
+    }
+    .fwrap {
+      padding-right: 0;
+    }
+    .folder {
+      border-radius: 6px 6px 0 0;
+      padding: 0 0 48px 24px;
+    }
+    .stabs {
+      position: static;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 4px;
+      padding: 12px 24px 12px 0;
+    }
+    .stabs a {
+      width: auto;
+      height: auto;
+      min-height: 40px;
+      padding: 0 12px;
+      border-radius: 10px 10px 0 0;
+      background: var(--accent);
+    }
+    .stabs a.on {
+      height: auto;
+      background: #f7f5ef;
+      color: #1b1b1b;
+    }
+    .stabs svg {
+      display: none;
+    }
+    .stabs .lg {
+      writing-mode: horizontal-tb;
+      font-size: 17px;
+    }
+    .paper {
+      padding: 56px 24px 64px 76px;
+    }
+    .margin {
+      left: 56px;
+    }
+    .holes {
+      left: 18px;
+    }
+    .holes i {
+      width: 22px;
+      height: 22px;
+    }
+  }
+  @media (max-width: 48rem) {
+    .fhead {
+      padding: 32px 16px 28px;
+    }
+    .folder {
+      padding: 0 0 32px 12px;
+    }
+    .stabs {
+      padding: 10px 12px 10px 0;
+    }
+    .stabs a {
+      padding: 0 10px;
+    }
+    .stabs .lg {
+      font-size: 15px;
+    }
+    .paper {
+      padding: 56px 16px 48px 16px;
+    }
+    .margin,
+    .holes {
+      display: none;
+    }
+    .stamp {
+      top: 16px;
+      right: 16px;
+    }
+  }
   @media print {
     .stabs,
     .holes,
     .margin,
-    .stamp {
+    .stamp,
+    .sh,
+    :global(.strip) {
       display: none !important;
     }
     .folder {

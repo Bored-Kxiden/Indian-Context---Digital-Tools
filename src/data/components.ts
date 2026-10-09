@@ -24,6 +24,8 @@ export interface ToolkitComponent {
   file: number;
   /** "I want to …", in the reader's voice (the template's line over each title). */
   verb: string;
+  /** The short name on the folder's label in the v3 template: "Tool 02 — Existing products". */
+  tag: string;
   /** A two-line plain-language description: what you do and what you get. */
   plain: string;
   /** Level of involvement, 1 light · 2 moderate · 3 complex, and what it asks of you (the owner's template; v3 wording, D47). */
@@ -45,6 +47,7 @@ export const components: ToolkitComponent[] = [
     tags: ['Media & Gossip', 'History', 'The Break', 'Power', '+ card kit'],
     file: 2,
     verb: "I want to read existing products",
+    tag: 'Existing products',
     level: 2,
     involve: "About 3 hours for the full route, with a product open on a phone or laptop, pens and sticky notes in three colours. Each tool also works on its own. Every page is a template with Meera’s scholarship-portal example in [brackets]. Working as a team, the optional card kit puts the same tools on big boards.",
     plain: "Pick one real product people use. Read what is said about it, what it replaced and who holds power around it, to find out who it was built for and who pays when it gets them wrong.",
@@ -62,6 +65,7 @@ export const components: ToolkitComponent[] = [
     tags: ['Show', 'Read', 'Build', 'Hand off'],
     file: 3,
     verb: "I want to read visual culture",
+    tag: 'Visual culture',
     level: 2,
     involve: "Moderate tool that takes a few sessions. Needs participants who can photograph their own world, and a peer to read the images with you.",
     plain: "People photograph the signs, screens and objects they trust and act on every day, then explain them to you. You learn what your design has to look like to be noticed and trusted.",
@@ -78,6 +82,7 @@ export const components: ToolkitComponent[] = [
     tags: ['Listen', 'Translate', 'Reverse thick translation', 'Test', 'Library', 'Kahavat Relay'],
     file: 5,
     verb: "I want to read language conditions",
+    tag: 'Language',
     level: 3,
     involve: "More complex tool that should ideally be done over a few days. It needs a local language collaborator and a second independent reader, and should be revised after a first pass.",
     plain: "Find out what people mean, not only what they say. Translate with the meaning kept in, then check it back with the people the words came from.",
@@ -95,6 +100,7 @@ export const components: ToolkitComponent[] = [
     tags: ['Build', 'Break', 'Weigh', 'Say'],
     file: 4,
     verb: "I want to read material conditions",
+    tag: 'Material reality',
     level: 3,
     involve: "More complex tool that should ideally be done over a few days. Given the strategic nature of the inputs/outputs, this needs consultations with seniors, peers and ideally needs to be revised after a first pass.",
     plain: "Map what people actually have: phones, data, money, time and the people they lean on. Find where your product breaks for them, and what that costs them.",
@@ -111,6 +117,7 @@ export const components: ToolkitComponent[] = [
     tags: ['Position', 'Prediction', 'Claim', 'Redaction', 'Summarise'],
     file: 1,
     verb: "I want to reflect before I start",
+    tag: 'Claim & reflection',
     level: 1,
     involve: "Light tool done alone, before and after each component. Write where you stand and what you predict, then check your claim against your own bias.",
     plain: "Before you start, write down what you already believe and what you expect to find. At the end, check what you found against it, so your own assumptions don’t pass as findings.",
