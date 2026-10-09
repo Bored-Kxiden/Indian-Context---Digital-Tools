@@ -1,0 +1,275 @@
+---
+import { files } from '../data/components';
+import { url } from '../utils/url';
+
+// The guide's tour and nudges (v3 template, D47). The guide itself, the bubble with eyes, sits in the header as
+// "Ask the toolkit". The tour shows a first-time visitor around in seven steps (home page, then File 02), with a
+// spotlight on each part; "Tour" in the header (or the menu, on phones) starts it again. When a visitor has been
+// still for a while, the guide pipes up with one short suggestion, at most three times a visit. Everything here
+// needs JavaScript (src/scripts/guide.ts); without it nothing shows and nothing is lost.
+const fileList = files.map((f) => ({ name: f.name, href: url(f.href) }));
+---
+
+<div class="guide-ui" data-guide-ui data-home={url('/')} data-tour-file={url('/components/existing-products/')} data-files={JSON.stringify(fileList)}>
+  <div class="tour" hidden data-tour-root>
+    <div class="veil" data-tour-veil></div>
+    <div class="spot" data-tour-spot></div>
+    <section class="card" role="dialog" aria-modal="true" aria-labelledby="tour-t" aria-describedby="tour-x" data-tour-card>
+      <div class="ch">
+        <svg width="34" height="40" viewBox="0 0 50 58" aria-hidden="true">
+          <path d="M10 4 H36 Q45 4 45 13 V34 Q45 42 37 42 H33 L28 53 Q26 56 24 53 L21 42 H13 Q5 42 5 34 V13 Q5 4 10 4 Z" fill="#111" />
+          <ellipse cx="18" cy="21" rx="6.5" ry="8" fill="#fff" /><ellipse cx="32" cy="21" rx="6.5" ry="8" fill="#fff" />
+          <circle cx="19.5" cy="23" r="3" fill="#111" /><circle cx="33.5" cy="23" r="3" fill="#111" />
+        </svg>
+        <span class="no">Guide · <span data-tour-no>01</span> / <span data-tour-total>07</span></span>
+      </div>
+      <h2 class="tt" id="tour-t" tabindex="-1" data-tour-title></h2>
+      <p class="tx" id="tour-x" data-tour-text></p>
+      <div class="cf">
+        <ol class="dots" aria-hidden="true" data-tour-dots></ol>
+        <div class="cb">
+          <button type="button" class="skip" data-tour-skip>Skip</button>
+          <button type="button" class="back" data-tour-back>Back</button>
+          <button type="button" class="next" data-tour-next>Next</button>
+        </div>
+      </div>
+    </section>
+    <p class="visually-hidden" aria-live="polite" data-tour-live></p>
+  </div>
+
+  <aside class="nudge" hidden aria-label="The guide" data-nudge>
+    <p class="nt" role="status" data-nudge-text></p>
+    <div class="nb">
+      <a class="go" href="#" data-nudge-go></a>
+      <button type="button" class="dis" data-nudge-dismiss>Dismiss</button>
+    </div>
+  </aside>
+</div>
+
+<script>
+  import '../scripts/guide';
+</script>
+
+<style>
+  .guide-ui {
+    font-family: var(--font-ui);
+  }
+  [hidden] {
+    display: none !important;
+  }
+
+  /* ---------- Tour ---------- */
+  .veil {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+  }
+  .spot {
+    position: fixed;
+    z-index: 91;
+    left: 50%;
+    top: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 12px;
+    box-shadow:
+      0 0 0 9999px rgb(10 10 10 / 0.74),
+      0 0 0 2px #faf9f4;
+    pointer-events: none;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .spot {
+      transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .card,
+    .nudge {
+      animation: guide-pop 0.3s var(--ease);
+    }
+    @keyframes guide-pop {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+    }
+  }
+  .card {
+    position: fixed;
+    z-index: 92;
+    left: var(--sp-2);
+    right: var(--sp-2);
+    bottom: max(var(--sp-2), env(safe-area-inset-bottom));
+    background: var(--surface);
+    color: var(--ink);
+    border-radius: var(--r-md);
+    box-shadow: 0 20px 60px rgb(0 0 0 / 0.6);
+    padding: 20px 22px 18px;
+    --focus: var(--ink);
+  }
+  @media (min-width: 48rem) {
+    .card {
+      left: auto;
+      right: var(--sp-3);
+      bottom: auto;
+      top: calc(var(--header-h) + 60px);
+      width: 23rem;
+    }
+    .card.low {
+      top: auto;
+      bottom: var(--sp-3);
+    }
+  }
+  .ch {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .no {
+    font-size: var(--fs-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .tt {
+    font-family: var(--font-cover);
+    font-weight: 400;
+    font-size: 1.75rem;
+    line-height: 1;
+    text-transform: uppercase;
+    margin: 0 0 10px;
+  }
+  .tt:focus {
+    outline: none;
+  }
+  .tx {
+    font-family: var(--font-read);
+    font-size: 1.25rem;
+    line-height: 1.4;
+    margin: 0;
+  }
+  .cf {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 18px;
+  }
+  .dots {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 5px;
+  }
+  .dots :global(li) {
+    margin: 0;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #b7b2a6;
+  }
+  .dots :global(li.on) {
+    background: var(--ink);
+  }
+  .cb {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .cb button {
+    min-height: 44px;
+    border-radius: 999px;
+    font-family: var(--font-ui);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .skip {
+    background: none;
+    border: 0;
+    padding: 0 8px;
+    color: var(--ink-soft);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .back {
+    background: none;
+    border: 1px solid var(--ink);
+    color: var(--ink);
+    padding: 0 16px;
+  }
+  .back:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+  .next {
+    background: var(--ink);
+    border: 1px solid var(--ink);
+    color: var(--surface);
+    padding: 0 18px;
+  }
+
+  /* ---------- Nudge: a speech bubble under the guide ---------- */
+  .nudge {
+    position: fixed;
+    z-index: 55;
+    top: calc(var(--header-h) + 12px);
+    right: var(--nudge-r, var(--sp-3));
+    width: min(19rem, calc(100vw - 2 * var(--sp-2)));
+    background: #111;
+    color: #faf9f4;
+    border: 2px solid #faf9f4;
+    border-radius: 10px;
+    padding: 14px 16px;
+    box-shadow: 0 12px 36px rgb(0 0 0 / 0.45);
+    --focus: #fff;
+  }
+  .nudge::before {
+    content: '';
+    position: absolute;
+    top: -9px;
+    right: var(--nudge-arrow, 20px);
+    width: 14px;
+    height: 14px;
+    background: #111;
+    border-left: 2px solid #faf9f4;
+    border-top: 2px solid #faf9f4;
+    transform: rotate(45deg);
+  }
+  .nt {
+    font-family: var(--font-read);
+    font-size: 1.1875rem;
+    line-height: 1.35;
+    margin: 0;
+  }
+  .nb {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+  }
+  .go {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    background: #faf9f4;
+    color: #111;
+    border-radius: 999px;
+    padding: 0 16px;
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .dis {
+    min-height: 40px;
+    background: none;
+    border: 0;
+    color: #c9c7c1;
+    font-family: var(--font-ui);
+    font-size: var(--fs-sm);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+</style>

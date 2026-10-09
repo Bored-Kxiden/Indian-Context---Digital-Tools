@@ -4,8 +4,9 @@ import { files, fileNo } from '../data/components';
 import { site } from '../data/site';
 import { isActive, url } from '../utils/url';
 
-// The template's header: the kit's name, "Find a tool", "Ask the toolkit", and a menu with
-// the five files and everything else. Dark on the home page (body[data-theme='night']).
+// The template's header (v3, D47): the kit's name, "Tour", "Find a tool", the guide (the bubble with eyes, which is
+// "Ask the toolkit": it opens the chat popup) and a menu with the five files and everything else. Dark on the home
+// page (body[data-theme='night']). The guide's eyes, the tour and the nudges are in src/scripts/guide.ts.
 const current = Astro.url.pathname;
 const more = [
   { href: '/card-kit/', label: 'Card kit' },
@@ -22,14 +23,11 @@ const more = [
     <a class="logo" href={url('/')}>Beyond the Edge Case</a>
 
     <div class="acts">
-      <a class="find" href={url('/components/')} data-finder-open>
+      <button type="button" class="tour" hidden data-tour-start>Tour <span aria-hidden="true">↺</span></button>
+      <a class="find" href={url('/components/')} data-finder-open data-tour="search">
         <Icon name="search" size={16} />
         <span class="find-l">Find a tool</span>
         <kbd class="find-k" aria-hidden="true">/</kbd>
-      </a>
-      <a class="ask" href={url('/ask/')} data-ask-open>
-        <Icon name="chat" size={18} />
-        <span class="ask-l">Ask the toolkit</span>
       </a>
       <details class="menu">
         <summary>
@@ -63,11 +61,23 @@ const more = [
               ))
             }
           </ul>
+          <button type="button" class="mtour" hidden data-tour-start>Take the tour <span aria-hidden="true">↺</span></button>
           <a class="btn btn--sm" href={url(site.bookletPdf)} download>
             <Icon name="download" size={16} /> The whole booklet (PDF)
           </a>
         </div>
       </details>
+      <a class="guide" href={url('/ask/')} data-chat-open data-tour="guide" title="Ask the toolkit">
+        <svg class="bub" width="50" height="58" viewBox="0 0 50 58" aria-hidden="true">
+          <path d="M10 4 H36 Q45 4 45 13 V34 Q45 42 37 42 H33 L28 53 Q26 56 24 53 L21 42 H13 Q5 42 5 34 V13 Q5 4 10 4 Z" />
+        </svg>
+        <span class="eyes" aria-hidden="true" data-eyes>
+          <span class="eye"><i data-pupil></i></span>
+          <span class="eye"><i data-pupil></i></span>
+        </span>
+        <span class="visually-hidden">Ask the toolkit</span>
+        <span class="dot" hidden data-chat-dot><span class="visually-hidden">(conversation in progress)</span></span>
+      </a>
     </div>
   </div>
 </header>
@@ -77,7 +87,7 @@ const more = [
   const menu = document.querySelector<HTMLDetailsElement>('.site-header .menu');
   if (menu) {
     menu.addEventListener('click', (e) => {
-      if ((e.target as HTMLElement).closest('a')) menu.open = false;
+      if ((e.target as HTMLElement).closest('a, [data-tour-start]')) menu.open = false;
     });
     menu.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && menu.open) {
@@ -135,7 +145,7 @@ const more = [
     flex-shrink: 0;
   }
   .find,
-  .ask,
+  .tour,
   .menu summary {
     display: inline-flex;
     align-items: center;
@@ -149,7 +159,7 @@ const more = [
     cursor: pointer;
   }
   /* Every control in the header looks like a button: a pill with a border */
-  .ask,
+  .tour,
   .menu summary {
     border: 2px solid rgb(27 27 27 / 0.25);
     border-radius: 999px;
@@ -158,15 +168,128 @@ const more = [
       background-color var(--t-fast) var(--ease),
       border-color var(--t-fast) var(--ease);
   }
-  :global(body[data-theme='night']) .ask,
+  :global(body[data-theme='night']) .tour,
   :global(body[data-theme='night']) .menu summary {
     border-color: #6a6964;
   }
-  .ask:hover,
+  .tour:hover,
   .menu summary:hover,
   .menu[open] summary {
     border-color: currentColor;
   }
+  .tour {
+    background: none;
+    font-size: var(--fs-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .tour[hidden],
+  .mtour[hidden] {
+    display: none;
+  }
+
+  /* The guide: a speech bubble with eyes, tilted until you point at it. It is "Ask the toolkit". */
+  .guide {
+    position: relative;
+    display: block;
+    flex: none;
+    width: 50px;
+    height: 58px;
+    margin: -4px 0 -8px;
+    color: inherit;
+    transform: rotate(-6deg);
+    transition: transform var(--t-med) var(--ease);
+  }
+  .guide:hover,
+  .guide[aria-expanded='true'] {
+    transform: rotate(0deg) scale(1.08);
+  }
+  .guide:focus-visible {
+    outline-offset: 2px;
+    border-radius: 12px;
+  }
+  .bub {
+    position: absolute;
+    inset: 0;
+    filter: drop-shadow(0 3px 6px rgb(0 0 0 / 0.25));
+  }
+  .bub path {
+    fill: #111;
+    stroke: #faf9f4;
+    stroke-width: 3.5;
+    stroke-linejoin: round;
+    paint-order: stroke;
+  }
+  .eyes {
+    position: absolute;
+    left: 11px;
+    top: 13px;
+    display: flex;
+    gap: 3px;
+    transform-origin: center;
+  }
+  .eye {
+    position: relative;
+    width: 13px;
+    height: 16px;
+    border-radius: 50%;
+    background: #fff;
+  }
+  .eye i {
+    position: absolute;
+    left: 3.5px;
+    top: 5px;
+    width: 6px;
+    height: 7px;
+    border-radius: 50%;
+    background: #111;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .eyes {
+      animation: blink 4.6s infinite;
+    }
+    @keyframes blink {
+      0%,
+      92%,
+      100% {
+        transform: scaleY(1);
+      }
+      95% {
+        transform: scaleY(0.08);
+      }
+    }
+  }
+  .dot {
+    position: absolute;
+    top: 0;
+    right: -2px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--c2);
+    border: 2px solid #faf9f4;
+  }
+  .dot[hidden],
+  .guide[aria-expanded='true'] .dot {
+    display: none;
+  }
+  .mtour {
+    min-height: 44px;
+    padding: 0 var(--sp-1);
+    border: 0;
+    background: none;
+    color: var(--ink);
+    font-family: var(--font-ui);
+    font-size: var(--fs-sm);
+    font-weight: 700;
+    text-align: left;
+    border-radius: var(--r-sm);
+    cursor: pointer;
+  }
+  .mtour:hover {
+    background: var(--sand);
+  }
+
   .find {
     border: 2px solid rgb(27 27 27 / 0.25);
     border-radius: 999px;
@@ -293,8 +416,10 @@ const more = [
 
   /* Phones: icons only; the labels stay for screen readers */
   @media (max-width: 48rem) {
-    .find,
-    .ask {
+    .tour {
+      display: none;
+    }
+    .find {
       width: 44px;
       padding: 0;
       justify-content: center;
@@ -303,8 +428,7 @@ const more = [
     .find-k {
       display: none;
     }
-    .find-l,
-    .ask-l {
+    .find-l {
       position: absolute;
       width: 1px;
       height: 1px;

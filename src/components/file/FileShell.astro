@@ -55,7 +55,7 @@ const { comp, crumbs, verb, title, lead, stamp = fileNo(comp) } = Astro.props;
         ))
       }
     </nav>
-    <div class="paper">
+    <div class="paper" data-tour="paper">
       <span class="margin" aria-hidden="true"></span>
       <span class="holes" aria-hidden="true">{[0, 1, 2, 3, 4, 5].map(() => <i></i>)}</span>
       <span class="stamp" aria-hidden="true">File {stamp}</span>

@@ -15,7 +15,8 @@
     "build:templates": "node scripts/build-templates.mjs",
     "build:reflection": "node scripts/build-reflection-pdfs.mjs",
     "build:capture-cards": "node scripts/build-capture-cards.mjs",
-    "build:packs": "python3 scripts/build-file-packs.py"
+    "build:packs": "python3 scripts/build-file-packs.py",
+    "build:thumbs": "python3 scripts/build-thumbs.py"
   },
   "dependencies": {
     "astro": "^7.3.5"

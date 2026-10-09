@@ -1,33 +1,55 @@
 ---
 import type { Rail } from '../../data/rail';
+import { components } from '../../data/components';
 import { url } from '../../utils/url';
 
-// Every step of a file, as buttons that wrap onto as many rows as they need (no sideways scrolling, D44).
-// The step you are on is filled and says "You are here".
+// Every step of a file as a row of cards, as in the owner's v3 template (D47): a small picture of the step's
+// worksheet or board, its number and name, how demanding it is and how long it takes. The row scrolls sideways when
+// the cards don't fit; arrow buttons do the same (with JavaScript) and the card you are on is scrolled into view.
+// Each card opens its page at this same row (#steps), so picking a step feels like turning the sheet below it.
 interface Props {
   rail: Rail;
   /** Slug of the page being viewed, or "overview". */
   current: string;
 }
 const { rail, current } = Astro.props;
-const items = [{ slug: 'overview', label: 'Overview', href: rail.overviewHref, glyph: '★', meta: 'Start here' }, ...rail.items];
+const comp = components.find((c) => c.href === rail.overviewHref);
+const hours = comp?.hours;
+const items = [
+  { slug: 'overview', label: 'Overview', href: rail.overviewHref, thumb: rail.overviewThumb, level: comp?.level, meta: hours, n: undefined as number | undefined },
+  ...rail.items,
+];
+const levels = ['', 'Light', 'Moderate', 'Complex'];
+const pad = (k: number) => String(k).padStart(2, '0');
+const here = items.findIndex((i) => i.slug === current);
+const cur = items[here];
+const tag = cur ? (cur.slug === 'overview' ? 'Overview' : cur.n ? `Tool ${cur.n}` : `Step ${pad(here)}`) + (cur.meta ? ` · ${cur.meta}` : '') : '';
+const steps = items.length - 1;
 ---
 
-<nav class="subs" aria-labelledby="subs-h">
-  <h2 id="subs-h" class="subs-h">Steps in this file</h2>
-  <ol>
+<nav class="strip" id="steps" aria-labelledby="subs-h" data-tour="strip" data-strip>
+  <div class="sh">
+    <h2 id="subs-h">Overview, then {steps} steps. Pick one to switch the sheet below.</h2>
+    <div class="arrows" hidden data-strip-arrows>
+      <button type="button" class="arr" data-strip-go="-1" title="Earlier steps"><span aria-hidden="true">←</span><span class="visually-hidden">Scroll to earlier steps</span></button>
+      <button type="button" class="arr" data-strip-go="1" title="Later steps"><span aria-hidden="true">→</span><span class="visually-hidden">Scroll to later steps</span></button>
+    </div>
+  </div>
+  <ol class="cards" data-strip-row>
     {
-      items.map((item) => {
-        const here = item.slug === current;
+      items.map((item, k) => {
+        const on = k === here;
         return (
           <li>
-            <a href={url(item.href)} aria-current={here ? 'page' : undefined}>
-              <span class="n" aria-hidden="true">
-                {'n' in item && item.n ? item.n : (item.glyph ?? '›')}
-              </span>
-              <span class="t">
+            <a href={`${url(item.href)}#steps`} aria-current={on ? 'page' : undefined} data-strip-card>
+              <span class="th" aria-hidden="true">{item.thumb ? <img src={url(item.thumb)} alt="" width="400" height="250" loading="lazy" decoding="async" /> : <span class="stripes" />}</span>
+              <span class="nm">
+                <span class="n">{pad(k)}</span>
                 <b>{item.label}</b>
-                <small>{here ? 'You are here' : item.meta}</small>
+              </span>
+              <span class="mt">
+                <span>{on ? 'You are here' : item.level ? levels[item.level] : ''}</span>
+                <span class="mn">{item.meta}</span>
               </span>
             </a>
           </li>
@@ -35,93 +57,213 @@ const items = [{ slug: 'overview', label: 'Overview', href: rail.overviewHref, g
       })
     }
   </ol>
+  {
+    cur && (
+      <p class="now" aria-hidden="true">
+        <span class="now-t">{tag}</span>
+        <span class="now-n">{cur.label}</span>
+      </p>
+    )
+  }
 </nav>
 
+<script>
+  // Arrow buttons, and the card you are on scrolled into view (without moving the page up or down).
+  document.querySelectorAll<HTMLElement>('[data-strip]').forEach((strip) => {
+    const row = strip.querySelector<HTMLElement>('[data-strip-row]')!;
+    const arrows = strip.querySelector<HTMLElement>('[data-strip-arrows]')!;
+    const [back, fwd] = [...arrows.querySelectorAll<HTMLButtonElement>('button')];
+    const sync = () => {
+      const max = row.scrollWidth - row.clientWidth;
+      arrows.hidden = max <= 2;
+      back.disabled = row.scrollLeft <= 2;
+      fwd.disabled = row.scrollLeft >= max - 2;
+      strip.classList.toggle('more-l', row.scrollLeft > 2);
+      strip.classList.toggle('more-r', row.scrollLeft < max - 2);
+    };
+    const on = row.querySelector<HTMLElement>('[aria-current="page"]');
+    if (on) row.scrollLeft = on.parentElement!.offsetLeft - (row.clientWidth - on.offsetWidth) / 2;
+    arrows.querySelectorAll<HTMLButtonElement>('[data-strip-go]').forEach((b) =>
+      b.addEventListener('click', () => {
+        const smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+        row.scrollBy({ left: Number(b.dataset.stripGo) * row.clientWidth * 0.8, behavior: smooth ? 'smooth' : 'auto' });
+      }),
+    );
+    row.addEventListener('scroll', sync, { passive: true });
+    addEventListener('resize', sync);
+    sync();
+  });
+</script>
+
 <style>
-  .subs {
-    margin: var(--sp-6) 0 var(--sp-2);
-    padding: var(--sp-3);
-    background: var(--white);
-    border: 1px solid var(--line);
-    border-radius: var(--r-md);
+  .strip {
+    margin: var(--sp-6) 0 0;
+    scroll-margin-top: calc(var(--header-h) + var(--sp-2));
   }
-  .subs-h {
+  .sh {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--sp-2);
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+  .sh h2 {
     font-family: var(--font-ui);
-    font-size: var(--fs-xs);
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin: 0 0 var(--sp-2);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    line-height: 1.4;
+    margin: 0;
   }
-  ol {
+  .arrows {
+    display: flex;
+    gap: 8px;
+  }
+  .arrows[hidden] {
+    display: none;
+  }
+  .arr {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1.5px solid var(--ink);
+    background: var(--white);
+    color: var(--ink);
+    font-size: 1.125rem;
+    cursor: pointer;
+  }
+  .arr:hover:not(:disabled) {
+    background: var(--ink);
+    color: var(--white);
+  }
+  .arr:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+  .cards {
     list-style: none;
     margin: 0;
-    padding: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 12.5rem), 1fr));
-    gap: var(--sp-1);
+    padding: 18px;
+    display: flex;
+    align-items: stretch;
+    gap: 14px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    scroll-padding: 18px;
+    background: var(--white);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    scrollbar-width: thin;
+  }
+  /* A soft edge says there is more to scroll to */
+  .strip.more-r .cards {
+    mask-image: linear-gradient(to right, #000 calc(100% - 48px), transparent);
+  }
+  .strip.more-l .cards {
+    mask-image: linear-gradient(to left, #000 calc(100% - 48px), transparent);
+  }
+  .strip.more-l.more-r .cards {
+    mask-image: linear-gradient(to right, transparent, #000 48px, #000 calc(100% - 48px), transparent);
   }
   li {
     margin: 0;
+    flex: 0 0 min(232px, 70vw);
+    scroll-snap-align: start;
   }
   a {
     display: flex;
-    align-items: center;
-    gap: 12px;
-    min-height: 56px;
+    flex-direction: column;
     height: 100%;
-    padding: var(--sp-1) var(--sp-2) var(--sp-1) var(--sp-1);
-    border: 2px solid var(--line);
-    border-radius: 999px;
+    padding: 10px;
+    border-radius: var(--r-sm);
     color: var(--ink);
     text-decoration: none;
-    transition:
-      border-color var(--t-fast) var(--ease),
-      transform var(--t-fast) var(--ease),
-      background-color var(--t-fast) var(--ease);
+    transition: background-color var(--t-fast) var(--ease);
   }
   a:hover {
-    border-color: var(--accent);
-    transform: translateY(-2px);
-  }
-  .n {
-    width: 40px;
-    height: 40px;
-    flex: none;
-    border-radius: 50%;
-    border: 2px solid var(--accent-deep);
-    color: var(--accent-deep);
-    display: grid;
-    place-items: center;
-    font-family: var(--font-display);
-    font-weight: 600;
-  }
-  .t {
-    display: flex;
-    flex-direction: column;
-    line-height: 1.2;
-    min-width: 0;
-  }
-  .t b {
-    font-weight: 800;
-  }
-  .t small {
-    font-size: var(--fs-sm);
-    color: var(--muted);
+    background: var(--sand);
   }
   a[aria-current='page'] {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: var(--accent-ink);
+    background: var(--accent-tint);
+    outline: 2px solid var(--accent-deep);
+    outline-offset: -2px;
   }
-  a[aria-current='page'] .n {
-    background: var(--accent-ink);
-    border-color: var(--accent-ink);
-    color: var(--accent);
+  .th {
+    display: block;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: var(--sand);
+    margin-bottom: 10px;
   }
-  a[aria-current='page'] small {
-    color: inherit;
+  .th img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+  }
+  .stripes {
+    display: block;
+    height: 100%;
+    background: repeating-linear-gradient(135deg, #e4e0d6 0 10px, #ebe7de 10px 20px);
+  }
+  .nm {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .n {
+    font-family: var(--font-ui);
+    font-size: var(--fs-xs);
+    color: var(--muted);
+  }
+  .nm b {
+    font-family: var(--font-read);
+    font-weight: 500;
+    font-size: 1.3125rem;
+    line-height: 1.15;
+  }
+  .mt {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    font-family: var(--font-ui);
+    font-size: var(--fs-xs);
+    color: var(--muted);
+  }
+  a[aria-current='page'] .n,
+  a[aria-current='page'] .mt {
+    color: var(--ink);
+  }
+  a[aria-current='page'] .mt span:first-child {
+    color: var(--accent-deep);
     font-weight: 700;
+  }
+  .mn {
+    text-transform: uppercase;
+    text-align: right;
+  }
+  .now {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    margin: var(--sp-6) 0 0;
+  }
+  .now-t {
+    font-family: var(--font-ui);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .now-n {
+    font-family: var(--font-read);
+    font-style: italic;
+    font-size: clamp(2.125rem, 1.5rem + 2vw, 3.375rem);
+    line-height: 1.05;
   }
 </style>
