@@ -50,5 +50,8 @@ const showChat = !/\/ask\/?$/.test(Astro.url.pathname);
     <Footer />
     <Finder />
     {showChat && <ChatWidget />}
+    <script>
+      import '../scripts/tips';
+    </script>
   </body>
 </html>

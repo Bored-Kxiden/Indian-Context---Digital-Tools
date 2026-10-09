@@ -102,8 +102,8 @@ export const goals: Goal[] = [
     componentLabel: 'Reflection · Claim & Reflection',
     title: 'Reflect on what I found',
     items: [
-      { phrase: '…make my starting position and my prediction visible', tag: 'Before each component', tone: 'ink', href: `${R}#where` },
-      { phrase: '…test what I learned against my own bias', tag: 'After each component', tone: 'ink', href: `${R}#where` },
+      { phrase: '…make my starting position and my prediction visible', tag: 'Before each file', tone: 'ink', href: `${R}#where` },
+      { phrase: '…test what I learned against my own bias', tag: 'After each file', tone: 'ink', href: `${R}#where` },
       { phrase: '…go back to my predictions and see what changed', tag: 'Look back: Summarise', tone: 'ink', href: `${R}summarise/` },
       { phrase: '…see which dimensions I never reached', tag: 'Look back: Wheel', tone: 'ink', href: `${R}wheel/` },
       { phrase: '…ask what this could still get wrong', tag: 'Look back: Consequences', tone: 'ink', href: `${R}consequences/` },

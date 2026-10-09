@@ -54,7 +54,7 @@ export const overview = {
     'Voice assistants, IVR systems, and chatbots deployed far outside the dialect they were trained on',
   ],
   whereBody: [
-    'The condition that makes this component necessary is simple: somewhere between the people building a product and the people using it, there is a language or meaning gap, and someone is bridging it by guesswork rather than a documented method.',
+    'The condition that makes this file necessary is simple: somewhere between the people building a product and the people using it, there is a language or meaning gap, and someone is bridging it by guesswork rather than a documented method.',
     'The common thread is a research or design team on one side of a language boundary and real users on the other, with no method in place for checking whether meaning crossed.',
   ],
   funnel:
@@ -214,7 +214,7 @@ export const beforeYouStart = {
   },
   team: {
     title: 'Who you need',
-    lead: 'Using this component starts with team composition, not process.',
+    lead: 'Using this file starts with team composition, not process.',
     people: [
       { name: 'A lead researcher', body: 'Owns the research question and the process, and runs the primary interviews.' },
       { name: 'A local language collaborator', body: 'An interpreter who is not the same person doing the primary interviewing.' },

@@ -1272,7 +1272,7 @@ add({
   term: 'Still unknown',
   kind: 'Step',
   scope: 'ink',
-  context: 'Claim & Reflection · After each component',
+  context: 'Claim & Reflection · After each file',
   def: reflAfter.unknown.body,
   href: `${R}#how`,
 });
@@ -1282,7 +1282,7 @@ add({
   aka: ['before page', 'after page', 'r1a', 'r1b', 'r·1a', 'reflect before', 'reflect after', 'page codes'],
   kind: 'Card',
   scope: 'ink',
-  context: 'Claim & Reflection · in every component',
+  context: 'Claim & Reflection · in every file',
   def: `${refl.howTo.body} ${refl.onlyOne}`,
   facts: [{ k: 'Page codes', v: 'R·1A and R·1B for Reading Existing Products, up to R·4A and R·4B for Reading Material Conditions; R·E1–E3 for the three Look back pages.' }],
   href: `${R}#where`,
@@ -1477,7 +1477,7 @@ G({
   id: 'informed-consent',
   term: 'Informed consent',
   aka: ['consent'],
-  def: 'Agreement to take part in research, given freely by someone who understands what will happen, what will be recorded, how it will be used, and that they can stop at any time. Every component asks for consent first.',
+  def: 'Agreement to take part in research, given freely by someone who understands what will happen, what will be recorded, how it will be used, and that they can stop at any time. Every file asks for consent first.',
   see: ['ask-your-participants', 'language-before-you-start'],
   source: { label: 'Wikipedia: Informed consent', href: 'https://en.wikipedia.org/wiki/Informed_consent' },
 });

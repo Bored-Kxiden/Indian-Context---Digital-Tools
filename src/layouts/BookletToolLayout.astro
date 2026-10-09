@@ -109,11 +109,19 @@ const notes: Note[] = [
   ...(mainTpl ? [{ kind: 'Printable worksheet', format: `${mainTpl.format} · A4`, title: 'Print and fill in', action: `download ${mainTpl.format} ↓`, href: mainTpl.href, tone: 'yellow' as const, download: true }] : []),
   ...(digital ? [{ kind: 'Digital template', format: digital.format === 'JAM' ? 'FigJam' : 'Figma', title: 'Open the template', action: `download ${digital.format === 'JAM' ? 'FigJam' : 'Figma'} file ↓`, href: digital.href, tone: 'teal' as const, download: true }] : []),
 ];
+// Don't say the same thing twice: the opening paragraph already says what the tool shows.
+const shownLower = tool.shows.replace(/\.$/, '').toLowerCase();
+const whatParas = tool.whatIsIt
+  .map((p) => {
+    const i = p.toLowerCase().indexOf(shownLower);
+    return i >= 0 ? (p.slice(0, i) + p.slice(i + shownLower.length)).replace(/^\s*\.\s*/, '').replace(/\s{2,}/g, ' ').trim() : p;
+  })
+  .filter((p) => p.replace(/[^a-z]/gi, '').length > 12);
 const howSteps = tool.stepsList ?? (tool.parts.length === 1 ? firstPart.steps : undefined);
 ---
 
 <BaseLayout title={`${tool.name}: ${comp.short}`} description={tool.question} component={comp.c}>
-  <FileShell comp={comp} crumbs={crumbs} verb={verb} title={tool.name} lead={tool.question} stamp={`${fileNo(comp)}${stepNo ? `.${stepNo}` : ''}`}>
+  <FileShell comp={comp} crumbs={crumbs} verb={verb ?? tool.question} title={tool.name} stamp={`${fileNo(comp)}${stepNo ? `.${stepNo}` : ''}`}>
     <PaperTop image={topImage} alt={topAlt} caption={guideImage ? `Booklet p.${tool.guidePage}` : `Meera’s example · booklet p.${firstPart.example.page}`} text={tool.shows}>
       <p class="done"><b>You’re done when</b> {tool.done}</p>
       <Fragment slot="buttons">
@@ -175,7 +183,7 @@ const howSteps = tool.stepsList ?? (tool.parts.length === 1 ? firstPart.steps : 
           <div class="g-text">
            <div class="g-a">
             <PaperSection id="what" title="What is it and why should I do it?" level={3}>
-              {tool.whatIsIt.map((p) => <p class="body-p">{p}</p>)}
+              {whatParas.map((p) => <p class="body-p">{p}</p>)}
               <dl class="need">
                 <div><dt>You need</dt><dd>{tool.need}</dd></div>
                 <div><dt>You end up with</dt><dd>{tool.endUp}</dd></div>

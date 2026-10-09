@@ -35,7 +35,7 @@ export const overview = {
     'Built for first-generation college students from Tier 2 and 3 towns. Reusable without assuming that one Indian experience is universal.',
   // The FigJam's "What is it & why should I do it?": opening and method.
   idea: [
-    'Designers usually start from a fictional abstraction (“imagine a first-generation student applying for a scholarship”) and then go looking for evidence to fit it. This component reverses the order. The student shows you what applying actually looks like, in their own room, on their own phone, before you interpret anything.',
+    'Designers usually start from a fictional abstraction (“imagine a first-generation student applying for a scholarship”) and then go looking for evidence to fit it. This file reverses the order. The student shows you what applying actually looks like, in their own room, on their own phone, before you interpret anything.',
     'Six photo missions turn a phone camera into a research instrument. The images are grouped for what they reveal, then rebuilt into a Context Scenario: a real situation, evidenced by real images, that a product’s designers would otherwise have dismissed as an edge case.',
   ],
   // The FigJam cover's principle.
@@ -399,7 +399,7 @@ export const figjam = {
     {
       name: 'Introduction · How to use it',
       tool: '',
-      what: 'What the component is and why to do it, and how to use it. Students photograph six missions; the designer runs three affinity passes across the images and builds the scenario from the recurring pattern, not the first interesting photo. Five steps: Capture, Affinity, Build, Verify, Scenario.',
+      what: 'What the file is and why to do it, and how to use it. Students photograph six missions; the designer runs three affinity passes across the images and builds the scenario from the recurring pattern, not the first interesting photo. Five steps: Capture, Affinity, Build, Verify, Scenario.',
     },
     {
       name: '1 · Show: what do I ask the student to capture?',
@@ -712,7 +712,7 @@ export const tools: Tool[] = [
     mode: 'Desk',
     worksOnItsOwn: true,
     sampleNote: 'Follow the steps with your own participants. Use their real photos, in their own words, with consent.',
-    shows: 'What the person does in this situation, what the system has failed to make visible, and which component to take it to next.',
+    shows: 'What the person does in this situation, what the system has failed to make visible, and which file to take it to next.',
     done: 'You have one traceable sentence where every blank points to a photo or a quote.',
     whatIsIt: [
       'Fill a Context Profile: short verbs for what the person does in this situation. Then turn each observation about the person into a question about the system. Finish with one traceable statement and hand it off.',
@@ -778,7 +778,7 @@ export const tools: Tool[] = [
           'Fill each verb from evidence only.',
           'Rewrite every person-claim as a system question.',
           'Write the reading. Cite a photo or quote per blank.',
-          'Pick the component it goes to next.',
+          'Pick the file it goes to next.',
         ],
       },
     ],

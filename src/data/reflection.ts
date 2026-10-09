@@ -12,7 +12,7 @@ const R = '/components/reflection/';
 
 export const overview = {
   quote: 'I want to know what the process gave me that I did not already have.',
-  eyebrow: 'Read before Existing products · runs through every component',
+  eyebrow: 'Read before you open any other file · runs through every file',
   what: {
     title: 'What is it & why should I do it?',
     body: [
@@ -25,7 +25,7 @@ export const overview = {
     title: 'How to use it',
     body: 'Fill a file’s Before page before you open its first tool. Fill its After page as soon as its last page is done. At the end of the toolkit, go back to your predictions with the three Look back pages.',
   },
-  onlyOne: 'Only using one component? Do its Before and After pages, then go straight to the three Look back pages. They take about 30 minutes.',
+  onlyOne: 'Only using one file? Do its Before and After pages, then go straight to the three Look back pages. They take about 30 minutes.',
   flow: [
     { n: 1, name: 'Position', ask: 'Where are you speaking from?' },
     { n: 2, name: 'Prediction', ask: 'What do you expect, and why?' },
@@ -165,7 +165,7 @@ export const stopById = Object.fromEntries(stops.map((s) => [s.id, s])) as Recor
 /** The Before worksheet: steps 1 and 2. Same questions in every component. */
 export const before = {
   sub: 'Steps 1–2 · Position + prediction',
-  when: 'Fill it before you open the component’s first tool. Keep it visible; don’t edit the prediction.',
+  when: 'Fill it before you open the file’s first tool. Keep it visible; don’t edit the prediction.',
   opening: ['Before I begin,', 'I want to make my starting position visible.'],
   position: {
     n: 1,
@@ -189,14 +189,14 @@ export const before = {
   },
   keep: {
     lead: 'Keep this page visible while you work.',
-    body: 'Do not change the prediction until the component is complete.',
+    body: 'Do not change the prediction until the file is complete.',
   },
 };
 
 /** The After worksheet: steps 3 and 4, plus the gap you could not close. Same in every component. */
 export const after = {
   sub: 'Steps 3–4 · Claim + redaction',
-  when: 'Fill it as soon as the component’s last page is done, while it is fresh.',
+  when: 'Fill it as soon as the file’s last page is done, while it is fresh.',
   opening: ['What did the process actually give me?', 'Not what I set out to find.'],
   stanza: {
     n: 1,
@@ -216,7 +216,7 @@ export const after = {
     body: 'Name one specific thing you went looking for and couldn’t confirm. Not “there’s a lot more to understand”. The actual gap you hit.',
     write: ['I went looking for', 'and couldn’t confirm it because'],
   },
-  onlyOne: 'Only using this component? Go to the Look back pages now.',
+  onlyOne: 'Only using this file? Go to the Look back pages now.',
   /** The reference's page codes for the three Look back pages. */
   lookBackCodes: 'R·E1–E3',
 };

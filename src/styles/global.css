@@ -1038,3 +1038,83 @@ textarea:focus-visible {
     color: #000;
   }
 }
+
+/* ---------- Keyword tips (scripts/mark-terms.mjs, src/scripts/tips.ts; D43) ----------
+   A marked word: a soft highlight and a dotted underline. Pointing at it, focusing it or tapping it opens a
+   pop-up right under it (no gap, so the pointer can move onto the pop-up and its link). */
+.kw {
+  position: relative;
+}
+.kw-b {
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  margin: 0;
+  padding: 0 1px;
+  border: 0;
+  border-radius: 2px;
+  background: linear-gradient(transparent 58%, var(--accent-tint, var(--sand)) 58%);
+  text-decoration: underline dotted;
+  text-decoration-color: var(--accent-deep, var(--ink));
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+  cursor: help;
+  display: inline;
+}
+.kw-b:hover,
+.kw-b[aria-expanded='true'] {
+  background: var(--accent-tint, var(--sand));
+}
+.kw-p {
+  display: none;
+  position: absolute;
+  z-index: 45;
+  left: var(--kw-dx, 0px);
+  top: 100%;
+  width: min(20rem, calc(100vw - 32px));
+  padding: 12px 14px;
+  background: var(--ink);
+  color: var(--on-night);
+  border-radius: var(--r-md);
+  box-shadow: 0 14px 34px rgb(0 0 0 / 0.3);
+  font-family: var(--font-read);
+  font-size: 1.0625rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0;
+  text-align: left;
+  text-transform: none;
+  white-space: normal;
+  --focus: #fff;
+}
+.kw-p a {
+  display: inline-block;
+  margin-top: 6px;
+  color: inherit;
+  font-family: var(--font-ui);
+  font-size: var(--fs-xs);
+}
+.kw:hover .kw-p,
+.kw:focus-within .kw-p,
+.kw-b[aria-expanded='true'] + .kw-p {
+  display: block;
+}
+.kw.kw--off .kw-p {
+  display: none;
+}
+.on-dark .kw-b,
+.sec--ink .kw-b {
+  background: none;
+  text-decoration-color: currentColor;
+}
+@media print {
+  .kw-b {
+    background: none;
+    text-decoration: none;
+  }
+  .kw-p {
+    display: none !important;
+  }
+}
