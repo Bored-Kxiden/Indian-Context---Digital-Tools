@@ -22,7 +22,7 @@ const stack = [...files].reverse().map((f) => ({
     <div class="copy">
       <p class="kick">A toolkit for designing in India</p>
       <h1 id="hero-h">Beyond the Edge Case</h1>
-      <p class="sub">Find the people a product treats as exceptions, and ask what made them exceptions in the first place.</p>
+      <p class="sub">Find the people a product treats as exceptions, and ask <em>what made them exceptions in the first place</em>.</p>
       <div class="cta">
         <a class="btn btn--light" href={url('/components/reflection/')}>Start with File 01 →</a>
         <a class="btn btn--ghost-light" href={url('/components/')} data-finder-open>Find a tool</a>
@@ -44,12 +44,15 @@ const stack = [...files].reverse().map((f) => ({
               <svg viewBox="0 0 300 66" preserveAspectRatio="none" aria-hidden="true">
                 <path d="M0,66 C26,66 30,0 62,0 H238 C270,0 274,66 300,66 Z" />
               </svg>
-              <span>{f.name}</span>
+              <span class="tno">{fileNo(f)}</span>
+              <span>
+                {f.name.startsWith('Reading ') && <span class="rd">Reading </span>}
+                {f.name.replace('Reading ', '')}
+              </span>
             </a>
             <div class="body">
               <button type="button" class="ftog" aria-expanded={f.file === 1 ? 'true' : 'false'} aria-controls={`fold-${f.id}`} data-fold-toggle>
-                <span class="no">File {fileNo(f)}</span>
-                <span class="sh">{f.short}</span>
+                <span class="vs">“{f.verb}”</span>
                 <span class="act">
                   <span class="act-open">Show what’s inside</span>
                   <span class="act-close">Hide</span>
@@ -58,7 +61,6 @@ const stack = [...files].reverse().map((f) => ({
               </button>
               <div class="more" id={`fold-${f.id}`}>
                 <div class="more-in">
-                  <p class="verb">“{f.verb}”</p>
                   <p class="plain">{f.plain}</p>
                   <p class="tl">Its steps</p>
                   <ul class="tools">
@@ -87,12 +89,12 @@ const stack = [...files].reverse().map((f) => ({
     <h2 id="idea-h">{intro.central}</h2>
     <p>
       Design often starts from one default user. In India, one person may use the same product across different languages, networks,
-      budgets and kinds of help. Unusual to the system is not unusual to the person.
+      budgets and kinds of help. <em>Unusual to the system is not unusual to the person.</em>
     </p>
     <ul class="starts">
-      <li><a class="btn btn--light" href={url('/guideline/')}>How to use the kit</a></li>
-      <li><a class="btn btn--ghost-light" href={url('/ask/')} data-ask-open>Ask a question</a></li>
-      <li><a class="btn btn--ghost-light" href={url('/about/')}>Why the kit exists</a></li>
+      <li><a class="btn" href={url('/guideline/')}>How to use the kit</a></li>
+      <li><a class="btn btn--outline" href={url('/ask/')} data-ask-open>Ask a question</a></li>
+      <li><a class="btn btn--outline" href={url('/about/')}>Why the kit exists</a></li>
     </ul>
   </section>
 </BaseLayout>
@@ -153,7 +155,7 @@ const stack = [...files].reverse().map((f) => ({
     color: var(--on-night-soft);
   }
   .hero h1 {
-    font-size: var(--fs-display);
+    font-size: clamp(3.5rem, 1rem + 7vw, 8.5rem);
     line-height: 0.95;
     color: var(--on-night);
     margin: 0 0 var(--sp-3);
@@ -229,9 +231,10 @@ const stack = [...files].reverse().map((f) => ({
     bottom: 100%;
     height: 62px;
     padding: 0 clamp(var(--sp-4), 4vw, 60px);
-    margin-bottom: -1px;
+    margin-bottom: -2px;
     display: flex;
     align-items: center;
+    gap: var(--sp-1);
     color: inherit;
     font-family: var(--font-display);
     font-weight: 600;
@@ -239,7 +242,6 @@ const stack = [...files].reverse().map((f) => ({
     white-space: nowrap;
     text-decoration: none;
     z-index: 1;
-    transition: transform var(--t-med) var(--ease);
   }
   .ftab svg {
     position: absolute;
@@ -251,11 +253,13 @@ const stack = [...files].reverse().map((f) => ({
   .ftab span {
     position: relative;
   }
-  .ftab:hover,
-  .fold.open .ftab {
-    transform: translateY(-6px);
+  .tno {
+    font-family: var(--font-ui);
+    font-size: 0.8em;
+    font-weight: 800;
+    opacity: 0.85;
   }
-  .ftab:hover span {
+  .ftab:hover > span:last-child {
     text-decoration: underline;
     text-underline-offset: 5px;
     text-decoration-thickness: 2px;
@@ -266,6 +270,11 @@ const stack = [...files].reverse().map((f) => ({
     border-radius: var(--r-lg) var(--r-lg) 0 0;
     padding: var(--sp-2) clamp(var(--sp-2), 4vw, 56px) calc(62px + var(--sp-3));
     box-shadow: 0 -10px 24px -18px rgb(0 0 0 / 0.6);
+    transition: filter var(--t-med) var(--ease);
+  }
+  .fold:hover .body,
+  .fold:hover .ftab svg {
+    filter: brightness(1.06);
   }
   .fold:last-child .body {
     padding-bottom: var(--sp-5);
@@ -285,16 +294,10 @@ const stack = [...files].reverse().map((f) => ({
     text-align: left;
     cursor: pointer;
   }
-  .no {
-    font-weight: 800;
-    font-size: var(--fs-sm);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-  .sh {
-    font-family: var(--font-display);
-    font-weight: 500;
-    font-size: var(--fs-h4);
+  .vs {
+    font-style: italic;
+    font-weight: 400;
+    font-size: var(--fs-lead);
   }
   .act {
     margin-left: auto;
@@ -361,13 +364,8 @@ const stack = [...files].reverse().map((f) => ({
   :global(html:not(.js-folders)) .act {
     display: none;
   }
-  .verb {
-    font-style: italic;
-    font-weight: 600;
-    font-size: var(--fs-lead);
-    margin: var(--sp-2) 0 var(--sp-1);
-  }
   .plain {
+    margin-top: var(--sp-2) !important;
     font-size: var(--fs-body);
     max-width: 46rem;
     margin: 0 0 var(--sp-3);
@@ -430,7 +428,16 @@ const stack = [...files].reverse().map((f) => ({
   @media (max-width: 47.99rem) {
     .ftab {
       left: 0 !important;
+      padding: 0 var(--sp-3);
     }
+  }
+  /* Small phones: "Reading" drops from the tab so the name fits */
+  @media (max-width: 30rem) {
+    .rd {
+      display: none;
+    }
+  }
+  @media (max-width: 47.99rem) {
     .act-open {
       font-size: 0;
     }
@@ -441,12 +448,13 @@ const stack = [...files].reverse().map((f) => ({
   }
 
   /* ---------- The idea ---------- */
+  /* The central line on paper, so it never runs into the red Reflection folder above it */
   .idea {
-    background: var(--r);
-    color: #fff;
-    padding: var(--sp-6) var(--gutter) var(--sp-8);
-    margin-top: -1px;
-    --focus: #fff;
+    background: var(--surface);
+    color: var(--ink);
+    padding: var(--sp-8) var(--gutter);
+    --focus: var(--ink);
+    --muted: #5f5c56;
   }
   .idea > * {
     max-width: 64rem;
@@ -454,8 +462,14 @@ const stack = [...files].reverse().map((f) => ({
     margin-right: auto;
   }
   .idea h2 {
-    font-size: clamp(1.75rem, 1.2rem + 1.8vw, 3rem);
+    font-family: var(--font-read);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(1.75rem, 1.2rem + 1.8vw, 2.875rem);
+    line-height: 1.2;
     margin-bottom: var(--sp-3);
+    padding-left: var(--sp-3);
+    border-left: 6px solid var(--r);
   }
   .idea p {
     font-size: var(--fs-lead);
@@ -471,17 +485,7 @@ const stack = [...files].reverse().map((f) => ({
   .starts li {
     margin: 0;
   }
-  .idea :global(.btn--light) {
-    color: var(--r-deep);
-  }
-  .idea :global(.btn--ghost-light) {
-    border-color: #fff;
-    color: #fff;
-  }
-  .idea :global(.btn--ghost-light:hover) {
-    background: #fff;
-    color: var(--r-deep);
-  }
+
   @media (prefers-reduced-motion: reduce) {
     .more,
     .more-in,

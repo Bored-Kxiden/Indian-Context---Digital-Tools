@@ -2,54 +2,75 @@
    Beyond the Edge Case: website styles
    The "file folder" look from the owner's template (CONTEXT.md, D41): a dark
    home with one folder per file, then each file as a coloured folder holding
-   a sheet of paper. Rounded type (D44): Fredoka for titles, Nunito for
-   everything else. An 8 px spacing scale; one colour per file.
+   a sheet of paper. The template's fonts (D46): Anton for covers and titles,
+   EB Garamond for reading, IBM Plex Mono for labels. An 8 px spacing scale.
    ===================================================================== */
 
 /* ---------- Fonts (self-hosted, SIL OFL; see public/fonts/LICENSE.txt) ----------
-   Rounded and friendly (D44): Fredoka for titles, Nunito for everything else. */
+   The template's first fonts (D46): Anton for covers and page titles, EB Garamond for reading and
+   headings, IBM Plex Mono for labels and controls. */
 @font-face {
-  font-family: 'Fredoka';
-  src: url('/fonts/Fredoka-latin.woff2') format('woff2');
-  font-weight: 300 700;
+  font-family: 'Anton';
+  src: url('/fonts/Anton-latin.woff2') format('woff2');
+  font-weight: 400;
   font-display: swap;
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 @font-face {
-  font-family: 'Fredoka';
-  src: url('/fonts/Fredoka-latin-ext.woff2') format('woff2');
-  font-weight: 300 700;
+  font-family: 'Anton';
+  src: url('/fonts/Anton-latin-ext.woff2') format('woff2');
+  font-weight: 400;
   font-display: swap;
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 @font-face {
-  font-family: 'Nunito';
-  src: url('/fonts/Nunito-latin.woff2') format('woff2');
-  font-weight: 200 1000;
+  font-family: 'EB Garamond';
+  src: url('/fonts/EBGaramond-latin.woff2') format('woff2');
+  font-weight: 400 800;
   font-style: normal;
   font-display: swap;
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 @font-face {
-  font-family: 'Nunito';
-  src: url('/fonts/Nunito-latin-ext.woff2') format('woff2');
-  font-weight: 200 1000;
+  font-family: 'EB Garamond';
+  src: url('/fonts/EBGaramond-latin-ext.woff2') format('woff2');
+  font-weight: 400 800;
   font-style: normal;
   font-display: swap;
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 @font-face {
-  font-family: 'Nunito';
-  src: url('/fonts/Nunito-Italic-latin.woff2') format('woff2');
-  font-weight: 200 1000;
+  font-family: 'EB Garamond';
+  src: url('/fonts/EBGaramond-Italic-latin.woff2') format('woff2');
+  font-weight: 400;
   font-style: italic;
   font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
-/* Code and keyboard keys only */
+@font-face {
+  font-family: 'EB Garamond';
+  src: url('/fonts/EBGaramond-Italic-latin-ext.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
 @font-face {
   font-family: 'IBM Plex Mono';
   src: url('/fonts/IBMPlexMono-Regular.woff2') format('woff2');
   font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  src: url('/fonts/IBMPlexMono-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  src: url('/fonts/IBMPlexMono-SemiBold.woff2') format('woff2');
+  font-weight: 600 800;
   font-display: swap;
 }
 /* The booklet's typeface: only the rebuilt booklet examples use it, so it loads only on those pages. */
@@ -140,13 +161,13 @@
   --fs-xs: 0.75rem;
   --fs-sm: 0.875rem;
   --fs-ui: 1rem;
-  --fs-body: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem); /* 17–19 px */
-  --fs-lead: clamp(1.1875rem, 1.05rem + 0.5vw, 1.4375rem);
-  --fs-h4: 1.1875rem;
-  --fs-h3: clamp(1.3125rem, 1.15rem + 0.5vw, 1.625rem);
-  --fs-h2: clamp(1.75rem, 1.35rem + 1.2vw, 2.5rem);
-  --fs-h1: clamp(2.5rem, 1.5rem + 4vw, 5.5rem);
-  --fs-display: clamp(3rem, 1rem + 7vw, 8rem);
+  --fs-body: clamp(1.1875rem, 1.1rem + 0.3vw, 1.3125rem); /* 19–21 px of EB Garamond */
+  --fs-lead: clamp(1.3125rem, 1.15rem + 0.6vw, 1.625rem);
+  --fs-h4: 1.25rem;
+  --fs-h3: clamp(1.5rem, 1.3rem + 0.6vw, 1.875rem);
+  --fs-h2: clamp(2rem, 1.5rem + 1.5vw, 2.875rem);
+  --fs-h1: clamp(3rem, 1.6rem + 5vw, 8rem);
+  --fs-display: clamp(3.5rem, 1rem + 8vw, 10rem);
 
   /* Layout */
   --wrap: 100rem; /* 1600 px */
@@ -162,14 +183,16 @@
   --t-med: 280ms;
   --t-slow: 550ms;
 
-  --font-read: 'Nunito', 'Noto Sans Devanagari', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
-  --font-ui: var(--font-read);
-  --font-display: 'Fredoka', 'Nunito', system-ui, sans-serif;
+  --font-read: 'EB Garamond', 'Noto Serif Devanagari', Georgia, 'Times New Roman', serif;
+  --font-ui: 'IBM Plex Mono', 'Noto Sans Devanagari', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  /* Headings in the layout (sections, notes, folder names): EB Garamond */
+  --font-display: var(--font-read);
+  /* Covers and page titles: Anton, upper case */
+  --font-cover: 'Anton', 'Impact', 'Arial Narrow Bold', sans-serif;
   --font-code: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
   --font-booklet: 'Bricolage Grotesque', system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans', 'Noto Sans Devanagari', Arial, sans-serif;
   --font-body: var(--font-read);
   --font-head: var(--font-display);
-  /* Was a monospace; the small labels it set now use rounded Nunito, bold and spaced */
   --font-mono: var(--font-ui);
 
   /* Names used by the first version of the Language pages */
@@ -210,7 +233,7 @@ body {
   color: var(--ink);
   font-family: var(--font-body);
   font-size: var(--fs-body);
-  line-height: 1.6;
+  line-height: 1.5;
   min-height: 100vh;
   min-height: 100dvh;
   display: flex;
@@ -246,10 +269,14 @@ h4 {
   margin: 0 0 var(--sp-2);
   text-wrap: balance;
 }
+/* Titles: Anton, upper case, as on the template's covers */
 h1 {
+  font-family: var(--font-cover);
+  font-weight: 400;
   font-size: var(--fs-h1);
-  line-height: 1;
-  letter-spacing: -0.01em;
+  line-height: 0.95;
+  text-transform: uppercase;
+  letter-spacing: -0.005em;
 }
 h2 {
   font-size: var(--fs-h2);
@@ -263,7 +290,6 @@ h3 {
 h4 {
   font-size: var(--fs-h4);
   font-weight: 600;
-  font-family: var(--font-read);
 }
 
 p {

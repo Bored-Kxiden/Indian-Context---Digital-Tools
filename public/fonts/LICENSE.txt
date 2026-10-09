@@ -1,16 +1,20 @@
 FONTS IN THIS FOLDER
 
-Fredoka-latin.woff2, Fredoka-latin-ext.woff2
-  Fredoka. Copyright 2016 The Fredoka Project Authors (https://github.com/hafontia-zz/Fredoka-One).
+Anton-latin.woff2, Anton-latin-ext.woff2
+  Anton. Copyright 2020 The Anton Project Authors (https://github.com/googlefonts/AntonFont).
   Licensed under the SIL Open Font License, Version 1.1 (below).
 
-Nunito-latin.woff2, Nunito-latin-ext.woff2, Nunito-Italic-latin.woff2
-  Nunito. Copyright 2014 The Nunito Project Authors (https://github.com/googlefonts/nunito).
+EBGaramond-latin.woff2, EBGaramond-latin-ext.woff2, EBGaramond-Italic-latin.woff2, EBGaramond-Italic-latin-ext.woff2
+  EB Garamond. Copyright 2017 The EB Garamond Project Authors (https://github.com/octaviopardo/EBGaramond12).
   Licensed under the SIL Open Font License, Version 1.1 (below).
 
-Fredoka and Nunito are the variable Google Fonts files as packaged by Fontsource (@fontsource-variable).
-IBM Plex Mono (below) is used only for code and keyboard keys; Bricolage Grotesque only for the rebuilt
-booklet pages.
+IBMPlexMono-Medium.woff2 (with the Regular and SemiBold files below)
+  IBM Plex Mono. Copyright 2017 IBM Corp. with Reserved Font Name "Plex".
+  Licensed under the SIL Open Font License, Version 1.1 (below).
+
+The Anton, EB Garamond and IBM Plex Mono Medium files are the Google Fonts subsets embedded in the
+owner's site template (Beyond_the_Edge_Case_standalone.html). Bricolage Grotesque is used only for the
+rebuilt booklet pages.
 
 BricolageGrotesque-Variable.woff2
   Bricolage Grotesque. Copyright 2022 The Bricolage Grotesque Project Authors
