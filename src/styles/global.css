@@ -2,73 +2,54 @@
    Beyond the Edge Case: website styles
    The "file folder" look from the owner's template (CONTEXT.md, D41): a dark
    home with one folder per file, then each file as a coloured folder holding
-   a sheet of paper. Anton for titles, EB Garamond for reading, IBM Plex Mono
-   for labels and controls. An 8 px spacing scale; one colour per file.
+   a sheet of paper. Rounded type (D44): Fredoka for titles, Nunito for
+   everything else. An 8 px spacing scale; one colour per file.
    ===================================================================== */
 
-/* ---------- Fonts (self-hosted, SIL OFL; see public/fonts/LICENSE.txt) ---------- */
+/* ---------- Fonts (self-hosted, SIL OFL; see public/fonts/LICENSE.txt) ----------
+   Rounded and friendly (D44): Fredoka for titles, Nunito for everything else. */
 @font-face {
-  font-family: 'Anton';
-  src: url('/fonts/Anton-latin.woff2') format('woff2');
-  font-weight: 400;
+  font-family: 'Fredoka';
+  src: url('/fonts/Fredoka-latin.woff2') format('woff2');
+  font-weight: 300 700;
   font-display: swap;
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 @font-face {
-  font-family: 'Anton';
-  src: url('/fonts/Anton-latin-ext.woff2') format('woff2');
-  font-weight: 400;
+  font-family: 'Fredoka';
+  src: url('/fonts/Fredoka-latin-ext.woff2') format('woff2');
+  font-weight: 300 700;
   font-display: swap;
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 @font-face {
-  font-family: 'EB Garamond';
-  src: url('/fonts/EBGaramond-latin.woff2') format('woff2');
-  font-weight: 400 800;
+  font-family: 'Nunito';
+  src: url('/fonts/Nunito-latin.woff2') format('woff2');
+  font-weight: 200 1000;
   font-style: normal;
   font-display: swap;
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 @font-face {
-  font-family: 'EB Garamond';
-  src: url('/fonts/EBGaramond-latin-ext.woff2') format('woff2');
-  font-weight: 400 800;
+  font-family: 'Nunito';
+  src: url('/fonts/Nunito-latin-ext.woff2') format('woff2');
+  font-weight: 200 1000;
   font-style: normal;
   font-display: swap;
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 @font-face {
-  font-family: 'EB Garamond';
-  src: url('/fonts/EBGaramond-Italic-latin.woff2') format('woff2');
-  font-weight: 400;
+  font-family: 'Nunito';
+  src: url('/fonts/Nunito-Italic-latin.woff2') format('woff2');
+  font-weight: 200 1000;
   font-style: italic;
   font-display: swap;
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
-@font-face {
-  font-family: 'EB Garamond';
-  src: url('/fonts/EBGaramond-Italic-latin-ext.woff2') format('woff2');
-  font-weight: 400;
-  font-style: italic;
-  font-display: swap;
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
+/* Code and keyboard keys only */
 @font-face {
   font-family: 'IBM Plex Mono';
   src: url('/fonts/IBMPlexMono-Regular.woff2') format('woff2');
   font-weight: 400;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'IBM Plex Mono';
-  src: url('/fonts/IBMPlexMono-Medium.woff2') format('woff2');
-  font-weight: 500;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'IBM Plex Mono';
-  src: url('/fonts/IBMPlexMono-SemiBold.woff2') format('woff2');
-  font-weight: 600 800;
   font-display: swap;
 }
 /* The booklet's typeface: only the rebuilt booklet examples use it, so it loads only on those pages. */
@@ -151,21 +132,21 @@
   --sp-16: 128px;
 
   /* Radii: paper and folders have small corners; pills stay round */
-  --r-sm: 3px;
-  --r-md: 4px;
-  --r-lg: 6px;
+  --r-sm: 8px;
+  --r-md: 14px;
+  --r-lg: 22px;
 
   /* Type scale */
   --fs-xs: 0.75rem;
   --fs-sm: 0.875rem;
   --fs-ui: 1rem;
-  --fs-body: clamp(1.1875rem, 1.1rem + 0.3vw, 1.3125rem); /* 19–21 px of EB Garamond */
-  --fs-lead: clamp(1.3125rem, 1.15rem + 0.6vw, 1.625rem);
-  --fs-h4: 1.25rem;
-  --fs-h3: clamp(1.5rem, 1.3rem + 0.6vw, 1.875rem);
-  --fs-h2: clamp(2rem, 1.5rem + 1.5vw, 2.875rem);
-  --fs-h1: clamp(3.25rem, 1.8rem + 5.6vw, 8.75rem);
-  --fs-display: clamp(4rem, 1rem + 10vw, 12rem);
+  --fs-body: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem); /* 17–19 px */
+  --fs-lead: clamp(1.1875rem, 1.05rem + 0.5vw, 1.4375rem);
+  --fs-h4: 1.1875rem;
+  --fs-h3: clamp(1.3125rem, 1.15rem + 0.5vw, 1.625rem);
+  --fs-h2: clamp(1.75rem, 1.35rem + 1.2vw, 2.5rem);
+  --fs-h1: clamp(2.5rem, 1.5rem + 4vw, 5.5rem);
+  --fs-display: clamp(3rem, 1rem + 7vw, 8rem);
 
   /* Layout */
   --wrap: 100rem; /* 1600 px */
@@ -181,12 +162,14 @@
   --t-med: 280ms;
   --t-slow: 550ms;
 
-  --font-read: 'EB Garamond', 'Noto Serif Devanagari', Georgia, 'Times New Roman', serif;
-  --font-ui: 'IBM Plex Mono', 'Noto Sans Devanagari', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
-  --font-display: 'Anton', 'Impact', 'Arial Narrow Bold', sans-serif;
+  --font-read: 'Nunito', 'Noto Sans Devanagari', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  --font-ui: var(--font-read);
+  --font-display: 'Fredoka', 'Nunito', system-ui, sans-serif;
+  --font-code: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
   --font-booklet: 'Bricolage Grotesque', system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans', 'Noto Sans Devanagari', Arial, sans-serif;
   --font-body: var(--font-read);
-  --font-head: var(--font-read);
+  --font-head: var(--font-display);
+  /* Was a monospace; the small labels it set now use rounded Nunito, bold and spaced */
   --font-mono: var(--font-ui);
 
   /* Names used by the first version of the Language pages */
@@ -227,7 +210,7 @@ body {
   color: var(--ink);
   font-family: var(--font-body);
   font-size: var(--fs-body);
-  line-height: 1.5;
+  line-height: 1.6;
   min-height: 100vh;
   min-height: 100dvh;
   display: flex;
@@ -257,38 +240,30 @@ h1,
 h2,
 h3,
 h4 {
-  font-family: var(--font-read);
-  font-weight: 500;
-  line-height: 1.1;
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.15;
   margin: 0 0 var(--sp-2);
   text-wrap: balance;
 }
-/* Titles: Anton, upper case, as on the template's covers */
 h1 {
-  font-family: var(--font-display);
-  font-weight: 400;
   font-size: var(--fs-h1);
-  line-height: 0.95;
-  text-transform: uppercase;
-  letter-spacing: -0.005em;
+  line-height: 1;
+  letter-spacing: -0.01em;
 }
-/* Section heads: EB Garamond italic, like the template's "What is it and why should I do it?" */
 h2 {
   font-size: var(--fs-h2);
-  font-style: italic;
-  font-weight: 400;
-  line-height: 1.05;
+  line-height: 1.1;
   margin-top: 0;
 }
 h3 {
   font-size: var(--fs-h3);
-  line-height: 1.15;
   font-weight: 500;
 }
 h4 {
   font-size: var(--fs-h4);
-  line-height: 1.3;
   font-weight: 600;
+  font-family: var(--font-read);
 }
 
 p {
@@ -328,7 +303,7 @@ li {
 
 code,
 kbd {
-  font-family: var(--font-mono);
+  font-family: var(--font-code);
   font-size: 0.88em;
   background: var(--sand);
   padding: 2px 6px;
@@ -448,12 +423,12 @@ table {
 /* Mono label above headings */
 .eyebrow,
 .eb {
-  font-family: var(--font-mono);
+  font-family: var(--font-ui);
   font-size: var(--fs-xs);
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--muted);
-  font-weight: 400;
+  font-weight: 800;
   margin: 0 0 var(--sp-2);
   line-height: 1.5;
 }
@@ -496,8 +471,8 @@ table {
   background: var(--ink);
   color: #fff;
   font-family: var(--font-ui);
-  font-size: var(--fs-sm);
-  font-weight: 500;
+  font-size: 0.9375rem;
+  font-weight: 800;
   text-decoration: none;
   cursor: pointer;
   line-height: 1.2;
@@ -562,8 +537,8 @@ table {
   gap: var(--sp-1);
   min-height: 44px;
   font-family: var(--font-ui);
-  font-size: var(--fs-sm);
-  font-weight: 500;
+  font-size: var(--fs-ui);
+  font-weight: 800;
   color: inherit;
   text-decoration: none;
 }
@@ -828,44 +803,40 @@ a.chip:hover {
   opacity: 0.6;
 }
 
-/* ---------- Tabs and Paper/Cards switch ---------- */
+/* ---------- Tabs and Paper/Cards switch ----------
+   Tabs are pill buttons that wrap onto a second row when they must (never a strip that scrolls sideways, D44). */
 .tabs {
   display: flex;
-  gap: var(--sp-4);
-  overflow-x: auto;
-  scrollbar-width: thin;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
 }
 .tab {
-  background: none;
-  border: none;
-  min-height: 56px;
-  padding: 0;
-  font-family: var(--font-ui);
-  font-size: var(--fs-sm);
-  font-weight: 600;
-  color: var(--muted);
-  border-bottom: 4px solid transparent;
   display: inline-flex;
   gap: var(--sp-1);
   align-items: center;
+  min-height: 44px;
+  padding: 0 var(--sp-2);
+  border: 2px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--white);
+  font-family: var(--font-ui);
+  font-size: var(--fs-sm);
+  font-weight: 800;
+  color: var(--ink);
   cursor: pointer;
   white-space: nowrap;
   touch-action: manipulation;
+  transition:
+    border-color var(--t-fast) var(--ease),
+    background-color var(--t-fast) var(--ease);
 }
 .tab:hover {
-  color: var(--ink);
+  border-color: var(--accent);
 }
 .tab[aria-selected='true'] {
-  color: var(--ink);
-  border-bottom-color: var(--accent);
-}
-@media (max-width: 36rem) {
-  .tabs {
-    gap: var(--sp-3);
-  }
-  .tab svg {
-    display: none;
-  }
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
 }
 
 .seg {
@@ -1012,7 +983,7 @@ textarea:focus-visible {
     border: 2px solid CanvasText;
   }
   .tab[aria-selected='true'] {
-    border-bottom-color: Highlight;
+    outline: 3px solid Highlight;
   }
   .seg button[aria-pressed='true'] {
     outline: 2px solid Highlight;
@@ -1113,4 +1084,33 @@ textarea:focus-visible {
   .kw-p {
     display: none !important;
   }
+}
+
+/* ---------- "Show more" disclosures: a round +/− marker, so they read as something to open (D44) ---------- */
+main details > summary {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  min-height: 44px;
+  cursor: pointer;
+  font-weight: 800;
+  list-style: none;
+}
+main details > summary::-webkit-details-marker {
+  display: none;
+}
+main details > summary::before {
+  content: '+';
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  line-height: 1;
+}
+main details[open] > summary::before {
+  content: '−';
 }

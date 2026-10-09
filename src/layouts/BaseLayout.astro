@@ -33,9 +33,8 @@ const showChat = !/\/ask\/?$/.test(Astro.url.pathname);
     <meta name="theme-color" content={theme === 'night' ? '#1b1b1b' : '#ece8df'} />
     {canonical && <link rel="canonical" href={canonical} />}
     <link rel="icon" type="image/svg+xml" href={url('/favicon.svg')} />
-    <link rel="preload" href={url('/fonts/EBGaramond-latin.woff2')} as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href={url('/fonts/Anton-latin.woff2')} as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href={url('/fonts/IBMPlexMono-Regular.woff2')} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={url('/fonts/Nunito-latin.woff2')} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={url('/fonts/Fredoka-latin.woff2')} as="font" type="font/woff2" crossorigin />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />

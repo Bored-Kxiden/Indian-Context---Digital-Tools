@@ -27,7 +27,7 @@ const { comp, crumbs, verb, title, lead, stamp = fileNo(comp) } = Astro.props;
       {
         crumbs.map((c) => (
           <li>
-            <span aria-hidden="true">/</span>
+            <span class="sep" aria-hidden="true">›</span>
             {c.href ? <a href={url(c.href)}>{c.label}</a> : <span aria-current="page">{c.label}</span>}
           </li>
         ))
@@ -49,7 +49,8 @@ const { comp, crumbs, verb, title, lead, stamp = fileNo(comp) } = Astro.props;
             <svg viewBox="0 0 62 300" preserveAspectRatio="none" aria-hidden="true">
               <path d="M0,0 C0,24 62,28 62,58 V242 C62,272 0,276 0,300 Z" />
             </svg>
-            <span>{f.name.replace('Reading ', '')}</span>
+            <span class="lg">{f.name.replace('Reading ', '')}</span>
+            <span class="sm">{fileNo(f)} {f.short.split(' ')[0]}</span>
           </a>
         ))
       }
@@ -57,7 +58,7 @@ const { comp, crumbs, verb, title, lead, stamp = fileNo(comp) } = Astro.props;
     <div class="paper">
       <span class="margin" aria-hidden="true"></span>
       <span class="holes" aria-hidden="true">{[0, 1, 2, 3, 4, 5].map(() => <i></i>)}</span>
-      <span class="stamp" aria-hidden="true">File № {stamp}</span>
+      <span class="stamp" aria-hidden="true">File {stamp}</span>
       <div class="sheet">
         <slot />
       </div>
@@ -73,14 +74,18 @@ const { comp, crumbs, verb, title, lead, stamp = fileNo(comp) } = Astro.props;
   }
   .crumbs-f ol {
     list-style: none;
-    margin: 0 0 clamp(var(--sp-3), 2.4vw, 34px);
+    margin: 0 0 var(--sp-3);
     padding: 0;
     display: flex;
     flex-wrap: wrap;
     gap: var(--sp-half) var(--sp-1);
     font-family: var(--font-ui);
-    font-size: var(--fs-sm);
+    font-size: 0.9375rem;
+    font-weight: 600;
     color: var(--muted);
+  }
+  .sep {
+    font-size: 1.1em;
   }
   .crumbs-f li {
     margin: 0;
@@ -98,13 +103,14 @@ const { comp, crumbs, verb, title, lead, stamp = fileNo(comp) } = Astro.props;
   .verb {
     font-family: var(--font-read);
     font-style: italic;
-    font-size: clamp(1.375rem, 1.1rem + 0.9vw, 1.875rem);
-    margin: 0 0 6px;
+    font-weight: 500;
+    font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
+    color: var(--ink-soft);
+    margin: 0 0 var(--sp-1);
   }
   .fhead h1 {
     margin: 0;
-    max-width: 16ch;
-    overflow-wrap: anywhere;
+    max-width: 22ch;
   }
   .flead {
     font-size: var(--fs-lead);
@@ -121,16 +127,16 @@ const { comp, crumbs, verb, title, lead, stamp = fileNo(comp) } = Astro.props;
   .folder {
     position: relative;
     background: var(--accent);
-    border-radius: 0 var(--r-lg) 0 0;
+    border-radius: var(--r-lg) var(--r-lg) var(--r-lg) var(--r-lg);
     padding: var(--sp-1) var(--sp-1) var(--sp-4);
   }
   .paper {
     position: relative;
     background: var(--surface);
     color: var(--ink);
-    border-radius: 2px;
+    border-radius: var(--r-md);
     box-shadow: 0 2px 0 rgb(0 0 0 / 0.13);
-    padding: var(--sp-5) var(--sp-2) var(--sp-6);
+    padding: var(--sp-6) var(--sp-2) var(--sp-6);
     --focus: var(--ink);
   }
   .margin,
@@ -146,16 +152,54 @@ const { comp, crumbs, verb, title, lead, stamp = fileNo(comp) } = Astro.props;
     padding: 2px 8px;
     font-family: var(--font-ui);
     font-size: var(--fs-xs);
-    font-weight: 600;
+    font-weight: 800;
     letter-spacing: 0.08em;
     text-transform: uppercase;
+    border-radius: 6px;
     transform: rotate(3deg);
   }
+  /* One left edge for everything on the paper */
   .sheet {
     position: relative;
     min-width: 0;
+    max-width: 72rem;
   }
+
+  /* Phones and tablets: the five files as tabs along the folder's top edge (they wrap, never scroll) */
   .stabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 0 var(--sp-1);
+    margin-bottom: -2px;
+  }
+  .stabs a {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0 12px;
+    border-radius: 12px 12px 0 0;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-family: var(--font-ui);
+    font-size: var(--fs-sm);
+    font-weight: 700;
+    text-decoration: none;
+    transform: translateY(6px);
+    transition: transform var(--t-fast) var(--ease);
+  }
+  .stabs a:hover,
+  .stabs a.on {
+    transform: none;
+  }
+  .stabs a.on {
+    min-height: 46px;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .stabs svg,
+  .stabs .lg {
     display: none;
   }
 
@@ -215,7 +259,7 @@ const { comp, crumbs, verb, title, lead, stamp = fileNo(comp) } = Astro.props;
       width: 28px;
       height: 28px;
     }
-    /* Tabs down the folder's right edge, one per file */
+    /* Tabs down the folder's right edge, one per file; they slide out when you point at them */
     .stabs {
       position: absolute;
       top: 30px;
@@ -223,37 +267,49 @@ const { comp, crumbs, verb, title, lead, stamp = fileNo(comp) } = Astro.props;
       display: flex;
       flex-direction: column;
       gap: 6px;
+      padding: 0;
+      margin: 0;
     }
     .stabs a {
-      position: relative;
       width: 62px;
       height: 200px;
-      display: flex;
-      align-items: center;
+      min-height: 0;
+      padding: 0;
       justify-content: center;
-      color: var(--accent-ink);
-      text-decoration: none;
-      transition: height var(--t-med) var(--ease);
+      border-radius: 0;
+      background: none;
+      transform: translateX(-6px);
+      transition:
+        transform var(--t-med) var(--ease),
+        height var(--t-med) var(--ease);
+    }
+    .stabs a:hover,
+    .stabs a:focus-visible {
+      transform: translateX(4px);
     }
     .stabs a.on {
       height: 260px;
-    }
-    .stabs a:hover {
-      text-decoration: underline;
-      text-underline-offset: 4px;
+      transform: none;
+      text-decoration: none;
     }
     .stabs svg {
+      display: block;
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
       fill: var(--accent);
     }
-    .stabs span {
+    .stabs .sm {
+      display: none;
+    }
+    .stabs .lg {
+      display: block;
       position: relative;
       writing-mode: vertical-rl;
-      font-family: var(--font-read);
-      font-size: 1.3125rem;
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 1.1875rem;
       white-space: nowrap;
     }
   }

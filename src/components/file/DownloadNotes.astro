@@ -17,7 +17,7 @@ interface Props {
   notes: Note[];
   title?: string;
 }
-const { notes, title = 'Download' } = Astro.props;
+const { notes, title = 'Ways to work' } = Astro.props;
 ---
 
 {
@@ -44,14 +44,13 @@ const { notes, title = 'Download' } = Astro.props;
 
 <style>
   .dln {
-    margin-top: var(--sp-8);
+    margin-top: var(--sp-6);
     padding-top: var(--sp-5);
-    border-top: 1px solid var(--line);
+    border-top: 2px solid var(--line);
   }
   .lbl-h {
-    font-family: var(--font-ui);
-    font-style: normal;
-    font-size: var(--fs-sm);
+    font-family: var(--font-display);
+    font-size: clamp(1.625rem, 1.3rem + 1vw, 2.25rem);
     font-weight: 600;
     margin: 0 0 var(--sp-4);
   }
@@ -71,8 +70,9 @@ const { notes, title = 'Download' } = Astro.props;
     display: flex;
     flex-direction: column;
     gap: var(--sp-4);
-    min-height: 220px;
-    padding: 26px 28px 30px;
+    min-height: 200px;
+    padding: var(--sp-3);
+    border-radius: 4px 4px 18px 4px;
     color: var(--ink);
     text-decoration: none;
     transform: rotate(var(--tilt));
@@ -102,22 +102,33 @@ const { notes, title = 'Download' } = Astro.props;
     gap: var(--sp-1);
     font-family: var(--font-ui);
     font-size: var(--fs-xs);
-    font-weight: 600;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.06em;
   }
   .t {
-    font-family: var(--font-read);
-    font-style: italic;
-    font-size: clamp(1.875rem, 1.5rem + 1vw, 2.375rem);
-    line-height: 1;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1.625rem, 1.35rem + 0.8vw, 2rem);
+    line-height: 1.05;
   }
+  /* The action, as a real button on the note */
   .go {
     margin-top: auto;
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 var(--sp-2);
+    border-radius: 999px;
+    background: var(--ink);
+    color: #fff;
     font-family: var(--font-ui);
     font-size: var(--fs-sm);
-    text-decoration: underline;
-    text-underline-offset: 4px;
+    font-weight: 800;
+  }
+  a:hover .go {
+    background: var(--ink-soft);
   }
   @media (prefers-reduced-motion: reduce) {
     a,
