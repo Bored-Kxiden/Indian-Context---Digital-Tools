@@ -1,13 +1,11 @@
 ---
 import ComponentLayout from '../../../layouts/ComponentLayout.astro';
-import PaperTop from '../../../components/file/PaperTop.astro';
 import FileBasics from '../../../components/file/FileBasics.astro';
 import PaperSection from '../../../components/file/PaperSection.astro';
 import Icon from '../../../components/Icon.astro';
 import { overview } from '../../../data/booklet/material-reality';
 import { componentById } from '../../../data/components';
 import { getDownloadById } from '../../../data/downloads';
-import { bookletImage } from '../../../utils/assets';
 import { url } from '../../../utils/url';
 
 // File 04's overview, in the template's order and in plain words (D41, D42).
@@ -26,12 +24,6 @@ const how = [
 ---
 
 <ComponentLayout component="material-reality" current="overview" title={comp.name} heading={comp.name}>
-  <PaperTop slot="top" image={bookletImage('4.07')} alt="The Build worksheet from the booklet, filled in with Meera’s example." caption="Meera’s Build worksheet · booklet p.4.07" text={comp.blurb}>
-    <Fragment slot="buttons">
-      <a class="btn btn--sm" href={url(pack.href)} download>Download PDF ↓</a>
-      <a class="btn btn--sm btn--outline" href={url(strip.href)} download>Journey Strip ↓</a>
-    </Fragment>
-  </PaperTop>
 
   <FileBasics
     comp={comp}

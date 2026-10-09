@@ -1,46 +1,37 @@
 ---
 import BaseLayout from './BaseLayout.astro';
 import FileShell from '../components/file/FileShell.astro';
-import SubBar from '../components/file/SubBar.astro';
-import { componentById, fileNo } from '../data/components';
-import { verbFor } from '../data/goals';
-import { railFor, type RailComponentId } from '../data/rail';
+import { componentById } from '../data/components';
+import type { RailComponentId } from '../data/rail';
 
-// Shell for a file's own pages: its overview, "Pick a product", "Before you start", "Ask your participants",
-// the Look back pages. The file's folder and paper (FileShell, D41) hold everything: an optional `top` slot
-// (the overview's opening), the row of steps, then the page.
+// Shell for a file's own pages: its overview, "Pick a product", "Before you start", "Ask your participants", the
+// Reflect and Look back pages. The file's sheet (FileShell, v3 template) holds everything; the page's content goes
+// under the step cards, after the step's title.
 
 interface Props {
   component: RailComponentId;
-  /** "overview", or the slug of the page (matches the step row). */
+  /** "overview", or the slug of the page (matches the step cards). */
   current: string;
   title: string;
-  heading: string;
+  /** The step's title on the sheet, when it differs from its card's name. */
+  heading?: string;
   lead?: string;
   description?: string;
-  /** Kept for older pages; shown as small facts under the title. */
+  /** Kept for older pages; shown as small facts under the step's title. */
   chips?: string[];
-  /** Last breadcrumb label. Leave out on the overview. */
+  /** Kept for older pages (the breadcrumb is now the template's "All files / Tool 0N of 05"). */
   crumb?: string;
 }
 
-const { component, current, title, heading, lead, description, chips = [], crumb } = Astro.props;
+const { component, current, title, lead, description, chips = [] } = Astro.props;
 const comp = componentById[component];
-const rail = railFor(component);
-const path = `${comp.href}${current === 'overview' ? '' : `${current}/`}`;
-const verb = current === 'overview' ? comp.verb : verbFor(path);
-const crumbs = [crumb ? { label: `File ${fileNo(comp)} · ${comp.short}`, href: comp.href } : { label: `File ${fileNo(comp)} · ${comp.short}` }, ...(crumb ? [{ label: crumb }] : [])];
-const stepNo = rail.items.findIndex((i) => i.slug === current);
 ---
 
 <BaseLayout title={title} description={description ?? lead} component={comp.c}>
-  <FileShell comp={comp} crumbs={crumbs} verb={verb} title={heading} lead={lead} stamp={`${fileNo(comp)}${stepNo >= 0 ? `.${stepNo + 1}` : ''}`}>
-    <Fragment slot="head">
-      {chips.length > 0 && <ul class="facts">{chips.map((c) => <li>{c}</li>)}</ul>}
-      <slot name="head" />
-    </Fragment>
-    <slot name="top" />
-    <SubBar rail={rail} current={current} />
+  <FileShell id={component} current={current}>
+    {chips.length > 0 && <ul class="facts">{chips.map((c) => <li>{c}</li>)}</ul>}
+    {lead && <p class="lead">{lead}</p>}
+    <slot name="head" />
     <slot />
   </FileShell>
 </BaseLayout>
@@ -49,7 +40,7 @@ const stepNo = rail.items.findIndex((i) => i.slug === current);
   .facts {
     list-style: none;
     padding: 0;
-    margin: var(--sp-3) 0 0;
+    margin: 0 0 var(--sp-3);
     display: flex;
     flex-wrap: wrap;
     gap: var(--sp-1);
@@ -57,10 +48,17 @@ const stepNo = rail.items.findIndex((i) => i.slug === current);
   .facts li {
     margin: 0;
     font-family: var(--font-ui);
-    font-size: var(--fs-xs);
+    font-size: 12px;
     letter-spacing: 0.04em;
     border: 1px solid rgb(27 27 27 / 0.3);
     border-radius: 999px;
     padding: 4px 12px;
+  }
+  .lead {
+    font-family: var(--font-read);
+    font-size: clamp(20px, 1.6vw, 25px);
+    line-height: 1.55;
+    max-width: 52rem;
+    margin: 0 0 var(--sp-4);
   }
 </style>

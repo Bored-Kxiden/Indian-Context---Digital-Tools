@@ -1,7 +1,8 @@
 ---
 import { url } from '../../utils/url';
 
-// "How do I use it?" steps: a numbered circle in the file's colour, then the step. A step that is a tool links to it.
+// "How do I use it?", as in the owner's v3 template (D48): one row per step, its number ("01") on the left and the
+// step on the right, a thin rule under each. A step that is a tool links to it.
 interface Props {
   steps: (string | { title: string; body: string; href?: string; meta?: string })[];
 }
@@ -12,26 +13,20 @@ const { steps } = Astro.props;
   {
     steps.map((s, i) => (
       <li>
-        <span class="n" aria-hidden="true">{i + 1}</span>
-        <span class="t">
+        <span class="n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+        <div class="t">
           {typeof s === 'string' ? (
             s
           ) : (
             <>
               <span class="hd">
-                {s.href ? (
-                  <a href={url(s.href)} class="st">
-                    {s.title} <span aria-hidden="true">→</span>
-                  </a>
-                ) : (
-                  <b>{s.title}</b>
-                )}
+                {s.href ? <a href={url(s.href)}>{s.title} →</a> : <b>{s.title}</b>}
                 {s.meta && <span class="meta">{s.meta}</span>}
               </span>
               <span class="sb">{s.body}</span>
             </>
           )}
-        </span>
+        </div>
       </li>
     ))
   }
@@ -42,64 +37,47 @@ const { steps } = Astro.props;
     list-style: none;
     margin: 0;
     padding: 0;
-    display: grid;
-    gap: var(--sp-1);
-    max-width: 52rem;
   }
   li {
     display: grid;
-    grid-template-columns: 40px minmax(0, 1fr);
-    gap: var(--sp-2);
-    align-items: start;
-    padding: var(--sp-2) 0;
-    border-bottom: 1px solid var(--line);
+    grid-template-columns: 48px minmax(0, 1fr);
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid #d9d5ca;
     margin: 0;
   }
-  li:last-child {
-    border-bottom: 0;
-  }
   .n {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: grid;
-    place-items: center;
-    background: var(--accent);
-    color: var(--accent-ink);
-    font-family: var(--font-display);
+    font-family: var(--font-ui);
+    font-size: 13px;
     font-weight: 600;
-    font-size: 1.125rem;
+    padding-top: 0.45em;
   }
   .t {
-    display: grid;
-    gap: 2px;
-    padding-top: 6px;
-    line-height: 1.5;
+    font-family: var(--font-read);
+    font-size: clamp(20px, 1.6vw, 25px);
+    line-height: 1.55;
+    text-wrap: pretty;
   }
   .hd {
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
-    gap: var(--sp-half) var(--sp-1);
+    gap: 4px 12px;
   }
-  .hd b,
-  .st {
-    font-weight: 800;
+  .hd a {
+    color: inherit;
+    text-underline-offset: 4px;
   }
-  .st {
-    color: var(--ink);
-    text-decoration-thickness: 2px;
-    text-decoration-color: var(--accent);
+  .hd b {
+    font-weight: 600;
   }
   .meta {
-    font-size: var(--fs-sm);
-    font-weight: 700;
-    color: var(--muted);
-    background: var(--sand);
-    border-radius: 999px;
-    padding: 0 10px;
+    font-family: var(--font-ui);
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #6f6c66;
   }
   .sb {
-    color: var(--ink-soft);
+    display: block;
   }
 </style>

@@ -1,13 +1,12 @@
 ---
 import BaseLayout from './BaseLayout.astro';
 import FileShell from '../components/file/FileShell.astro';
-import SubBar from '../components/file/SubBar.astro';
 import DownloadCard from '../components/DownloadCard.astro';
 import Icon from '../components/Icon.astro';
 import { getDownloadsForPage } from '../data/downloads';
 import { referenceBySlug, referenceHref, parentLabel } from '../data/tools';
 import { railFor } from '../data/rail';
-import { componentById, fileNo } from '../data/components';
+import { componentById } from '../data/components';
 import { url } from '../utils/url';
 
 // Shell for the deeper pages of Component 3 · Reading Language (the Meaning Card, the Field Kit,
@@ -38,18 +37,8 @@ const also = (page.also ?? []).map((a) => ({ label: parentLabel(a), href: rail.i
 ---
 
 <BaseLayout title={`${page.name}: Language`} description={lead} component="c3">
-  <FileShell
-    comp={comp}
-    crumbs={[
-      { label: `File ${fileNo(comp)} · ${comp.short}`, href: comp.href },
-      { label: parentLabel(page.parent), href: parent.href },
-      { label: page.name },
-    ]}
-    title={page.name}
-    lead={lead}
-    stamp={`${fileNo(comp)}.${parentAt + 1}`}
-  >
-    <p slot="head" class="under">
+  <FileShell id="language" current={page.parent} stepName={page.name} stepTag={`Part of ${parentLabel(page.parent)}`}>
+    <p class="under">
       <span class="where">Part of</span>
       <a class="chip chip--solid" href={url(parent.href)}>{parentLabel(page.parent)}</a>
       {
@@ -61,7 +50,7 @@ const also = (page.also ?? []).map((a) => ({ label: parentLabel(a), href: rail.i
         )
       }
     </p>
-    <SubBar rail={rail} current={page.parent} />
+    {lead && <p class="lead">{lead}</p>}
 
   <div class="wrap body">
     <div class="main">
@@ -175,7 +164,14 @@ const also = (page.also ?? []).map((a) => ({ label: parentLabel(a), href: rail.i
     flex-wrap: wrap;
     align-items: center;
     gap: var(--sp-1);
-    margin: var(--sp-3) 0 0;
+    margin: 0 0 var(--sp-3);
+  }
+  .lead {
+    font-family: var(--font-read);
+    font-size: clamp(20px, 1.6vw, 25px);
+    line-height: 1.55;
+    max-width: 52rem;
+    margin: 0 0 var(--sp-4);
   }
   .under .chip {
     text-decoration: none;

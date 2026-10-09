@@ -1,6 +1,5 @@
 ---
 import ComponentLayout from '../../../layouts/ComponentLayout.astro';
-import PaperTop from '../../../components/file/PaperTop.astro';
 import FileBasics from '../../../components/file/FileBasics.astro';
 import PaperSection from '../../../components/file/PaperSection.astro';
 import { overview, stops, lookBack } from '../../../data/reflection';
@@ -24,12 +23,6 @@ const how = [
 ---
 
 <ComponentLayout component="reflection" current="overview" title={comp.name} heading={comp.name} description={comp.plain}>
-  <PaperTop slot="top" image={{ src: '/reflection/r1a.webp', width: 1240, height: 1754 }} alt="The printable Before page for Reading Existing Products." caption="The Before page · R·1A" text={comp.blurb}>
-    <Fragment slot="buttons">
-      <a class="btn btn--sm" href={url(all.href)} download>Download PDF ↓</a>
-      <a class="btn btn--sm btn--outline" href={url(`${stops[0].href}reflect-before/`)}>Start the first page →</a>
-    </Fragment>
-  </PaperTop>
 
   <FileBasics
     comp={comp}

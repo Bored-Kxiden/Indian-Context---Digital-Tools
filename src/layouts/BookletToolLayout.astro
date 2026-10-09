@@ -1,10 +1,7 @@
 ---
 import BaseLayout from './BaseLayout.astro';
 import FileShell from '../components/file/FileShell.astro';
-import SubBar from '../components/file/SubBar.astro';
 import Involvement from '../components/file/Involvement.astro';
-import DownloadNotes, { type Note } from '../components/file/DownloadNotes.astro';
-import PaperTop from '../components/file/PaperTop.astro';
 import PaperSection from '../components/file/PaperSection.astro';
 import Steps from '../components/file/Steps.astro';
 import PageFigure from '../components/PageFigure.astro';
@@ -104,53 +101,17 @@ const levelText = tool.involve ?? [
   tool.worksOnItsOwn ? 'You can do it on its own.' : 'Do the steps before it first.',
 ].join(' ');
 const facts = [tool.time, tool.group, tool.mode].filter(Boolean) as string[];
-const notes: Note[] = [
-  ...(fills.length ? [{ kind: 'Digital worksheet', format: 'On screen', title: 'Fill it here', action: 'fill on screen →', href: `${pagePath}#fill`, tone: 'pink' as const }] : []),
-  ...(mainTpl ? [{ kind: 'Printable worksheet', format: `${mainTpl.format} · A4`, title: 'Print and fill in', action: `download ${mainTpl.format} ↓`, href: mainTpl.href, tone: 'yellow' as const, download: true }] : []),
-  ...(digital ? [{ kind: 'Digital template', format: digital.format === 'JAM' ? 'FigJam' : 'Figma', title: 'Open the template', action: `download ${digital.format === 'JAM' ? 'FigJam' : 'Figma'} file ↓`, href: digital.href, tone: 'teal' as const, download: true }] : []),
-];
-// Don't say the same thing twice: the opening paragraph already says what the tool shows. When a paragraph only
-// adds a question after it ("Shows what … flows: do people shape the product …?"), keep just the question.
+// "What is it and why should I do it?": the tool's own paragraphs. The top of the sheet now shows the file, not the
+// tool, so the tool's "shows" line leads them when they don't already say it (v3 template, D48).
 const shownLower = tool.shows.replace(/\.$/, '').toLowerCase();
-const whatParas = tool.whatIsIt
-  .map((p) => {
-    const i = p.toLowerCase().indexOf(shownLower);
-    if (i < 0) return p;
-    const before = p.slice(0, i).trim();
-    const after = p.slice(i + shownLower.length).replace(/^[\s:;,.]+/, '');
-    if (/^\w+$/.test(before)) return after.charAt(0).toUpperCase() + after.slice(1);
-    return (before + ' ' + p.slice(i + shownLower.length)).replace(/\.\s*\./g, '.').replace(/^\s*\.\s*/, '').replace(/\s{2,}/g, ' ').trim();
-  })
-  .filter((p) => p.replace(/[^a-z]/gi, '').length > 12);
+const whatParas = tool.whatIsIt.some((p) => p.toLowerCase().includes(shownLower)) ? tool.whatIsIt : [tool.shows, ...tool.whatIsIt];
 const howSteps = tool.howTo ?? tool.stepsList ?? (tool.parts.length === 1 ? firstPart.steps : undefined);
 // Reading Existing Products is worked on seven boards; show this tool's (v3 template, D47).
 const boards = tool.component === 'existing-products' ? (c1BoardsFor[tool.slug] ?? []).map((id) => c1Boards.find((b) => b.id === id)!) : [];
 ---
 
 <BaseLayout title={`${tool.name}: ${comp.short}`} description={tool.question} component={comp.c}>
-  <FileShell comp={comp} crumbs={crumbs} verb={verb ?? tool.question} title={tool.name} stamp={`${fileNo(comp)}${stepNo ? `.${stepNo}` : ''}`}>
-    <PaperTop image={topImage} alt={topAlt} caption={guideImage ? `Booklet p.${tool.guidePage}` : `Meera’s example · booklet p.${firstPart.example.page}`} text={tool.shows}>
-      <p class="done"><b>You’re done when</b> {tool.done}</p>
-      <Fragment slot="buttons">
-        {
-          mainTpl && (
-            <a class="btn btn--sm" href={url(mainTpl.href)} download>
-              Download {mainTpl.format} ↓
-            </a>
-          )
-        }
-        {
-          digital && (
-            <a class="btn btn--sm btn--outline" href={url(digital.href)} download>
-              {digital.format === 'JAM' ? 'FigJam' : 'Figma'} template ↓
-            </a>
-          )
-        }
-      </Fragment>
-    </PaperTop>
-
-    <SubBar rail={rail} current={tool.slug} />
-
+  <FileShell id={tool.component} current={tool.slug}>
     <Involvement level={level} text={levelText} facts={facts} />
 
     {
@@ -168,7 +129,28 @@ const boards = tool.component === 'existing-products' ? (c1BoardsFor[tool.slug] 
       )
     }
 
-    <DownloadNotes notes={notes} title="Ways to work" />
+
+    <PaperSection id="what" title="What is it and why should I do it?">
+      {whatParas.map((p) => <p class="body-p">{p}</p>)}
+      <dl class="need">
+        <div><dt>You need</dt><dd>{tool.need}</dd></div>
+        <div><dt>You end up with</dt><dd>{tool.endUp}</dd></div>
+        <div><dt>You’re done when</dt><dd>{tool.done}</dd></div>
+      </dl>
+    </PaperSection>
+
+    <PaperSection id="how" title="How do I use it?">
+      {howSteps ? (
+        <Steps steps={howSteps} />
+      ) : (
+        tool.parts.map((p) => (
+          <div class="how-part">
+            <h3 class="how-h">{p.label} · {p.title}</h3>
+            <Steps steps={p.steps} />
+          </div>
+        ))
+      )}
+    </PaperSection>
 
   <div class="tbody" data-tool>
     <div class="main">
@@ -205,26 +187,6 @@ const boards = tool.component === 'existing-products' ? (c1BoardsFor[tool.slug] 
         <div class="guide-grid" data-beside={String(pageBeside)}>
           <div class="g-text">
            <div class="g-a">
-            <PaperSection id="what" title="What is it and why should I do it?" level={3}>
-              {whatParas.map((p) => <p class="body-p">{p}</p>)}
-              <dl class="need">
-                <div><dt>You need</dt><dd>{tool.need}</dd></div>
-                <div><dt>You end up with</dt><dd>{tool.endUp}</dd></div>
-              </dl>
-            </PaperSection>
-
-            <PaperSection id="how" title="How do I use it?" level={3}>
-              {howSteps ? (
-                <Steps steps={howSteps} />
-              ) : (
-                tool.parts.map((p) => (
-                  <div class="how-part">
-                    <h4>{p.label} · {p.title}</h4>
-                    <Steps steps={p.steps} />
-                  </div>
-                ))
-              )}
-            </PaperSection>
 
             {
               tool.words.length > 0 && (
@@ -773,11 +735,14 @@ const boards = tool.component === 'existing-products' ? (c1BoardsFor[tool.slug] 
   .how-part + .how-part {
     margin-top: var(--sp-4);
   }
-  .how-part h4 {
-    margin-bottom: var(--sp-2);
+  .how-h {
+    font-family: var(--font-ui);
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 0 4px;
   }
   .tbody {
-    margin-top: var(--sp-8);
+    margin-top: 56px;
   }
 
   /* ---------- Tabs: sticky under the component strip ---------- */

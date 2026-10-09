@@ -1,24 +1,23 @@
 ---
 import Involvement from './Involvement.astro';
-import DownloadNotes, { type Note } from './DownloadNotes.astro';
 import PaperSection from './PaperSection.astro';
 import Steps from './Steps.astro';
 import type { ToolkitComponent } from '../../data/components';
 
-// The middle of a file's overview, in the template's order: level of involvement, the ways to work as
-// sticky notes, "What is it and why should I do it?" and "How do I use it?".
+// The middle of a file's overview, in the v3 template's order: level of involvement, "What is it and why should I
+// do it?" and "How do I use it?". (The downloads are next to the step cards, above.)
 interface Props {
   comp: ToolkitComponent;
+  /** Kept for older callers; not shown. */
   facts?: string[];
-  notes: Note[];
+  notes?: unknown[];
   why: string[];
   how: (string | { title: string; body: string; href?: string; meta?: string })[];
 }
-const { comp, facts = [], notes, why, how } = Astro.props;
+const { comp, why, how } = Astro.props;
 ---
 
-<Involvement level={comp.level} text={comp.involve} facts={facts} />
-<DownloadNotes notes={notes} />
+<Involvement level={comp.level} text={comp.involve} />
 <PaperSection id="why" title="What is it and why should I do it?">
   {why.map((p) => <p>{p}</p>)}
   <slot name="why" />

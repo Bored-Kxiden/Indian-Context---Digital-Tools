@@ -1,20 +1,15 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import VennHero from '../components/VennHero.astro';
 import { files, fileNo } from '../data/components';
-import { railFor } from '../data/rail';
 import { url } from '../utils/url';
 
-// The home page (D41, D44, D47): the kit's name and what it is for, "Start from the situation, not the default" with
-// the circles, then the five files as a stack of folders (the "drawer" in the guide's tour).
-// A folder opens when you point at it, tap its "Show what's inside" button, or reach it with the keyboard;
-// one is open at a time, Reflection first. Without JavaScript every folder is simply open.
-const lefts = ['2%', '22%', '40%', '12%', '30%'];
-const stack = [...files].reverse().map((f) => ({
-  ...f,
-  left: lefts[f.file - 1],
-  tools: railFor(f.id).items.filter((i) => !i.slug.startsWith('reflect-')),
-}));
+// The home page, as in the owner's v3 template (D47, D48): the kit's name, "Start from the situation, not the
+// default", then the drawer: the five files as a stack of folders, 05 at the top and 01 at the bottom. Pointing at
+// a folder (or reaching it with the keyboard) opens it to a preview and the others close; leaving the drawer goes
+// back to Reflection. Clicking a folder opens its file. On touch screens the first tap opens the preview and the
+// second opens the file. Without JavaScript, Reflection is open and every folder's tab is a link.
+const lefts = ['1%', '20%', '38%', '10%', '28%'];
+const stack = [...files].reverse().map((f) => ({ ...f, left: lefts[f.file - 1], num: fileNo(f) }));
 ---
 
 <BaseLayout theme="night">
@@ -23,120 +18,92 @@ const stack = [...files].reverse().map((f) => ({
     <p class="sub">A toolkit for designing in Indian contexts by questioning the universal assumptions behind what gets treated as an exception.</p>
   </section>
 
-  <section class="intro" aria-labelledby="intro-h">
-    <div class="il">
-      <h2 id="intro-h">Start from the situation, not the default.</h2>
-      <div class="art">
-        <VennHero />
-      </div>
-    </div>
+  <section class="intro" aria-labelledby="intro-h" data-no-tip>
+    <h2 id="intro-h">Start from the situation, not the default.</h2>
     <div class="ir">
       <p>Design often begins with a default user, a default environment and a default way of doing things.</p>
       <p>
         But India rarely offers a single set of conditions from which that default can be safely assumed. Some of these conditions may appear
         unusual when measured against a universalised model of use. But unusual to the system does not necessarily mean unusual to the person.
       </p>
-      <p><b data-no-tip>Beyond the Edge Case</b> is a toolkit for finding and investigating these situations before they are reduced to exceptions.</p>
+      <p><b>Beyond the Edge Case</b> is a toolkit for finding and investigating these situations before they are reduced to exceptions.</p>
       <div class="fromto">
         <p><span class="ft">From</span>“How do I accommodate this edge case?”</p>
         <p><span class="ft">To</span>“What made this an edge case in the first place?”</p>
       </div>
-      <ul class="starts">
-        <li><a class="link-more" href={url('/guideline/')}>How to use the kit →</a></li>
-        <li><a class="link-more" href={url('/about/')}>Why the kit exists →</a></li>
-      </ul>
     </div>
   </section>
 
-  <section class="stack-wrap" aria-labelledby="files-h" data-tour="drawer">
+  <section class="drawer" aria-labelledby="files-h" data-tour="drawer" data-drawer>
     <h2 id="files-h" class="visually-hidden">The five files</h2>
-    <ol class="stack" data-stack>
+    <ol class="stack">
       {
         stack.map((f) => (
-          <li class:list={['fold', { open: f.file === 1 }]} data-c={f.c} data-fold={f.id}>
+          <li class:list={['fold', { on: f.file === 1 }]} data-c={f.c} data-fold={f.id} data-href={url(f.href)}>
             <a class="ftab" href={url(f.href)} style={`left:${f.left}`}>
               <svg viewBox="0 0 300 66" preserveAspectRatio="none" aria-hidden="true">
                 <path d="M0,66 C26,66 30,0 62,0 H238 C270,0 274,66 300,66 Z" />
               </svg>
-              <span class="tno">{fileNo(f)}</span>
-              <span>
-                {f.name.startsWith('Reading ') && <span class="rd">Reading </span>}
-                {f.name.replace('Reading ', '')}
-              </span>
+              <span class="nm">{f.name}</span>
             </a>
-            <div class="body">
-              <button type="button" class="ftog" aria-expanded={f.file === 1 ? 'true' : 'false'} aria-controls={`fold-${f.id}`} data-fold-toggle>
-                <span class="vs">“{f.verb}”</span>
-                <span class="act">
-                  <span class="act-open">Show what’s inside</span>
-                  <span class="act-close">Hide</span>
-                  <span class="chev" aria-hidden="true" />
+            <div class="body" data-fold-body>
+              <p class="row">
+                <span>
+                  Tool {f.num} — {f.tag}
                 </span>
-              </button>
-              <div class="more" id={`fold-${f.id}`}>
-                <div class="more-in">
-                  <p class="plain">{f.blurb}</p>
-                  <p class="tl">Its steps</p>
-                  <ul class="tools">
-                    {f.tools.map((t) => (
-                      <li>
-                        <a href={url(t.href)}>
-                          {t.label}
-                          {t.meta && <small>{t.meta}</small>}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                  <a class="btn open-f" href={url(f.href)}>
-                    Open file {fileNo(f)} →
-                  </a>
-                </div>
-              </div>
+                <span class="chev" aria-hidden="true" />
+              </p>
+              <p class="pv">{f.blurb}</p>
+              <a class="of" href={url(f.href)}>
+                Open file {f.num} →
+              </a>
             </div>
           </li>
         ))
       }
     </ol>
   </section>
-
 </BaseLayout>
 
 <script>
-  // Folders: one open at a time. Hover opens on devices that can hover; the button opens on tap, click or keyboard.
-  const stack = document.querySelector<HTMLElement>('[data-stack]');
-  if (stack) {
-    document.documentElement.classList.add('js-folders');
-    const folds = [...stack.querySelectorAll<HTMLElement>('[data-fold]')];
-    const set = (f: HTMLElement | null) =>
-      folds.forEach((x) => {
-        const on = x === f;
-        x.classList.toggle('open', on);
-        x.querySelector('[data-fold-toggle]')?.setAttribute('aria-expanded', String(on));
-      });
+  const drawer = document.querySelector<HTMLElement>('[data-drawer]');
+  if (drawer) {
+    const folds = [...drawer.querySelectorAll<HTMLElement>('[data-fold]')];
+    const first = folds.find((f) => f.dataset.fold === 'reflection') ?? folds[folds.length - 1];
+    const set = (f: HTMLElement) => folds.forEach((x) => x.classList.toggle('on', x === f));
     const canHover = matchMedia('(hover: hover) and (pointer: fine)');
-    let timer = 0;
     folds.forEach((f) => {
-      const b = f.querySelector<HTMLButtonElement>('[data-fold-toggle]');
-      b?.addEventListener('click', () => set(f.classList.contains('open') ? null : f));
-      f.addEventListener('mouseenter', () => {
-        if (!canHover.matches) return;
-        clearTimeout(timer);
-        timer = window.setTimeout(() => set(f), 120);
+      // Whether the folder was already open when the tap began (focus opens it before the click arrives).
+      let wasOn = false;
+      f.addEventListener('pointerdown', () => (wasOn = f.classList.contains('on')));
+      f.addEventListener('mouseenter', () => canHover.matches && set(f));
+      f.addEventListener('focusin', () => set(f));
+      // A click anywhere on the folder opens its file; on a touch screen the first tap opens the preview.
+      f.querySelector('[data-fold-body]')!.addEventListener('click', (e) => {
+        if ((e.target as HTMLElement).closest('a')) return;
+        if (!canHover.matches && !wasOn) set(f);
+        else location.href = f.dataset.href!;
       });
-      f.addEventListener('focusin', (e) => {
-        if ((e.target as HTMLElement).closest('.more')) set(f);
+      f.querySelector('.ftab')!.addEventListener('click', (e) => {
+        if (!canHover.matches && !wasOn && e.detail > 0) {
+          e.preventDefault();
+          set(f);
+        }
       });
     });
-    stack.addEventListener('mouseleave', () => clearTimeout(timer));
+    drawer.addEventListener('mouseleave', () => canHover.matches && set(first));
     // The guide's tour opens a folder to show how peeking works.
-    document.addEventListener('bte:fold', (e) => set(folds.find((f) => f.dataset.fold === (e as CustomEvent<string>).detail) ?? null));
+    document.addEventListener('bte:fold', (e) => {
+      const f = folds.find((x) => x.dataset.fold === (e as CustomEvent<string>).detail);
+      if (f) set(f);
+    });
   }
 </script>
 
 <style>
-  /* ---------- Hero: the kit's name, big and centred (v3) ---------- */
+  /* ---------- The kit's name, big and centred ---------- */
   .hero {
-    padding: clamp(var(--sp-8), 8vw, 110px) var(--gutter) clamp(var(--sp-6), 6vw, 80px);
+    padding: 110px 32px 80px;
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -145,118 +112,90 @@ const stack = [...files].reverse().map((f) => ({
   .hero h1 {
     width: 100%;
     text-wrap: balance;
-    font-size: clamp(3.5rem, 0.6rem + 10.5vw, 11.875rem);
+    font-family: var(--font-cover);
+    font-weight: 400;
+    font-size: clamp(64px, 10.5vw, 190px);
     line-height: 0.92;
-    letter-spacing: -0.005em;
-    color: var(--on-night);
     margin: 0;
+    text-transform: uppercase;
+    color: #faf9f4;
+    letter-spacing: -0.005em;
   }
   .sub {
-    font-size: clamp(1.25rem, 0.9rem + 1.2vw, 1.75rem);
+    font-family: var(--font-read);
+    font-size: clamp(20px, 1.9vw, 28px);
     line-height: 1.45;
-    color: var(--on-night-soft);
-    max-width: 56rem;
-    margin: var(--sp-4) 0 0;
+    color: #8b8a86;
+    max-width: 900px;
+    margin: 30px 0 0;
     text-wrap: pretty;
   }
 
-  /* ---------- Start from the situation: heading and circles left, the words right ---------- */
+  /* ---------- Start from the situation ---------- */
   .intro {
-    max-width: 72rem;
+    padding: 0 32px 20px;
+    max-width: 1100px;
     margin: 0 auto;
-    padding: 0 var(--gutter) var(--sp-2);
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--sp-5);
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: 60px;
     align-items: start;
-    color: var(--on-night);
     --focus: #fff;
-  }
-  @media (min-width: 56rem) {
-    .intro {
-      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-      gap: 60px;
-    }
   }
   .intro h2 {
     font-family: var(--font-cover);
     font-weight: 400;
     text-transform: uppercase;
-    font-size: clamp(2.25rem, 1.2rem + 3vw, 3.75rem);
+    font-size: clamp(36px, 4vw, 60px);
     line-height: 1;
     margin: 0;
-    color: var(--on-night);
-  }
-  .art {
-    display: flex;
-    justify-content: center;
-    margin-top: var(--sp-5);
+    color: #faf9f4;
   }
   .ir {
-    font-size: clamp(1.1875rem, 1rem + 0.6vw, 1.4375rem);
+    font-family: var(--font-read);
+    font-size: clamp(19px, 1.6vw, 23px);
     line-height: 1.5;
-    color: var(--on-night-soft);
+    color: #a9a8a3;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
     text-wrap: pretty;
   }
   .ir p {
-    margin: 0 0 var(--sp-2);
+    margin: 0;
   }
   .ir b {
-    color: var(--on-night);
+    color: #faf9f4;
     font-weight: 500;
   }
   .fromto {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+    grid-template-columns: 1fr 1fr;
     gap: 20px;
-    margin-top: var(--sp-2);
+    margin-top: 10px;
     font-style: italic;
-    color: var(--on-night);
-  }
-  .fromto p {
-    margin: 0;
+    color: #faf9f4;
   }
   .ft {
     display: block;
     font-family: var(--font-ui);
     font-style: normal;
-    font-size: var(--fs-xs);
+    font-size: 11px;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--on-night-soft);
+    color: #8b8a86;
     margin-bottom: 6px;
   }
-  .starts {
-    list-style: none;
-    padding: 0;
-    margin: var(--sp-4) 0 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0 var(--sp-3);
-  }
-  .starts li {
-    margin: 0;
-  }
-  .link-more {
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-    font-family: var(--font-ui);
-    font-size: var(--fs-sm);
-    font-weight: 600;
-    color: var(--on-night);
-    text-underline-offset: 4px;
-  }
 
-  /* ---------- The stack of folders ---------- */
-  .stack-wrap {
-    max-width: 137.5rem;
+  /* ---------- The drawer ---------- */
+  .drawer {
+    padding: 90px 32px 0;
+    max-width: 2200px;
     margin: 0 auto;
-    padding: calc(62px + clamp(var(--sp-6), 6vw, 90px)) var(--gutter) 0;
   }
   .stack {
     list-style: none;
-    margin: 0;
+    margin: 66px 0 0;
     padding: 0;
   }
   .fold {
@@ -268,229 +207,138 @@ const stack = [...files].reverse().map((f) => ({
   .ftab {
     position: absolute;
     bottom: 100%;
-    height: 62px;
-    padding: 0 clamp(var(--sp-4), 4vw, 60px);
-    margin-bottom: -2px;
+    height: 66px;
+    padding: 0 64px;
     display: flex;
     align-items: center;
-    gap: var(--sp-1);
+    margin-bottom: -1px;
     color: inherit;
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: clamp(1.125rem, 1.8vw, 1.625rem);
+    font-family: var(--font-read);
+    font-size: clamp(22px, 2.2vw, 34px);
     white-space: nowrap;
     text-decoration: none;
-    z-index: 1;
   }
   .ftab svg {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
+    z-index: 0;
     fill: var(--accent);
   }
-  .ftab span {
+  .ftab .nm {
     position: relative;
+    z-index: 1;
   }
-  .tno {
-    font-family: var(--font-ui);
-    font-size: 0.8em;
-    font-weight: 800;
+  .ftab:hover {
     opacity: 0.85;
   }
-  .ftab:hover > span:last-child {
-    text-decoration: underline;
-    text-underline-offset: 5px;
-    text-decoration-thickness: 2px;
-  }
   .body {
-    position: relative;
     background: var(--accent);
-    border-radius: var(--r-lg) var(--r-lg) 0 0;
-    padding: var(--sp-2) clamp(var(--sp-2), 4vw, 56px) calc(62px + var(--sp-3));
-    box-shadow: 0 -10px 24px -18px rgb(0 0 0 / 0.6);
-    transition: filter var(--t-med) var(--ease);
-  }
-  .fold:hover .body,
-  .fold:hover .ftab svg {
-    filter: brightness(1.06);
-  }
-  .fold:last-child .body {
-    padding-bottom: var(--sp-5);
-  }
-  .ftog {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--sp-1) var(--sp-2);
-    width: 100%;
-    min-height: 48px;
-    padding: 0;
-    border: 0;
-    background: none;
-    color: inherit;
-    font: inherit;
-    text-align: left;
-    cursor: pointer;
-  }
-  .vs {
-    font-style: italic;
-    font-weight: 400;
-    font-size: var(--fs-lead);
-  }
-  .act {
-    margin-left: auto;
-    display: inline-flex;
-    align-items: center;
-    gap: var(--sp-1);
-    min-height: 40px;
-    padding: 0 var(--sp-2);
-    border: 2px solid currentColor;
-    border-radius: 999px;
-    font-weight: 800;
-    font-size: var(--fs-sm);
-  }
-  .ftog:hover .act {
-    background: rgb(255 255 255 / 0.16);
-  }
-  [data-c='c3'] .ftog:hover .act {
-    background: rgb(27 27 27 / 0.1);
-  }
-  .chev {
-    width: 10px;
-    height: 10px;
-    border-right: 2.5px solid currentColor;
-    border-bottom: 2.5px solid currentColor;
-    transform: rotate(45deg) translateY(-3px);
-    transition: transform var(--t-med) var(--ease);
-  }
-  .act-close {
-    display: none;
-  }
-  .fold.open .act-open {
-    display: none;
-  }
-  .fold.open .act-close {
-    display: inline;
-  }
-  .fold.open .chev {
-    transform: rotate(-135deg) translateY(-3px);
-  }
-
-  /* Opening: the folder's contents slide down (grid rows animate from 0 to their full height) */
-  .more {
-    display: grid;
-    grid-template-rows: 1fr;
-  }
-  .more-in {
-    min-height: 0;
+    height: 146px;
+    border-radius: 4px 4px 0 0;
     overflow: hidden;
-  }
-  :global(.js-folders) .more {
-    grid-template-rows: 0fr;
-    transition: grid-template-rows var(--t-slow) var(--ease);
-  }
-  :global(.js-folders) .more-in {
-    opacity: 0;
-    transition: opacity 0.35s var(--ease);
-  }
-  :global(.js-folders) .fold.open .more {
-    grid-template-rows: 1fr;
-  }
-  :global(.js-folders) .fold.open .more-in {
-    opacity: 1;
-  }
-  :global(html:not(.js-folders)) .act {
-    display: none;
-  }
-  .plain {
-    margin-top: var(--sp-2) !important;
-    font-size: var(--fs-body);
-    max-width: 46rem;
-    margin: 0 0 var(--sp-3);
-  }
-  .tl {
-    margin: 0 0 var(--sp-1);
-    font-weight: 800;
-    font-size: var(--fs-xs);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-  .tools {
-    list-style: none;
-    margin: 0 0 var(--sp-3);
-    padding: 0;
+    cursor: pointer;
+    padding: 24px 50px 0 90px;
     display: flex;
-    flex-wrap: wrap;
-    gap: var(--sp-1);
+    flex-direction: column;
+    gap: 22px;
+    font-family: var(--font-ui);
   }
-  .tools li {
+  .fold.on .body {
+    height: 396px;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .body {
+      transition: height 0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .pv,
+    .of {
+      transition: opacity 0.4s;
+    }
+  }
+  .row {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    font-size: 15px;
+    white-space: nowrap;
     margin: 0;
   }
-  .tools a {
-    display: inline-flex;
-    align-items: baseline;
-    gap: var(--sp-1);
-    min-height: 40px;
-    padding: var(--sp-1) var(--sp-2);
-    border: 2px solid currentColor;
-    border-radius: 999px;
+  .chev::before {
+    content: '‹';
+  }
+  .fold.on .chev::before {
+    content: '⌄';
+  }
+  .pv {
+    font-size: 16px;
+    line-height: 1.85;
+    max-width: 780px;
+    margin: 0;
+    opacity: 0;
+  }
+  .of {
+    align-self: flex-start;
+    font-size: 13px;
     color: inherit;
-    text-decoration: none;
-    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    opacity: 0;
   }
-  .tools a:hover {
-    background: rgb(255 255 255 / 0.16);
-  }
-  [data-c='c3'] .tools a:hover {
-    background: rgb(27 27 27 / 0.1);
-  }
-  .tools small {
-    font-size: var(--fs-xs);
-    font-weight: 600;
-  }
-  .open-f {
-    margin-bottom: var(--sp-1);
-    background: var(--accent-ink);
-    border-color: var(--accent-ink);
-    color: var(--accent);
-  }
-  .open-f:hover {
-    background: var(--accent-ink);
-    border-color: var(--accent-ink);
-    color: var(--accent);
-    opacity: 0.9;
-  }
-  [data-c='c3'] .open-f {
-    color: var(--c3-tint);
-  }
-  @media (max-width: 47.99rem) {
-    .ftab {
-      left: 0 !important;
-      padding: 0 var(--sp-3);
-    }
-  }
-  /* Small phones: "Reading" drops from the tab so the name fits */
-  @media (max-width: 30rem) {
-    .rd {
-      display: none;
-    }
-  }
-  @media (max-width: 47.99rem) {
-    .act-open {
-      font-size: 0;
-    }
-    .act-open::after {
-      content: 'Show';
-      font-size: var(--fs-sm);
-    }
+  .fold.on .pv,
+  .fold.on .of,
+  .of:focus-visible {
+    opacity: 1;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .more,
-    .more-in,
+  /* ---------- Smaller screens ---------- */
+  @media (max-width: 56rem) {
+    .intro {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 32px;
+    }
+  }
+  @media (max-width: 48rem) {
+    .hero {
+      padding: 72px 16px 56px;
+    }
+    .intro,
+    .drawer {
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+    .drawer {
+      padding-top: 64px;
+    }
     .ftab {
-      transition: none !important;
+      left: 0 !important;
+      padding: 0 36px;
+      font-size: 20px;
+    }
+    .body {
+      padding: 20px 20px 0;
+      gap: 16px;
+    }
+    .fold.on .body {
+      height: 380px;
+    }
+    .row {
+      justify-content: flex-start;
+      font-size: 13px;
+    }
+    .pv {
+      font-size: 15px;
+      line-height: 1.7;
+    }
+  }
+  @media (max-width: 30rem) {
+    .fromto {
+      grid-template-columns: 1fr;
+    }
+    .ftab {
+      padding: 0 30px;
+      font-size: 18px;
     }
   }
 </style>

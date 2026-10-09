@@ -21,7 +21,7 @@ BricolageGrotesque-Variable.woff2
   (https://github.com/ateliertriay/bricolage).
   Licensed under the SIL Open Font License, Version 1.1 (below).
 
-IBMPlexMono-Regular.woff2, IBMPlexMono-SemiBold.woff2
+IBMPlexMono-Regular.woff2, IBMPlexMono-SemiBold.woff2, IBMPlexMono-SemiBold-numero.woff2 (only the "№" sign, from the v3 template)
   IBM Plex Mono. Copyright 2017 IBM Corp. with Reserved Font Name "Plex".
   Licensed under the SIL Open Font License, Version 1.1 (below).
 

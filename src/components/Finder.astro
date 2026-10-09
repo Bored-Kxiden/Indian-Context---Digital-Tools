@@ -150,7 +150,10 @@ import { url } from '../utils/url';
       const palette = e.key.toLowerCase() === 'k' && (e.ctrlKey || e.metaKey);
       if (slash || palette) {
         e.preventDefault();
-        open(document.activeElement as HTMLElement | null);
+        // On large screens the header has its own search box (Header.astro); use that.
+        const box = document.querySelector<HTMLInputElement>('[data-hsearch-q]');
+        if (box && box.getClientRects().length) box.focus();
+        else open(document.activeElement as HTMLElement | null);
       }
     });
   }

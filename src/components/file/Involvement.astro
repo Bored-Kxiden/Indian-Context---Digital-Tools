@@ -1,12 +1,13 @@
 ---
-// "Level of involvement", from the template: three bars (light, moderate, complex) and what it asks of you.
+// "Level of Involvement", exactly as in the owner's v3 template (D47, D48): three bars (light, moderate, complex)
+// filled in the file's colour, the level under them, and what the step asks of you.
 interface Props {
   level: 1 | 2 | 3;
   text: string;
-  /** Short facts shown under the text, e.g. the time and who takes part. */
+  /** Kept for older callers; the template shows no facts here. */
   facts?: string[];
 }
-const { level, text, facts = [] } = Astro.props;
+const { level, text } = Astro.props;
 const names = ['', 'Light', 'Moderate', 'Complex'];
 ---
 
@@ -18,35 +19,24 @@ const names = ['', 'Light', 'Moderate', 'Complex'];
     <p class="lv" aria-hidden="true">{names[level]} · {level} / 3</p>
   </div>
   <div>
-    <h2 id="inv-h" class="lbl-h">Level of involvement</h2>
+    <h3 id="inv-h" class="lbl-h">Level of Involvement</h3>
     <p class="txt">{text}</p>
-    {
-      facts.length > 0 && (
-        <ul class="facts">
-          {facts.map((f) => (
-            <li>{f}</li>
-          ))}
-        </ul>
-      )
-    }
   </div>
 </section>
 
 <style>
   .inv {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--sp-3);
-    align-items: start;
     padding-top: 34px;
-    border-top: 1px solid var(--line);
-    margin-top: var(--sp-4);
+    border-top: 1px solid #d9d5ca;
+    display: grid;
+    grid-template-columns: 200px minmax(0, 1fr);
+    gap: 50px;
+    align-items: start;
   }
-  @media (min-width: 48rem) {
-    .inv {
-      grid-template-columns: 200px minmax(0, 1fr);
-      gap: var(--sp-6);
-    }
+  .meter {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
   }
   .bars {
     display: flex;
@@ -56,45 +46,37 @@ const names = ['', 'Light', 'Moderate', 'Complex'];
   }
   .bars i {
     width: 24px;
-    border: 2px solid var(--ink);
-    border-radius: 6px;
+    background: transparent;
+    border: 1.5px solid #1b1b1b;
+    border-radius: 2px;
   }
   .bars i.on {
     background: var(--accent);
   }
   .lv {
-    margin: var(--sp-2) 0 0;
+    margin: 0;
     font-family: var(--font-ui);
-    font-size: var(--fs-sm);
-    font-weight: 800;
+    font-size: 12px;
+    font-weight: 600;
   }
   .lbl-h {
     font-family: var(--font-ui);
-    font-size: var(--fs-sm);
+    font-size: 14px;
     font-weight: 600;
     margin: 0 0 12px;
   }
   .txt {
     margin: 0;
-    max-width: 52rem;
-    font-size: var(--fs-lead);
+    max-width: 820px;
+    font-family: var(--font-read);
+    font-size: clamp(20px, 1.6vw, 25px);
     line-height: 1.55;
+    text-wrap: pretty;
   }
-  .facts {
-    list-style: none;
-    padding: 0;
-    margin: var(--sp-2) 0 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--sp-1);
-  }
-  .facts li {
-    margin: 0;
-    font-family: var(--font-ui);
-    font-size: var(--fs-sm);
-    font-weight: 700;
-    background: var(--sand);
-    border-radius: 999px;
-    padding: 4px 12px;
+  @media (max-width: 48rem) {
+    .inv {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 20px;
+    }
   }
 </style>
