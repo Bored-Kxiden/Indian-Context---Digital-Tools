@@ -3,10 +3,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import VennHero from '../components/VennHero.astro';
 import { files, fileNo } from '../data/components';
 import { railFor } from '../data/rail';
-import { intro } from '../data/site';
 import { url } from '../utils/url';
 
-// The home page (D41, D44): the kit's name and the circles, then the five files as a stack of folders.
+// The home page (D41, D44, D47): the kit's name and what it is for, "Start from the situation, not the default" with
+// the circles, then the five files as a stack of folders (the "drawer" in the guide's tour).
 // A folder opens when you point at it, tap its "Show what's inside" button, or reach it with the keyboard;
 // one is open at a time, Reflection first. Without JavaScript every folder is simply open.
 const lefts = ['2%', '22%', '40%', '12%', '30%'];
@@ -19,27 +19,41 @@ const stack = [...files].reverse().map((f) => ({
 
 <BaseLayout theme="night">
   <section class="hero" aria-labelledby="hero-h">
-    <div class="copy">
-      <p class="kick">A toolkit for designing in India</p>
-      <h1 id="hero-h">Beyond the Edge Case</h1>
-      <p class="sub">Find the people a product treats as exceptions, and ask <em>what made them exceptions in the first place</em>.</p>
-      <div class="cta">
-        <a class="btn btn--light" href={url('/components/reflection/')}>Start with File 01 →</a>
-        <a class="btn btn--ghost-light" href={url('/components/')} data-finder-open>Find a tool</a>
+    <h1 id="hero-h">Beyond the Edge Case</h1>
+    <p class="sub">A toolkit for designing in Indian contexts by questioning the universal assumptions behind what gets treated as an exception.</p>
+  </section>
+
+  <section class="intro" aria-labelledby="intro-h">
+    <div class="il">
+      <h2 id="intro-h">Start from the situation, not the default.</h2>
+      <div class="art">
+        <VennHero />
       </div>
-      <p class="hint">Five files. Each works on its own. Pick a circle, or open a folder below.</p>
     </div>
-    <div class="art">
-      <VennHero />
+    <div class="ir">
+      <p>Design often begins with a default user, a default environment and a default way of doing things.</p>
+      <p>
+        But India rarely offers a single set of conditions from which that default can be safely assumed. Some of these conditions may appear
+        unusual when measured against a universalised model of use. But unusual to the system does not necessarily mean unusual to the person.
+      </p>
+      <p><b data-no-tip>Beyond the Edge Case</b> is a toolkit for finding and investigating these situations before they are reduced to exceptions.</p>
+      <div class="fromto">
+        <p><span class="ft">From</span>“How do I accommodate this edge case?”</p>
+        <p><span class="ft">To</span>“What made this an edge case in the first place?”</p>
+      </div>
+      <ul class="starts">
+        <li><a class="link-more" href={url('/guideline/')}>How to use the kit →</a></li>
+        <li><a class="link-more" href={url('/about/')}>Why the kit exists →</a></li>
+      </ul>
     </div>
   </section>
 
-  <section class="stack-wrap" aria-labelledby="files-h">
-    <h2 id="files-h" class="files-h">The five files</h2>
+  <section class="stack-wrap" aria-labelledby="files-h" data-tour="drawer">
+    <h2 id="files-h" class="visually-hidden">The five files</h2>
     <ol class="stack" data-stack>
       {
         stack.map((f) => (
-          <li class:list={['fold', { open: f.file === 1 }]} data-c={f.c} data-fold>
+          <li class:list={['fold', { open: f.file === 1 }]} data-c={f.c} data-fold={f.id}>
             <a class="ftab" href={url(f.href)} style={`left:${f.left}`}>
               <svg viewBox="0 0 300 66" preserveAspectRatio="none" aria-hidden="true">
                 <path d="M0,66 C26,66 30,0 62,0 H238 C270,0 274,66 300,66 Z" />
@@ -61,7 +75,7 @@ const stack = [...files].reverse().map((f) => ({
               </button>
               <div class="more" id={`fold-${f.id}`}>
                 <div class="more-in">
-                  <p class="plain">{f.plain}</p>
+                  <p class="plain">{f.blurb}</p>
                   <p class="tl">Its steps</p>
                   <ul class="tools">
                     {f.tools.map((t) => (
@@ -85,18 +99,6 @@ const stack = [...files].reverse().map((f) => ({
     </ol>
   </section>
 
-  <section class="idea" aria-labelledby="idea-h">
-    <h2 id="idea-h">{intro.central}</h2>
-    <p>
-      Design often starts from one default user. In India, one person may use the same product across different languages, networks,
-      budgets and kinds of help. <em>Unusual to the system is not unusual to the person.</em>
-    </p>
-    <ul class="starts">
-      <li><a class="btn" href={url('/guideline/')}>How to use the kit</a></li>
-      <li><a class="btn btn--outline" href={url('/ask/')} data-ask-open>Ask a question</a></li>
-      <li><a class="btn btn--outline" href={url('/about/')}>Why the kit exists</a></li>
-    </ul>
-  </section>
 </BaseLayout>
 
 <script>
@@ -126,94 +128,131 @@ const stack = [...files].reverse().map((f) => ({
       });
     });
     stack.addEventListener('mouseleave', () => clearTimeout(timer));
+    // The guide's tour opens a folder to show how peeking works.
+    document.addEventListener('bte:fold', (e) => set(folds.find((f) => f.dataset.fold === (e as CustomEvent<string>).detail) ?? null));
   }
 </script>
 
 <style>
-  /* ---------- Hero: words on the left, the circles on the right ---------- */
+  /* ---------- Hero: the kit's name, big and centred (v3) ---------- */
   .hero {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--sp-6);
+    padding: clamp(var(--sp-8), 8vw, 110px) var(--gutter) clamp(var(--sp-6), 6vw, 80px);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    max-width: 92rem;
-    margin: 0 auto;
-    padding: clamp(var(--sp-6), 7vw, var(--sp-12)) var(--gutter) var(--sp-6);
-  }
-  @media (min-width: 60rem) {
-    .hero {
-      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-      gap: var(--sp-8);
-    }
-  }
-  .kick {
-    margin: 0 0 var(--sp-2);
-    font-weight: 800;
-    font-size: var(--fs-sm);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--on-night-soft);
   }
   .hero h1 {
-    font-size: clamp(3.5rem, 1rem + 7vw, 8.5rem);
-    line-height: 0.95;
+    width: 100%;
+    text-wrap: balance;
+    font-size: clamp(3.5rem, 0.6rem + 10.5vw, 11.875rem);
+    line-height: 0.92;
+    letter-spacing: -0.005em;
     color: var(--on-night);
-    margin: 0 0 var(--sp-3);
-    max-width: 12ch;
+    margin: 0;
   }
   .sub {
-    font-size: var(--fs-lead);
-    line-height: 1.5;
+    font-size: clamp(1.25rem, 0.9rem + 1.2vw, 1.75rem);
+    line-height: 1.45;
     color: var(--on-night-soft);
-    max-width: 34rem;
-    margin: 0 0 var(--sp-4);
+    max-width: 56rem;
+    margin: var(--sp-4) 0 0;
+    text-wrap: pretty;
   }
-  .cta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--sp-2);
+
+  /* ---------- Start from the situation: heading and circles left, the words right ---------- */
+  .intro {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 0 var(--gutter) var(--sp-2);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--sp-5);
+    align-items: start;
+    color: var(--on-night);
+    --focus: #fff;
   }
-  .hint {
-    margin: var(--sp-3) 0 0;
-    font-size: var(--fs-sm);
-    color: var(--on-night-soft);
+  @media (min-width: 56rem) {
+    .intro {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      gap: 60px;
+    }
+  }
+  .intro h2 {
+    font-family: var(--font-cover);
+    font-weight: 400;
+    text-transform: uppercase;
+    font-size: clamp(2.25rem, 1.2rem + 3vw, 3.75rem);
+    line-height: 1;
+    margin: 0;
+    color: var(--on-night);
   }
   .art {
     display: flex;
     justify-content: center;
+    margin-top: var(--sp-5);
   }
-
-  /* Buttons on the dark page */
-  :global(.btn--light) {
-    background: var(--on-night);
-    border-color: var(--on-night);
-    color: var(--ink);
+  .ir {
+    font-size: clamp(1.1875rem, 1rem + 0.6vw, 1.4375rem);
+    line-height: 1.5;
+    color: var(--on-night-soft);
+    text-wrap: pretty;
   }
-  :global(.btn--light:hover) {
-    background: #fff;
-    border-color: #fff;
-    color: var(--ink);
+  .ir p {
+    margin: 0 0 var(--sp-2);
   }
-  :global(.btn--ghost-light) {
-    background: transparent;
-    border-color: var(--on-night);
+  .ir b {
+    color: var(--on-night);
+    font-weight: 500;
+  }
+  .fromto {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+    gap: 20px;
+    margin-top: var(--sp-2);
+    font-style: italic;
     color: var(--on-night);
   }
-  :global(.btn--ghost-light:hover) {
-    background: var(--on-night);
-    border-color: var(--on-night);
-    color: var(--ink);
+  .fromto p {
+    margin: 0;
+  }
+  .ft {
+    display: block;
+    font-family: var(--font-ui);
+    font-style: normal;
+    font-size: var(--fs-xs);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--on-night-soft);
+    margin-bottom: 6px;
+  }
+  .starts {
+    list-style: none;
+    padding: 0;
+    margin: var(--sp-4) 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--sp-3);
+  }
+  .starts li {
+    margin: 0;
+  }
+  .link-more {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-family: var(--font-ui);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--on-night);
+    text-underline-offset: 4px;
   }
 
   /* ---------- The stack of folders ---------- */
   .stack-wrap {
-    max-width: 92rem;
+    max-width: 137.5rem;
     margin: 0 auto;
-    padding: var(--sp-6) var(--gutter) 0;
-  }
-  .files-h {
-    color: var(--on-night);
-    margin-bottom: calc(66px + var(--sp-2));
+    padding: calc(62px + clamp(var(--sp-6), 6vw, 90px)) var(--gutter) 0;
   }
   .stack {
     list-style: none;
@@ -445,45 +484,6 @@ const stack = [...files].reverse().map((f) => ({
       content: 'Show';
       font-size: var(--fs-sm);
     }
-  }
-
-  /* ---------- The idea ---------- */
-  /* The central line on paper, so it never runs into the red Reflection folder above it */
-  .idea {
-    background: var(--surface);
-    color: var(--ink);
-    padding: var(--sp-8) var(--gutter);
-    --focus: var(--ink);
-    --muted: #5f5c56;
-  }
-  .idea > * {
-    max-width: 64rem;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  .idea h2 {
-    font-family: var(--font-read);
-    font-style: italic;
-    font-weight: 400;
-    font-size: clamp(1.75rem, 1.2rem + 1.8vw, 2.875rem);
-    line-height: 1.2;
-    margin-bottom: var(--sp-3);
-    padding-left: var(--sp-3);
-    border-left: 6px solid var(--r);
-  }
-  .idea p {
-    font-size: var(--fs-lead);
-    margin-bottom: var(--sp-4);
-  }
-  .starts {
-    list-style: none;
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--sp-2);
-  }
-  .starts li {
-    margin: 0;
   }
 
   @media (prefers-reduced-motion: reduce) {

@@ -1,6 +1,6 @@
 ---
-// A section of a file's paper: a rule, a question as the heading, then the answer underneath, all on one left
-// edge (D44: one column reads more calmly than the template's two).
+// A section of a file's paper, as in the owner's v3 template (D47): a rule, then the question in italics on the
+// left and the answer on the right. On narrower screens the answer goes under the question.
 interface Props {
   id: string;
   title: string;
@@ -19,17 +19,31 @@ const H = level === 2 ? 'h2' : 'h3';
 
 <style>
   .psec {
-    margin-top: clamp(var(--sp-6), 5vw, var(--sp-8));
-    padding-top: var(--sp-5);
-    border-top: 2px solid var(--line);
+    margin-top: clamp(var(--sp-6), 5vw, 56px);
+    padding-top: 34px;
+    border-top: 1px solid var(--line);
+  }
+  @media (min-width: 64rem) {
+    .psec {
+      display: grid;
+      grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+      gap: 50px;
+      align-items: start;
+    }
   }
   .ph {
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: clamp(1.625rem, 1.3rem + 1vw, 2.25rem);
-    line-height: 1.15;
+    font-family: var(--font-read);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(2rem, 1.4rem + 1.6vw, 2.875rem);
+    line-height: 1.05;
     margin: 0 0 var(--sp-3);
     max-width: 30ch;
+  }
+  @media (min-width: 64rem) {
+    .ph {
+      margin: 0;
+    }
   }
   .pb {
     min-width: 0;

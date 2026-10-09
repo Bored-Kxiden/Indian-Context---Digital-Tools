@@ -13,7 +13,7 @@ import Icon from '../components/Icon.astro';
 import type { Tool } from '../data/booklet/types';
 import { componentById, fileNo } from '../data/components';
 import { verbFor } from '../data/goals';
-import { railFor } from '../data/rail';
+import { railFor, c1Boards, c1BoardsFor } from '../data/rail';
 import { boardById, sheetById, sheetMeta } from '../data/card-kit';
 import { getDownloadById, getDownloadsForPage } from '../data/downloads';
 import { bookletImage, cardKitImage } from '../utils/assets';
@@ -99,7 +99,7 @@ const topAlt = guideImage ? `The booklet’s page for ${tool.name}, page ${tool.
 const mainTpl = templates[0];
 const digital = figjam && tool.figjamSection ? figjam : c1Figma;
 const level = (tool.effort ?? comp.level) as 1 | 2 | 3;
-const levelText = [
+const levelText = tool.involve ?? [
   tool.effort === 1 ? 'A light step.' : tool.effort === 3 ? 'A demanding step.' : tool.effort === 2 ? 'A moderate step.' : comp.involve,
   tool.worksOnItsOwn ? 'You can do it on its own.' : 'Do the steps before it first.',
 ].join(' ');
@@ -109,15 +109,22 @@ const notes: Note[] = [
   ...(mainTpl ? [{ kind: 'Printable worksheet', format: `${mainTpl.format} · A4`, title: 'Print and fill in', action: `download ${mainTpl.format} ↓`, href: mainTpl.href, tone: 'yellow' as const, download: true }] : []),
   ...(digital ? [{ kind: 'Digital template', format: digital.format === 'JAM' ? 'FigJam' : 'Figma', title: 'Open the template', action: `download ${digital.format === 'JAM' ? 'FigJam' : 'Figma'} file ↓`, href: digital.href, tone: 'teal' as const, download: true }] : []),
 ];
-// Don't say the same thing twice: the opening paragraph already says what the tool shows.
+// Don't say the same thing twice: the opening paragraph already says what the tool shows. When a paragraph only
+// adds a question after it ("Shows what … flows: do people shape the product …?"), keep just the question.
 const shownLower = tool.shows.replace(/\.$/, '').toLowerCase();
 const whatParas = tool.whatIsIt
   .map((p) => {
     const i = p.toLowerCase().indexOf(shownLower);
-    return i >= 0 ? (p.slice(0, i) + p.slice(i + shownLower.length)).replace(/\.\s*\./g, '.').replace(/^\s*\.\s*/, '').replace(/\s{2,}/g, ' ').trim() : p;
+    if (i < 0) return p;
+    const before = p.slice(0, i).trim();
+    const after = p.slice(i + shownLower.length).replace(/^[\s:;,.]+/, '');
+    if (/^\w+$/.test(before)) return after.charAt(0).toUpperCase() + after.slice(1);
+    return (before + ' ' + p.slice(i + shownLower.length)).replace(/\.\s*\./g, '.').replace(/^\s*\.\s*/, '').replace(/\s{2,}/g, ' ').trim();
   })
   .filter((p) => p.replace(/[^a-z]/gi, '').length > 12);
-const howSteps = tool.stepsList ?? (tool.parts.length === 1 ? firstPart.steps : undefined);
+const howSteps = tool.howTo ?? tool.stepsList ?? (tool.parts.length === 1 ? firstPart.steps : undefined);
+// Reading Existing Products is worked on seven boards; show this tool's (v3 template, D47).
+const boards = tool.component === 'existing-products' ? (c1BoardsFor[tool.slug] ?? []).map((id) => c1Boards.find((b) => b.id === id)!) : [];
 ---
 
 <BaseLayout title={`${tool.name}: ${comp.short}`} description={tool.question} component={comp.c}>
@@ -145,6 +152,21 @@ const howSteps = tool.stepsList ?? (tool.parts.length === 1 ? firstPart.steps : 
     <SubBar rail={rail} current={tool.slug} />
 
     <Involvement level={level} text={levelText} facts={facts} />
+
+    {
+      boards.length > 0 && (
+        <ul class="boards">
+          {boards.map((b) => (
+            <li>
+              <figure>
+                <img src={url(`/boards/${b.id}.webp`)} width="1425" height="1101" alt={`Board ${b.id}, ${b.title}: the ${tool.name} board with its prompts and empty spaces to fill.`} loading="lazy" decoding="async" />
+                <figcaption><span>{b.id}</span> {b.title}</figcaption>
+              </figure>
+            </li>
+          ))}
+        </ul>
+      )
+    }
 
     <DownloadNotes notes={notes} title="Ways to work" />
 
@@ -683,6 +705,40 @@ const howSteps = tool.stepsList ?? (tool.parts.length === 1 ? firstPart.steps : 
 </style>
 
 <style>
+  /* The tool's boards (Reading Existing Products), as prints laid on the sheet */
+  .boards {
+    list-style: none;
+    margin: var(--sp-4) 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 22px;
+  }
+  .boards li {
+    margin: 0;
+    flex: 1 1 300px;
+    max-width: 520px;
+  }
+  .boards figure {
+    margin: 0;
+    background: var(--white);
+    padding: 10px 10px 12px;
+    box-shadow: 0 4px 14px rgb(0 0 0 / 0.13);
+  }
+  .boards img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .boards figcaption {
+    margin-top: 8px;
+    font-family: var(--font-ui);
+    font-size: var(--fs-xs);
+  }
+  .boards figcaption span {
+    color: var(--muted);
+    margin-right: 8px;
+  }
   /* ---------- The top of the paper ---------- */
   .done {
     font-size: var(--fs-body);

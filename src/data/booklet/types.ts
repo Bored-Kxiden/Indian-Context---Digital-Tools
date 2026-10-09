@@ -96,6 +96,8 @@ export interface Tool {
   /** Who does it, how hard it is, and where: shown when the booklet gives them (Components 2 to 4). */
   group?: string;
   effort?: 1 | 2 | 3;
+  /** "Level of involvement": what the tool asks of you, in the owner's words (v3 template, D47). */
+  involve?: string;
   mode?: string;
   worksOnItsOwn: boolean;
   shows: string;
@@ -121,6 +123,8 @@ export interface Tool {
   cardKit?: ToolCardKit;
   /** Synthesis only: the "Is it working?" page. */
   isItWorking?: { good: string[]; warnings: { sign: string; fix: string }[] };
+  /** "How do I use it?" as short numbered steps, in the owner's words (v3 template, D47). */
+  howTo?: string[];
   /** Synthesis only: the numbered steps, and their heading ("The six steps"). */
   stepsList?: { title: string; body: string }[];
   stepsTitle?: string;

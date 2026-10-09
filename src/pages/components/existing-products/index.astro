@@ -1,15 +1,15 @@
 ---
 import ComponentLayout from '../../../layouts/ComponentLayout.astro';
 import PaperTop from '../../../components/file/PaperTop.astro';
+import BoardOverview from '../../../components/file/BoardOverview.astro';
 import FileBasics from '../../../components/file/FileBasics.astro';
 import PaperSection from '../../../components/file/PaperSection.astro';
 import { overview, route, figmaFile } from '../../../data/booklet/existing-products';
 import { getDownloadById } from '../../../data/downloads';
 import { componentById } from '../../../data/components';
-import { bookletImage } from '../../../utils/assets';
 import { url } from '../../../utils/url';
 
-// File 02's overview, in the template's order and in plain words (D41, D42).
+// File 02's overview, in the template's order and in plain words (D41, D42), with the v3 template's seven boards (D47).
 const comp = componentById['existing-products'];
 const pack = getDownloadById('pack-existing-products')!;
 const figma = getDownloadById(figmaFile.id)!;
@@ -26,12 +26,15 @@ const how = route.map((r) => ({ title: r.label.replace(/^\d · /, ''), meta: r.t
 ---
 
 <ComponentLayout component="existing-products" current="overview" title={comp.name} heading={comp.name}>
-  <PaperTop slot="top" image={bookletImage('1.09')} alt="The Synthesis worksheet from the booklet, filled in with Meera’s example." caption="Where it ends: the Synthesis worksheet · booklet p.1.09" text={comp.plain}>
-    <Fragment slot="buttons">
-      <a class="btn btn--sm" href={url(pack.href)} download>Download PDF ↓</a>
-      <a class="btn btn--sm btn--outline" href={url(figma.href)} download>Figma template ↓</a>
-    </Fragment>
-  </PaperTop>
+  <Fragment slot="top">
+    <PaperTop text={comp.blurb}>
+      <Fragment slot="buttons">
+        <a class="btn btn--sm" href={url(pack.href)} download>Download PDF ↓</a>
+        <a class="btn btn--sm btn--outline" href={url(figma.href)} download>Figma template ↓</a>
+      </Fragment>
+    </PaperTop>
+    <BoardOverview />
+  </Fragment>
 
   <FileBasics
     comp={comp}
@@ -42,8 +45,8 @@ const how = route.map((r) => ({ title: r.label.replace(/^\d · /, ''), meta: r.t
       { kind: 'For a group', format: 'Card kit', title: 'Play it with cards', action: 'see the card kit →', href: '/card-kit/', tone: 'teal' },
     ]}
     why={[
-      'Every product was designed for someone. This file helps you find out who, and who pays when the product is wrong about them.',
-      'It is not a usability check. You are reading whose assumptions are built into the product.',
+      'Every product was designed for someone. This tool finds out who, and who pays when the product is wrong about them. It is not a usability audit.',
+      'You pick one product you can open right now. Not a category: “Google Maps”, not “navigation apps”. Five tools read it from different sides, and at the end of each you write one line to carry forward. Synthesis uses those lines, so you never have to reread.',
     ]}
     how={how}
   >

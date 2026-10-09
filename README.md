@@ -14,7 +14,7 @@ The toolkit is built in five **files** (the booklet calls the four readings *com
 | **05 · Reading Language Conditions** | Live | What was meant, not only what was said. Before you start, then Listen, Translate (thick, and reverse thick, translation), Test, Library and the Kahavat Relay. Under them sit the Meaning Card, Physical Field Kit, Fidelity Protocol, Language Lens Audit and the two libraries. |
 | **04 · Reading Material Conditions** | Live | What people have around them, what it costs, and who they lean on. Build, Break, Weigh, Say. |
 
-The design follows the owner's **file-folder template** (D41, D44, D46): the home page shows the five files as circles (Reflection as the ring around the four readings) and as a stack of folders that open on hover or tap; every file and tool page is a coloured folder holding a sheet of paper (the worksheet, the steps, the level of involvement, the downloads as sticky notes, then "What is it and why should I do it?" and "How do I use it?"), with tabs to the other files down its edge and an "All files in the kit" rail at the foot. Tool pages keep their tabs, in the same order: **Guide · Example · Template · Fill on screen** (Existing Products: **Guide · Template · Fill on screen · Card kit**). Jargon is highlighted where it is first used on a page: point at it, focus it or tap it for a plain one-line meaning (D43). **All tools** (`/components/`) is the **"I want to…"** index, and **Find a tool** (press `/`) searches every tool, step, page and term. **Ask the toolkit** answers questions from the toolkit's own content, without an AI model: in a small chat popup from the round button at the bottom right of every page (the other Ask links open it too), or on its own page (`/ask/`). The **Glossary** (`/glossary/`) lists every term the toolkit uses. Every template can also be **filled on screen** (the **Fill on screen** tab on each tool page, and the Reflection and Meaning Card pages), saved only in the visitor's browser, then printed, saved as PDF or downloaded; **My work** (`/my-work/`) lists what has been filled.
+The design follows the owner's **file-folder template** (D41, D44, D46, D47): the **guide** (a speech bubble with eyes, top right) is “Ask the toolkit” and gives first-time visitors a short tour (“Tour” starts it again); the home page shows the five files as circles (Reflection as the ring around the four readings) and as a stack of folders that open on hover or tap; every file and tool page is a coloured folder holding a sheet of paper (the worksheet, the steps, the level of involvement, the downloads as sticky notes, then "What is it and why should I do it?" and "How do I use it?"), with tabs to the other files down its edge and an "All files in the kit" rail at the foot. Tool pages keep their tabs, in the same order: **Guide · Example · Template · Fill on screen** (Existing Products: **Guide · Template · Fill on screen · Card kit**). Jargon is highlighted where it is first used on a page: point at it, focus it or tap it for a plain one-line meaning (D43). **All tools** (`/components/`) is the **"I want to…"** index, and **Find a tool** (press `/`) searches every tool, step, page and term. **Ask the toolkit** answers questions from the toolkit's own content, without an AI model: in a small chat popup in the bottom right corner, opened by the guide in the header (the other Ask links open it too), or on its own page (`/ask/`). The **Glossary** (`/glossary/`) lists every term the toolkit uses. Every template can also be **filled on screen** (the **Fill on screen** tab on each tool page, and the Reflection and Meaning Card pages), saved only in the visitor's browser, then printed, saved as PDF or downloaded; **My work** (`/my-work/`) lists what has been filled.
 
 > **Working on this repo?** Read [`CONTEXT.md`](CONTEXT.md) first. It records the project's context, decisions, open questions and a change log, and it is updated with every change. [`CLAUDE.md`](CLAUDE.md) has the working rules for AI assistants.
 
@@ -41,6 +41,7 @@ npm run preview          # serve ./dist locally
 npm run build:templates  # regenerate the Component 3 PDFs and CSV (see below)
 npm run build:reflection  # regenerate the twelve Claim & Reflection sheets and previews from templates/reflection/
 npm run build:packs   # one PDF of all worksheets per file, after a template changes (needs pypdf)
+npm run build:thumbs  # small pictures for the step cards, after a page image changes (needs Pillow)
 npm run build:capture-cards  # regenerate Component 2's capture cards and photo slips from templates/visual-culture/capture-cards.json
 python3 scripts/extract-booklet-assets.py   # regenerate page images and split PDFs from the booklet (see below)
 ```
@@ -67,6 +68,7 @@ python3 scripts/extract-booklet-assets.py   # regenerate page images and split P
 │   ├── build-chat-index.mjs       after `astro build`: every page split into passages → dist/chat-index.json (the Ask search index)
 │   ├── mark-terms.mjs             after that: marks each page's jargon with a plain-language tip (src/data/tips.ts)
 │   ├── build-file-packs.py        one PDF of all worksheets per file (npm run build:packs)
+│   ├── build-thumbs.py            400 px thumbnails of page and board images → public/thumbs/ (npm run build:thumbs)
 │   └── build-reflection-pdfs.mjs  the twelve Claim & Reflection A4 sheets, one file of all twelve, and page previews
 ├── templates/                     source definitions for the Component 3 printable cards, and reflection/ (the twelve-page layout)
 ├── supabase/
@@ -98,7 +100,8 @@ python3 scripts/extract-booklet-assets.py   # regenerate page images and split P
     ├── layouts/                   BaseLayout, ComponentLayout, BookletToolLayout, ToolLayout (Language), ComingNextLayout
     ├── pages/                     index, components/*, card-kit, guideline, downloads, about, glossary, ask, my-work, ask-data.json
     ├── scripts/ask/engine.ts      the Ask answer engine (no language model); ui.ts, the conversation (page and chat panel)
-    ├── components/ChatWidget.astro   the chat button and chat popup on every page
+    ├── components/ChatWidget.astro   the chat popup on every page (opened by the guide in the header)
+    ├── components/Guide.astro        the guide's tour and nudges (script: src/scripts/guide.ts)
     ├── components/fill/           FillForm and FillField: a template as a form; scripts/fill/store.ts saves, prints and exports it
     ├── styles/global.css          design tokens and shared styles
     └── utils/                     url helper, page-image lookup, Fidelity Protocol rule

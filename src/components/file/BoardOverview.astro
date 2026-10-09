@@ -1,0 +1,111 @@
+---
+import { c1Boards, c1BoardsFor, boardThumb } from '../../data/rail';
+import { componentById } from '../../data/components';
+import { url } from '../../utils/url';
+
+// Reading Existing Products on one sheet: its seven boards laid out on a dotted canvas, as in the owner's v3
+// template (D47). Each board opens the tool it belongs to.
+const comp = componentById['existing-products'];
+const toolOf = (id: string) => Object.entries(c1BoardsFor).find(([, ids]) => ids.includes(id))?.[0];
+const tools = Object.keys(c1BoardsFor).length;
+---
+
+<figure class="bov">
+  <figcaption class="bh">
+    <span>{comp.name} · the whole file on seven boards</span>
+    <span class="cnt">{c1Boards.length} boards · {tools} tools</span>
+  </figcaption>
+  <ul class="canvas">
+    {
+      c1Boards.map((b) => (
+        <li>
+          <a href={`${url(`${comp.href}${toolOf(b.id)}/`)}#steps`}>
+            <img src={url(boardThumb(b.id))} width="400" height="309" alt="" loading="lazy" decoding="async" />
+            <span class="cap">
+              <span class="id">{b.id}</span> {b.title}
+            </span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</figure>
+
+<style>
+  .bov {
+    margin: var(--sp-6) 0 0;
+    background: var(--white);
+    padding: 14px 14px 18px;
+    box-shadow: 0 8px 24px rgb(0 0 0 / 0.13);
+    transform: rotate(-0.4deg);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bov {
+      transform: none;
+    }
+  }
+  .bh {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 4px 16px;
+    padding: 2px 4px 12px;
+    font-family: var(--font-ui);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+  }
+  .cnt {
+    font-weight: 400;
+    font-size: var(--fs-xs);
+    color: var(--muted);
+  }
+  .canvas {
+    list-style: none;
+    margin: 0;
+    background-color: #e9e6dc;
+    background-image: radial-gradient(#cfcabd 1.2px, transparent 1.2px);
+    background-size: 18px 18px;
+    padding: clamp(14px, 2.5vw, 26px);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 22px;
+  }
+  li {
+    margin: 0;
+    width: calc(25% - 17px);
+    min-width: min(180px, 100%);
+  }
+  a {
+    display: block;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1425 / 1101;
+    object-fit: cover;
+    background: var(--surface);
+    box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+    transition: transform var(--t-fast) var(--ease);
+  }
+  a:hover img {
+    transform: translateY(-3px);
+  }
+  .cap {
+    display: block;
+    margin-top: 6px;
+    font-family: var(--font-ui);
+    font-size: var(--fs-xs);
+  }
+  a:hover .cap {
+    text-decoration: underline;
+  }
+  .id {
+    color: var(--muted);
+    margin-right: 8px;
+  }
+</style>
