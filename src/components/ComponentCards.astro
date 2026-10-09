@@ -28,7 +28,7 @@ const reflection = componentById['reflection'];
           {c.tags.map((t) => <li>{t}</li>)}
         </ul>
         <span class="open" aria-hidden="true">
-          Open file <Icon name="arrow" size={20} />
+          Open component <Icon name="arrow" size={20} />
         </span>
       </article>
     ))
@@ -38,7 +38,7 @@ const reflection = componentById['reflection'];
 <article class="refl" data-c="ink">
   <span class="rn" aria-hidden="true">R</span>
   <div class="rt">
-    <p class="rl">Runs through every file</p>
+    <p class="rl">Runs through every component</p>
     <h3>
       <a href={url(reflection.href)}>{reflection.name}</a>
     </h3>

@@ -70,18 +70,15 @@ const tries = ['What is reverse thick translation?', 'Which tool shows who peopl
   </section>
 
   <button type="button" class="launcher" hidden data-chat-open aria-controls="chat-panel" aria-expanded="false" title="Ask the toolkit">
-    <span class="ics" aria-hidden="true">
-      <span class="ic ic-open"><Icon name="chat" size={24} /></span>
-      <span class="ic ic-close"><Icon name="x" size={22} /></span>
-    </span>
-    <span class="ll ll-open">Ask a question</span>
-    <span class="ll ll-close">Close</span>
+    <span class="ic ic-open"><Icon name="chat" size={26} /></span>
+    <span class="ic ic-close"><Icon name="x" size={24} /></span>
+    <span class="visually-hidden">Ask the toolkit</span>
     <span class="dot" hidden data-chat-dot><span class="visually-hidden">(conversation in progress)</span></span>
   </button>
   <noscript>
     <a class="launcher" href={url('/ask/')} title="Ask the toolkit">
-      <span class="ic ic-open"><Icon name="chat" size={24} /></span>
-      <span class="ll">Ask a question</span>
+      <span class="ic ic-open"><Icon name="chat" size={26} /></span>
+      <span class="visually-hidden">Ask the toolkit</span>
     </a>
   </noscript>
 </aside>
@@ -249,19 +246,15 @@ const tries = ['What is reverse thick translation?', 'Which tool shows who peopl
   }
 
   /* The round button */
-  /* A labelled pill, so it says what it does: "Ask a question", then "Close" while open */
   .launcher {
     position: relative;
-    display: inline-flex;
-    align-items: center;
-    gap: var(--sp-1);
+    display: grid;
+    place-items: center;
+    width: var(--btn);
     height: var(--btn);
-    padding: 0 var(--sp-3) 0 var(--sp-2);
+    padding: 0;
     border: 0;
-    border-radius: 999px;
-    font-family: var(--font-ui);
-    font-size: var(--fs-ui);
-    font-weight: 800;
+    border-radius: 50%;
     background: var(--ink);
     color: #fff;
     cursor: pointer;
@@ -270,11 +263,6 @@ const tries = ['What is reverse thick translation?', 'Which tool shows who peopl
     transition:
       transform var(--t-fast) var(--ease),
       box-shadow var(--t-fast) var(--ease);
-  }
-  /* On the dark home page the button turns light, so it stays visible */
-  :global(body[data-theme='night']) .launcher {
-    background: var(--on-night);
-    color: var(--ink);
   }
   .launcher[hidden] {
     display: none;
@@ -290,26 +278,6 @@ const tries = ['What is reverse thick translation?', 'Which tool shows who peopl
     outline: 3px solid var(--ink);
     outline-offset: 3px;
     box-shadow: 0 0 0 3px #fff;
-  }
-  .ics {
-    display: grid;
-    place-items: center;
-  }
-  .ll-close,
-  .is-open .ll-open {
-    display: none;
-  }
-  .is-open .ll-close {
-    display: inline;
-  }
-  @media (max-width: 26rem) {
-    .ll-open {
-      font-size: 0;
-    }
-    .ll-open::after {
-      content: 'Ask';
-      font-size: var(--fs-ui);
-    }
   }
   .ic {
     grid-area: 1 / 1;
@@ -352,11 +320,10 @@ const tries = ['What is reverse thick translation?', 'Which tool shows who peopl
     height: min(36rem, calc(100dvh - var(--btn) - var(--sp-2) - 2 * var(--gap) - var(--sp-2)));
     display: flex;
     flex-direction: column;
-    background: var(--surface);
-    color: var(--ink);
-    border-radius: var(--r-md);
-    box-shadow: 0 24px 70px rgb(0 0 0 / 0.55);
-    --focus: var(--ink);
+    background: var(--ground);
+    border: 1.5px solid var(--ink);
+    border-radius: var(--r-lg);
+    box-shadow: 0 24px 60px -20px rgb(22 20 15 / 0.5);
     overflow: hidden;
     transform-origin: calc(100% - var(--btn) / 2) 100%;
   }
@@ -412,12 +379,8 @@ const tries = ['What is reverse thick translation?', 'Which tool shows who peopl
     min-width: 0;
   }
   .ph h2 {
-    font-family: var(--font-display);
-    font-style: normal;
-    font-weight: 400;
-    font-size: 1.25rem;
-    text-transform: uppercase;
-    letter-spacing: 0.01em;
+    font-size: var(--fs-ui);
+    font-weight: 700;
     line-height: 1.2;
     margin: 0;
     color: #fff;
@@ -461,11 +424,12 @@ const tries = ['What is reverse thick translation?', 'Which tool shows who peopl
   .hello {
     margin: 0 0 var(--sp-2);
     max-width: 90%;
-    background: var(--ground);
-    border-radius: var(--r-sm);
-    padding: 11px 14px;
-    font-size: 1.125rem;
-    line-height: 1.35;
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-md) var(--r-md) var(--r-md) 4px;
+    padding: var(--sp-1) var(--sp-2);
+    font-size: var(--fs-sm);
+    line-height: 1.5;
   }
   .tl {
     margin: 0 0 var(--sp-1);
@@ -575,13 +539,12 @@ const tries = ['What is reverse thick translation?', 'Which tool shows who peopl
   }
   .body :global(.askui .turn > .q) {
     max-width: 85%;
-    font-size: 1.0625rem;
-    border-radius: var(--r-sm);
+    font-size: var(--fs-sm);
   }
   .body :global(.askui .a .ans) {
     padding: var(--sp-2);
-    border-radius: var(--r-sm);
-    font-size: 1.0625rem;
+    border-radius: var(--r-md) var(--r-md) var(--r-md) 4px;
+    font-size: var(--fs-sm);
   }
   .body :global(.askui .a h3) {
     font-size: var(--fs-ui);

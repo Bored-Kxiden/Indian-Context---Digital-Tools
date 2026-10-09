@@ -21,7 +21,7 @@ const toolHref = (slug: string) => `/components/existing-products/${slug}/`;
     crumbs={[{ label: 'Home', href: '/' }, { label: 'Card kit' }]}
     heading="Card kit"
     lead={cardKitIntro}
-    chips={['Reading Existing Products', 'Print and play']}
+    chips={['Component 1', 'Print and play']}
   >
     <nav slot="aside" class="jump" aria-label="On this page">
       <a class="btn btn--accent" href="#print"><Icon name="print" size={20} /> Print the kit</a>
@@ -31,7 +31,7 @@ const toolHref = (slug: string) => `/components/existing-products/${slug}/`;
   </PageHead>
 
   <Section id="inside" eyebrow="What’s inside" title="Boards, and cards to lay on them." split>
-    <p slot="lead" class="lead-text">Seven boards, one for each step of Reading Existing Products. Eight sheets of cards.</p>
+    <p slot="lead" class="lead-text">Seven boards, one for each step of Component 1. Eight sheets of cards.</p>
     <ul class="inside">
       {
         inside.map((i) => (

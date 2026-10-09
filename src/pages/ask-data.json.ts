@@ -24,7 +24,7 @@ const tool = (t: Tool) => {
     short: t.short,
     number: t.number ?? null,
     kind: t.kind ?? null,
-    component: c.name,
+    component: c.number ? `Component ${c.number} · ${c.name}` : c.name,
     scope: c.c,
     href,
     question: t.question,

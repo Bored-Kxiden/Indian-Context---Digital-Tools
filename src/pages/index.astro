@@ -1,496 +1,375 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import Section from '../components/Section.astro';
 import VennHero from '../components/VennHero.astro';
-import { files, fileNo } from '../data/components';
-import { railFor } from '../data/rail';
-import { intro } from '../data/site';
+import GoalIndex from '../components/GoalIndex.astro';
+import ComponentCards from '../components/ComponentCards.astro';
+import EdgeIntro from '../components/EdgeIntro.astro';
+import CentralLine from '../components/CentralLine.astro';
+import { goals } from '../data/goals';
+import { site } from '../data/site';
+import { whyThisExists, howToRead, guideline, meera } from '../data/booklet/shared';
 import { url } from '../utils/url';
 
-// The home page (D41, D44): the kit's name and the circles, then the five files as a stack of folders.
-// A folder opens when you point at it, tap its "Show what's inside" button, or reach it with the keyboard;
-// one is open at a time, Reflection first. Without JavaScript every folder is simply open.
-const lefts = ['2%', '22%', '40%', '12%', '30%'];
-const stack = [...files].reverse().map((f) => ({
-  ...f,
-  left: lefts[f.file - 1],
-  tools: railFor(f.id).items.filter((i) => !i.slug.startsWith('reflect-')),
-}));
+const ways = howToRead.everyTool.parts;
 ---
 
-<BaseLayout theme="night">
+<BaseLayout>
   <section class="hero" aria-labelledby="hero-h">
-    <div class="copy">
-      <p class="kick">A toolkit for designing in India</p>
-      <h1 id="hero-h">Beyond the Edge Case</h1>
-      <p class="sub">Find the people a product treats as exceptions, and ask <em>what made them exceptions in the first place</em>.</p>
-      <div class="cta">
-        <a class="btn btn--light" href={url('/components/reflection/')}>Start with File 01 →</a>
-        <a class="btn btn--ghost-light" href={url('/components/')} data-finder-open>Find a tool</a>
+    <div class="wrap hero-grid">
+      <div class="copy">
+        <div class="chip-row rise" style="--i: 0">
+          <span class="chip chip--quiet">Toolkit</span>
+          <span class="chip chip--quiet">BITSDES 2024–28</span>
+        </div>
+        <h1 id="hero-h" class="rise" style="--i: 1">{site.name}</h1>
+        <p class="lead rise" style="--i: 2">{site.tagline}</p>
+        <div class="btn-row rise" style="--i: 3">
+          <a class="btn" href="#i-want-to">Find your tool <Icon name="arrow" size={20} /></a>
+          <a class="btn btn--outline" href="#components">Pick a component</a>
+          <a class="btn btn--outline" href={url(site.bookletPdf)} download><Icon name="download" size={20} /> Booklet (PDF)</a>
+        </div>
+        <p class="free rise" style="--i: 4">Print it, run it with cards, or work straight from this site.</p>
       </div>
-      <p class="hint">Five files. Each works on its own. Pick a circle, or open a folder below.</p>
-    </div>
-    <div class="art">
-      <VennHero />
+      <div class="art" aria-hidden="false">
+        <VennHero />
+      </div>
     </div>
   </section>
 
-  <section class="stack-wrap" aria-labelledby="files-h">
-    <h2 id="files-h" class="files-h">The five files</h2>
-    <ol class="stack" data-stack>
+  <EdgeIntro />
+
+  <CentralLine />
+
+  <Section id="i-want-to" eyebrow="Start here" title="I want to…" tone="white">
+    <p slot="lead" class="lead-text">
+      Say what you’re trying to do and go straight to the tool. Every tool works on its own. Used in order, they build one picture.
+    </p>
+    <GoalIndex groups={goals} />
+  </Section>
+
+  <Section id="components" eyebrow="Components" title="Pick a way of reading.">
+    <p slot="lead" class="lead-text">
+      Each component works on its own. Used together, they give you a fuller picture of the person you’re designing for.
+    </p>
+    <ComponentCards />
+  </Section>
+
+  <Section id="why" eyebrow="Why this exists" title={whyThisExists.title} tone="white" split>
+    <p class="big">{whyThisExists.body}</p>
+    <ul class="chip-row made" aria-label="Made for">
+      {whyThisExists.madeFor.map((m) => <li class="chip chip--quiet">{m}</li>)}
+    </ul>
+    <div class="quotes">
+      <figure class="q q--without">
+        <figcaption class="lbl">Without it</figcaption>
+        <blockquote>{whyThisExists.without}</blockquote>
+      </figure>
+      <figure class="q q--with">
+        <figcaption class="lbl">With it</figcaption>
+        <blockquote>{whyThisExists.with}</blockquote>
+      </figure>
+    </div>
+  </Section>
+
+  <Section id="how" eyebrow="How every tool works" title="Read it, see it, do it." split>
+    <ol class="ways">
       {
-        stack.map((f) => (
-          <li class:list={['fold', { open: f.file === 1 }]} data-c={f.c} data-fold>
-            <a class="ftab" href={url(f.href)} style={`left:${f.left}`}>
-              <svg viewBox="0 0 300 66" preserveAspectRatio="none" aria-hidden="true">
-                <path d="M0,66 C26,66 30,0 62,0 H238 C270,0 274,66 300,66 Z" />
-              </svg>
-              <span class="tno">{fileNo(f)}</span>
-              <span>
-                {f.name.startsWith('Reading ') && <span class="rd">Reading </span>}
-                {f.name.replace('Reading ', '')}
-              </span>
-            </a>
-            <div class="body">
-              <button type="button" class="ftog" aria-expanded={f.file === 1 ? 'true' : 'false'} aria-controls={`fold-${f.id}`} data-fold-toggle>
-                <span class="vs">“{f.verb}”</span>
-                <span class="act">
-                  <span class="act-open">Show what’s inside</span>
-                  <span class="act-close">Hide</span>
-                  <span class="chev" aria-hidden="true" />
-                </span>
-              </button>
-              <div class="more" id={`fold-${f.id}`}>
-                <div class="more-in">
-                  <p class="plain">{f.plain}</p>
-                  <p class="tl">Its steps</p>
-                  <ul class="tools">
-                    {f.tools.map((t) => (
-                      <li>
-                        <a href={url(t.href)}>
-                          {t.label}
-                          {t.meta && <small>{t.meta}</small>}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                  <a class="btn open-f" href={url(f.href)}>
-                    Open file {fileNo(f)} →
-                  </a>
-                </div>
-              </div>
+        ways.map((w, i) => (
+          <li>
+            <span class="idx" aria-hidden="true">{i + 1}</span>
+            <div class="wt">
+              <h3>{w.title.replace(/^\d · /, '')}</h3>
+              <p>{w.body}</p>
             </div>
+            <span class="wi" aria-hidden="true"><Icon name={w.icon} size={40} /></span>
           </li>
         ))
       }
     </ol>
-  </section>
+  </Section>
 
-  <section class="idea" aria-labelledby="idea-h">
-    <h2 id="idea-h">{intro.central}</h2>
-    <p>
-      Design often starts from one default user. In India, one person may use the same product across different languages, networks,
-      budgets and kinds of help. <em>Unusual to the system is not unusual to the person.</em>
-    </p>
-    <ul class="starts">
-      <li><a class="btn" href={url('/guideline/')}>How to use the kit</a></li>
-      <li><a class="btn btn--outline" href={url('/ask/')} data-ask-open>Ask a question</a></li>
-      <li><a class="btn btn--outline" href={url('/about/')}>Why the kit exists</a></li>
-    </ul>
-  </section>
+  <Section id="guideline" eyebrow={guideline.eyebrow} title={guideline.title} tone="ink" split>
+    <p class="on-dark-body">{guideline.body}</p>
+    <div class="gt">
+      <div class="gt-good">
+        <span class="lbl">Good</span>
+        <ul>
+          {guideline.good.map((g) => <li><Icon name="check" size={20} /> {g}</li>)}
+        </ul>
+      </div>
+      <div class="gt-broad">
+        <span class="lbl">Too broad</span>
+        <ul>
+          {guideline.tooBroad.map((g) => <li><Icon name="x" size={20} /> {g}</li>)}
+        </ul>
+      </div>
+    </div>
+    <a class="link-arrow light" href={url('/guideline/')}>Read the guideline <Icon name="arrow" size={20} /></a>
+  </Section>
+
+  <Section id="meera" eyebrow="The running example" title={meera.note} split>
+    <div class="meera">
+      <article class="card persona">
+        <div class="head">
+          <span class="avatar" aria-hidden="true">M</span>
+          <div>
+            <b>{meera.name}</b>
+            <small>{meera.eyebrow}</small>
+          </div>
+        </div>
+        <dl>
+          {meera.facts.map((f) => <><dt>{f.k}</dt><dd>{f.v}</dd></>)}
+        </dl>
+      </article>
+      <div class="story">
+        <p class="big">{meera.useYourOwn.body}</p>
+        <a class="btn btn--outline" href={url('/guideline/#meera')}>Read Meera’s story <Icon name="arrow" size={20} /></a>
+      </div>
+    </div>
+  </Section>
 </BaseLayout>
 
-<script>
-  // Folders: one open at a time. Hover opens on devices that can hover; the button opens on tap, click or keyboard.
-  const stack = document.querySelector<HTMLElement>('[data-stack]');
-  if (stack) {
-    document.documentElement.classList.add('js-folders');
-    const folds = [...stack.querySelectorAll<HTMLElement>('[data-fold]')];
-    const set = (f: HTMLElement | null) =>
-      folds.forEach((x) => {
-        const on = x === f;
-        x.classList.toggle('open', on);
-        x.querySelector('[data-fold-toggle]')?.setAttribute('aria-expanded', String(on));
-      });
-    const canHover = matchMedia('(hover: hover) and (pointer: fine)');
-    let timer = 0;
-    folds.forEach((f) => {
-      const b = f.querySelector<HTMLButtonElement>('[data-fold-toggle]');
-      b?.addEventListener('click', () => set(f.classList.contains('open') ? null : f));
-      f.addEventListener('mouseenter', () => {
-        if (!canHover.matches) return;
-        clearTimeout(timer);
-        timer = window.setTimeout(() => set(f), 120);
-      });
-      f.addEventListener('focusin', (e) => {
-        if ((e.target as HTMLElement).closest('.more')) set(f);
-      });
-    });
-    stack.addEventListener('mouseleave', () => clearTimeout(timer));
-  }
-</script>
-
 <style>
-  /* ---------- Hero: words on the left, the circles on the right ---------- */
   .hero {
+    padding-block: clamp(var(--sp-6), 6vw, var(--sp-12));
+    border-bottom: 1px solid var(--line);
+    overflow: clip;
+  }
+  .hero-grid {
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
     gap: var(--sp-6);
     align-items: center;
-    max-width: 92rem;
-    margin: 0 auto;
-    padding: clamp(var(--sp-6), 7vw, var(--sp-12)) var(--gutter) var(--sp-6);
+    grid-template-columns: minmax(0, 1fr);
   }
-  @media (min-width: 60rem) {
-    .hero {
+  @media (min-width: 64rem) {
+    .hero-grid {
       grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
       gap: var(--sp-8);
     }
   }
-  .kick {
-    margin: 0 0 var(--sp-2);
-    font-weight: 800;
-    font-size: var(--fs-sm);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--on-night-soft);
+  .copy h1 {
+    margin: var(--sp-4) 0 var(--sp-3);
+    max-width: 14ch;
   }
-  .hero h1 {
-    font-size: var(--fs-display);
-    line-height: 0.95;
-    color: var(--on-night);
-    margin: 0 0 var(--sp-3);
-    max-width: 12ch;
+  .copy .lead {
+    margin-bottom: var(--sp-4);
+    max-width: 36rem;
   }
-  .sub {
-    font-size: var(--fs-lead);
-    line-height: 1.5;
-    color: var(--on-night-soft);
-    max-width: 34rem;
-    margin: 0 0 var(--sp-4);
-  }
-  .cta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--sp-2);
-  }
-  .hint {
+  .free {
     margin: var(--sp-3) 0 0;
-    font-size: var(--fs-sm);
-    color: var(--on-night-soft);
+    color: var(--muted);
+    font-size: var(--fs-ui);
   }
   .art {
     display: flex;
     justify-content: center;
   }
 
-  /* Buttons on the dark page */
-  :global(.btn--light) {
-    background: var(--on-night);
-    border-color: var(--on-night);
-    color: var(--ink);
-  }
-  :global(.btn--light:hover) {
-    background: #fff;
-    border-color: #fff;
-    color: var(--ink);
-  }
-  :global(.btn--ghost-light) {
-    background: transparent;
-    border-color: var(--on-night);
-    color: var(--on-night);
-  }
-  :global(.btn--ghost-light:hover) {
-    background: var(--on-night);
-    border-color: var(--on-night);
-    color: var(--ink);
-  }
-
-  /* ---------- The stack of folders ---------- */
-  .stack-wrap {
-    max-width: 92rem;
-    margin: 0 auto;
-    padding: var(--sp-6) var(--gutter) 0;
-  }
-  .files-h {
-    color: var(--on-night);
-    margin-bottom: calc(66px + var(--sp-2));
-  }
-  .stack {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .fold {
-    position: relative;
-    margin: 0;
-    color: var(--accent-ink);
-    --focus: currentColor;
-  }
-  .ftab {
-    position: absolute;
-    bottom: 100%;
-    height: 62px;
-    padding: 0 clamp(var(--sp-4), 4vw, 60px);
-    margin-bottom: -2px;
-    display: flex;
-    align-items: center;
-    gap: var(--sp-1);
-    color: inherit;
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: clamp(1.125rem, 1.8vw, 1.625rem);
-    white-space: nowrap;
-    text-decoration: none;
-    z-index: 1;
-  }
-  .ftab svg {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    fill: var(--accent);
-  }
-  .ftab span {
-    position: relative;
-  }
-  .tno {
-    font-family: var(--font-ui);
-    font-size: 0.8em;
-    font-weight: 800;
-    opacity: 0.85;
-  }
-  .ftab:hover > span:last-child {
-    text-decoration: underline;
-    text-underline-offset: 5px;
-    text-decoration-thickness: 2px;
-  }
-  .body {
-    position: relative;
-    background: var(--accent);
-    border-radius: var(--r-lg) var(--r-lg) 0 0;
-    padding: var(--sp-2) clamp(var(--sp-2), 4vw, 56px) calc(62px + var(--sp-3));
-    box-shadow: 0 -10px 24px -18px rgb(0 0 0 / 0.6);
-    transition: filter var(--t-med) var(--ease);
-  }
-  .fold:hover .body,
-  .fold:hover .ftab svg {
-    filter: brightness(1.06);
-  }
-  .fold:last-child .body {
-    padding-bottom: var(--sp-5);
-  }
-  .ftog {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--sp-1) var(--sp-2);
-    width: 100%;
-    min-height: 48px;
-    padding: 0;
-    border: 0;
-    background: none;
-    color: inherit;
-    font: inherit;
-    text-align: left;
-    cursor: pointer;
-  }
-  .vs {
-    font-style: italic;
-    font-weight: 600;
+  .big {
     font-size: var(--fs-lead);
+    color: var(--ink-soft);
+    max-width: 44rem;
   }
-  .act {
-    margin-left: auto;
-    display: inline-flex;
-    align-items: center;
-    gap: var(--sp-1);
-    min-height: 40px;
-    padding: 0 var(--sp-2);
-    border: 2px solid currentColor;
-    border-radius: 999px;
-    font-weight: 800;
-    font-size: var(--fs-sm);
+  .made {
+    list-style: none;
+    padding: 0;
+    margin: var(--sp-3) 0 var(--sp-5);
   }
-  .ftog:hover .act {
-    background: rgb(255 255 255 / 0.16);
+  .made li {
+    margin: 0;
   }
-  [data-c='c3'] .ftog:hover .act {
-    background: rgb(27 27 27 / 0.1);
-  }
-  .chev {
-    width: 10px;
-    height: 10px;
-    border-right: 2.5px solid currentColor;
-    border-bottom: 2.5px solid currentColor;
-    transform: rotate(45deg) translateY(-3px);
-    transition: transform var(--t-med) var(--ease);
-  }
-  .act-close {
-    display: none;
-  }
-  .fold.open .act-open {
-    display: none;
-  }
-  .fold.open .act-close {
-    display: inline;
-  }
-  .fold.open .chev {
-    transform: rotate(-135deg) translateY(-3px);
-  }
-
-  /* Opening: the folder's contents slide down (grid rows animate from 0 to their full height) */
-  .more {
+  .quotes {
     display: grid;
-    grid-template-rows: 1fr;
+    gap: var(--sp-2);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
   }
-  .more-in {
-    min-height: 0;
-    overflow: hidden;
-  }
-  :global(.js-folders) .more {
-    grid-template-rows: 0fr;
-    transition: grid-template-rows var(--t-slow) var(--ease);
-  }
-  :global(.js-folders) .more-in {
-    opacity: 0;
-    transition: opacity 0.35s var(--ease);
-  }
-  :global(.js-folders) .fold.open .more {
-    grid-template-rows: 1fr;
-  }
-  :global(.js-folders) .fold.open .more-in {
-    opacity: 1;
-  }
-  :global(html:not(.js-folders)) .act {
-    display: none;
-  }
-  .plain {
-    margin-top: var(--sp-2) !important;
-    font-size: var(--fs-body);
-    max-width: 46rem;
-    margin: 0 0 var(--sp-3);
-  }
-  .tl {
-    margin: 0 0 var(--sp-1);
-    font-weight: 800;
-    font-size: var(--fs-xs);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-  .tools {
-    list-style: none;
-    margin: 0 0 var(--sp-3);
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--sp-1);
-  }
-  .tools li {
+  .q {
     margin: 0;
+    border-radius: var(--r-lg);
+    padding: var(--sp-3) var(--sp-4);
   }
-  .tools a {
-    display: inline-flex;
-    align-items: baseline;
-    gap: var(--sp-1);
-    min-height: 40px;
-    padding: var(--sp-1) var(--sp-2);
-    border: 2px solid currentColor;
-    border-radius: 999px;
-    color: inherit;
-    text-decoration: none;
+  .q blockquote {
+    margin: var(--sp-1) 0 0;
+    font-size: var(--fs-h3);
+    line-height: 1.3;
     font-weight: 700;
+    letter-spacing: -0.005em;
   }
-  .tools a:hover {
-    background: rgb(255 255 255 / 0.16);
+  .q--without {
+    background: var(--ground);
+    border: 2px solid var(--line-strong);
   }
-  [data-c='c3'] .tools a:hover {
-    background: rgb(27 27 27 / 0.1);
+  .q--with {
+    background: var(--ink);
+    color: #fff;
   }
-  .tools small {
-    font-size: var(--fs-xs);
-    font-weight: 600;
-  }
-  .open-f {
-    margin-bottom: var(--sp-1);
-    background: var(--accent-ink);
-    border-color: var(--accent-ink);
-    color: var(--accent);
-  }
-  .open-f:hover {
-    background: var(--accent-ink);
-    border-color: var(--accent-ink);
-    color: var(--accent);
-    opacity: 0.9;
-  }
-  [data-c='c3'] .open-f {
-    color: var(--c3-tint);
-  }
-  @media (max-width: 47.99rem) {
-    .ftab {
-      left: 0 !important;
-      padding: 0 var(--sp-3);
-    }
-  }
-  /* Small phones: "Reading" drops from the tab so the name fits */
-  @media (max-width: 30rem) {
-    .rd {
-      display: none;
-    }
-  }
-  @media (max-width: 47.99rem) {
-    .act-open {
-      font-size: 0;
-    }
-    .act-open::after {
-      content: 'Show';
-      font-size: var(--fs-sm);
-    }
+  .q--with .lbl {
+    color: rgb(255 255 255 / 0.85);
   }
 
-  /* ---------- The idea ---------- */
-  /* The central line on paper, so it never runs into the red Reflection folder above it */
-  .idea {
-    background: var(--surface);
-    color: var(--ink);
-    padding: var(--sp-8) var(--gutter);
-    --focus: var(--ink);
-    --muted: #5f5c56;
-  }
-  .idea > * {
-    max-width: 64rem;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  .idea h2 {
-    font-family: var(--font-read);
-    font-style: italic;
-    font-weight: 700;
-    font-size: clamp(1.75rem, 1.2rem + 1.8vw, 2.875rem);
-    line-height: 1.2;
-    margin-bottom: var(--sp-3);
-    padding-left: var(--sp-3);
-    border-left: 6px solid var(--r);
-  }
-  .idea p {
-    font-size: var(--fs-lead);
-    margin-bottom: var(--sp-4);
-  }
-  .starts {
+  .ways {
     list-style: none;
+    margin: 0;
     padding: 0;
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
     gap: var(--sp-2);
   }
-  .starts li {
+  .ways li {
     margin: 0;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--sp-3);
+    padding: var(--sp-3) var(--sp-4);
+    border-radius: var(--r-lg);
+    background: var(--surface);
+    border: 2px solid var(--line-strong);
+  }
+  .idx {
+    font-size: var(--fs-display);
+    font-weight: 800;
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    min-width: 1ch;
+  }
+  .wt h3 {
+    margin: 0 0 var(--sp-half);
+  }
+  .wt p {
+    margin: 0;
+    color: var(--ink-soft);
+    max-width: 40rem;
+  }
+  .wi {
+    display: inline-flex;
+    color: var(--ink);
+  }
+  @media (max-width: 40rem) {
+    .ways li {
+      grid-template-columns: auto minmax(0, 1fr);
+      padding: var(--sp-3);
+    }
+    .wi {
+      display: none;
+    }
+    .idx {
+      font-size: 3rem;
+    }
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .more,
-    .more-in,
-    .ftab {
-      transition: none !important;
-    }
+  .on-dark-body {
+    color: var(--on-dark);
+    font-size: var(--fs-lead);
+    max-width: 44rem;
+  }
+  .gt {
+    display: grid;
+    gap: var(--sp-2);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    margin: var(--sp-4) 0;
+  }
+  .gt-good,
+  .gt-broad {
+    border-radius: var(--r-lg);
+    padding: var(--sp-3);
+  }
+  .gt-good {
+    background: var(--surface);
+    color: var(--ink);
+  }
+  .gt-good .lbl {
+    color: var(--muted);
+  }
+  .gt-broad {
+    background: #2a261e;
+  }
+  .gt .lbl {
+    color: rgb(255 255 255 / 0.85);
+    margin-bottom: var(--sp-1);
+  }
+  .gt ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: var(--sp-2);
+  }
+  .gt li {
+    display: flex;
+    gap: var(--sp-1);
+    align-items: flex-start;
+    margin: 0;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+  .gt li :global(svg) {
+    flex: none;
+    margin-top: 2px;
+  }
+  .gt-broad li {
+    color: var(--on-dark);
+    font-weight: 500;
+  }
+  .link-arrow.light {
+    color: #fff;
+  }
+
+  .meera {
+    display: grid;
+    gap: var(--sp-4);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    align-items: start;
+  }
+  .persona .head {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    margin-bottom: var(--sp-3);
+  }
+  .avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: #fff;
+    display: grid;
+    place-items: center;
+    font-weight: 800;
+    font-size: var(--fs-h3);
+  }
+  .persona b {
+    font-size: var(--fs-h4);
+    display: block;
+    line-height: 1.1;
+  }
+  .persona small {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .persona dl {
+    display: grid;
+    grid-template-columns: 5rem minmax(0, 1fr);
+    gap: var(--sp-1) var(--sp-2);
+    margin: 0;
+  }
+  .persona dt {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding-top: 4px;
+  }
+  .persona dd {
+    margin: 0;
+    font-weight: 600;
+  }
+  .story .btn {
+    margin-top: var(--sp-1);
   }
 </style>

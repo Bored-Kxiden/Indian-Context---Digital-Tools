@@ -1,17 +1,5 @@
 FONTS IN THIS FOLDER
 
-Fredoka-latin.woff2, Fredoka-latin-ext.woff2
-  Fredoka. Copyright 2016 The Fredoka Project Authors (https://github.com/hafontia-zz/Fredoka-One).
-  Licensed under the SIL Open Font License, Version 1.1 (below).
-
-Nunito-latin.woff2, Nunito-latin-ext.woff2, Nunito-Italic-latin.woff2
-  Nunito. Copyright 2014 The Nunito Project Authors (https://github.com/googlefonts/nunito).
-  Licensed under the SIL Open Font License, Version 1.1 (below).
-
-Fredoka and Nunito are the variable Google Fonts files as packaged by Fontsource (@fontsource-variable).
-IBM Plex Mono (below) is used only for code and keyboard keys; Bricolage Grotesque only for the rebuilt
-booklet pages.
-
 BricolageGrotesque-Variable.woff2
   Bricolage Grotesque. Copyright 2022 The Bricolage Grotesque Project Authors
   (https://github.com/ateliertriay/bricolage).

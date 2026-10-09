@@ -112,39 +112,4 @@ const dark = tone === 'ink';
       margin-bottom: 0;
     }
   }
-
-  /* On a file's paper (FileShell): sections are ruled parts of the sheet, not full-width bands */
-  :global(.sheet) .sec {
-    padding-block: var(--sp-5) 0;
-    margin-top: clamp(var(--sp-6), 6vw, 80px);
-    border-top: 1px solid var(--line);
-    background: none;
-  }
-  :global(.sheet) .sec--ink,
-  :global(.sheet) .sec--c1,
-  :global(.sheet) .sec--c2,
-  :global(.sheet) .sec--c3,
-  :global(.sheet) .sec--c4 {
-    border-top: 0;
-    padding: clamp(var(--sp-3), 4vw, var(--sp-6));
-    border-radius: var(--r-md);
-  }
-  :global(.sheet) .sec--ink {
-    background: var(--ink);
-  }
-  :global(.sheet) .sec--c1,
-  :global(.sheet) .sec--c2,
-  :global(.sheet) .sec--c3,
-  :global(.sheet) .sec--c4 {
-    background: var(--accent);
-  }
-  :global(.sheet) .head {
-    max-width: 40rem;
-  }
-  @media (min-width: 64rem) {
-    :global(.sheet) .sec--split .inner {
-      grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
-      gap: 50px;
-    }
-  }
 </style>

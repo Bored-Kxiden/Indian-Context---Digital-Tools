@@ -281,7 +281,7 @@ export function createAsk(o: AskUIOptions) {
           w.append(p);
         }
         const foot = el('p', 'links');
-        foot.append(a('/glossary/', 'Browse the glossary'), a('/components/', 'See all tools'));
+        foot.append(a('/glossary/', 'Browse the glossary'), a('/components/', 'See the components'));
         w.append(foot);
         return w;
       }

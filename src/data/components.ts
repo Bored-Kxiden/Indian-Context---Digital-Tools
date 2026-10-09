@@ -20,15 +20,6 @@ export interface ToolkitComponent {
   href: string;
   /** Tool names shown as chips on the component card. */
   tags: string[];
-  /** Its number among the five files of the kit, in the template's order (D41): 1 Reflection … 5 Language. */
-  file: number;
-  /** "I want to …", in the reader's voice (the template's line over each title). */
-  verb: string;
-  /** A two-line plain-language description: what you do and what you get. */
-  plain: string;
-  /** Level of involvement, 1 light · 2 moderate · 3 complex, and what it asks of you (the owner's template). */
-  level: 1 | 2 | 3;
-  involve: string;
 }
 
 export const components: ToolkitComponent[] = [
@@ -43,11 +34,6 @@ export const components: ToolkitComponent[] = [
     status: 'live',
     href: '/components/existing-products/',
     tags: ['Media & Gossip', 'History', 'The Break', 'Power', '+ card kit'],
-    file: 2,
-    verb: "I want to read existing products",
-    level: 2,
-    involve: "Moderate tool that takes a few hours. Best done with a peer so observations can be compared and challenged.",
-    plain: "Pick one real product people use. Read what is said about it, what it replaced and who holds power around it, to find out who it was built for and who pays when it gets them wrong.",
   },
   {
     id: 'visual-culture',
@@ -60,66 +46,42 @@ export const components: ToolkitComponent[] = [
     status: 'live',
     href: '/components/visual-culture/',
     tags: ['Show', 'Read', 'Build', 'Hand off'],
-    file: 3,
-    verb: "I want to read visual culture",
-    level: 2,
-    involve: "Moderate tool that takes a few hours. Best done with a peer so observations can be compared and challenged.",
-    plain: "People photograph the signs, screens and objects they trust and act on every day, then explain them to you. You learn what your design has to look like to be noticed and trusted.",
   },
   {
     id: 'language',
     number: 3,
     c: 'c3',
-    name: 'Reading Language Conditions',
-    short: 'Language conditions',
+    name: 'Reading Language',
+    short: 'Language',
     blurb: 'Understand what was meant, not only what was said: thick translation, checked back both ways with the people the words came from.',
     status: 'live',
     href: '/components/language/',
     tags: ['Listen', 'Translate', 'Reverse thick translation', 'Test', 'Library', 'Kahavat Relay'],
-    file: 5,
-    verb: "I want to read language conditions",
-    level: 3,
-    involve: "More complex tool that should ideally be done over a few days. Given the strategic nature of the inputs/outputs, this needs consultations with seniors, peers and ideally needs to be revised after a first pass.",
-    plain: "Find out what people mean, not only what they say. Translate with the meaning kept in, then check it back with the people the words came from.",
   },
   {
     id: 'material-reality',
     number: 4,
     c: 'c4',
-    name: 'Reading Material Conditions',
-    short: 'Material conditions',
+    name: 'Reading Material Reality',
+    short: 'Material reality',
     blurb: 'What people actually have around them, what it costs them, and who they lean on to get things done.',
     hours: '2–4 hours',
     status: 'live',
     href: '/components/material-reality/',
     tags: ['Build', 'Break', 'Weigh', 'Say'],
-    file: 4,
-    verb: "I want to read material conditions",
-    level: 3,
-    involve: "More complex tool that should ideally be done over a few days. Given the strategic nature of the inputs/outputs, this needs consultations with seniors, peers and ideally needs to be revised after a first pass.",
-    plain: "Map what people actually have: phones, data, money, time and the people they lean on. Find where your product breaks for them, and what that costs them.",
   },
   {
     id: 'reflection',
     number: null,
     c: 'ink',
-    name: 'Reflection',
+    name: 'Claim & Reflection',
     short: 'Reflection',
     blurb: 'What did the process give you that you did not already have? Write down where you stand before each component, and check your claim against your own bias after it.',
     status: 'live',
     href: '/components/reflection/',
     tags: ['Position', 'Prediction', 'Claim', 'Redaction', 'Summarise'],
-    file: 1,
-    verb: "I want to reflect before I start",
-    level: 1,
-    involve: "Light tool that can be done alone in under an hour. Use it before opening any other tool in the kit, and return to it at the end.",
-    plain: "Before you start, write down what you already believe and what you expect to find. At the end, check what you found against it, so your own assumptions don’t pass as findings.",
   },
 ];
-
-/** The five files in the template's order: Reflection first, then the four readings. */
-export const files = [...components].sort((a, b) => a.file - b.file);
-export const fileNo = (c: { file: number }) => String(c.file).padStart(2, '0');
 
 export const componentById = Object.fromEntries(components.map((c) => [c.id, c])) as Record<ComponentId, ToolkitComponent>;
 /** The four reading components. Reflection runs through them, so it is shown apart. */

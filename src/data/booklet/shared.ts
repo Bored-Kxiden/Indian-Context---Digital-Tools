@@ -11,20 +11,20 @@ export const whyThisExists = {
 export const guideline = {
   eyebrow: 'The one guideline',
   title: 'Be specific. One real person, one real thing.',
-  body: 'One real product, or one action someone had to do. Follow it from start to end, the way it actually happened. Every file in this book works on something you can point to.',
+  body: 'One real product, or one action someone had to do. Follow it from start to end, the way it actually happened. Every component in this book works on something you can point to.',
   whatCounts: {
     title: 'What counts as “one real thing”',
     body: 'A named product you can open, or an action with a clear start and end. It can happen on a phone, on paper, or in person.',
   },
   good: ['Meera uploading her documents for a scholarship', 'A shopkeeper paying the electricity bill', 'The National Scholarship Portal'],
   tooBroad: ['Students using government portals', 'How rural users pay bills', 'Government portals'],
-  adapt: 'Everything else is yours to adapt: which files and tools you use, their order, the labels, the language.',
+  adapt: 'Everything else is yours to adapt: which components and tools you use, their order, the labels, the language.',
 };
 
 export const howToRead = {
   title: 'How to read this toolkit',
   steps: [
-    { title: 'Pick a file.', body: 'Each one works on its own. Read its opening pages first.' },
+    { title: 'Pick a component.', body: 'Each one works on its own. Read its opening pages first.' },
     { title: 'Pick a tool.', body: 'Read its page: what it shows you, and when you’re done.' },
     { title: 'Follow the example.', body: 'Follow the steps on the filled example.' },
     { title: 'Fill the template.', body: 'Print the blank template and fill it for your person.' },
@@ -45,7 +45,7 @@ export const meera = {
   name: 'Meera, 19',
   eyebrow: 'A persona example',
   title: 'Meet Meera.',
-  lead: 'Our example persona. She appears in every file.',
+  lead: 'Our example persona. She appears in every component.',
   facts: [
     { k: 'Who', v: 'First in her family at college' },
     { k: 'Where', v: 'Hostel in a Tier-2 town; family in a village' },
@@ -69,8 +69,8 @@ export const afterTheToolkit = {
   eyebrow: 'After the toolkit',
   title: 'It doesn’t end here.',
   steps: [
-    'Test your idea: run it back through the Villain Story (Reading Existing Products, Tool 3) or the Cut (Reading Material Conditions, Tool 2).',
-    'Carry the brief into the next file.',
+    'Test your idea: run it back through the Villain Story (Component 1, Tool 3) or the Cut (Component 4, Tool 2).',
+    'Carry the brief into the next component.',
     'Re-map the same person in six months.',
     'Write your own tool card, and share it back.',
   ],

@@ -12,7 +12,7 @@ const R = '/components/reflection/';
 
 export const overview = {
   quote: 'I want to know what the process gave me that I did not already have.',
-  eyebrow: 'Read before you open any other file · runs through every file',
+  eyebrow: 'Read before Component 1 · runs through every component',
   what: {
     title: 'What is it & why should I do it?',
     body: [
@@ -23,9 +23,9 @@ export const overview = {
   },
   howTo: {
     title: 'How to use it',
-    body: 'Fill a file’s Before page before you open its first tool. Fill its After page as soon as its last page is done. At the end of the toolkit, go back to your predictions with the three Look back pages.',
+    body: 'Fill Before Component N before you open its first tool. Fill After Component N as soon as its last page is done. At the end of the toolkit, go back to your predictions with the three Look back pages.',
   },
-  onlyOne: 'Only using one file? Do its Before and After pages, then go straight to the three Look back pages. They take about 30 minutes.',
+  onlyOne: 'Only using one component? Do its Before and After pages, then go straight to the three Look back pages. They take about 30 minutes.',
   flow: [
     { n: 1, name: 'Position', ask: 'Where are you speaking from?' },
     { n: 2, name: 'Prediction', ask: 'What do you expect, and why?' },
@@ -73,7 +73,7 @@ export const stops: ReflectStop[] = [
   {
     id: 'existing-products',
     n: 1,
-    label: 'Reading Existing Products',
+    label: 'Component 1 · Reading Existing Products',
     short: 'Existing products',
     href: C1,
     before: {
@@ -89,13 +89,13 @@ export const stops: ReflectStop[] = [
       pdf: 'reflection-r1b.pdf',
       image: 'r1b',
       after: { label: 'Synthesis', href: `${C1}synthesis/` },
-      next: { label: 'Reading Visual Culture', href: C2 },
+      next: { label: 'Component 2 · Reading Visual Culture', href: C2 },
     },
   },
   {
     id: 'visual-culture',
     n: 2,
-    label: 'Reading Visual Culture',
+    label: 'Component 2 · Reading Visual Culture',
     short: 'Visual culture',
     href: C2,
     before: {
@@ -111,13 +111,13 @@ export const stops: ReflectStop[] = [
       pdf: 'reflection-r2b.pdf',
       image: 'r2b',
       after: { label: 'Is it working?', href: `${C2}is-it-working/` },
-      next: { label: 'Reading Language Conditions', href: C3 },
+      next: { label: 'Component 3 · Reading Language', href: C3 },
     },
   },
   {
     id: 'language',
     n: 3,
-    label: 'Reading Language Conditions',
+    label: 'Component 3 · Reading Language',
     short: 'Language',
     href: C3,
     before: {
@@ -133,14 +133,14 @@ export const stops: ReflectStop[] = [
       pdf: 'reflection-r3b.pdf',
       image: 'r3b',
       after: { label: 'Is it working?', href: `${C3}is-it-working/` },
-      next: { label: 'Reading Material Conditions', href: C4 },
+      next: { label: 'Component 4 · Reading Material Reality', href: C4 },
     },
   },
   {
     id: 'material-reality',
     n: 4,
-    label: 'Reading Material Conditions',
-    short: 'Material conditions',
+    label: 'Component 4 · Reading Material Reality',
+    short: 'Material reality',
     href: C4,
     before: {
       code: 'R·4A',
@@ -165,7 +165,7 @@ export const stopById = Object.fromEntries(stops.map((s) => [s.id, s])) as Recor
 /** The Before worksheet: steps 1 and 2. Same questions in every component. */
 export const before = {
   sub: 'Steps 1–2 · Position + prediction',
-  when: 'Fill it before you open the file’s first tool. Keep it visible; don’t edit the prediction.',
+  when: 'Fill it before you open the component’s first tool. Keep it visible; don’t edit the prediction.',
   opening: ['Before I begin,', 'I want to make my starting position visible.'],
   position: {
     n: 1,
@@ -189,14 +189,14 @@ export const before = {
   },
   keep: {
     lead: 'Keep this page visible while you work.',
-    body: 'Do not change the prediction until the file is complete.',
+    body: 'Do not change the prediction until the component is complete.',
   },
 };
 
 /** The After worksheet: steps 3 and 4, plus the gap you could not close. Same in every component. */
 export const after = {
   sub: 'Steps 3–4 · Claim + redaction',
-  when: 'Fill it as soon as the file’s last page is done, while it is fresh.',
+  when: 'Fill it as soon as the component’s last page is done, while it is fresh.',
   opening: ['What did the process actually give me?', 'Not what I set out to find.'],
   stanza: {
     n: 1,
@@ -216,7 +216,7 @@ export const after = {
     body: 'Name one specific thing you went looking for and couldn’t confirm. Not “there’s a lot more to understand”. The actual gap you hit.',
     write: ['I went looking for', 'and couldn’t confirm it because'],
   },
-  onlyOne: 'Only using this file? Go to the Look back pages now.',
+  onlyOne: 'Only using this component? Go to the Look back pages now.',
   /** The reference's page codes for the three Look back pages. */
   lookBackCodes: 'R·E1–E3',
 };

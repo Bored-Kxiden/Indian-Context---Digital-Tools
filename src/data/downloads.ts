@@ -43,7 +43,7 @@ const booklet: DownloadEntry[] = [
     id: 'booklet',
     title: 'The booklet · the whole toolkit (A4)',
     description:
-      'The final booklet: the guideline, Meera, Reflection, the four reading files with every tool, worked example and template, and the Reading Existing Products card kit.',
+      'The final booklet: the guideline, Meera, Claim & Reflection, Components 1 to 4 with every tool, worked example and template, and the Component 1 card kit.',
     file: 'designing-for-the-indian-context-booklet.pdf',
     format: 'PDF',
     group: 'booklet',
@@ -52,7 +52,7 @@ const booklet: DownloadEntry[] = [
   },
   {
     id: 'card-kit-full',
-    title: 'Reading Existing Products card kit (all)',
+    title: 'Component 1 card kit (all)',
     description: 'The card-kit page, sheets S1–S8 and boards B1–B7 as one file, exactly as laid out in the booklet (p.1.12–1.27).',
     file: 'component-1-card-kit.pdf',
     format: 'PDF',
@@ -183,7 +183,7 @@ templateEntries.unshift({
   id: 'existing-products-figma',
   title: 'Reading Existing Products: the Figma file',
   description:
-    'Reading Existing Products in Figma, to adapt or print: the cover, what and how, Tools 1–4 with their blank templates, Synthesis, and Is it working? (the “final designs” page).',
+    'Component 1 in Figma, to adapt or print: the cover, what and how, Tools 1–4 with their blank templates, Synthesis, and Is it working? (the “final designs” page).',
   file: 'reading-existing-products.fig',
   format: 'FIG',
   group: 'templates',
@@ -240,11 +240,11 @@ const reflectionPages: DownloadEntry[] = reflectStops.flatMap((s) =>
     const p = s[k];
     return {
       id: `reflection-${p.image}`,
-      title: `${k === 'before' ? 'Before' : 'After'} ${s.label} · ${p.code}: blank page`,
+      title: `${k === 'before' ? 'Before' : 'After'} Component ${s.n} · ${p.code}: blank page`,
       description:
         k === 'before'
-          ? `Position and prediction, to fill before the file’s first tool. Keep it in view; don’t edit the prediction.`
-          : `Claim and redaction, to fill right after the file’s last page, while it is fresh.`,
+          ? `Position and prediction, to fill before Component ${s.n}’s first tool. Keep it in view; don’t edit the prediction.`
+          : `Claim and redaction, to fill right after Component ${s.n}’s last page, while it is fresh.`,
       file: `templates/${p.pdf}`,
       format: 'PDF',
       group: 'templates',
@@ -347,27 +347,7 @@ const language: DownloadEntry[] = [
   },
 ];
 
-// ---- One pack per file: every worksheet of the file in one PDF (scripts/build-file-packs.py, D41)
-const packs: DownloadEntry[] = (
-  [
-    ['existing-products', 'c1', 'Reading Existing Products', 7],
-    ['visual-culture', 'c2', 'Reading Visual Culture', 6],
-    ['material-reality', 'c4', 'Reading Material Conditions', 8],
-    ['language', 'c3', 'Reading Language Conditions', 10],
-  ] as const
-).map(([id, c, name, pages]) => ({
-  id: `pack-${id}`,
-  title: `${name}: all worksheets (A4)`,
-  description: 'Every worksheet of this file in one PDF, in the order you use them.',
-  file: `worksheets-${id}.pdf`,
-  format: 'PDF' as const,
-  group: 'templates' as const,
-  component: c,
-  pages,
-  note: 'A4',
-}));
-
-export const downloadEntries: DownloadEntry[] = [...booklet, ...packs, ...templateEntries, ...reflectionPages, ...reflectionEntries, ...sheetEntries, ...boardEntries, ...language];
+export const downloadEntries: DownloadEntry[] = [...booklet, ...templateEntries, ...reflectionPages, ...reflectionEntries, ...sheetEntries, ...boardEntries, ...language];
 
 export interface Download extends DownloadEntry {
   bytes: number;

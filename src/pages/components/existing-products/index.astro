@@ -1,148 +1,276 @@
 ---
 import ComponentLayout from '../../../layouts/ComponentLayout.astro';
-import PaperTop from '../../../components/file/PaperTop.astro';
-import FileBasics from '../../../components/file/FileBasics.astro';
-import PaperSection from '../../../components/file/PaperSection.astro';
+import Section from '../../../components/Section.astro';
+import GoalIndex from '../../../components/GoalIndex.astro';
+import RouteList from '../../../components/RouteList.astro';
+import Icon from '../../../components/Icon.astro';
+import DownloadCard from '../../../components/DownloadCard.astro';
 import { overview, route, figmaFile } from '../../../data/booklet/existing-products';
 import { getDownloadById } from '../../../data/downloads';
+import { goalsByComponent } from '../../../data/goals';
 import { componentById } from '../../../data/components';
-import { bookletImage } from '../../../utils/assets';
 import { url } from '../../../utils/url';
 
-// File 02's overview, in the template's order and in plain words (D41, D42).
 const comp = componentById['existing-products'];
-const pack = getDownloadById('pack-existing-products')!;
-const figma = getDownloadById(figmaFile.id)!;
+const figmaDl = getDownloadById(figmaFile.id)!;
 const toolName = Object.fromEntries(route.map((r) => [r.href, r.label]));
-const plainStep: Record<string, string> = {
-  'pick-a-product': 'Choose one product you can open right now: “Google Maps”, not “navigation apps”.',
-  'media-gossip': 'Compare what the product promises with what people actually say about it.',
-  history: 'Find out what the product replaced, and who lost a role when it arrived.',
-  'the-break': 'Find where the ideal story breaks, and who gets blamed for it.',
-  power: 'See who gains power, and whose unpaid help keeps it running.',
-  synthesis: 'Put your findings side by side and write one design claim.',
-};
-const how = route.map((r) => ({ title: r.label.replace(/^\d · /, ''), meta: r.time || undefined, body: plainStep[r.href], href: `${comp.href}${r.href}/` }));
+const items = [
+  { label: 'Reflect: before (R·1A)', href: `${comp.href}reflect-before/`, blurb: 'Say where you stand and what you expect to find, before Tool 1.' },
+  ...route.map((r) => ({ ...r, href: `${comp.href}${r.href}/` })),
+  { label: 'Reflect: after (R·1B)', href: `${comp.href}reflect-after/`, blurb: 'Say what the process actually gave you, then check it against your own bias.' },
+];
 ---
 
-<ComponentLayout component="existing-products" current="overview" title={comp.name} heading={comp.name}>
-  <PaperTop slot="top" image={bookletImage('1.09')} alt="The Synthesis worksheet from the booklet, filled in with Meera’s example." caption="Where it ends: the Synthesis worksheet · booklet p.1.09" text={comp.plain}>
-    <Fragment slot="buttons">
-      <a class="btn btn--sm" href={url(pack.href)} download>Download PDF ↓</a>
-      <a class="btn btn--sm btn--outline" href={url(figma.href)} download>Figma template ↓</a>
-    </Fragment>
-  </PaperTop>
+<ComponentLayout
+  component="existing-products"
+  current="overview"
+  title={comp.name}
+  heading={comp.name}
+  lead={comp.blurb}
+  chips={['Component 1', '3–4 hours', 'Paper or card kit']}
+>
+  <Section id="idea" eyebrow="The idea" title="Every product was designed for someone." split>
+    <p class="big">{overview.lead}</p>
+    {overview.intro.map((p) => <p class="big">{p}</p>)}
+    <div class="callout">
+      <strong>{overview.notAnAudit.title}</strong>
+      <p>{overview.notAnAudit.body}</p>
+    </div>
+  </Section>
 
-  <FileBasics
-    comp={comp}
-    facts={['3–4 hours', '4 tools + Synthesis', 'Paper or card kit']}
-    notes={[
-      { kind: 'Printable worksheets', format: `PDF · ${pack.pages} pages`, title: 'Print and fill in', action: 'download PDF ↓', href: pack.href, tone: 'yellow', download: true },
-      { kind: 'Digital worksheet', format: 'Figma', title: 'Open the template', action: `download Figma file (${figma.size}) ↓`, href: figma.href, tone: 'pink', download: true },
-      { kind: 'For a group', format: 'Card kit', title: 'Play it with cards', action: 'see the card kit →', href: '/card-kit/', tone: 'teal' },
-    ]}
-    why={[
-      'Every product was designed for someone. This file helps you find out who, and who pays when the product is wrong about them.',
-      'It is not a usability check. You are reading whose assumptions are built into the product.',
-    ]}
-    how={how}
-  >
-    <p slot="how" class="note-line">Every worksheet has Meera’s example in [brackets]. Write over it with your own. Each tool also works on its own.</p>
-  </FileBasics>
+  <Section id="goals" eyebrow="Start here" title="I want to…" tone="white">
+    <p slot="lead" class="lead-text">Start with what you want to find out. Every tool works on its own.</p>
+    <GoalIndex groups={goalsByComponent('c1')} variant="list" search={false} />
+  </Section>
 
-  <PaperSection id="need" title="What do I need?">
-    <p>The product open on a phone or laptop, and pens. Sticky notes help, in three colours:</p>
-    <ul class="stickies">
+  <Section id="route" eyebrow="The route" title="Four tools, then one claim." split>
+    <p class="big">About 3 hours. Do them in order for the full picture, or pick the one you need: each tool also works on its own. Every page is a template with Meera’s example in [brackets].</p>
+    <RouteList items={items} />
+  </Section>
+
+  <Section id="need" eyebrow="Before you start" title="You need" tone="white" split>
+    <ul class="need">
+      {overview.youNeed.map((n) => <li><Icon name="check" size={22} /> {n}</li>)}
+    </ul>
+    <h3 class="h3">Three colours of sticky note</h3>
+    <ul class="notes">
       {
         overview.notes.map((n) => (
           <li class={`note note--${n.colour}`}>
-            <b>{n.label}</b> {n.use}
+            <b>{n.label}</b>
+            <span>{n.use}</span>
           </li>
         ))
       }
     </ul>
-    <p>Working as a team of 3–5? Use the <a href={url('/card-kit/')}>card kit</a>: big boards and printed cards. The questions are the same, and so is what you end up with.</p>
-  </PaperSection>
+  </Section>
 
-  <PaperSection id="figma" title="Rather work in Figma?">
-    <p>{figmaFile.lead}</p>
-    <details class="more">
-      <summary>What is in the Figma file</summary>
-      <ol class="frames">
-        {
-          figmaFile.pages.map((p) => (
-            <li>
-              <b>{p.name}</b>
-              {p.tool && <a href={url(`${comp.href}${p.tool}/`)}>{toolName[p.tool]}</a>}
-            </li>
-          ))
-        }
-      </ol>
-      <p class="small">{figmaFile.alsoHolds}</p>
-    </details>
-  </PaperSection>
+  <Section id="ways" eyebrow="Two ways to work" title="On paper, or with cards." split>
+    <div class="ways">
+      <article class="card way">
+        <Icon name="print" size={32} />
+        <h3>{overview.twoWays.paper.title}</h3>
+        <p>{overview.twoWays.paper.body}</p>
+        <dl>
+          <dt>Best for</dt>
+          <dd>{overview.twoWays.paper.bestFor}</dd>
+          <dt>You need</dt>
+          <dd>{overview.twoWays.paper.youNeed}</dd>
+        </dl>
+      </article>
+      <article class="card way way--cards">
+        <Icon name="cards" size={32} />
+        <h3>{overview.twoWays.cards.title}</h3>
+        <p>{overview.twoWays.cards.body}</p>
+        <dl>
+          <dt>Best for</dt>
+          <dd>{overview.twoWays.cards.bestFor}</dd>
+          <dt>You need</dt>
+          <dd>{overview.twoWays.cards.youNeed}</dd>
+        </dl>
+        <a class="link-arrow" href={url('/card-kit/')}>See the card kit <Icon name="arrow" size={20} /></a>
+      </article>
+    </div>
+    <p class="small">{overview.twoWays.note}</p>
+    <p class="small">{overview.team}</p>
+  </Section>
 
-  <PaperSection id="claim" title="Where does it end?">
-    <p>With one sentence, the design claim. Every blank points to something you already wrote:</p>
+  <Section id="figma" eyebrow="Or work in Figma" title={figmaFile.title} tone="white" split>
+    <p class="big">{figmaFile.lead}</p>
+    <div class="dl"><DownloadCard item={figmaDl} /></div>
+    <h3 class="h3">What is in it: the “final designs” page</h3>
+    <ol class="pages">
+      {
+        figmaFile.pages.map((p) => (
+          <li>
+            <b>{p.name}</b>
+            {p.tool && (
+              <a href={url(`${comp.href}${p.tool}/`)}>
+                {toolName[p.tool]}
+              </a>
+            )}
+          </li>
+        ))
+      }
+    </ol>
+    <h3 class="h3">How to use it</h3>
+    <ol class="how">
+      {figmaFile.howTo.map((h) => <li>{h}</li>)}
+    </ol>
+    <p class="small">{figmaFile.alsoHolds}</p>
+  </Section>
+
+  <Section id="claim" eyebrow="Where it ends" title="One design claim." tone="c1" split>
     <p class="claim">{overview.claim}</p>
-  </PaperSection>
+    <p class="small">{overview.claimNote}</p>
+  </Section>
 </ComponentLayout>
 
 <style>
-  .note-line {
-    margin-top: var(--sp-3);
-    font-size: var(--fs-ui);
+  .big {
+    font-size: var(--fs-lead);
+    color: var(--ink-soft);
+    max-width: var(--measure);
+  }
+  .h3 {
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
     color: var(--muted);
+    margin: var(--sp-5) 0 var(--sp-2);
   }
-  .stickies {
+  .need {
     list-style: none;
-    margin: 0 0 var(--sp-3);
     padding: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
-    gap: var(--sp-2);
-  }
-  .stickies li {
     margin: 0;
-    border-radius: 0;
-    box-shadow: 0 4px 12px rgb(0 0 0 / 0.1);
+    display: grid;
+    gap: var(--sp-2);
+    max-width: var(--measure);
   }
-  .stickies b {
-    display: block;
-    font-family: var(--font-ui);
+  .need li {
+    display: flex;
+    gap: var(--sp-2);
+    align-items: flex-start;
+    margin: 0;
+    font-size: var(--fs-lead);
+  }
+  .need :global(svg) {
+    flex: none;
+    margin-top: 4px;
+    color: var(--c1);
+  }
+  .notes {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: var(--sp-2);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  }
+  .notes li {
+    margin: 0;
+    display: grid;
+    gap: var(--sp-half);
+    min-height: 112px;
+    align-content: start;
+  }
+  .notes b {
+    font-family: var(--font-mono);
     font-size: var(--fs-xs);
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
   }
-  .more summary {
-    cursor: pointer;
-    font-family: var(--font-ui);
-    font-size: var(--fs-sm);
-    min-height: 44px;
-    display: flex;
-    align-items: center;
-  }
-  .frames {
+  .ways {
     display: grid;
-    gap: var(--sp-1);
-    padding-left: var(--sp-3);
+    gap: var(--sp-3);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
   }
-  .frames li {
+  .way {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1);
+  }
+  .way h3 {
+    margin: var(--sp-1) 0 0;
+  }
+  .way p {
+    margin: 0;
+    color: var(--ink-soft);
+  }
+  .way dl {
+    display: grid;
+    gap: var(--sp-half);
+    margin: var(--sp-2) 0 0;
+  }
+  .way dt {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: var(--sp-1);
+  }
+  .way dd {
     margin: 0;
   }
-  .frames a {
-    margin-left: var(--sp-1);
-    font-family: var(--font-ui);
+  .way .link-arrow {
+    margin-top: auto;
+    padding-top: var(--sp-2);
+  }
+  .way--cards {
+    background: var(--c1-tint);
+    border-color: transparent;
+  }
+  .dl {
+    margin-bottom: var(--sp-4);
+    max-width: 40rem;
+  }
+  .pages {
+    list-style: none;
+    margin: 0 0 var(--sp-4);
+    padding: 0;
+    display: grid;
+    gap: var(--sp-1);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+  }
+  .pages li {
+    display: grid;
+    gap: 2px;
+    padding: var(--sp-2);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-sm);
+    background: var(--surface);
+  }
+  .pages a {
     font-size: var(--fs-sm);
+    color: var(--ink);
+  }
+  .how {
+    margin: 0 0 var(--sp-3);
+    padding-left: 1.25em;
+    max-width: var(--measure);
+  }
+  .how li + li {
+    margin-top: var(--sp-1);
   }
   .small {
     font-size: var(--fs-ui);
     color: var(--muted);
+    max-width: var(--measure);
+    margin-top: var(--sp-2);
   }
   .claim {
-    font-size: var(--fs-lead);
-    font-style: italic;
-    border-left: 4px solid var(--accent);
-    padding-left: var(--sp-3);
+    font-size: clamp(1.5rem, 1rem + 1.6vw, 2.5rem);
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    margin: 0;
+    max-width: 40rem;
+  }
+  :global(.sec--c1) .small {
+    color: inherit;
+    opacity: 0.9;
   }
 </style>

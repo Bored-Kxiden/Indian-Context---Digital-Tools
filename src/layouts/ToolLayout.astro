@@ -1,13 +1,13 @@
 ---
 import BaseLayout from './BaseLayout.astro';
-import FileShell from '../components/file/FileShell.astro';
-import SubBar from '../components/file/SubBar.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import ComponentStepper from '../components/ComponentStepper.astro';
 import DownloadCard from '../components/DownloadCard.astro';
 import Icon from '../components/Icon.astro';
 import { getDownloadsForPage } from '../data/downloads';
 import { referenceBySlug, referenceHref, parentLabel } from '../data/tools';
 import { railFor } from '../data/rail';
-import { componentById, fileNo } from '../data/components';
+import { componentById } from '../data/components';
 import { url } from '../utils/url';
 
 // Shell for the deeper pages of Component 3 · Reading Language (the Meaning Card, the Field Kit,
@@ -38,30 +38,42 @@ const also = (page.also ?? []).map((a) => ({ label: parentLabel(a), href: rail.i
 ---
 
 <BaseLayout title={`${page.name}: Language`} description={lead} component="c3">
-  <FileShell
-    comp={comp}
-    crumbs={[
-      { label: `File ${fileNo(comp)} · ${comp.short}`, href: comp.href },
-      { label: parentLabel(page.parent), href: parent.href },
-      { label: page.name },
-    ]}
-    title={page.name}
-    lead={lead}
-    stamp={`${fileNo(comp)}.${parentAt + 1}`}
-  >
-    <p slot="head" class="under">
-      <span class="where">Part of</span>
-      <a class="chip chip--solid" href={url(parent.href)}>{parentLabel(page.parent)}</a>
-      {
-        also.length > 0 && (
-          <>
-            <span class="where">Also used in</span>
-            {also.map((a) => <a class="chip" href={url(a.href)}>{a.label}</a>)}
-          </>
-        )
-      }
-    </p>
-    <SubBar rail={rail} current={page.parent} />
+  <div class="page-head">
+    <div class="wrap head-grid">
+      <div class="hl">
+        <Breadcrumb
+          items={[
+            { label: 'Home', href: '/' },
+            { label: 'Components', href: '/components/' },
+            { label: '3 · Language', href: '/components/language/' },
+            { label: parentLabel(page.parent), href: parent.href },
+            { label: page.name },
+          ]}
+        />
+        <div class="chip-row eyebrow-row">
+          <span class="chip chip--quiet">Go deeper</span>
+          <span class="chip chip--quiet">{page.kind}</span>
+        </div>
+        <h1>{page.name}</h1>
+        <p class="lead">{lead}</p>
+        <p class="under">
+          <span class="where">Belongs to</span>
+          <a class="chip chip--solid" href={url(parent.href)}>{parentLabel(page.parent)}</a>
+          {
+            also.length > 0 && (
+              <>
+                <span class="where">Also used in</span>
+                {also.map((a) => <a class="chip" href={url(a.href)}>{a.label}</a>)}
+              </>
+            )
+          }
+        </p>
+      </div>
+      <span class="bignum" aria-hidden="true">3</span>
+    </div>
+  </div>
+
+  <ComponentStepper rail={rail} current={page.parent} />
 
   <div class="wrap body">
     <div class="main">
@@ -107,7 +119,6 @@ const also = (page.also ?? []).map((a) => ({ label: parentLabel(a), href: rail.i
       }
     </aside>
   </div>
-  </FileShell>
 </BaseLayout>
 
 <script>
@@ -175,7 +186,7 @@ const also = (page.also ?? []).map((a) => ({ label: parentLabel(a), href: rail.i
     flex-wrap: wrap;
     align-items: center;
     gap: var(--sp-1);
-    margin: var(--sp-3) 0 0;
+    margin: 0;
   }
   .under .chip {
     text-decoration: none;
@@ -197,7 +208,7 @@ const also = (page.also ?? []).map((a) => ({ label: parentLabel(a), href: rail.i
     line-height: 0.75;
     font-weight: 800;
     letter-spacing: -0.06em;
-    color: var(--accent-deep);
+    color: var(--accent);
     user-select: none;
   }
   @media (min-width: 64rem) {
