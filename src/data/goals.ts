@@ -48,7 +48,7 @@ export const goals: Goal[] = [
   {
     id: 'existing-products',
     component: 'c1',
-    componentLabel: 'Component 1 · Existing products',
+    componentLabel: 'Existing products',
     title: 'Read an existing product',
     items: [
       { phrase: '…pick the one product to read', tag: 'Pick a product', tone: 'c1', href: `${C1}pick-a-product/` },
@@ -62,7 +62,7 @@ export const goals: Goal[] = [
   {
     id: 'visual-culture',
     component: 'c2',
-    componentLabel: 'Component 2 · Visual culture',
+    componentLabel: 'Visual culture',
     title: 'Read visual culture',
     items: c2Goals.map((g) => ({
       phrase: g.phrase,
@@ -74,7 +74,7 @@ export const goals: Goal[] = [
   {
     id: 'language',
     component: 'c3',
-    componentLabel: 'Component 3 · Language',
+    componentLabel: 'Language conditions',
     title: 'Read language',
     items: [
       { phrase: '…understand the setting', tag: 'Before you start', tone: 'c3', href: `${C3}before-you-start/` },
@@ -87,7 +87,7 @@ export const goals: Goal[] = [
   {
     id: 'material-reality',
     component: 'c4',
-    componentLabel: 'Component 4 · Material reality',
+    componentLabel: 'Material conditions',
     title: 'Read material reality',
     items: c4Goals.map((g) => ({
       phrase: g.phrase,
@@ -102,8 +102,8 @@ export const goals: Goal[] = [
     componentLabel: 'Reflection · Claim & Reflection',
     title: 'Reflect on what I found',
     items: [
-      { phrase: '…make my starting position and my prediction visible', tag: 'Before each component', tone: 'ink', href: `${R}#where` },
-      { phrase: '…test what I learned against my own bias', tag: 'After each component', tone: 'ink', href: `${R}#where` },
+      { phrase: '…make my starting position and my prediction visible', tag: 'Before each file', tone: 'ink', href: `${R}#where` },
+      { phrase: '…test what I learned against my own bias', tag: 'After each file', tone: 'ink', href: `${R}#where` },
       { phrase: '…go back to my predictions and see what changed', tag: 'Look back: Summarise', tone: 'ink', href: `${R}summarise/` },
       { phrase: '…see which dimensions I never reached', tag: 'Look back: Wheel', tone: 'ink', href: `${R}wheel/` },
       { phrase: '…ask what this could still get wrong', tag: 'Look back: Consequences', tone: 'ink', href: `${R}consequences/` },
@@ -163,3 +163,12 @@ export const languageSteps: { theme: string; items: GoalItem[] }[] = [
 ];
 
 export const goalsByComponent = (c: ComponentColour) => goals.filter((g) => g.component === c);
+
+/** "I want to …" for a page, from the first goal that opens it (the line over a file's title, D41). */
+export function verbFor(path: string): string | undefined {
+  for (const g of goals) {
+    const item = g.items.find((i) => i.href.split('#')[0] === path);
+    if (item) return `I want to ${item.phrase.replace(/^…\s*/, '')}`;
+  }
+  return undefined;
+}

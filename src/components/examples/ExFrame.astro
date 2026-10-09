@@ -84,6 +84,8 @@ const { page, alt, caption } = Astro.props;
     position: relative;
   }
   .ex {
+    /* The booklet's own typeface, so a rebuilt page keeps the printed proportions. */
+    font-family: var(--font-booklet);
     position: relative;
     --u: calc(100cqw / 511.5);
     /* the booklet's own colours */

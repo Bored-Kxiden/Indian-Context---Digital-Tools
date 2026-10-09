@@ -1,0 +1,128 @@
+---
+import { url } from '../../utils/url';
+
+// "Download", from the template: each way to work as a sticky note pinned to the paper.
+// pink = digital (FigJam, Figma or on screen) · yellow = printable · teal = anything else.
+export interface Note {
+  kind: string;
+  format: string;
+  title: string;
+  action: string;
+  href: string;
+  tone: 'pink' | 'yellow' | 'teal';
+  /** true: a file download. */
+  download?: boolean;
+}
+interface Props {
+  notes: Note[];
+  title?: string;
+}
+const { notes, title = 'Download' } = Astro.props;
+---
+
+{
+  notes.length > 0 && (
+    <section class="dln" aria-labelledby="dln-h">
+      <h2 id="dln-h" class="lbl-h">{title}</h2>
+      <ul>
+        {notes.map((n, i) => (
+          <li class={`note--${n.tone}`} style={`--tilt:${i % 2 ? 1.2 : -1}deg`}>
+            <a href={url(n.href)} download={n.download ? '' : undefined}>
+              <span class="top">
+                <span>{n.kind}</span>
+                <span>{n.format}</span>
+              </span>
+              <span class="t">{n.title}</span>
+              <span class="go">{n.action}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
+<style>
+  .dln {
+    margin-top: var(--sp-8);
+    padding-top: var(--sp-5);
+    border-top: 1px solid var(--line);
+  }
+  .lbl-h {
+    font-family: var(--font-ui);
+    font-style: normal;
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    margin: 0 0 var(--sp-4);
+  }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: var(--sp-5);
+    max-width: 64rem;
+  }
+  li {
+    margin: 0;
+  }
+  a {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-4);
+    min-height: 220px;
+    padding: 26px 28px 30px;
+    color: var(--ink);
+    text-decoration: none;
+    transform: rotate(var(--tilt));
+    box-shadow: 0 6px 18px rgb(0 0 0 / 0.13);
+    transition:
+      transform var(--t-med) var(--ease),
+      box-shadow var(--t-med) var(--ease);
+  }
+  a:hover,
+  a:focus-visible {
+    transform: rotate(0deg) translateY(-4px);
+    box-shadow: 0 12px 26px rgb(0 0 0 / 0.18);
+  }
+  .note--pink a {
+    background: var(--note-pink);
+  }
+  .note--yellow a {
+    background: var(--note-yellow);
+    border-bottom: 3px dashed var(--surface);
+  }
+  .note--teal a {
+    background: var(--note-teal);
+  }
+  .top {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--sp-1);
+    font-family: var(--font-ui);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .t {
+    font-family: var(--font-read);
+    font-style: italic;
+    font-size: clamp(1.875rem, 1.5rem + 1vw, 2.375rem);
+    line-height: 1;
+  }
+  .go {
+    margin-top: auto;
+    font-family: var(--font-ui);
+    font-size: var(--fs-sm);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    a,
+    a:hover {
+      transform: none;
+    }
+  }
+</style>

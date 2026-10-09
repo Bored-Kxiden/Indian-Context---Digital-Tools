@@ -76,7 +76,7 @@ export const beforeYouStart = {
     },
     // The booklet's "Visual Toolkit" is Component 2: its FigJam board is named "VISUAL TOOLKIT" (D37).
     isComponent2: {
-      title: 'The Visual Toolkit is Component 2',
+      title: 'The Visual Toolkit is Reading Visual Culture',
       body: 'Reading Visual Culture, whose FigJam board is named “Visual Toolkit”. Bring what it produces: the participants’ photos with their own accounts (what it is, why they showed it, what they were doing, and the card’s question), each tagged Observed or Reported, and your clusters from Tool 2 · Read. Where this page says “lens”, use those.',
       href: '/components/visual-culture/',
     },

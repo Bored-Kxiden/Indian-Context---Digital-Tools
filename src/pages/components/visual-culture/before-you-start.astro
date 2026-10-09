@@ -1,12 +1,20 @@
 ---
 import ComponentLayout from '../../../layouts/ComponentLayout.astro';
-import Section from '../../../components/Section.astro';
-import Icon from '../../../components/Icon.astro';
-import { beforeYouStart as b, role, evidenceMore } from '../../../data/booklet/visual-culture';
+import PaperSection from '../../../components/file/PaperSection.astro';
+import Steps from '../../../components/file/Steps.astro';
+import { beforeYouStart as b } from '../../../data/booklet/visual-culture';
 import { componentById } from '../../../data/components';
 import { url } from '../../../utils/url';
 
+// Before you start, in plain words (D42): what you need, how much to steer participants, what to avoid, and a
+// checklist. The write-up's longer version is in the data (beforeYouStart, role) and in the booklet.
 const comp = componentById['visual-culture'];
+const needs = [
+  { title: 'A specific context', body: `Who and what situation, as narrowly as you can. “${b.needs[0].example}”, not ${b.needs[0].avoid}` },
+  { title: 'Participants who show you their world', body: 'They decide what is worth photographing. Prompts are there if you want them, not as a checklist.' },
+  { title: 'A real activity', body: `Something people are actually trying to do: ${b.needs[2].list!.slice(0, 5).join(', ')}.` },
+  { title: 'Their explanation, kept with each photo', body: `A photo alone is easy to misread. For every photo, write down: ${b.needs[3].record!.map((r) => r.toLowerCase()).join(' · ')}.` },
+];
 ---
 
 <ComponentLayout
@@ -14,356 +22,104 @@ const comp = componentById['visual-culture'];
   current="before-you-start"
   title="Before you start"
   heading="Before you start"
-  lead={b.lead}
-  chips={['Component 2', 'Before Tool 1']}
+  lead="You need a few real participants and one real situation. Not a big sample: just enough to tell one person’s situation from a pattern."
   crumb="Before you start"
 >
-  <Section id="needs" eyebrow="You will need" title="Four things, before the first photo." split>
-    <p class="big">{b.note}</p>
-    <ol class="needs">
-      {
-        b.needs.map((n) => (
-          <li>
-            <span class="num" aria-hidden="true">{n.n}</span>
-            <div class="nb">
-              <h3>{n.title}</h3>
-              {n.body.map((t) => <p>{t}</p>)}
-              {n.example && (
-                <div class="pair">
-                  <p class="ex"><span class="lbl">For example</span>{n.example}</p>
-                  <p class="ex ex--no"><span class="lbl">Avoid starting with</span>{n.avoid}</p>
-                </div>
-              )}
-              {n.list && (
-                <ul class="chip-row" aria-label="Activities">
-                  {n.list.map((l) => <li class="chip">{l}</li>)}
-                </ul>
-              )}
-              {n.record && (
-                <ul class="record" aria-label="Record these">
-                  {n.record.map((r) => <li>{r}</li>)}
-                </ul>
-              )}
-              {n.warn && <div class="callout callout--warn"><p>{n.warn}</p></div>}
-              {n.foot && <p class="foot">{n.foot}</p>}
-            </div>
-          </li>
-        ))
-      }
-    </ol>
-  </Section>
+  <PaperSection id="needs" title="What do I need?">
+    <Steps steps={needs} />
+  </PaperSection>
 
-  <Section id="autonomy" eyebrow="The choice built into the tool" title={b.autonomy.title} tone="white" split>
-    <p class="big">{b.autonomy.intro}</p>
-    <div class="pair pair--quotes">
-      <figure class="q q--without">
-        <figcaption class="lbl">{b.autonomy.open.label}</figcaption>
-        <blockquote>{b.autonomy.open.quote}</blockquote>
-        <p>{b.autonomy.open.body}</p>
+  <PaperSection id="autonomy" title="Should I tell people what to photograph?">
+    <p>Either works. Choose by what you want to learn.</p>
+    <div class="pair">
+      <figure class="q">
+        <figcaption>{b.autonomy.open.label}</figcaption>
+        <blockquote>“{b.autonomy.open.quote}”</blockquote>
+        <p>Use it when you already have a strong hunch, so the photos don’t just confirm it.</p>
       </figure>
-      <figure class="q q--with">
-        <figcaption class="lbl">{b.autonomy.directed.label}</figcaption>
-        <blockquote>{b.autonomy.directed.quote}</blockquote>
-        <p>{b.autonomy.directed.body}</p>
+      <figure class="q q--tint">
+        <figcaption>{b.autonomy.directed.label}</figcaption>
+        <blockquote>“{b.autonomy.directed.quote}”</blockquote>
+        <p>Use it to look into one specific question.</p>
       </figure>
     </div>
-    <p class="big"><b>{b.autonomy.choice}</b></p>
-    <ul class="reasons">
-      {b.autonomy.reasons.map((r) => <li>{r}</li>)}
-    </ul>
-    <div class="callout">
-      <p>{b.autonomy.instrument}</p>
-    </div>
-  </Section>
+  </PaperSection>
 
-  <Section id="rule" eyebrow="The most important rule" title={evidenceMore.rule} split>
-    <p class="big">{evidenceMore.body}</p>
-    <div class="pair pair--quotes">
-      <figure class="q q--with">
-        <figcaption class="lbl">{evidenceMore.observedLabel}</figcaption>
-        <blockquote>{evidenceMore.observed}</blockquote>
-      </figure>
-      <figure class="q q--without">
-        <figcaption class="lbl">{evidenceMore.inferredLabel}</figcaption>
-        <blockquote>{evidenceMore.inferred}</blockquote>
-      </figure>
-    </div>
-    <p class="small">
-      Every claim in Tools 2 to 4 carries an evidence status. <a href={url(`${comp.href}#evidence`)}>See the four statuses</a>.
-    </p>
-  </Section>
-
-  <Section id="not" eyebrow="Keep these in mind" title={b.notToDo.title} tone="white" split>
-    <p class="big">{b.notToDo.lead}</p>
-    <ul class="nots">
-      {b.notToDo.list.map((n) => <li><Icon name="x" size={20} /> {n}</li>)}
+  <PaperSection id="avoid" title="What should I avoid?">
+    <ul class="avoid">
+      {b.notToDo.list.map((l) => <li>Don’t {l}</li>)}
     </ul>
-    <p class="big">{b.notToDo.instead}</p>
-    <ul class="asks">
-      {b.notToDo.asks.map((a) => <li>{a}</li>)}
-    </ul>
-  </Section>
+    <p>Instead, keep asking: <b>What do I actually know? What am I assuming?</b></p>
+  </PaperSection>
 
-  <Section id="role" eyebrow="Your part in it" title={role.title} split>
-    <p class="big">{role.intro}</p>
-    <div class="two">
-      {
-        role.two.map((t) => (
-          <div class="card">
-            <h3>{t.title}</h3>
-            <p>{t.body}</p>
-          </div>
-        ))
-      }
-    </div>
-    <p class="lead-in">{role.lead}</p>
-    <ol class="chain">
-      {role.chain.map((c) => <li>{c}</li>)}
-    </ol>
-  </Section>
-
-  <Section id="check" eyebrow="Before entering the toolkit" title={b.checklist.title} tone="white" split>
-    <ul class="checks">
-      {b.checklist.items.map((c) => <li><Icon name="check" size={22} /> {c}</li>)}
+  <PaperSection id="check" title="Ready?">
+    <ul class="check">
+      {b.checklist.items.map((i) => <li>{i}</li>)}
     </ul>
-    <div class="callout callout--ink remember">
-      <strong>And remember</strong>
-      <ul>
-        {b.remember.map((r) => <li>{r}</li>)}
-      </ul>
-    </div>
-    <p class="go">
-      <a class="btn btn--accent" href={url(`${comp.href}reflect-before/`)}>
-        Next: Reflect before Tool 1 <Icon name="arrow" size={20} />
-      </a>
-    </p>
-  </Section>
+    <p class="go"><a class="btn" href={url(`${comp.href}reflect-before/`)}>Next: Reflect before you start →</a></p>
+  </PaperSection>
 </ComponentLayout>
 
 <style>
-  .big {
-    font-size: var(--fs-lead);
-    color: var(--ink-soft);
-    max-width: var(--measure);
-  }
-  .small {
-    font-size: var(--fs-ui);
-    color: var(--muted);
-    max-width: var(--measure);
-    margin: var(--sp-2) 0 0;
-  }
-  .needs {
-    list-style: none;
-    margin: var(--sp-3) 0 0;
-    padding: 0;
-    display: grid;
-    gap: var(--sp-3);
-  }
-  .needs > li {
-    margin: 0;
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    gap: var(--sp-3);
-    padding: var(--sp-3) var(--sp-4);
-    border: 2px solid var(--line-strong);
-    border-radius: var(--r-lg);
-    background: var(--surface);
-  }
-  .num {
-    font-size: var(--fs-display);
-    font-weight: 800;
-    line-height: 0.9;
-    letter-spacing: -0.04em;
-    color: var(--accent-deep);
-  }
-  .nb h3 {
-    margin: 0 0 var(--sp-1);
-  }
-  .nb p {
-    margin: 0 0 var(--sp-2);
-    max-width: 44rem;
-  }
   .pair {
     display: grid;
-    gap: var(--sp-2);
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
-    margin-bottom: var(--sp-2);
-  }
-  .ex {
-    margin: 0;
-    padding: var(--sp-2) var(--sp-3);
-    border-radius: var(--r-md);
-    background: var(--accent-tint);
-    font-weight: 600;
-  }
-  .ex--no {
-    background: var(--ground);
-    border: 2px dashed var(--line-strong);
-  }
-  .ex .lbl {
-    display: block;
-    margin-bottom: var(--sp-1);
-    font-weight: 400;
-  }
-  .nb .chip-row {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 var(--sp-2);
-  }
-  .nb .chip-row li {
-    margin: 0;
-  }
-  .record {
-    list-style: none;
-    margin: 0 0 var(--sp-2);
-    padding: 0;
-    display: grid;
-    gap: var(--sp-1);
-  }
-  .record li {
-    margin: 0;
-    padding: var(--sp-1) var(--sp-2);
-    border-left: 4px solid var(--accent);
-    background: var(--ground);
-    border-radius: 0 var(--r-sm) var(--r-sm) 0;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.02em;
-    font-size: var(--fs-ui);
-  }
-  .foot {
-    font-weight: 700;
-  }
-  .pair--quotes {
-    margin: var(--sp-3) 0;
+    gap: var(--sp-2);
   }
   .q {
     margin: 0;
-    border-radius: var(--r-lg);
-    padding: var(--sp-3) var(--sp-4);
+    background: var(--white);
+    border: 1px solid var(--line);
+    padding: var(--sp-2) var(--sp-3);
+  }
+  .q--tint {
+    background: var(--accent-tint);
+    border-color: transparent;
+  }
+  .q figcaption {
+    font-family: var(--font-ui);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
   }
   .q blockquote {
-    margin: var(--sp-1) 0 var(--sp-1);
+    margin: var(--sp-1) 0;
+    font-style: italic;
     font-size: var(--fs-lead);
-    line-height: 1.35;
-    font-weight: 700;
   }
   .q p {
     margin: 0;
+    font-size: var(--fs-ui);
   }
-  .q--without {
-    background: var(--ground);
-    border: 2px solid var(--line-strong);
-  }
-  .q--with {
-    background: var(--ink);
-    color: #fff;
-  }
-  .q--with .lbl {
-    color: rgb(255 255 255 / 0.85);
-  }
-  .reasons {
-    margin: 0 0 var(--sp-3);
-    padding-left: var(--sp-3);
-    max-width: var(--measure);
-    display: grid;
-    gap: var(--sp-1);
-  }
-  .nots,
-  .checks {
+  .avoid,
+  .check {
     list-style: none;
-    margin: 0 0 var(--sp-3);
     padding: 0;
+    margin: 0 0 var(--sp-3);
     display: grid;
-    gap: var(--sp-1);
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    gap: var(--sp-1) var(--sp-3);
   }
-  .nots li,
-  .checks li {
+  .avoid li,
+  .check li {
     margin: 0;
-    display: flex;
-    gap: var(--sp-1);
-    align-items: flex-start;
-    padding: var(--sp-2) var(--sp-3);
-    border-radius: var(--r-md);
-    background: var(--surface);
-    border: 2px solid var(--line-strong);
+    padding-left: 28px;
+    position: relative;
+  }
+  .avoid li::before,
+  .check li::before {
+    position: absolute;
+    left: 0;
+    font-family: var(--font-ui);
     font-weight: 600;
   }
-  .nots li :global(svg),
-  .checks li :global(svg) {
-    flex: none;
-    margin-top: 2px;
+  .avoid li::before {
+    content: '✕';
   }
-  .asks {
-    margin: 0;
-    padding-left: var(--sp-4);
-    font-size: var(--fs-h3);
-    font-weight: 800;
-    line-height: 1.25;
-    display: grid;
-    gap: var(--sp-1);
-  }
-  .two {
-    display: grid;
-    gap: var(--sp-2);
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
-    margin: var(--sp-3) 0;
-  }
-  .two .card {
-    margin: 0;
-  }
-  .two h3 {
-    margin: 0 0 var(--sp-1);
-    font-size: var(--fs-h4);
-  }
-  .two p {
-    margin: 0;
-  }
-  .lead-in {
-    font-family: var(--font-mono);
-    font-size: var(--fs-xs);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin: 0 0 var(--sp-1);
-  }
-  .chain {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    display: grid;
-    gap: var(--sp-1);
-    counter-reset: c;
-  }
-  .chain li {
-    margin: 0;
-    counter-increment: c;
-    display: flex;
-    gap: var(--sp-2);
-    align-items: center;
-    padding: var(--sp-1) var(--sp-2);
-    font-weight: 700;
-    font-size: var(--fs-lead);
-  }
-  .chain li::before {
-    content: counter(c);
-    display: grid;
-    place-items: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: var(--accent);
-    color: var(--accent-ink);
-    font-weight: 800;
-    font-size: var(--fs-ui);
-    flex: none;
-  }
-  .remember ul {
-    margin: var(--sp-1) 0 0;
-    padding-left: var(--sp-3);
+  .check li::before {
+    content: '☐';
   }
   .go {
-    margin: var(--sp-3) 0 0;
+    margin-top: var(--sp-4);
   }
 </style>

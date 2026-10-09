@@ -4,17 +4,17 @@ A public website for **Beyond the Edge Case**, a toolkit from BITSDES 2024–28 
 
 > What gets classified as an edge case depends on the baseline we design from.
 
-The toolkit is built in **components**. Each is a different way of reading the world a product will land in, and each works on its own.
+The toolkit is built in five **files** (the booklet calls the four readings *components*). Each is a different way of reading the world a product will land in, and each works on its own. The site shows them in this order (D41):
 
-| Component | Status | What it reads |
+| File | Status | What it reads |
 | --- | --- | --- |
-| **1 · Reading Existing Products** | Live | Whose user is built into a product, and who pays when it is wrong. Media & Gossip, History, The Break, Power, Synthesis. With a card kit. |
-| **2 · Reading Visual Culture** | Live | What people have learned to notice, trust and act on. Follows the owner's FigJam board: Capture, Affinity, Build, Verify, Scenario, over four tools (Show, Read, Build, Hand off). Six photo missions the participants take. |
-| **3 · Reading Language** | Live | What was meant, not only what was said. Before you start, then Listen, Translate (thick, and reverse thick, translation), Test, Library and the Kahavat Relay. Under them sit the Meaning Card, Physical Field Kit, Fidelity Protocol, Language Lens Audit and the two libraries. |
-| **4 · Reading Material Reality** | Live | What people have around them, what it costs, and who they lean on. Build, Break, Weigh, Say. |
-| **Claim & Reflection** | Live | Runs through all four: a Before and After page in each component, and three Look back pages at the end. |
+| **01 · Reflection** | Live | Runs through all four readings: a Before and After page in each, and three Look back pages at the end. |
+| **02 · Reading Existing Products** | Live | Whose user is built into a product, and who pays when it is wrong. Media & Gossip, History, The Break, Power, Synthesis. With a card kit. |
+| **03 · Reading Visual Culture** | Live | What people have learned to notice, trust and act on. Follows the owner's FigJam board: Capture, Affinity, Build, Verify, Scenario, over four tools (Show, Read, Build, Hand off). Six photo missions the participants take. |
+| **05 · Reading Language Conditions** | Live | What was meant, not only what was said. Before you start, then Listen, Translate (thick, and reverse thick, translation), Test, Library and the Kahavat Relay. Under them sit the Meaning Card, Physical Field Kit, Fidelity Protocol, Language Lens Audit and the two libraries. |
+| **04 · Reading Material Conditions** | Live | What people have around them, what it costs, and who they lean on. Build, Break, Weigh, Say. |
 
-Every tool page has the same tabs, in the same order: **Guide · Example · Template** (Component 1: **Guide · Template · Card kit**). Two tools add a tab of their own: **The six missions** (Component 2 · Show) and **Reverse thick translation** (Component 3 · Translate). The home page leads with an **"I want to…"** index, one card per component, that opens the right tool for the job. A sticky strip keeps every component one click away, and **Find a tool** (press `/`) searches every tool, step, page and term. **Ask the toolkit** answers questions from the toolkit's own content, without an AI model: in a small chat popup from the round button at the bottom right of every page (the other Ask links open it too), or on its own page (`/ask/`). The **Glossary** (`/glossary/`) lists every term the toolkit uses. Every template can also be **filled on screen** (the **Fill on screen** tab on each tool page, and the Reflection and Meaning Card pages), saved only in the visitor's browser, then printed, saved as PDF or downloaded; **My work** (`/my-work/`) lists what has been filled.
+The design follows the owner's **file-folder template** (D41): the home page is a stack of the five files as folders; every file and tool page is a coloured folder holding a sheet of paper (the worksheet, the steps, the level of involvement, the downloads as sticky notes, then "What is it and why should I do it?" and "How do I use it?"), with tabs to the other files down its edge and an "All files in the kit" rail at the foot. Tool pages keep their tabs, in the same order: **Guide · Example · Template · Fill on screen** (Existing Products: **Guide · Template · Fill on screen · Card kit**). Jargon is highlighted where it is first used on a page: point at it, focus it or tap it for a plain one-line meaning (D43). **All tools** (`/components/`) is the **"I want to…"** index, and **Find a tool** (press `/`) searches every tool, step, page and term. **Ask the toolkit** answers questions from the toolkit's own content, without an AI model: in a small chat popup from the round button at the bottom right of every page (the other Ask links open it too), or on its own page (`/ask/`). The **Glossary** (`/glossary/`) lists every term the toolkit uses. Every template can also be **filled on screen** (the **Fill on screen** tab on each tool page, and the Reflection and Meaning Card pages), saved only in the visitor's browser, then printed, saved as PDF or downloaded; **My work** (`/my-work/`) lists what has been filled.
 
 > **Working on this repo?** Read [`CONTEXT.md`](CONTEXT.md) first. It records the project's context, decisions, open questions and a change log, and it is updated with every change. [`CLAUDE.md`](CLAUDE.md) has the working rules for AI assistants.
 
@@ -40,6 +40,7 @@ npm run build            # static site into ./dist
 npm run preview          # serve ./dist locally
 npm run build:templates  # regenerate the Component 3 PDFs and CSV (see below)
 npm run build:reflection  # regenerate the twelve Claim & Reflection sheets and previews from templates/reflection/
+npm run build:packs   # one PDF of all worksheets per file, after a template changes (needs pypdf)
 npm run build:capture-cards  # regenerate Component 2's capture cards and photo slips from templates/visual-culture/capture-cards.json
 python3 scripts/extract-booklet-assets.py   # regenerate page images and split PDFs from the booklet (see below)
 ```
@@ -64,6 +65,8 @@ python3 scripts/extract-booklet-assets.py   # regenerate page images and split P
 │   ├── extract-booklet-assets.py  the final booklet → page images, templates, card-kit sheets and boards, split PDFs
 │   ├── build-templates.mjs        Component 3 PDFs and CSV from /templates
 │   ├── build-chat-index.mjs       after `astro build`: every page split into passages → dist/chat-index.json (the Ask search index)
+│   ├── mark-terms.mjs             after that: marks each page's jargon with a plain-language tip (src/data/tips.ts)
+│   ├── build-file-packs.py        one PDF of all worksheets per file (npm run build:packs)
 │   └── build-reflection-pdfs.mjs  the twelve Claim & Reflection A4 sheets, one file of all twelve, and page previews
 ├── templates/                     source definitions for the Component 3 printable cards, and reflection/ (the twelve-page layout)
 ├── supabase/
@@ -72,7 +75,7 @@ python3 scripts/extract-booklet-assets.py   # regenerate page images and split P
 │   ├── functions/index-sync/      copies /chat-index.json into the index and embeds it
 │   └── seed.sql                   the illustrative library entries
 └── src/
-    ├── components/                Header, ComponentNav (sticky strip), Finder (search), ComponentStepper, Section, PageHead,
+    ├── components/                Header, Footer, Finder (search), file/ (FileShell, SubBar, FileRail, PaperTop…), Section, PageHead,
     │                              GoalIndex, PageFigure, DownloadCard, Footer, …
     │   ├── panels/                the extra tabs a tool can have (the six missions, reverse thick translation), and index.ts
     │   └── examples/              the 25 filled examples as HTML (Ex106, Ex108, … Ex420), ExFrame (frame + "compare with the
@@ -105,30 +108,31 @@ python3 scripts/extract-booklet-assets.py   # regenerate page images and split P
 
 Everything visual is a token in `src/styles/global.css`; components use the tokens, not raw numbers.
 
-- **Spacing** is a multiple of 8 px (`--sp-1` = 8 px … `--sp-16` = 128 px; `--sp-half` = 4 px for hairlines). **Type** follows a fixed scale (`--fs-xs` 12 px … `--fs-display`). **Radii** are 8, 16 and 24 px.
-- **Colour means the component and nothing else**: `--c1` green, `--c2` turmeric, `--c3` terracotta, `--c4` indigo, each with a `-tint` and a text-safe `-deep`. Set `data-c="c1"` (and so on) on any element and `--accent`, `--accent-deep`, `--accent-tint` and `--accent-ink` follow. Status and warnings are deliberately colour-neutral. Do not use one component's colour for another idea.
-- **Layout**: `.wrap` is fluid up to 1920 px. Use `Section` (with `split` for a heading-left, content-right layout) and `PageHead` so pages share one structure.
+- **Type**: Anton for titles (`--font-display`, upper case), EB Garamond for reading (`--font-read`), IBM Plex Mono for labels and controls (`--font-ui`), self-hosted in `public/fonts/`. **Spacing** is a multiple of 8 px (`--sp-1` = 8 px … `--sp-16`). **Radii** are small (3, 4, 6 px); pills stay round.
+- **Colour means the file and nothing else**: `--r` red (Reflection, data key `ink`), `--c1` purple (Existing Products), `--c2` green (Visual Culture), `--c4` blue (Material Conditions), `--c3` gold (Language Conditions, always with ink text), each with a `-tint` and a text-safe `-deep`. Set `data-c="c1"` (and so on) on any element and `--accent`, `--accent-deep`, `--accent-tint` and `--accent-ink` follow. Status and warnings are colour-neutral.
+- **Layout**: file pages use `src/layouts/ComponentLayout.astro` or `BookletToolLayout.astro`, which put everything in `src/components/file/FileShell.astro` (the folder and paper). Inside the paper, use `PaperTop`, `FileBasics` (involvement, sticky notes, what/why, how), `PaperSection` and `Steps`; `Section` also works there. Other pages use `PageHead`.
+- **Keyword tips**: add or edit a term in `src/data/tips.ts` (plain words, one sentence, a glossary id). `scripts/mark-terms.mjs` marks it after the build.
 - **Accessibility** is checked with axe-core (WCAG 2.2 AA) at 1440, 390 and 320 px. Keep it that way: 4.5:1 text contrast, a visible focus ring (`:focus-visible` is set globally, never remove it), 44 px targets for primary controls, and words or glyphs alongside any colour.
 
 ## Pages
 
 | Path | What |
 | --- | --- |
-| `/` | Home: hero, "I want to…", components, why this exists, the guideline, Meera |
-| `/components/` | All components |
-| `/components/existing-products/` | Component 1 overview, with `pick-a-product/` and one page per tool |
-| `/components/material-reality/` | Component 4 overview, with `before-you-start/`, one page per tool, `ask-your-participants/` |
-| `/components/visual-culture/` | Component 2 overview, one page per tool, and `is-it-working/` |
-| `/components/language/` | Component 3 overview, `before-you-start/`, one page per tool, `is-it-working/`, and the deeper pages (`meaning-card/`, `physical-field-kit/`, `fidelity-protocol/`, `language-lens-audit/`, `expression-library/`, `design-language-library/`) |
-| `/components/reflection/` | Claim & Reflection, with `summarise/`, `wheel/` and `consequences/`; each component has `reflect-before/` and `reflect-after/` |
-| `/card-kit/` | Component 1 boards and card sheets, with print instructions |
+| `/` | Home: the kit's name and the five files as a stack of folders, then the central line |
+| `/components/` | All tools: the "I want to…" index, in file order |
+| `/components/existing-products/` | File 02 · Reading Existing Products overview, with `pick-a-product/` and one page per tool |
+| `/components/material-reality/` | File 04 · Reading Material Conditions overview, with `before-you-start/`, one page per tool, `ask-your-participants/` |
+| `/components/visual-culture/` | File 03 · Reading Visual Culture overview, one page per tool, and `is-it-working/` |
+| `/components/language/` | File 05 · Reading Language Conditions overview, `before-you-start/`, one page per tool, `is-it-working/`, and the deeper pages (`meaning-card/`, `physical-field-kit/`, `fidelity-protocol/`, `language-lens-audit/`, `expression-library/`, `design-language-library/`) |
+| `/components/reflection/` | File 01 · Reflection, with `summarise/`, `wheel/` and `consequences/`; each component has `reflect-before/` and `reflect-after/` |
+| `/card-kit/` | Existing Products boards and card sheets, with print instructions |
 | `/guideline/` | The one guideline, how to read a tool (`#how-to-read`), Meera (`#meera`) |
 | `/downloads/` | Every file, grouped |
 | `/about/` | Who it is for, what comes after, further reading |
 | `/glossary/` | Every term, A–Z, with a filter; each term has its own anchor (`/glossary/#reverse-thick-translation`) |
 | `/ask/` | Ask the toolkit. `?q=` asks straight away |
 | `/my-work/` | Everything filled on screen in this browser, per project: open it, download it all, load a copy, delete a project |
-| `/tools/…`, `/components/language/methodology/` | Old Component 3 addresses. Redirect to `/components/language/…` (the methodology is now the **Reverse thick translation** tab of `translate/`) |
+| `/tools/…`, `/components/language/methodology/` | Old Language addresses. Redirect to `/components/language/…` (the methodology is now the **Reverse thick translation** tab of `translate/`) |
 
 ## Deploying
 

@@ -264,6 +264,11 @@ const tries = ['What is reverse thick translation?', 'Which tool shows who peopl
       transform var(--t-fast) var(--ease),
       box-shadow var(--t-fast) var(--ease);
   }
+  /* On the dark home page the button turns light, so it stays visible */
+  :global(body[data-theme='night']) .launcher {
+    background: var(--on-night);
+    color: var(--ink);
+  }
   .launcher[hidden] {
     display: none;
   }
@@ -320,10 +325,11 @@ const tries = ['What is reverse thick translation?', 'Which tool shows who peopl
     height: min(36rem, calc(100dvh - var(--btn) - var(--sp-2) - 2 * var(--gap) - var(--sp-2)));
     display: flex;
     flex-direction: column;
-    background: var(--ground);
-    border: 1.5px solid var(--ink);
-    border-radius: var(--r-lg);
-    box-shadow: 0 24px 60px -20px rgb(22 20 15 / 0.5);
+    background: var(--surface);
+    color: var(--ink);
+    border-radius: var(--r-md);
+    box-shadow: 0 24px 70px rgb(0 0 0 / 0.55);
+    --focus: var(--ink);
     overflow: hidden;
     transform-origin: calc(100% - var(--btn) / 2) 100%;
   }
@@ -379,8 +385,12 @@ const tries = ['What is reverse thick translation?', 'Which tool shows who peopl
     min-width: 0;
   }
   .ph h2 {
-    font-size: var(--fs-ui);
-    font-weight: 700;
+    font-family: var(--font-display);
+    font-style: normal;
+    font-weight: 400;
+    font-size: 1.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
     line-height: 1.2;
     margin: 0;
     color: #fff;
@@ -424,12 +434,11 @@ const tries = ['What is reverse thick translation?', 'Which tool shows who peopl
   .hello {
     margin: 0 0 var(--sp-2);
     max-width: 90%;
-    background: var(--surface);
-    border: 1px solid var(--line-strong);
-    border-radius: var(--r-md) var(--r-md) var(--r-md) 4px;
-    padding: var(--sp-1) var(--sp-2);
-    font-size: var(--fs-sm);
-    line-height: 1.5;
+    background: var(--ground);
+    border-radius: var(--r-sm);
+    padding: 11px 14px;
+    font-size: 1.125rem;
+    line-height: 1.35;
   }
   .tl {
     margin: 0 0 var(--sp-1);
@@ -539,12 +548,13 @@ const tries = ['What is reverse thick translation?', 'Which tool shows who peopl
   }
   .body :global(.askui .turn > .q) {
     max-width: 85%;
-    font-size: var(--fs-sm);
+    font-size: 1.0625rem;
+    border-radius: var(--r-sm);
   }
   .body :global(.askui .a .ans) {
     padding: var(--sp-2);
-    border-radius: var(--r-md) var(--r-md) var(--r-md) 4px;
-    font-size: var(--fs-sm);
+    border-radius: var(--r-sm);
+    font-size: 1.0625rem;
   }
   .body :global(.askui .a h3) {
     font-size: var(--fs-ui);
