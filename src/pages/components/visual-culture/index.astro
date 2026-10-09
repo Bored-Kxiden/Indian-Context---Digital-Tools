@@ -1,606 +1,225 @@
 ---
 import ComponentLayout from '../../../layouts/ComponentLayout.astro';
-import Section from '../../../components/Section.astro';
-import GoalIndex from '../../../components/GoalIndex.astro';
-import RouteList from '../../../components/RouteList.astro';
-import DownloadCard from '../../../components/DownloadCard.astro';
-import Icon from '../../../components/Icon.astro';
-import { overview, tools, why, readTheWorld, method, howToUse, movementsNote, make, evidenceMore, whenToUse, core, figjam } from '../../../data/booklet/visual-culture';
-import { goalsByComponent } from '../../../data/goals';
+import PaperTop from '../../../components/file/PaperTop.astro';
+import FileBasics from '../../../components/file/FileBasics.astro';
+import PaperSection from '../../../components/file/PaperSection.astro';
+import { overview, why, figjam, core } from '../../../data/booklet/visual-culture';
 import { componentById } from '../../../data/components';
 import { getDownloadById } from '../../../data/downloads';
+import { bookletImage } from '../../../utils/assets';
 import { url } from '../../../utils/url';
 
+// File 03's overview, in the template's order and in plain words (D41, D42). The FigJam board stays the
+// file's main tool (D37); its full description sits under "Working in FigJam?".
 const comp = componentById['visual-culture'];
-const figjamDl = getDownloadById(figjam.id)!;
-const route = [
-  { label: 'Before you start', href: `${comp.href}before-you-start/`, blurb: 'A specific context, participants who show you their reality, a real activity, and a way to keep their explanation.' },
-  { label: 'Reflect: before (R·2A)', href: `${comp.href}reflect-before/`, blurb: 'Say where you stand and what you expect to find, before Tool 1 · Show.' },
-  ...tools.map((t) => ({
-    label: `${t.number} · ${t.name}`,
-    href: `${comp.href}${t.slug}/`,
-    blurb: t.question,
-    time: t.time,
-  })),
-  { label: 'Is it working?', href: `${comp.href}is-it-working/`, blurb: 'Good signs and warning signs, before you hand the reading on.' },
-  { label: 'Reflect: after (R·2B)', href: `${comp.href}reflect-after/`, blurb: 'Say what the process actually gave you, then check it against your own bias.' },
+const board = getDownloadById(figjam.id)!;
+const pack = getDownloadById('pack-visual-culture')!;
+const cards = getDownloadById('c2-capture-cards')!;
+const t = (slug: string) => `${comp.href}${slug}/`;
+const how = [
+  { title: 'Before you start', href: t('before-you-start'), body: 'Pick one setting and 3–6 participants with camera phones, and get their consent to use the photos.' },
+  { title: 'Show', meta: 'Capture', href: t('show'), body: 'Participants photograph six things in their own world: what helps them, who helps, what they check twice, and more.' },
+  { title: 'Read', meta: 'Group', href: t('read'), body: 'Group the photos three ways: by what people do, by the conditions around them, and by what the product doesn’t show.' },
+  { title: 'Build', meta: 'Build and check', href: t('build'), body: 'Write one situation from a pattern that repeats, not from the first interesting photo. Then ask: is this really unusual, or did we nearly dismiss something ordinary?' },
+  { title: 'Hand off', meta: 'Scenario', href: t('hand-off'), body: 'Pass the situation on, with its photos, as a question for the next file.' },
 ];
-const toolHref = (slug: string) => `${comp.href}${slug}/`;
 ---
 
-<ComponentLayout
-  component="visual-culture"
-  current="overview"
-  title={comp.name}
-  heading={comp.name}
-  lead={overview.lead}
-  description={overview.descriptor}
-  chips={['Component 2', overview.meta.time, overview.meta.mode]}
->
-  <Section id="idea" eyebrow="What is it & why should I do it?" title={why.title} split>
-    <p class="big">{overview.idea[0]}</p>
-    <p class="body-p">{overview.idea[1]}</p>
-    <p class="body-p">{why.intro[0]}</p>
-    <p class="body-p">{why.intro[1]}</p>
-    <p class="body-p"><b>{why.start}</b></p>
+<ComponentLayout component="visual-culture" current="overview" title={comp.name} heading={comp.name} description={overview.descriptor}>
+  <PaperTop slot="top" image={bookletImage('2.04')} alt="The Show worksheet from the booklet, filled in with Meera’s photos." caption="Meera’s photo missions · booklet p.2.04" text={comp.plain}>
+    <Fragment slot="buttons">
+      <a class="btn btn--sm" href={url(pack.href)} download>Download PDF ↓</a>
+      <a class="btn btn--sm btn--outline" href={url(board.href)} download>FigJam template ↓</a>
+    </Fragment>
+  </PaperTop>
 
-    <div class="pair pair--quotes">
-      <figure class="q q--without">
-        <figcaption class="lbl">{why.pair.interface.label}</figcaption>
+  <FileBasics
+    comp={comp}
+    facts={[overview.meta.time, '3–6 participants', 'Led by participants']}
+    notes={[
+      { kind: 'Digital worksheet', format: 'FigJam', title: 'Open the template', action: `download FigJam board (${board.size}) ↓`, href: board.href, tone: 'pink', download: true },
+      { kind: 'Printable worksheets', format: `PDF · ${pack.pages} pages`, title: 'Print and fill in', action: 'download PDF ↓', href: pack.href, tone: 'yellow', download: true },
+      { kind: 'For participants', format: 'PDF · A4', title: 'Capture cards', action: 'download the cards ↓', href: cards.href, tone: 'teal', download: true },
+    ]}
+    why={[
+      'A product is never used on its own. Someone using a scholarship portal may also be juggling a message from a senior, a document on someone else’s phone, a deadline and a slow connection. None of this shows on the screen, yet it decides whether the product works.',
+      'So instead of imagining people’s lives, you ask them to show you, in photos they take themselves.',
+    ]}
+    how={how}
+  >
+    <div slot="why" class="pair">
+      <figure class="q">
+        <figcaption>What the screen sees</figcaption>
         <blockquote>{why.pair.interface.quote}</blockquote>
       </figure>
-      <figure class="q q--with">
-        <figcaption class="lbl">{why.pair.situation.label}</figcaption>
+      <figure class="q q--wide">
+        <figcaption>What is really going on</figcaption>
         <blockquote>{why.pair.situation.quote}</blockquote>
       </figure>
     </div>
-
-    <p class="body-p">{why.edge[0]}</p>
-    <p class="edge">{why.edge[1]}</p>
-    <div class="callout">
-      <strong>The question this component starts with</strong>
-      <p class="ask-line">{why.question}</p>
-    </div>
-    <p class="small">{why.caution}</p>
-    <p class="small">{why.aim}</p>
-    <p class="small">{overview.builtFor}</p>
-  </Section>
-
-  <Section id="meaning" eyebrow="What do we mean by “visual culture”?" title="Not how things look. How people learn to read the world." tone="white" split>
-    <p class="def">{overview.definition}</p>
-    <p class="body-p">{readTheWorld.not} {readTheWorld.is}</p>
-    <ul class="learn">
-      {readTheWorld.learn.map((l) => <li>{l}</li>)}
-    </ul>
-    <p class="body-p">{readTheWorld.outside}</p>
-    <div class="callout">
-      <strong>The question</strong>
-      <p class="ask-line">{readTheWorld.ask}</p>
-    </div>
-    <p class="small">{readTheWorld.better}</p>
-    <p class="small">{overview.images}</p>
-    <div class="callout callout--ink principle">
-      <strong>{overview.principle.lead}</strong>
-      <p>{overview.principle.body}</p>
-    </div>
-  </Section>
-
-  <Section id="template" eyebrow="Your main file" title={figjam.title} split>
-    <p class="big">{figjam.lead}</p>
-    <div class="dl"><DownloadCard item={figjamDl} /></div>
-    <h3 class="h3">What is on the board</h3>
-    <ul class="frames">
-      {
-        figjam.sections.map((f) => (
-          <li>
-            <div>
-              <b>{f.name}</b>
-              <span>{f.what}</span>
-            </div>
-            <a class="link-arrow" href={url(f.tool ? toolHref(f.tool) : `${comp.href}#route`)}>
-              {f.tool === 'show' ? 'Tool 1 · Show' : f.tool === 'read' ? 'Tool 2 · Read' : f.tool === 'hand-off' ? 'Tool 4 · Hand off' : 'The route'} <Icon name="arrow" size={20} />
-            </a>
-          </li>
-        ))
-      }
-    </ul>
-    <p class="body-p">
-      The board’s six capture cards are the six missions on <a href={url(`${toolHref('show')}#missions`)}>Tool 1 · Show</a>, word for word, with a
-      printable sheet.
+    <p slot="how" class="note-line">
+      You end up with a <b>Context Scenario</b>: one real situation, backed by real photos. It asks who, where, when, under what conditions
+      and with whose help, where a persona only asks who.
     </p>
-    <h3 class="h3">How to use it</h3>
-    <ol class="how">
-      {figjam.howTo.map((h) => <li>{h}</li>)}
-    </ol>
-    <p class="small">{figjam.alsoHolds}</p>
-    <div class="callout callout--warn differs">
-      <strong>Where the booklet differs from the board</strong>
-      {figjam.differs.map((d) => <p>{d}</p>)}
-    </div>
-  </Section>
+  </FileBasics>
 
-  <Section id="goals" eyebrow="Start here" title="I want to…" tone="white">
-    <p slot="lead" class="lead-text">Start with what you want to find out. The four tools run in order, one feeding the next.</p>
-    <GoalIndex groups={goalsByComponent('c2')} variant="list" search={false} />
-  </Section>
+  <PaperSection id="meaning" title="What does “visual culture” mean here?">
+    <p class="big">{overview.definition}</p>
+    <p>
+      People learn which signs mean “act now”, what looks trustworthy, what they can ignore and who to ask. Much of it is learned away from
+      apps: on a noticeboard, in a WhatsApp forward, from a familiar logo or a handwritten note.
+    </p>
+  </PaperSection>
 
-  <Section id="route" eyebrow="The route" title="Five steps, four tools." split>
-    <p class="big">Participants photograph their own world. You group the photos, build one situation, challenge it, and hand it on as a question about the system.</p>
-    <ol class="moves" aria-label="The method flow, from the FigJam template">
-      {
-        method.map((m) => (
-          <li>
-            <span class="n" aria-hidden="true">{m.n}</span>
-            <div>
-              <b>{m.name}</b>
-              <span>{m.body}</span>
-              <small>{m.where}</small>
-            </div>
-          </li>
-        ))
-      }
-    </ol>
-    <div class="how-use">
-      <div class="card">
-        <p class="lbl">Students</p>
-        <p>{howToUse.student}</p>
-      </div>
-      <div class="card">
-        <p class="lbl">The designer</p>
-        <p>{howToUse.designer}</p>
-      </div>
-    </div>
-    <p class="small">{movementsNote}</p>
-    <RouteList items={route} />
-    <div class="need">
-      <p class="lbl">You need</p>
-      <ul class="chip-row" aria-label="You need">
-        {overview.youNeed.map((n) => <li class="chip">{n}</li>)}
-      </ul>
-    </div>
-    <a class="btn btn--accent" href={url(`${comp.href}before-you-start/`)}>
-      Start with Before you start <Icon name="arrow" size={20} />
-    </a>
-  </Section>
-
-  <Section id="scenario" eyebrow="What you end up with" title="A situation, not a persona." tone="white" split>
-    <div class="pair">
-      <div class="card">
-        <p class="lbl">{overview.persona.not}</p>
-        <p class="ask">{overview.persona.persona}</p>
-      </div>
-      <div class="card card--tint">
-        <p class="lbl">{overview.persona.scenario}</p>
-        <p class="ask">{overview.persona.scenarioBody}</p>
-      </div>
-    </div>
-    <p class="small">{overview.persona.note}</p>
-    <p class="big make">{make.is}</p>
-    <p class="example"><span class="lbl">For example</span>{make.example}</p>
-    <p class="body-p">{make.starting}</p>
-    <ol class="asks">
-      {make.asks.map((a) => <li>{a}</li>)}
-    </ol>
-    <p class="small">{make.after}</p>
-  </Section>
-
-  <Section id="evidence" eyebrow="How to make a claim" title={overview.evidence.title} split>
-    <p class="rule-lead">{evidenceMore.rule}</p>
-    <p class="body-p">{evidenceMore.body}</p>
-    <div class="pair pair--quotes">
-      <figure class="q q--with">
-        <figcaption class="lbl">{evidenceMore.observedLabel}</figcaption>
-        <blockquote>{evidenceMore.observed}</blockquote>
-      </figure>
-      <figure class="q q--without">
-        <figcaption class="lbl">{evidenceMore.inferredLabel}</figcaption>
-        <blockquote>{evidenceMore.inferred}</blockquote>
-      </figure>
-    </div>
-    <p class="body-p">{evidenceMore.note}</p>
+  <PaperSection id="evidence" title="How sure is each finding?">
+    <p>Mark every finding with how you know it:</p>
     <ul class="status">
       {
-        overview.evidence.statuses.map((s) => (
+        overview.evidence.statuses.map((st) => (
           <li>
-            <b>{s.name}</b>
-            <span>{s.def}</span>
+            <b>{st.name}</b> {st.def}
           </li>
         ))
       }
     </ul>
-    <p class="big">{overview.evidence.rule}</p>
-    <p class="body-p">{evidenceMore.single}</p>
-    <div class="callout">
-      <strong>{evidenceMore.next}</strong>
-      <p class="ask-line">{evidenceMore.nextAsk}</p>
-    </div>
-    <div class="callout callout--warn">
-      <strong>Stop rule</strong>
-      <p>{overview.evidence.stop}</p>
-    </div>
-  </Section>
+    <p>{overview.evidence.rule}</p>
+    <p class="warn"><b>Never</b> make a claim about a whole culture from one photo. If a pattern isn’t backed up, write it down as a question.</p>
+  </PaperSection>
 
-  <Section id="when" eyebrow="When to reach for it" title={whenToUse.title} tone="white" split>
-    <ul class="chip-row signals" aria-label="Signals">
-      {whenToUse.signals.map((s) => <li class="chip">{s}</li>)}
-    </ul>
-    <p class="big">{whenToUse.body}</p>
-  </Section>
+  <PaperSection id="template" title="Working in FigJam?">
+    <p>{figjam.lead}</p>
+    <details class="more">
+      <summary>What is on the board, and how to set it up</summary>
+      <ul class="frames">
+        {
+          figjam.sections.map((f) => (
+            <li>
+              <b>{f.name}</b> {f.what}
+            </li>
+          ))
+        }
+      </ul>
+      <ol class="frames">
+        {figjam.howTo.map((h) => <li>{h}</li>)}
+      </ol>
+      {figjam.differs.map((d) => <p class="small">{d}</p>)}
+    </details>
+  </PaperSection>
 
-  <Section id="next" eyebrow="Where it goes" title="Then hand it on." split>
-    <p class="big">The end of Tool 4 is a question for another part of the toolkit, or an honest “we don’t know yet”.</p>
+  <PaperSection id="next" title="Where does it go next?">
     <ul class="next">
       {
         overview.handOffs.map((h) => (
           <li>
-            {h.href ? (
-              <a href={url(h.href)}>
-                <b>{h.to}</b>
-                <span class="q-ask">{h.ask}</span>
-                <span>{h.body}</span>
-                <Icon name="arrow" size={20} />
-              </a>
-            ) : (
-              <div class="plain">
-                <b>{h.to}</b>
-                <span class="q-ask">{h.ask}</span>
-                <span>{h.body}</span>
-              </div>
-            )}
+            {h.href ? <a href={url(h.href)}>{h.to}</a> : <b>{h.to}</b>}
+            <span>{h.ask}</span>
           </li>
         ))
       }
     </ul>
-  </Section>
-
-  <Section id="core" eyebrow="The component’s core principle" title={core.line} tone="c2">
-    <p class="core">{core.lead}</p>
-    <p class="core">{core.result}</p>
-  </Section>
+    <p class="big rule">{core.line}</p>
+  </PaperSection>
 </ComponentLayout>
 
 <style>
+  .pair {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: var(--sp-2);
+    margin-top: var(--sp-3);
+  }
+  .q {
+    margin: 0;
+    background: var(--white);
+    border: 1px solid var(--line);
+    padding: var(--sp-2) var(--sp-3);
+  }
+  .q--wide {
+    background: var(--accent-tint);
+    border-color: transparent;
+  }
+  .q figcaption {
+    font-family: var(--font-ui);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: var(--sp-1);
+  }
+  .q blockquote {
+    margin: 0;
+    font-style: italic;
+  }
+  .note-line {
+    margin-top: var(--sp-3);
+  }
   .big {
     font-size: var(--fs-lead);
-    color: var(--ink-soft);
-    max-width: var(--measure);
   }
-  .body-p {
-    max-width: var(--measure);
-  }
-  .edge {
-    font-size: var(--fs-h3);
-    font-weight: 700;
-    line-height: 1.25;
-    max-width: 34rem;
-    margin: var(--sp-2) 0 var(--sp-3);
-    padding-left: var(--sp-2);
-    border-left: 4px solid var(--accent);
-  }
-  .ask-line {
-    font-size: var(--fs-lead);
-    font-weight: 700;
-    line-height: 1.3;
-    max-width: 40rem;
-  }
-  .def {
-    font-size: var(--fs-h3);
-    font-weight: 700;
-    line-height: 1.25;
-    max-width: 34rem;
+  .status {
+    list-style: none;
+    padding: 0;
     margin: 0 0 var(--sp-3);
-    color: var(--c2-deep);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+    gap: var(--sp-1);
   }
-  .learn {
-    margin: 0 0 var(--sp-2);
+  .status li {
+    margin: 0;
+    border-left: 3px solid var(--accent);
+    padding: var(--sp-1) var(--sp-2);
+    background: var(--white);
+  }
+  .status b {
+    display: block;
+    font-family: var(--font-ui);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .warn {
+    border-left: 4px solid var(--ink);
+    padding-left: var(--sp-2);
+  }
+  .more summary {
+    cursor: pointer;
+    font-family: var(--font-ui);
+    font-size: var(--fs-sm);
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+  .frames {
+    display: grid;
+    gap: var(--sp-1);
     padding-left: var(--sp-3);
-    max-width: var(--measure);
+    margin-bottom: var(--sp-3);
   }
-  .learn li {
-    margin: 0 0 var(--sp-1);
-  }
-  .principle {
-    margin-top: var(--sp-3);
+  .frames li {
+    margin: 0;
   }
   .small {
     font-size: var(--fs-ui);
     color: var(--muted);
-    max-width: var(--measure);
-    margin: var(--sp-2) 0 0;
-  }
-  .pair {
-    display: grid;
-    gap: var(--sp-2);
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
-  }
-  .pair .card {
-    margin: 0;
-  }
-  .pair .card--tint {
-    background: var(--c2-tint);
-    border-color: transparent;
-  }
-  .pair .lbl {
-    margin: 0 0 var(--sp-1);
-  }
-  .card--tint .lbl {
-    color: var(--c2-deep);
-  }
-  .pair .ask {
-    font-size: var(--fs-h4);
-    font-weight: 700;
-    margin: 0;
-  }
-  .pair--quotes {
-    margin: var(--sp-3) 0;
-  }
-  .q {
-    margin: 0;
-    border-radius: var(--r-lg);
-    padding: var(--sp-3) var(--sp-4);
-  }
-  .q blockquote {
-    margin: var(--sp-1) 0 0;
-    font-size: var(--fs-lead);
-    line-height: 1.35;
-    font-weight: 700;
-    letter-spacing: -0.005em;
-  }
-  .q--without {
-    background: var(--ground);
-    border: 2px solid var(--line-strong);
-  }
-  .q--with {
-    background: var(--ink);
-    color: #fff;
-  }
-  .q--with .lbl {
-    color: rgb(255 255 255 / 0.85);
-  }
-  .dl {
-    max-width: 36rem;
-    margin: var(--sp-3) 0;
-  }
-  .h3 {
-    margin: var(--sp-4) 0 var(--sp-2);
-  }
-  .frames {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: var(--sp-1);
-  }
-  .frames li {
-    margin: 0;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--sp-1) var(--sp-3);
-    padding: var(--sp-2) var(--sp-3);
-    border-radius: var(--r-md);
-    background: var(--c2-tint);
-  }
-  .frames li > div {
-    display: grid;
-    gap: 2px;
-    flex: 1 1 24rem;
-    min-width: 0;
-  }
-  .frames b {
-    font-size: var(--fs-h4);
-  }
-  .frames span {
-    color: var(--ink-soft);
-    max-width: 48rem;
-  }
-  .how-use {
-    display: grid;
-    gap: var(--sp-2);
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
-    margin-bottom: var(--sp-3);
-  }
-  .how-use p {
-    margin: 0;
-  }
-  .how-use .lbl {
-    margin-bottom: var(--sp-1);
-  }
-  .how {
-    margin: 0 0 var(--sp-2);
-    padding-left: var(--sp-3);
-    max-width: var(--measure);
-    display: grid;
-    gap: var(--sp-1);
-  }
-  .how li {
-    margin: 0;
-  }
-  .differs {
-    margin-top: var(--sp-3);
-    max-width: 52rem;
-  }
-  .moves {
-    list-style: none;
-    margin: var(--sp-3) 0 0;
-    padding: 0;
-    display: grid;
-    gap: var(--sp-1);
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
-  }
-  .moves li {
-    margin: 0;
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    gap: var(--sp-2);
-    align-items: start;
-    padding: var(--sp-2) var(--sp-3);
-    border: 2px solid var(--line-strong);
-    border-radius: var(--r-md);
-    background: var(--surface);
-  }
-  .moves .n {
-    display: grid;
-    place-items: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: var(--accent);
-    color: var(--accent-ink);
-    font-weight: 800;
-  }
-  .moves b {
-    display: block;
-    font-size: var(--fs-h4);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-  }
-  .moves span:not(.n) {
-    display: block;
-    color: var(--ink-soft);
-  }
-  .moves small {
-    display: block;
-    margin-top: var(--sp-1);
-    font-family: var(--font-mono);
-    font-size: var(--fs-xs);
-    letter-spacing: 0.04em;
-    color: var(--c2-deep);
-  }
-  .moves + .small {
-    margin-bottom: var(--sp-3);
-  }
-  .need {
-    margin: var(--sp-4) 0 var(--sp-3);
-  }
-  .need .lbl {
-    margin: 0 0 var(--sp-1);
-  }
-  .need ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  .need li {
-    margin: 0;
-  }
-  .make {
-    margin-top: var(--sp-4);
-  }
-  .example {
-    margin: var(--sp-2) 0;
-    padding: var(--sp-2) var(--sp-3);
-    border-left: 4px solid var(--accent);
-    background: var(--ground);
-    border-radius: 0 var(--r-md) var(--r-md) 0;
-    max-width: var(--measure);
-  }
-  .example .lbl {
-    display: block;
-    margin-bottom: var(--sp-1);
-  }
-  .asks {
-    margin: 0 0 var(--sp-2);
-    padding-left: var(--sp-4);
-    max-width: var(--measure);
-    display: grid;
-    gap: var(--sp-1);
-    font-weight: 600;
-  }
-  .asks li {
-    margin: 0;
-  }
-  .rule-lead {
-    font-size: var(--fs-h2);
-    font-weight: 800;
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-    margin: 0 0 var(--sp-2);
-    max-width: 20ch;
-  }
-  .status {
-    list-style: none;
-    margin: var(--sp-3) 0;
-    padding: 0;
-    display: grid;
-    gap: var(--sp-2);
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
-  }
-  .status li {
-    margin: 0;
-    display: grid;
-    gap: var(--sp-half);
-    align-content: start;
-    padding: var(--sp-3);
-    border-radius: var(--r-md);
-    background: var(--c2-tint);
-  }
-  .status b {
-    font-size: var(--fs-h4);
-    color: var(--c2-deep);
-  }
-  .status span {
-    color: var(--ink-soft);
-    font-size: var(--fs-ui);
-  }
-  .signals {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 var(--sp-3);
-  }
-  .signals li {
-    margin: 0;
   }
   .next {
     list-style: none;
-    margin: var(--sp-3) 0 0;
     padding: 0;
-    display: grid;
-    gap: var(--sp-2);
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    margin: 0 0 var(--sp-4);
   }
   .next li {
+    display: grid;
+    gap: 2px;
+    padding: var(--sp-1) 0;
+    border-bottom: 1px solid var(--line);
     margin: 0;
   }
   .next a,
-  .next .plain {
-    display: grid;
-    gap: var(--sp-1);
-    height: 100%;
-    padding: var(--sp-3);
-    border: 2px solid var(--line-strong);
-    border-radius: var(--r-md);
-    background: var(--surface);
-    color: var(--ink);
-    text-decoration: none;
-    align-content: start;
-  }
-  .next .plain {
-    border-style: dashed;
-  }
-  .next a:hover {
-    border-color: var(--ink);
-  }
-  .next a :global(svg) {
-    justify-self: end;
-    margin-top: auto;
-  }
   .next b {
-    font-size: var(--fs-h4);
+    font-weight: 600;
   }
-  .next .q-ask {
-    font-weight: 700;
-  }
-  .next span {
-    color: var(--ink-soft);
-  }
-  .next .q-ask {
-    color: var(--ink);
-  }
-  .core {
-    font-size: var(--fs-lead);
-    max-width: 44rem;
-    margin: 0 0 var(--sp-2);
+  .rule {
+    font-style: italic;
+    border-left: 4px solid var(--accent);
+    padding-left: var(--sp-3);
   }
 </style>

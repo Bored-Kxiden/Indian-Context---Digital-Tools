@@ -38,7 +38,7 @@ export const overview = {
     { where: 'Doesn’t work for this audience?', text: 'New wording, or new questions for Listen.' },
   ],
   worksWith: {
-    title: 'Works with Component 2',
+    title: 'Works with Reading Visual Culture',
     body: 'Words from photo talk-backs come here. Drawings from the Kahavat Relay go there.',
   },
   youNeed: 'Consent to record, a recorder, a local language collaborator, and time to go back to people.',
@@ -54,7 +54,7 @@ export const overview = {
     'Voice assistants, IVR systems, and chatbots deployed far outside the dialect they were trained on',
   ],
   whereBody: [
-    'The condition that makes this component necessary is simple: somewhere between the people building a product and the people using it, there is a language or meaning gap, and someone is bridging it by guesswork rather than a documented method.',
+    'The condition that makes this file necessary is simple: somewhere between the people building a product and the people using it, there is a language or meaning gap, and someone is bridging it by guesswork rather than a documented method.',
     'The common thread is a research or design team on one side of a language boundary and real users on the other, with no method in place for checking whether meaning crossed.',
   ],
   funnel:
@@ -214,7 +214,7 @@ export const beforeYouStart = {
   },
   team: {
     title: 'Who you need',
-    lead: 'Using this component starts with team composition, not process.',
+    lead: 'Using this file starts with team composition, not process.',
     people: [
       { name: 'A lead researcher', body: 'Owns the research question and the process, and runs the primary interviews.' },
       { name: 'A local language collaborator', body: 'An interpreter who is not the same person doing the primary interviewing.' },
@@ -607,8 +607,8 @@ export const tools: Tool[] = [
     ],
     extras: [
       {
-        title: 'Feeds Component 2',
-        body: 'Each drawing is a participant-made image. Read it in Component 2 · Read, tagged Reported.',
+        title: 'Feeds Reading Visual Culture',
+        body: 'Each drawing is a participant-made image. Read it in Visual culture · Read, tagged Reported.',
       },
       {
         title: 'Feeds Tool 2 · Translate',
@@ -616,7 +616,7 @@ export const tools: Tool[] = [
       },
     ],
     need: 'Idiom cards (p.3.23), relay sheets (p.3.22), pens, consent to share drawings',
-    endUp: 'Drawings for Component 2, own-language lines for Tool 2, and new questions for Tool 1',
+    endUp: 'Drawings for Reading Visual Culture, own-language lines for Tool 2, and new questions for Tool 1',
     guidePage: '3.20',
     parts: [
       {

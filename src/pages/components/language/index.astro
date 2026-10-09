@@ -1,361 +1,97 @@
 ---
 import ComponentLayout from '../../../layouts/ComponentLayout.astro';
-import Section from '../../../components/Section.astro';
-import GoalIndex from '../../../components/GoalIndex.astro';
-import RouteList from '../../../components/RouteList.astro';
-import Icon from '../../../components/Icon.astro';
-import { overview, route, reverseThickTranslation as rtt } from '../../../data/booklet/language';
-import { goalsByComponent } from '../../../data/goals';
+import PaperTop from '../../../components/file/PaperTop.astro';
+import FileBasics from '../../../components/file/FileBasics.astro';
+import PaperSection from '../../../components/file/PaperSection.astro';
+import { overview, reverseThickTranslation as rtt } from '../../../data/booklet/language';
 import { componentById } from '../../../data/components';
+import { getDownloadById } from '../../../data/downloads';
+import { bookletImage } from '../../../utils/assets';
 import { url } from '../../../utils/url';
 
+// File 05's overview, in the template's order and in plain words (D41, D42).
 const comp = componentById['language'];
-const routeItems = [
-  ...route.slice(0, 1).map((r) => ({
-    label: r.label,
-    sub: r.sub,
-    href: `${comp.href}${r.slug}/`,
-    blurb: r.blurb,
-    time: r.time,
-    tag: undefined,
-  })),
-  { label: 'Reflect: before (R·3A)', href: `${comp.href}reflect-before/`, blurb: 'Say where you stand and what you expect to find, before Tool 1 · Listen.' },
-  ...route.slice(1).map((r) => ({
-    label: r.label,
-    sub: r.sub,
-    href: `${comp.href}${r.slug}/`,
-    blurb: r.blurb,
-    time: r.time,
-    tag: r.slug === 'translate' ? 'Reverse thick translation' : undefined,
-  })),
-  { label: 'Is it working?', href: `${comp.href}is-it-working/`, blurb: 'Good signs and warning signs, before you rely on what you found.' },
-  { label: 'Reflect: after (R·3B)', href: `${comp.href}reflect-after/`, blurb: 'Say what the process actually gave you, then check it against your own bias.' },
+const pack = getDownloadById('pack-language')!;
+const card = getDownloadById('meaning-card-template')!;
+const t = (slug: string) => `${comp.href}${slug}/`;
+const how = [
+  { title: 'Before you start', meta: 'a few days', href: t('before-you-start'), body: 'Get to know the place and its languages first, with a local language collaborator.' },
+  { title: 'Listen', meta: '60–90 min per person', href: t('listen'), body: 'Write down what people said, in their words, and what you think they meant.' },
+  { title: 'Translate', meta: 'about 1 hour + a short survey', href: t('translate'), body: 'Translate with the meaning kept in, then check it the other way with 6–8 people from the same group.' },
+  { title: 'Test', meta: '45 min + testing', href: t('test'), body: 'Try your interface wording with the people who will read it.' },
+  { title: 'Library', meta: '20 min per entry', href: t('library'), body: 'Keep what worked, so the next team can use it.' },
+  { title: 'The Kahavat Relay', meta: '10 min per person', href: t('kahavat-relay'), body: 'When words can’t reach a meaning, ask people to draw it. Use it inside Listen.' },
 ];
 ---
 
-<ComponentLayout
-  component="language"
-  current="overview"
-  title={comp.name}
-  heading={comp.name}
-  lead={overview.lead}
-  description={`${overview.lead} ${overview.thick.title} ${overview.thick.body}`}
-  chips={['Component 3', 'Thick translation, both ways']}
->
-  <p slot="head" class="built">{overview.builtFor}</p>
+<ComponentLayout component="language" current="overview" title={comp.name} heading={comp.name} description={`${overview.lead} ${overview.thick.body}`}>
+  <PaperTop slot="top" image={bookletImage('3.10')} alt="The Translate worksheet from the booklet, filled in with Meera’s example." caption="Meera’s thick translation · booklet p.3.10" text={comp.plain}>
+    <Fragment slot="buttons">
+      <a class="btn btn--sm" href={url(pack.href)} download>Download PDF ↓</a>
+      <a class="btn btn--sm btn--outline" href={url(card.href)} download>Meaning Card ↓</a>
+    </Fragment>
+  </PaperTop>
 
-  <Section id="idea" eyebrow="The idea" title="Words rarely mean only what they say." split>
-    <p class="big">{overview.what[0]}</p>
-    <p class="cover" aria-label="An example: what the words say, and what was meant">
-      <span class="lit">{overview.cover.literal}</span>
-      <Icon name="arrow" size={24} />
-      <b>{overview.cover.meant}</b>
+  <FileBasics
+    comp={comp}
+    facts={['A few days', '5 tools', 'With a local language collaborator']}
+    notes={[
+      { kind: 'Printable worksheets', format: `PDF · ${pack.pages} pages`, title: 'Print and fill in', action: 'download PDF ↓', href: pack.href, tone: 'yellow', download: true },
+      { kind: 'Digital worksheet', format: 'On screen', title: 'Fill Meaning Cards here', action: 'fill on screen →', href: `${t('meaning-card')}#fill`, tone: 'pink' },
+      { kind: 'One card per moment', format: 'PDF · card', title: 'The Meaning Card', action: 'download ↓', href: card.href, tone: 'teal', download: true },
+    ]}
+    why={[
+      'People rarely mean exactly what their words say. A phrase can mean something else depending on the language, the tone, the region or a gesture. Translate word for word and you lose all of that.',
+      'This file keeps the meaning with the words, and checks it with people in both directions before any of it reaches a screen.',
+    ]}
+    how={how}
+  >
+    <p slot="why" class="cover">
+      <span>The words say <b>{overview.cover.literal}</b></span>
+      <span>What was meant: <b>{overview.cover.meant}</b></span>
     </p>
-    <div class="callout">
-      <strong>{overview.thick.title}</strong>
-      <p>{overview.thick.body}</p>
-    </div>
-  </Section>
+    <p slot="how" class="note-line">You need consent to record, a recorder, a local language collaborator, and time to go back to people.</p>
+  </FileBasics>
 
-  <Section id="reverse" eyebrow="The centre of the toolkit" title={rtt.title} tone="c3" split>
-    <div class="rtt">
-      <p class="line">{rtt.line}</p>
-      <ol class="loop" aria-label="Where reverse thick translation sits">
-        {
-          rtt.loop.map((l) => (
-            <li class:list={{ hot: l.hot }}>
-              <b>{l.step}</b>
-              <span>{l.note}</span>
-            </li>
-          ))
-        }
-      </ol>
-      <ul class="dirs" aria-label="The three directions">
-        {rtt.directions.map((d) => <li>{d.title}</li>)}
-      </ul>
-      <p class="end">{overview.endProduct}</p>
-      <a class="btn-light" href={url(`${comp.href}translate/#reverse`)}>
-        How to run it <Icon name="arrow" size={20} />
-      </a>
-    </div>
-  </Section>
-
-  <Section id="goals" eyebrow="Start here" title="I want to…" tone="white">
-    <p slot="lead" class="lead-text">Start with what you’re doing. Every tool works on its own.</p>
-    <GoalIndex groups={goalsByComponent('c3')} variant="list" search={false} />
-  </Section>
-
-  <Section id="route" eyebrow="The route" title="Before you start, then five tools." split>
-    <p class="big">Understand the context first. Then listen, translate thickly and check it both ways, test the wording, and keep what works.</p>
-    <RouteList items={routeItems} />
-    <div class="need">
-      <p class="lbl">You need</p>
-      <p class="need-t">{overview.youNeed}</p>
-      <p class="need-t">{overview.shortOnTime}</p>
-    </div>
-    <div class="loops">
-      <h3 class="lbl">The loops</h3>
-      <ul>
-        {
-          overview.loops.map((l) => (
-            <li>
-              <b>{l.where}</b>
-              <span>{l.text}</span>
-            </li>
-          ))
-        }
-      </ul>
-    </div>
-    <div class="callout works">
-      <strong>{overview.worksWith.title}</strong>
-      <p>
-        {overview.worksWith.body}{' '}
-        <a href={url('/components/visual-culture/')}>Component 2 · Visual culture</a>
-      </p>
-    </div>
-    <p class="funnel">{overview.funnel}</p>
-  </Section>
-
-  <Section id="problem" eyebrow="The problem" title="Cross-language research loses exactly the thing that matters most." tone="white" split>
-    <p class="big">
-      Run a conversation through a translator or transcriber once and the nuance is gone by the time it reaches a design team.
-      Nobody downstream can tell what was meant from what was guessed.
+  <PaperSection id="reverse" title="Why check it both ways?">
+    <p class="big">{rtt.line}</p>
+    <p>
+      Your first translation is only your reading. In <a href={url(`${t('translate')}#reverse`)}>reverse thick translation</a> you show the
+      phrase to other people from the same group and ask what it means to them. A translation counts only once it has been checked in both
+      directions.
     </p>
-    <ol class="rows">
-      {
-        overview.problems.map((p, i) => (
-          <li>
-            <span class="idx" aria-hidden="true">{i + 1}</span>
-            <div>
-              <h3>{p.title}</h3>
-              <p>{p.body}</p>
-            </div>
-          </li>
-        ))
-      }
-    </ol>
-  </Section>
+    <p>You end up with {overview.endProduct.charAt(0).toLowerCase() + overview.endProduct.slice(1)}</p>
+  </PaperSection>
 
-  <Section id="where" eyebrow="Where to use it" title="Not specific to one sector, or to India." split>
-    <div class="where">
-      <div>
-        {overview.whereBody.map((p) => <p class="big">{p}</p>)}
-      </div>
-      <ul class="applies">
-        {overview.applies.map((a) => <li>{a}</li>)}
-      </ul>
-    </div>
-  </Section>
+  <PaperSection id="where" title="Where can I use it?">
+    <p>Anywhere a team and the people it designs for don’t share a language, and someone is bridging the gap by guesswork. For example:</p>
+    <ul class="applies">
+      {overview.applies.slice(0, 5).map((a) => <li>{a}</li>)}
+    </ul>
+    <p>It works with <a href={url('/components/visual-culture/')}>Reading Visual Culture</a>: words from photo talk-backs come here, and drawings from the Kahavat Relay go there.</p>
+  </PaperSection>
 </ComponentLayout>
 
 <style>
-  .built {
-    color: var(--muted);
-    font-size: var(--fs-ui);
-    max-width: 44rem;
-    margin: var(--sp-2) 0 0;
+  .cover {
+    display: grid;
+    gap: var(--sp-1);
+    margin-top: var(--sp-3);
+    background: var(--white);
+    border: 1px solid var(--line);
+    padding: var(--sp-2) var(--sp-3);
+  }
+  .cover b {
+    font-weight: 600;
+  }
+  .note-line {
+    margin-top: var(--sp-3);
   }
   .big {
     font-size: var(--fs-lead);
-    color: var(--ink-soft);
-    max-width: var(--measure);
-  }
-  .cover {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--sp-1) var(--sp-2);
-    font-size: var(--fs-h3);
-    margin: var(--sp-4) 0;
-  }
-  .cover .lit {
-    color: var(--muted);
-    text-decoration: line-through;
-    text-decoration-thickness: 2px;
-  }
-  .cover b {
-    color: var(--c3-deep);
-  }
-
-  /* Reverse thick translation, the feature section (on terracotta, so everything here is white) */
-  .rtt {
-    display: grid;
-    gap: var(--sp-3);
-    justify-items: start;
-  }
-  .rtt > * {
-    margin: 0;
-  }
-  .line {
-    font-size: var(--fs-h2);
-    font-weight: 800;
-    line-height: 1.12;
-    letter-spacing: -0.01em;
-    max-width: 24ch;
-  }
-  .loop {
-    list-style: none;
-    padding: 0;
-    display: grid;
-    gap: var(--sp-1);
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
-    width: 100%;
-  }
-  .loop li {
-    margin: 0;
-    display: grid;
-    gap: 2px;
-    align-content: start;
-    padding: var(--sp-2);
-    border: 2px solid rgb(255 255 255 / 0.55);
-    border-radius: var(--r-md);
-  }
-  .loop li.hot {
-    background: #fff;
-    border-color: #fff;
-    color: var(--ink);
-  }
-  .loop b {
-    font-size: var(--fs-lead);
-    line-height: 1.2;
-  }
-  .loop span {
-    font-size: var(--fs-ui);
-  }
-  .dirs {
-    list-style: none;
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--sp-1);
-  }
-  .dirs li {
-    margin: 0;
-    padding: var(--sp-1) var(--sp-2);
-    border: 2px solid #fff;
-    border-radius: 999px;
-    font-weight: 700;
-  }
-  .end {
-    max-width: 44rem;
-    font-size: var(--fs-lead);
-  }
-  .btn-light {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--sp-1);
-    min-height: 48px;
-    padding: 0 var(--sp-3);
-    border-radius: 999px;
-    background: #fff;
-    color: var(--ink);
-    font-weight: 700;
-    text-decoration: none;
-  }
-  .btn-light:hover {
-    background: var(--ink);
-    color: #fff;
-  }
-
-  .need {
-    margin: var(--sp-4) 0 0;
-  }
-  .need .lbl,
-  .loops .lbl {
-    margin: 0 0 var(--sp-1);
-  }
-  .need-t {
-    margin: 0;
-    color: var(--ink-soft);
-    max-width: var(--measure);
-  }
-  .loops {
-    margin: var(--sp-4) 0 0;
-  }
-  .loops ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: grid;
-    gap: var(--sp-2);
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
-  }
-  .loops li {
-    margin: 0;
-    display: grid;
-    gap: var(--sp-half);
-    align-content: start;
-    padding: var(--sp-2) var(--sp-3);
-    border-left: 4px solid var(--c3);
-    background: var(--c3-tint);
-    border-radius: var(--r-sm);
-  }
-  .loops li span {
-    color: var(--ink-soft);
-    font-size: var(--fs-ui);
-  }
-  .works {
-    margin: var(--sp-3) 0 0;
-  }
-  .works p {
-    margin: 0;
-  }
-  .funnel {
-    max-width: 56rem;
-    margin: var(--sp-4) 0 0;
-    color: var(--muted);
-    font-size: var(--fs-ui);
-  }
-  .rows {
-    list-style: none;
-    margin: var(--sp-4) 0 0;
-    padding: 0;
-    border-top: 2px solid var(--line-strong);
-  }
-  .rows li {
-    margin: 0;
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    gap: var(--sp-3);
-    padding: var(--sp-3) 0;
-    border-bottom: 1px solid var(--line-strong);
-  }
-  .idx {
-    font-size: var(--fs-display);
-    font-weight: 800;
-    line-height: 0.9;
-    letter-spacing: -0.04em;
-    color: var(--c3-deep);
-    min-width: 1ch;
-  }
-  .rows h3 {
-    margin-bottom: var(--sp-1);
-  }
-  .rows p {
-    margin: 0;
-    color: var(--ink-soft);
-    max-width: var(--measure);
-  }
-  .where {
-    display: grid;
-    gap: var(--sp-5);
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
-    align-items: start;
+    font-style: italic;
   }
   .applies {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: var(--sp-1);
-  }
-  .applies li {
-    margin: 0;
-    padding: var(--sp-2) var(--sp-3);
-    background: var(--surface);
-    border: 1px solid var(--line-strong);
-    border-left: 4px solid var(--c3);
-    border-radius: var(--r-sm);
-    font-size: var(--fs-ui);
+    padding-left: var(--sp-3);
   }
 </style>

@@ -1,0 +1,125 @@
+---
+import { url } from '../../utils/url';
+
+// The top of a file's paper, from the template: the worksheet as a clipped photo, its buttons, and the
+// opening paragraph with a drop capital (CSS ::first-letter, so the word reads whole to a screen reader).
+interface Props {
+  image?: { src: string; width: number; height: number };
+  alt?: string;
+  caption?: string;
+  text: string;
+}
+const { image, alt = '', caption, text } = Astro.props;
+---
+
+<div class:list={['ptop', { 'no-img': !image }]}>
+  {
+    image && (
+      <div class="left">
+        <figure class="photo">
+          <svg class="clip" width="28" height="80" viewBox="0 0 28 80" fill="none" stroke="#2a2a2a" stroke-width="2" aria-hidden="true">
+            <path d="M8 70 V14 a6 6 0 0 1 12 0 V62 a3 3 0 0 1 -6 0 V22" />
+          </svg>
+          <img src={url(image.src)} width={image.width} height={image.height} alt={alt} loading="eager" decoding="async" />
+          {caption && <figcaption>{caption}</figcaption>}
+        </figure>
+        <div class="btns">
+          <slot name="buttons" />
+        </div>
+      </div>
+    )
+  }
+  <div class="intro">
+    <p class="dropcap">{text}</p>
+    <slot />
+    {!image && <div class="btns"><slot name="buttons" /></div>}
+  </div>
+</div>
+
+<style>
+  .ptop {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--sp-5);
+    align-items: start;
+  }
+  @media (min-width: 64rem) {
+    .ptop {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      gap: 70px;
+    }
+    .ptop.no-img {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  .left {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  .photo {
+    position: relative;
+    margin: var(--sp-3) 0 0;
+    transform: rotate(-1.5deg);
+    background: var(--white);
+    padding: 12px 12px 40px;
+    border-radius: 6px;
+    box-shadow: 0 8px 24px rgb(0 0 0 / 0.13);
+    max-width: 34rem;
+  }
+  .clip {
+    position: absolute;
+    top: -30px;
+    right: 46px;
+  }
+  .photo img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 30rem;
+    object-fit: cover;
+    object-position: top;
+    background: var(--sand);
+  }
+  figcaption {
+    position: absolute;
+    bottom: 12px;
+    left: 14px;
+    right: 14px;
+    font-family: var(--font-ui);
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    color: var(--muted);
+  }
+  .btns {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .btns:empty {
+    display: none;
+  }
+  .intro {
+    font-size: var(--fs-lead);
+    line-height: 1.55;
+    max-width: 44rem;
+  }
+  .intro .btns {
+    margin-top: var(--sp-3);
+  }
+  .dropcap {
+    margin: 0 0 var(--sp-2);
+  }
+  .dropcap::first-letter {
+    float: left;
+    font-family: var(--font-display);
+    font-size: 3.6em;
+    line-height: 0.85;
+    margin: 4px 12px 0 0;
+    font-weight: 600;
+    color: var(--accent-deep);
+  }
+  .intro :global(p) {
+    margin: 0 0 var(--sp-2);
+  }
+</style>

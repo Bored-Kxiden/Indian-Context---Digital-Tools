@@ -1,255 +1,107 @@
 ---
 import ComponentLayout from '../../../layouts/ComponentLayout.astro';
-import Section from '../../../components/Section.astro';
-import CentralLine from '../../../components/CentralLine.astro';
-import DownloadCard from '../../../components/DownloadCard.astro';
-import Icon from '../../../components/Icon.astro';
+import PaperTop from '../../../components/file/PaperTop.astro';
+import FileBasics from '../../../components/file/FileBasics.astro';
+import PaperSection from '../../../components/file/PaperSection.astro';
 import { overview, stops, lookBack } from '../../../data/reflection';
 import { componentById } from '../../../data/components';
 import { getDownloadById } from '../../../data/downloads';
 import { url } from '../../../utils/url';
 
+// File 01's overview, in the template's order and in plain words (D41, D42). Reflection has a Before and an
+// After page inside each of the other files, and three Look back pages of its own.
 const comp = componentById['reflection'];
 const all = getDownloadById('reflection-all')!;
 const colour = { 'existing-products': 'c1', 'visual-culture': 'c2', language: 'c3', 'material-reality': 'c4' } as const;
+const fileName = Object.fromEntries(stops.map((s) => [s.id, componentById[s.id].name]));
+const how = [
+  { title: 'Position', meta: 'before', body: 'Where are you speaking from? Write down what you already know and who you are, before you open a file.' },
+  { title: 'Prediction', meta: 'before', body: 'What do you expect to find, and why?' },
+  { title: 'Claim', meta: 'after', body: 'What did the work actually give you that you didn’t have before?' },
+  { title: 'Redaction', meta: 'after', body: 'Cross out what you would have said anyway. What is left is your finding.' },
+  { title: 'Look back', meta: 'at the end', href: `${comp.href}summarise/`, body: 'Compare your predictions with what you found: what changed, what surprised you, what is still missing.' },
+];
 ---
 
-<ComponentLayout
-  component="reflection"
-  current="overview"
-  title={comp.name}
-  heading={comp.name}
-  lead={overview.quote}
-  description={comp.blurb}
-  chips={['Runs through every component', 'Five steps', 'Twelve A4 pages']}
->
-  <Section id="idea" eyebrow="What is it & why should I do it?" title="Start before the work, not after it." split>
-    {overview.what.body.map((p, i) => <p class={i === 0 ? 'big' : 'body-p'}>{p}</p>)}
-    <div class="callout callout--ink">
-      <strong>{overview.howTo.title}</strong>
-      <p>{overview.howTo.body}</p>
-    </div>
-  </Section>
+<ComponentLayout component="reflection" current="overview" title={comp.name} heading={comp.name} description={comp.plain}>
+  <PaperTop slot="top" image={{ src: '/reflection/r1a.webp', width: 1240, height: 1754 }} alt="The printable Before page for Reading Existing Products." caption="The Before page · R·1A" text={comp.plain}>
+    <Fragment slot="buttons">
+      <a class="btn btn--sm" href={url(all.href)} download>Download PDF ↓</a>
+      <a class="btn btn--sm btn--outline" href={url(`${stops[0].href}reflect-before/`)}>Start the first page →</a>
+    </Fragment>
+  </PaperTop>
 
-  <Section id="flow" eyebrow="The method" title="Five steps, in this order." tone="white" split>
-    <ol class="flow">
+  <FileBasics
+    comp={comp}
+    facts={['Under an hour', 'On your own', '12 A4 pages']}
+    notes={[
+      { kind: 'Digital worksheet', format: 'On screen', title: 'Fill it here', action: 'open the first page →', href: `${stops[0].href}reflect-before/#fill`, tone: 'pink' },
+      { kind: 'Printable worksheets', format: `PDF · ${all.pages ?? 12} pages`, title: 'Print and fill in', action: 'download PDF ↓', href: all.href, tone: 'yellow', download: true },
+    ]}
+    why={[
+      'Everyone starts with assumptions. If you don’t write them down first, they can come back at the end looking like findings.',
+      'So you note where you stand and what you expect before each file, and check your claim against it afterwards. You end up with an honest account of what changed, what you can back up, and what you still don’t know.',
+    ]}
+    how={how}
+  >
+    <p slot="how" class="note-line">{overview.onlyOne}</p>
+  </FileBasics>
+
+  <PaperSection id="where" title="Where are the pages?">
+    <p>One Before page and one After page sit inside each file. The three Look back pages are here, for the end.</p>
+    <ul class="stops">
       {
-        overview.flow.map((s) => (
-          <li>
-            <span class="n" aria-hidden="true">{s.n}</span>
-            <div>
-              <b>{s.name}</b>
-              <span>{s.ask}</span>
-            </div>
+        stops.map((s) => (
+          <li data-c={colour[s.id]}>
+            <span class="sq" aria-hidden="true" />
+            <b>{fileName[s.id]}</b>
+            <a href={url(`${s.href}reflect-before/`)}>Before ({s.before.code})</a>
+            <a href={url(`${s.href}reflect-after/`)}>After ({s.after.code})</a>
           </li>
         ))
       }
-    </ol>
-    <p class="note">Steps 1–2 sit before each component, steps 3–4 after it, and step 5 once, at the end.</p>
-  </Section>
-
-  <Section id="where" eyebrow="Where you’ll find these pages" title="In each component, then once at the end.">
-    <div class="groups">
-      <section class="grp" aria-labelledby="g-before">
-        <p class="lbl">Steps 1–2</p>
-        <h3 id="g-before">Before each component</h3>
-        <ul>
-          {
-            stops.map((s) => (
-              <li data-c={colour[s.id]}>
-                <a href={url(`${s.href}reflect-before/`)}>
-                  <span class="dot" aria-hidden="true">{s.n}</span>
-                  <span class="t">
-                    <b>{s.before.code} · Before Component {s.n}</b>
-                    <small>after {s.before.after.label}</small>
-                  </span>
-                  <Icon name="arrow" size={20} />
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </section>
-      <section class="grp" aria-labelledby="g-after">
-        <p class="lbl">Steps 3–4</p>
-        <h3 id="g-after">After each component</h3>
-        <ul>
-          {
-            stops.map((s) => (
-              <li data-c={colour[s.id]}>
-                <a href={url(`${s.href}reflect-after/`)}>
-                  <span class="dot" aria-hidden="true">{s.n}</span>
-                  <span class="t">
-                    <b>{s.after.code} · After Component {s.n}</b>
-                    <small>after {s.after.after.label}</small>
-                  </span>
-                  <Icon name="arrow" size={20} />
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </section>
-      <section class="grp" aria-labelledby="g-look">
-        <p class="lbl">Step 5 · in Closing</p>
-        <h3 id="g-look">Look back</h3>
-        <ul>
-          {
-            lookBack.map((p) => (
-              <li data-c="ink">
-                <a href={url(`${comp.href}${p.slug}/`)}>
-                  <span class="dot" aria-hidden="true">R</span>
-                  <span class="t">
-                    <b>{p.code} · {p.short}</b>
-                    <small>{p.sub.replace(/^Step 5 · /, '')}</small>
-                  </span>
-                  <Icon name="arrow" size={20} />
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </section>
-    </div>
-    <div class="callout only">
-      <strong>Only using one component?</strong>
-      <p>{overview.onlyOne.replace(/^Only using one component\? /, '')}</p>
-    </div>
-  </Section>
-
-  <Section id="print" eyebrow="Print it" title="Twelve pages, one file." tone="white" split>
-    <p class="big">Print only the pages for the components you use. Every page is also its own file, on its own page.</p>
-    <div class="dl"><DownloadCard item={all} /></div>
-    <p class="go">
-      <a class="btn btn--accent" href={url(`${stops[0].href}reflect-before/`)}>Start with Before Component 1 <Icon name="arrow" size={20} /></a>
-    </p>
-  </Section>
-
-  <CentralLine id="central" withIdea={false} />
+      <li data-c="ink">
+        <span class="sq" aria-hidden="true" />
+        <b>At the end</b>
+        {lookBack.map((p) => <a href={url(`${comp.href}${p.slug}/`)}>{p.short} ({p.code})</a>)}
+      </li>
+    </ul>
+  </PaperSection>
 </ComponentLayout>
 
 <style>
-  .big {
-    font-size: var(--fs-lead);
-    color: var(--ink-soft);
-    max-width: var(--measure);
-  }
-  .body-p {
-    max-width: var(--measure);
-  }
-  .flow {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: var(--sp-2);
-  }
-  .flow li {
-    margin: 0;
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    gap: var(--sp-2);
-    align-items: center;
-    padding: var(--sp-2) var(--sp-3);
-    border: 2px solid var(--line-strong);
-    border-radius: var(--r-lg);
-    background: var(--ground);
-  }
-  .flow .n {
-    display: grid;
-    place-items: center;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: var(--ink);
-    color: #fff;
-    font-weight: 800;
-    font-size: var(--fs-h4);
-  }
-  .flow b {
-    display: block;
-    font-size: var(--fs-h3);
-    line-height: 1.15;
-  }
-  .flow span:not(.n) {
-    color: var(--ink-soft);
-  }
-  .note {
-    margin: var(--sp-3) 0 0;
-    color: var(--muted);
-  }
-  .groups {
-    display: grid;
-    gap: var(--sp-3);
-    grid-template-columns: minmax(0, 1fr);
-  }
-  @media (min-width: 64rem) {
-    .groups {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-  }
-  .grp {
-    border: 2px solid var(--line-strong);
-    border-radius: var(--r-lg);
-    background: var(--surface);
-    padding: var(--sp-3);
-  }
-  .grp h3 {
-    margin: 0 0 var(--sp-2);
-  }
-  .grp ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: var(--sp-1);
-  }
-  .grp li {
-    margin: 0;
-  }
-  .grp a {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    align-items: center;
-    gap: var(--sp-2);
-    min-height: 64px;
-    padding: var(--sp-1) var(--sp-2);
-    border-radius: var(--r-md);
-    background: var(--accent-tint);
-    color: var(--ink);
-    text-decoration: none;
-  }
-  .grp a:hover {
-    outline: 2px solid var(--accent-deep);
-  }
-  .dot {
-    display: grid;
-    place-items: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: var(--accent);
-    color: var(--accent-ink);
-    font-weight: 800;
-  }
-  .t b {
-    display: block;
-    line-height: 1.2;
-  }
-  .t small {
-    display: block;
-    color: var(--ink-soft);
-    font-size: var(--fs-sm);
-  }
-  .only {
+  .note-line {
     margin-top: var(--sp-3);
-    max-width: 52rem;
   }
-  .dl {
-    max-width: 36rem;
-    margin: var(--sp-3) 0;
-  }
-  .go {
+  .stops {
+    list-style: none;
+    padding: 0;
     margin: 0;
+  }
+  .stops li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-1) var(--sp-3);
+    padding: var(--sp-2) 0;
+    border-bottom: 1px solid var(--line);
+    margin: 0;
+  }
+  .stops b {
+    flex: 1 1 14rem;
+    font-weight: 600;
+  }
+  .sq {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    background: var(--accent);
+  }
+  .stops a {
+    font-family: var(--font-ui);
+    font-size: var(--fs-sm);
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
   }
 </style>

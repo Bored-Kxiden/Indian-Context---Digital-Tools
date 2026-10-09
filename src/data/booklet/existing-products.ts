@@ -70,7 +70,7 @@ export const overview = {
 export const figmaFile = {
   id: 'existing-products-figma',
   title: 'The Figma file',
-  lead: 'Every page of this component as a Figma file, to adapt to your project, translate, or print.',
+  lead: 'Every page of Reading Existing Products as a Figma file, to adapt to your project, translate, or print.',
   pages: [
     { name: 'D1 · Cover', tool: '' },
     { name: 'D2 · What & How', tool: '' },
@@ -89,7 +89,7 @@ export const figmaFile = {
   ],
   howTo: [
     'Open Figma and drag the .fig file into Drafts or a team project (or use Import file). You get your own editable copy.',
-    'Go to the page called “final designs”. Its fourteen frames, D1 to D14, are the component’s pages.',
+    'Go to the page called “final designs”. Its fourteen frames, D1 to D14, are the file’s pages.',
     'Copy a frame for each product or team, and work on the copy.',
   ],
   alsoHolds:

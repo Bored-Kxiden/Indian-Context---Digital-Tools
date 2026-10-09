@@ -1,12 +1,18 @@
 ---
 import BaseLayout from './BaseLayout.astro';
-import Breadcrumb from '../components/Breadcrumb.astro';
-import ComponentStepper from '../components/ComponentStepper.astro';
+import FileShell from '../components/file/FileShell.astro';
+import SubBar from '../components/file/SubBar.astro';
+import Involvement from '../components/file/Involvement.astro';
+import DownloadNotes, { type Note } from '../components/file/DownloadNotes.astro';
+import PaperTop from '../components/file/PaperTop.astro';
+import PaperSection from '../components/file/PaperSection.astro';
+import Steps from '../components/file/Steps.astro';
 import PageFigure from '../components/PageFigure.astro';
 import DownloadCard from '../components/DownloadCard.astro';
 import Icon from '../components/Icon.astro';
 import type { Tool } from '../data/booklet/types';
-import { componentById } from '../data/components';
+import { componentById, fileNo } from '../data/components';
+import { verbFor } from '../data/goals';
 import { railFor } from '../data/rail';
 import { boardById, sheetById, sheetMeta } from '../data/card-kit';
 import { getDownloadById, getDownloadsForPage } from '../data/downloads';
@@ -80,58 +86,69 @@ const blankNote =
   tool.blankNote ??
   'Print it on A4, or copy it onto a big sheet. Write on sticky notes. Where the page shows [bracketed] text, it is an example: write over it with your own.';
 
-const eyebrow = [
-  tool.number ? `Tool ${tool.number} of ${tool.of}` : (tool.kind ?? 'Closing'),
-  tool.worksOnItsOwn ? 'Works on its own' : 'Needs the tools before it',
-];
+// The file's head and the top of its paper (D41)
+const stepNo = idx >= 0 ? idx + 1 : undefined;
 const crumbs = [
-  { label: 'Home', href: '/' },
-  { label: 'Components', href: '/components/' },
-  { label: `${comp.number} · ${comp.short}`, href: comp.href },
+  { label: `File ${fileNo(comp)} · ${comp.short}`, href: comp.href },
   { label: tool.short },
 ];
+const verb = verbFor(pagePath);
+const firstPart = tool.parts[0];
+const topImage = guideImage ?? bookletImage(firstPart.example.page);
+const topAlt = guideImage ? `The booklet’s page for ${tool.name}, page ${tool.guidePage}.` : firstPart.example.alt;
+const mainTpl = templates[0];
+const digital = figjam && tool.figjamSection ? figjam : c1Figma;
+const level = (tool.effort ?? comp.level) as 1 | 2 | 3;
+const levelText = [
+  tool.effort === 1 ? 'A light step.' : tool.effort === 3 ? 'A demanding step.' : tool.effort === 2 ? 'A moderate step.' : comp.involve,
+  tool.worksOnItsOwn ? 'You can do it on its own.' : 'Do the steps before it first.',
+].join(' ');
+const facts = [tool.time, tool.group, tool.mode].filter(Boolean) as string[];
+const notes: Note[] = [
+  ...(fills.length ? [{ kind: 'Digital worksheet', format: 'On screen', title: 'Fill it here', action: 'fill on screen →', href: `${pagePath}#fill`, tone: 'pink' as const }] : []),
+  ...(mainTpl ? [{ kind: 'Printable worksheet', format: `${mainTpl.format} · A4`, title: 'Print and fill in', action: `download ${mainTpl.format} ↓`, href: mainTpl.href, tone: 'yellow' as const, download: true }] : []),
+  ...(digital ? [{ kind: 'Digital template', format: digital.format === 'JAM' ? 'FigJam' : 'Figma', title: 'Open the template', action: `download ${digital.format === 'JAM' ? 'FigJam' : 'Figma'} file ↓`, href: digital.href, tone: 'teal' as const, download: true }] : []),
+];
+// Don't say the same thing twice: the opening paragraph already says what the tool shows.
+const shownLower = tool.shows.replace(/\.$/, '').toLowerCase();
+const whatParas = tool.whatIsIt
+  .map((p) => {
+    const i = p.toLowerCase().indexOf(shownLower);
+    return i >= 0 ? (p.slice(0, i) + p.slice(i + shownLower.length)).replace(/\.\s*\./g, '.').replace(/^\s*\.\s*/, '').replace(/\s{2,}/g, ' ').trim() : p;
+  })
+  .filter((p) => p.replace(/[^a-z]/gi, '').length > 12);
+const howSteps = tool.stepsList ?? (tool.parts.length === 1 ? firstPart.steps : undefined);
 ---
 
 <BaseLayout title={`${tool.name}: ${comp.short}`} description={tool.question} component={comp.c}>
-  <div class="page-head">
-    <div class="wrap head-grid">
-      <div class="hl">
-        <Breadcrumb items={crumbs} />
-        <div class="chip-row eyebrow-row">
-          {eyebrow.map((e) => <span class="chip chip--quiet">{e}</span>)}
-          {tool.kind && tool.number && <span class="chip chip--quiet">{tool.kind}</span>}
-        </div>
-        <h1>{tool.name}</h1>
-        <p class="lead q">{tool.question}</p>
-        <ul class="meta" aria-label="About this tool">
-          <li><Icon name="clock" size={20} /> <span><b>{tool.time}</b></span></li>
-          {tool.group && <li><Icon name="people" size={20} /> <span>{tool.group}</span></li>}
-          {tool.mode && <li><Icon name="pin" size={20} /> <span>{tool.mode}</span></li>}
-          {
-            tool.effort && (
-              <li>
-                <Icon name="bolt" size={20} />
-                <span>
-                  Effort
-                  <span class="effort" role="img" aria-label={`${tool.effort} out of 3`}>
-                    {[1, 2, 3].map((n) => <i class:list={{ on: n <= (tool.effort ?? 0) }}></i>)}
-                  </span>
-                </span>
-              </li>
-            )
-          }
-        </ul>
-      </div>
-      <div class="hr">
-        <div class="callout"><strong>What it shows you</strong><p>{tool.shows}</p></div>
-        <div class="callout callout--done"><strong>You’re done when</strong><p>{tool.done}</p></div>
-      </div>
-    </div>
-  </div>
+  <FileShell comp={comp} crumbs={crumbs} verb={verb ?? tool.question} title={tool.name} stamp={`${fileNo(comp)}${stepNo ? `.${stepNo}` : ''}`}>
+    <PaperTop image={topImage} alt={topAlt} caption={guideImage ? `Booklet p.${tool.guidePage}` : `Meera’s example · booklet p.${firstPart.example.page}`} text={tool.shows}>
+      <p class="done"><b>You’re done when</b> {tool.done}</p>
+      <Fragment slot="buttons">
+        {
+          mainTpl && (
+            <a class="btn btn--sm" href={url(mainTpl.href)} download>
+              Download {mainTpl.format} ↓
+            </a>
+          )
+        }
+        {
+          digital && (
+            <a class="btn btn--sm btn--outline" href={url(digital.href)} download>
+              {digital.format === 'JAM' ? 'FigJam' : 'Figma'} template ↓
+            </a>
+          )
+        }
+      </Fragment>
+    </PaperTop>
 
-  <ComponentStepper rail={rail} current={tool.slug} />
+    <SubBar rail={rail} current={tool.slug} />
 
-  <div class="wrap body" data-tool>
+    <Involvement level={level} text={levelText} facts={facts} />
+
+    <DownloadNotes notes={notes} title="Ways to work" />
+
+  <div class="tbody" data-tool>
     <div class="main">
       <div class="tabbar" data-tabbar hidden>
         <div class="tabs" data-tabs>
@@ -145,7 +162,8 @@ const crumbs = [
         </div>
         {
           kit && (
-            <div class="mode" data-mode-switch role="group" aria-label="How are you working?">
+            <div class="mode" data-mode-switch role="group" aria-labelledby="mode-l">
+              <span class="mode-l" id="mode-l">Working with</span>
               <div class="seg">
                 <button type="button" data-mode="paper" aria-pressed="true">
                   <Icon name="print" size={18} /> Paper
@@ -165,31 +183,31 @@ const crumbs = [
         <div class="guide-grid" data-beside={String(pageBeside)}>
           <div class="g-text">
            <div class="g-a">
-            <h3 class="sub">What is it?</h3>
-            {tool.whatIsIt.map((p) => <p class="body-p">{p}</p>)}
+            <PaperSection id="what" title="What is it and why should I do it?" level={3}>
+              {whatParas.map((p) => <p class="body-p">{p}</p>)}
+              <dl class="need">
+                <div><dt>You need</dt><dd>{tool.need}</dd></div>
+                <div><dt>You end up with</dt><dd>{tool.endUp}</dd></div>
+              </dl>
+            </PaperSection>
 
-            {
-              tool.stepsList && (
-                <>
-                  <h3 class="sub">{tool.stepsTitle ?? 'The steps'}</h3>
-                  <ol class="seven">
-                    {tool.stepsList.map((s, i) => (
-                      <li class="stp">
-                        <b>{i + 1}</b>
-                        <span>
-                          <strong>{s.title}.</strong> {s.body}
-                        </span>
-                      </li>
-                    ))}
-                  </ol>
-                </>
-              )
-            }
+            <PaperSection id="how" title="How do I use it?" level={3}>
+              {howSteps ? (
+                <Steps steps={howSteps} />
+              ) : (
+                tool.parts.map((p) => (
+                  <div class="how-part">
+                    <h4>{p.label} · {p.title}</h4>
+                    <Steps steps={p.steps} />
+                  </div>
+                ))
+              )}
+            </PaperSection>
 
             {
               tool.words.length > 0 && (
                 <>
-                  <h3 class="sub">Words you’ll see</h3>
+                  <h3 class="sub words-h">Words you’ll see</h3>
                   <dl class="words">
                     {tool.words.map((w) => (
                       <>
@@ -270,28 +288,7 @@ const crumbs = [
            </div>
           </div>
 
-          {
-            pageBeside && guideImage ? (
-              <div class="g-page">
-                <PageFigure
-                  image={guideImage}
-                  alt={`The booklet’s guide page for ${tool.name}, page ${tool.guidePage}.`}
-                  caption={`The booklet page, p.${tool.guidePage}`}
-                />
-              </div>
-            ) : guideImage ? (
-              <details class="g-compare">
-                <summary>
-                  Compare with the booklet page <span>p.{tool.guidePage}</span>
-                </summary>
-                <PageFigure
-                  image={guideImage}
-                  alt={`The booklet’s guide page for ${tool.name}, page ${tool.guidePage}.`}
-                  caption="The booklet colours each tool’s page differently. On this site the colour stays with the component."
-                />
-              </details>
-            ) : null
-          }
+          {/* The booklet's page is the photo at the top of the paper. */}
         </div>
       </section>
 
@@ -361,7 +358,7 @@ const crumbs = [
         </div>
       </section>
 
-      <!-- Blank template (Component 1 has none: its one page tab is the template) -->
+      <!-- Blank template (Reading Existing Products has none: its one page tab is the template) -->
       {!oneTemplate && (
       <section class="panel" id="blank" data-panel="blank">
         <h2 class="panel-h">Template</h2>
@@ -554,30 +551,9 @@ const crumbs = [
       </nav>
     </div>
 
-    <aside class="side" aria-label="Print and prepare">
-      <div class="card">
-        <h2 class="side-h"><Icon name="print" size={20} /> Print</h2>
-        <div class="dl-list">
-          {templates.map((d) => <DownloadCard item={d} compact />)}
-          {figjam && tool.figjamSection && <DownloadCard item={figjam} compact />}
-          {c1Figma && <DownloadCard item={c1Figma} compact />}
-        </div>
-        {
-          kit && (
-            <p class="small">
-              Playing on the table? <a href={url('/card-kit/')}>Print the boards and card sheets</a>.
-            </p>
-          )
-        }
-      </div>
-      <div class="card">
-        <h2 class="side-h">You need</h2>
-        <p>{tool.need}</p>
-        <h2 class="side-h">You end up with</h2>
-        <p class="end">{tool.endUp}</p>
-      </div>
-    </aside>
+
   </div>
+  </FileShell>
 </BaseLayout>
 
 <script>
@@ -707,161 +683,75 @@ const crumbs = [
 </style>
 
 <style>
-  .head-grid {
-    display: grid;
-    gap: var(--sp-4) var(--sp-8);
-    grid-template-columns: minmax(0, 1fr);
-    align-items: end;
+  /* ---------- The top of the paper ---------- */
+  .done {
+    font-size: var(--fs-body);
+    border-left: 3px solid var(--accent);
+    padding-left: var(--sp-2);
   }
-  @media (min-width: 64rem) {
-    .head-grid {
-      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-    }
-  }
-  .eyebrow-row {
-    margin-bottom: var(--sp-3);
-  }
-  .page-head h1 {
-    font-size: var(--fs-h1);
-    margin-bottom: var(--sp-2);
-  }
-  .q {
-    max-width: 40rem;
-    margin-bottom: var(--sp-3);
-  }
-  .meta {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--sp-1) var(--sp-4);
-    color: var(--ink-soft);
-    font-size: var(--fs-ui);
-  }
-  .meta li {
-    margin: 0;
-    display: inline-flex;
-    align-items: center;
-    gap: var(--sp-1);
-  }
-  .meta b {
-    color: var(--ink);
-  }
-  .effort {
-    display: inline-flex;
-    gap: var(--sp-half);
-    margin-left: var(--sp-1);
-    vertical-align: middle;
-  }
-  .effort i {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    border: 2px solid var(--ink);
-  }
-  .effort i.on {
-    background: var(--ink);
-  }
-  .hr {
-    display: grid;
-    gap: var(--sp-2);
-  }
-  .hr .callout {
-    margin: 0;
-    padding: var(--sp-3);
-  }
-  .callout p {
-    margin: 0;
-  }
-  .callout--done {
-    background: var(--ink);
-    color: #fff;
-  }
-
-  /* ---------- Body: main column and a sticky side column ---------- */
-  .body {
-    display: grid;
-    gap: var(--sp-4) var(--sp-5);
-    grid-template-columns: minmax(0, 1fr);
-    padding-block: 0 var(--sp-10);
-    align-items: start;
-  }
-  @media (min-width: 72rem) {
-    .body {
-      grid-template-columns: minmax(0, 1fr) 20rem;
-    }
-    .side {
-      position: sticky;
-      top: calc(var(--strip-h) + var(--sp-3));
-    }
-  }
-  .main {
-    min-width: 0;
-  }
-  .side {
-    display: grid;
-    gap: var(--sp-2);
-    padding-top: var(--sp-4);
-  }
-  .side .card {
-    padding: var(--sp-3);
-  }
-  .side-h {
-    font-family: var(--font-mono);
+  .done b {
+    display: block;
+    font-family: var(--font-ui);
     font-size: var(--fs-xs);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
     font-weight: 600;
-    color: var(--muted);
-    margin: 0 0 var(--sp-1);
-    display: flex;
-    align-items: center;
-    gap: var(--sp-1);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
   }
-  .side p {
-    margin: 0 0 var(--sp-2);
-    font-size: var(--fs-ui);
-  }
-  .side p:last-child {
-    margin-bottom: 0;
-  }
-  .end {
-    font-weight: 700;
-  }
-  .dl-list {
+  .need {
     display: grid;
-    gap: var(--sp-1);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: var(--sp-2) var(--sp-4);
+    margin: var(--sp-4) 0 0;
+  }
+  .need dt {
+    font-family: var(--font-ui);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: var(--sp-half);
+  }
+  .need dd {
+    margin: 0;
+  }
+  .how-part + .how-part {
+    margin-top: var(--sp-4);
+  }
+  .how-part h4 {
     margin-bottom: var(--sp-2);
   }
-  .dl-list:empty {
-    display: none;
+  .tbody {
+    margin-top: var(--sp-8);
   }
 
   /* ---------- Tabs: sticky under the component strip ---------- */
   .tabbar {
-    position: sticky;
-    top: var(--sticky-top, 72px);
-    z-index: 30;
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: var(--sp-3);
-    background: var(--ground);
-    border-bottom: 2px solid var(--line-strong);
-    margin-inline: calc(var(--gutter) * -1);
-    padding-inline: var(--gutter);
+    gap: var(--sp-2) var(--sp-3);
+    padding: var(--sp-2) 0;
+    background: var(--surface);
+    border-bottom: 2px solid var(--line);
   }
+  /* Sticky only where the tabs fit on one row */
   @media (min-width: 64rem) {
     .tabbar {
-      --sticky-top: var(--strip-h);
+      position: sticky;
+      top: var(--header-h);
+      z-index: 30;
     }
   }
-  @media (min-width: 72rem) {
-    .tabbar {
-      margin-right: 0;
-      padding-right: 0;
-    }
+  .mode {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-1);
+  }
+  .mode-l {
+    font-size: var(--fs-sm);
+    font-weight: 700;
+    color: var(--muted);
   }
   .tabs {
     flex: 1;
@@ -934,64 +824,27 @@ const crumbs = [
   }
 
   /* Guide: the words on the left, the booklet page alongside */
-  .guide-grid {
+  .guide-grid,
+  .g-text {
+    display: block;
+  }
+  .g-b {
     display: grid;
-    gap: var(--sp-5);
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    gap: var(--sp-3);
+    margin-top: var(--sp-6);
     align-items: start;
   }
-  /* Page beside the text: the two blocks read as one column. */
-  .guide-grid[data-beside='true'] .g-text > div {
-    display: contents;
+  .g-b > :global(.callout) {
+    margin: 0;
   }
-  /* Page under the text: the text uses the width, in two columns. */
-  .guide-grid[data-beside='false'] .g-text {
-    display: grid;
-    gap: var(--sp-5);
-    grid-template-columns: minmax(0, 1fr);
-    align-items: start;
-  }
-  .guide-grid[data-beside='false'] .g-b > .callout:first-child {
-    margin-top: 0;
-  }
-  .g-compare {
+  .g-b > .sub,
+  .g-b > .refs,
+  .g-b > .two-up {
     grid-column: 1 / -1;
-    max-width: 44rem;
-    border: 2px solid var(--line-strong);
-    border-radius: var(--r-md);
-    background: var(--surface);
-    padding: var(--sp-1) var(--sp-2);
   }
-  .g-compare summary {
-    cursor: pointer;
-    min-height: 40px;
-    display: flex;
-    align-items: center;
-    gap: var(--sp-1);
-    font-weight: 700;
-    font-size: var(--fs-ui);
-  }
-  .g-compare summary span {
-    font-family: var(--font-mono);
-    font-size: var(--fs-xs);
-    font-weight: 400;
-    color: var(--muted);
-  }
-  .g-compare[open] summary {
-    margin-bottom: var(--sp-2);
-  }
-  @media (min-width: 64rem) {
-    .guide-grid[data-beside='false'] .g-text {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: var(--sp-6);
-    }
-    .guide-grid[data-beside='true'] {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    }
-    .g-page {
-      position: sticky;
-      top: calc(var(--strip-h) + 56px + var(--sp-3));
-    }
+  .words-h {
+    margin-top: var(--sp-6);
   }
   .words {
     display: grid;

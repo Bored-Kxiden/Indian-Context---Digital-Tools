@@ -24,11 +24,11 @@ const MAX = 1100; // longest passage, in characters
 const MIN = 160; // passages shorter than this are merged into the next one under the same heading
 
 const COMPONENTS = {
-  'existing-products': 'Component 1 · Reading Existing Products',
-  'visual-culture': 'Component 2 · Reading Visual Culture',
-  language: 'Component 3 · Reading Language',
-  'material-reality': 'Component 4 · Reading Material Reality',
-  reflection: 'Claim & Reflection',
+  'existing-products': 'Reading Existing Products',
+  'visual-culture': 'Reading Visual Culture',
+  language: 'Reading Language Conditions',
+  'material-reality': 'Reading Material Conditions',
+  reflection: 'Reflection',
 };
 
 // Pages that are not content: redirect stubs, the 404 page, and this page's own UI.

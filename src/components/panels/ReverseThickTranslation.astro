@@ -120,6 +120,8 @@ import { url } from '../../utils/url';
 <style>
   .rtt {
     display: grid;
+    /* minmax(0, …) so the glossary table scrolls in its own box instead of widening the page */
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--sp-5);
   }
   .hero {

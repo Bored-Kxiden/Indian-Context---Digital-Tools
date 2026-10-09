@@ -1,33 +1,25 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHead from '../../components/PageHead.astro';
-import Section from '../../components/Section.astro';
-import ComponentCards from '../../components/ComponentCards.astro';
-import Icon from '../../components/Icon.astro';
-import { url } from '../../utils/url';
+import GoalIndex from '../../components/GoalIndex.astro';
+import { goals } from '../../data/goals';
 ---
 
-<BaseLayout title="Components" description="The components of the toolkit. Each one works on its own; used together they give a fuller picture of the person you are designing for.">
+<BaseLayout title="All tools" description="Every tool in the kit, by what you want to do. Each file works on its own.">
   <PageHead
-    crumbs={[{ label: 'Home', href: '/' }, { label: 'Components' }]}
-    heading="Components"
-    lead="Each component is a way of reading. Each works on its own. Used together, they give you a fuller picture of the person you’re designing for."
+    crumbs={[{ label: 'All files', href: '/' }, { label: 'All tools' }]}
+    eyebrow="Find a tool"
+    heading="I want to…"
+    lead="Start with what you want to find out. Each line opens the tool that does it. Every file also works on its own."
   />
-
-  <Section id="all" eyebrow="Pick a way of reading" title="Four components, one person.">
-    <ComponentCards />
-  </Section>
-
-  <Section id="not-sure" eyebrow="Not sure where to start?" title="Start with what you want to do." tone="white" split>
-    <p class="big">The “I want to…” list on the home page opens the right tool for the job, whichever component it sits in.</p>
-    <p><a class="btn btn--accent" href={url('/#i-want-to')}>I want to… <Icon name="arrow" size={20} /></a></p>
-  </Section>
+  <section class="wrap list" id="i-want-to" aria-label="Every tool, by what you want to do">
+    <h2 class="visually-hidden">Every tool, by file</h2>
+    <GoalIndex groups={goals} />
+  </section>
 </BaseLayout>
 
 <style>
-  .big {
-    font-size: var(--fs-lead);
-    color: var(--ink-soft);
-    max-width: var(--measure);
+  .list {
+    padding-block: var(--sp-5) var(--sp-8);
   }
 </style>

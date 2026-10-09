@@ -1,7 +1,6 @@
 ---
 import '../styles/global.css';
 import Header from '../components/Header.astro';
-import ComponentNav from '../components/ComponentNav.astro';
 import Finder from '../components/Finder.astro';
 import Footer from '../components/Footer.astro';
 import ChatWidget from '../components/ChatWidget.astro';
@@ -13,9 +12,11 @@ interface Props {
   description?: string;
   /** Sets the accent colour: which component the visitor is in. */
   component?: 'c1' | 'c2' | 'c3' | 'c4' | 'ink';
+  /** "night": the dark home page. */
+  theme?: 'night';
 }
 
-const { title, description = site.description, component } = Astro.props;
+const { title, description = site.description, component, theme } = Astro.props;
 const pageTitle = title ? `${title} · ${site.name}` : `${site.name}: a toolkit for designing in Indian contexts`;
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
 // The chat button is on every page except the full Ask page.
@@ -29,24 +30,27 @@ const showChat = !/\/ask\/?$/.test(Astro.url.pathname);
     <meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-content" />
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#faf7f0" />
+    <meta name="theme-color" content={theme === 'night' ? '#1b1b1b' : '#ece8df'} />
     {canonical && <link rel="canonical" href={canonical} />}
     <link rel="icon" type="image/svg+xml" href={url('/favicon.svg')} />
-    <link rel="preload" href={url('/fonts/BricolageGrotesque-Variable.woff2')} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={url('/fonts/EBGaramond-latin.woff2')} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={url('/fonts/Anton-latin.woff2')} as="font" type="font/woff2" crossorigin />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     {canonical && <meta property="og:url" content={canonical} />}
   </head>
-  <body data-c={component}>
+  <body data-c={component} data-theme={theme}>
     <a class="skip-link" href="#main">Skip to content</a>
     <Header />
-    <ComponentNav />
     <main id="main">
       <slot />
     </main>
     <Footer />
     <Finder />
     {showChat && <ChatWidget />}
+    <script>
+      import '../scripts/tips';
+    </script>
   </body>
 </html>

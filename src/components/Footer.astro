@@ -1,79 +1,42 @@
 ---
-import LogoMark from './LogoMark.astro';
-import { componentById } from '../data/components';
-import { railFor } from '../data/rail';
+import FileRail from './file/FileRail.astro';
+import { files } from '../data/components';
 import { site } from '../data/site';
 import { url } from '../utils/url';
 
-// A full sitemap: every tool, under its own component's colour.
-const cols = (['existing-products', 'visual-culture', 'language', 'material-reality'] as const).map((id) => ({
-  comp: componentById[id],
-  rail: railFor(id),
-}));
+// The template's footer: "All files in the kit" as folders (the one you are in marked, the next one raised),
+// then a short row of links.
+const path = Astro.url.pathname.replace(import.meta.env.BASE_URL.replace(/\/$/, ''), '');
+const current = files.find((f) => path.startsWith(f.href))?.id;
+const links = [
+  { href: '/components/', label: 'All tools' },
+  { href: '/card-kit/', label: 'Card kit' },
+  { href: '/guideline/', label: 'How to use the kit' },
+  { href: '/glossary/', label: 'Glossary' },
+  { href: '/my-work/', label: 'My work' },
+  { href: '/downloads/', label: 'Downloads' },
+  { href: '/about/', label: 'About' },
+];
 ---
 
-<footer class="site-footer on-dark">
-  <div class="wrap">
-    <div class="cols">
-      <div class="brand">
-        <p class="logo">
-          <LogoMark size={40} />
-          <span>
-            {site.name}
-            <small>{site.eyebrow}</small>
-          </span>
-        </p>
-        <p class="blurb">{site.tagline}</p>
-        <a class="find" href={url('/#i-want-to')} data-finder-open>Find a tool <kbd aria-hidden="true">/</kbd></a>
-      </div>
-
-      {
-        cols.map(({ comp, rail }) => (
-          <nav aria-label={comp.name} data-c={comp.c}>
-            <p class="head">
-              <span class="dot" aria-hidden="true">{comp.number}</span>
-              <a href={url(comp.href)}>{comp.short}</a>
-            </p>
-            <ul>
-              {rail.items.map((i) => (
-                <li>
-                  <a href={url(i.href)}>{i.label}</a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        ))
-      }
-
-      <nav aria-label="Use it">
-        <p class="head">Use it</p>
-        <ul>
-          <li><a href={url('/guideline/')}>The guideline</a></li>
-          <li><a href={url('/guideline/#how-to-read')}>How to read a tool</a></li>
-          <li><a href={url('/ask/')} data-ask-open>Ask the toolkit</a></li>
-          <li><a href={url('/glossary/')}>Glossary</a></li>
-          <li><a href={url('/my-work/')}>My work (filled on screen)</a></li>
-          <li><a href={url('/card-kit/')}>Card kit</a></li>
-          <li><a href={url('/guideline/#meera')}>Meet Meera</a></li>
-          <li><a href={url('/about/')}>About</a></li>
-          <li><a href={url('/components/reflection/')}>Reflection: claim and look back</a></li>
-        </ul>
-      </nav>
-
-      <nav aria-label="Download">
-        <p class="head">Download</p>
-        <ul>
-          <li><a href={url(site.bookletPdf)} download>The booklet (PDF, all components)</a></li>
-          <li><a href={url('/downloads/claim-and-reflection.pdf')} download>Claim &amp; Reflection (12 A4 pages)</a></li>
-          <li><a href={url('/downloads/card-kit/card-sheets-s1-s8.pdf')} download>Card sheets (A4)</a></li>
-          <li><a href={url('/downloads/card-kit/boards-b1-b7.pdf')} download>Boards (A2)</a></li>
-          <li><a href={url('/downloads/')}>All downloads</a></li>
-        </ul>
-      </nav>
-    </div>
-
+<footer class="site-footer">
+  <FileRail current={current} />
+  <div class="base">
+    <nav aria-label="More pages">
+      <ul>
+        {
+          links.map((l) => (
+            <li>
+              <a href={url(l.href)}>{l.label}</a>
+            </li>
+          ))
+        }
+        <li><a href={url('/ask/')} data-ask-open>Ask the toolkit</a></li>
+        <li><a href={url(site.bookletPdf)} download>Booklet (PDF)</a></li>
+      </ul>
+    </nav>
     <p class="legal">
-      Examples in the toolkit are illustrative and use no real participant data. Site code:{' '}
+      <span class="nm">{site.name}</span> · {site.eyebrow}. Examples are illustrative and use no real participant data. Site code:{' '}
       <a href={site.repoUrl}>{site.licenseName} License</a>.
     </p>
   </div>
@@ -81,151 +44,60 @@ const cols = (['existing-products', 'visual-culture', 'language', 'material-real
 
 <style>
   .site-footer {
-    background: var(--ink);
-    color: var(--on-dark);
-    /* The bottom leaves room for the "Ask" button, which floats over the bottom-right corner of every page. */
-    padding-block: var(--sp-8) calc(var(--sp-4) + 72px);
-    font-size: var(--fs-ui);
-    line-height: 1.5;
+    margin-top: var(--sp-8);
+    /* room for the chat button, so it never covers the last line */
+    padding-bottom: calc(var(--sp-4) + 72px);
   }
-  .cols {
+  :global(body[data-theme='night']) .site-footer {
+    color: var(--on-night);
+    --muted: var(--on-night-soft);
+    --focus: #fff;
+  }
+  .base {
+    padding: var(--sp-3) var(--gutter) 0;
+    border-top: 1px solid rgb(27 27 27 / 0.13);
     display: grid;
-    gap: var(--sp-5) var(--sp-4);
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .brand {
-    grid-column: 1 / -1;
-  }
-  @media (min-width: 48rem) {
-    .cols {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-  }
-  @media (min-width: 80rem) {
-    .cols {
-      grid-template-columns: minmax(0, 1.3fr) repeat(6, minmax(0, 1fr));
-    }
-    .brand {
-      grid-column: auto;
-    }
-  }
-  @media (max-width: 30rem) {
-    .cols {
-      grid-template-columns: 1fr;
-    }
-  }
-  .logo {
-    display: flex;
-    align-items: center;
     gap: var(--sp-2);
-    color: #fff;
-    font-weight: 800;
-    line-height: 1.15;
-    margin: 0 0 var(--sp-2);
+    font-family: var(--font-ui);
+    font-size: var(--fs-sm);
   }
-  .logo small {
-    display: block;
-    font-family: var(--font-mono);
-    font-size: var(--fs-xs);
-    font-weight: 400;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: #b9b1a0;
-    margin-top: 2px;
+  :global(body[data-theme='night']) .base {
+    border-top-color: #333;
   }
-  .blurb {
-    max-width: 28rem;
-    margin: 0 0 var(--sp-3);
-  }
-  .find {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--sp-1);
-    min-height: 48px;
-    padding: 0 var(--sp-3);
-    border: 2px solid #fff;
-    border-radius: 999px;
-    color: #fff;
-    font-weight: 700;
-    text-decoration: none;
-  }
-  .find:hover {
-    background: #fff;
-    color: var(--ink);
-  }
-  .find kbd {
-    background: transparent;
-    color: inherit;
-    border-color: currentColor;
-  }
-  .head {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-1);
-    font-family: var(--font-mono);
-    font-size: var(--fs-xs);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: #fff;
-    font-weight: 600;
-    margin: 0 0 var(--sp-1);
-  }
-  .head a {
-    color: #fff;
-  }
-  .dot {
-    display: grid;
-    place-items: center;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background: var(--accent);
-    color: var(--accent-ink);
-    font-size: var(--fs-xs);
-    font-weight: 800;
-    letter-spacing: 0;
-  }
-  ul {
+  .base ul {
     list-style: none;
     margin: 0;
     padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--sp-3);
   }
-  li {
+  .base li {
     margin: 0;
   }
-  li a {
+  .base ul a {
     display: inline-flex;
     align-items: center;
-    gap: var(--sp-1);
-    min-height: 32px;
-    color: var(--on-dark);
-    text-decoration: none;
-  }
-  a {
-    color: var(--on-dark);
-    text-decoration: none;
-  }
-  a:hover {
-    color: #fff;
-    text-decoration: underline;
-  }
-  .soon {
-    font-family: var(--font-mono);
-    font-size: var(--fs-xs);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: #b9b1a0;
+    min-height: 44px;
+    color: inherit;
   }
   .legal {
-    margin: var(--sp-6) 0 0;
-    padding-top: var(--sp-3);
-    border-top: 1px solid #3a352b;
-    font-size: var(--fs-sm);
-    color: #b9b1a0;
+    margin: 0;
+    color: var(--muted);
+    font-size: var(--fs-xs);
     line-height: 1.6;
   }
   .legal a {
-    color: #fff;
-    text-decoration: underline;
+    color: inherit;
+  }
+  .nm {
+    font-family: var(--font-cover);
+    text-transform: uppercase;
+    font-size: var(--fs-sm);
+    letter-spacing: 0.01em;
+    color: var(--ink);
+  }
+  :global(body[data-theme='night']) .nm {
+    color: var(--on-night);
   }
 </style>

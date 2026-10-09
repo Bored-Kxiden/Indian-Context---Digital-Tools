@@ -1,31 +1,83 @@
 /* =====================================================================
    Beyond the Edge Case: website styles
-   Visual language from the concept website (CONTEXT.md, D4), tightened
-   into a system (D19): an 8 px spacing scale, a fixed type scale, one
-   colour per component, a fluid container with no dead side margins.
-   Light only: the concept lightens the print ground for long reading.
+   The "file folder" look from the owner's template (CONTEXT.md, D41): a dark
+   home with one folder per file, then each file as a coloured folder holding
+   a sheet of paper. The template's fonts (D46): Anton for covers and titles,
+   EB Garamond for reading, IBM Plex Mono for labels. An 8 px spacing scale.
    ===================================================================== */
 
-/* ---------- Fonts (self-hosted, SIL OFL; see public/fonts/LICENSE.txt) ---------- */
+/* ---------- Fonts (self-hosted, SIL OFL; see public/fonts/LICENSE.txt) ----------
+   The template's first fonts (D46): Anton for covers and page titles, EB Garamond for reading and
+   headings, IBM Plex Mono for labels and controls. */
 @font-face {
-  font-family: 'Bricolage Grotesque';
-  src: url('/fonts/BricolageGrotesque-Variable.woff2') format('woff2');
-  font-weight: 200 800;
+  font-family: 'Anton';
+  src: url('/fonts/Anton-latin.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Anton';
+  src: url('/fonts/Anton-latin-ext.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'EB Garamond';
+  src: url('/fonts/EBGaramond-latin.woff2') format('woff2');
+  font-weight: 400 800;
   font-style: normal;
   font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'EB Garamond';
+  src: url('/fonts/EBGaramond-latin-ext.woff2') format('woff2');
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'EB Garamond';
+  src: url('/fonts/EBGaramond-Italic-latin.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'EB Garamond';
+  src: url('/fonts/EBGaramond-Italic-latin-ext.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 @font-face {
   font-family: 'IBM Plex Mono';
   src: url('/fonts/IBMPlexMono-Regular.woff2') format('woff2');
   font-weight: 400;
-  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  src: url('/fonts/IBMPlexMono-Medium.woff2') format('woff2');
+  font-weight: 500;
   font-display: swap;
 }
 @font-face {
   font-family: 'IBM Plex Mono';
   src: url('/fonts/IBMPlexMono-SemiBold.woff2') format('woff2');
-  font-weight: 600;
-  font-style: normal;
+  font-weight: 600 800;
+  font-display: swap;
+}
+/* The booklet's typeface: only the rebuilt booklet examples use it, so it loads only on those pages. */
+@font-face {
+  font-family: 'Bricolage Grotesque';
+  src: url('/fonts/BricolageGrotesque-Variable.woff2') format('woff2');
+  font-weight: 200 800;
   font-display: swap;
 }
 
@@ -33,40 +85,47 @@
 :root {
   color-scheme: light;
 
-  /* Ground and ink */
-  --ground: #faf7f0;
-  --surface: #ffffff;
-  --sand: #ece7dc;
-  --line: #e6dfd1; /* decorative dividers */
-  --line-strong: #cfc6b4; /* card edges */
-  --field: #6f685b; /* form and control borders: 4.9:1 on white, above the 3:1 needed */
-  --muted: #5e584e;
-  --ink: #16140f;
-  --ink-soft: #3a362f;
-  --on-dark: #d9d2c3;
+  /* Ground, paper and ink (the template's colours) */
+  --ground: #ece8df; /* the desk the folders sit on */
+  --surface: #f7f5ef; /* paper */
+  --white: #ffffff;
+  --sand: #e3ded2;
+  --line: #d9d5ca; /* rules on paper */
+  --line-strong: #bdb7a9;
+  --field: #6f6c66; /* form and control borders: 4.8:1 on paper */
+  --muted: #5f5c56; /* 6.1:1 on paper, 5.4:1 on the ground */
+  --ink: #1b1b1b;
+  --ink-soft: #3a3833;
+  --night: #1b1b1b; /* the home page */
+  --on-night: #faf9f4;
+  --on-night-soft: #a9a7a1; /* 7.6:1 on night */
+  --on-dark: #d9d5ca;
 
-  /* Components. Colour = where you are, and nothing else (D5, D19).
-     -deep is the text-safe version for small type on light and tinted grounds. */
-  --c1: #1e6b52; /* Existing products */
-  --c1-deep: #14503c;
-  --c1-tint: #e3efe9;
-  --c2: #e8a92a; /* Visual culture. Turmeric always takes ink text */
-  --c2-deep: #7a4e00;
-  --c2-tint: #fbf0d4;
-  --c3: #b8492c; /* Language */
-  --c3-deep: #8f331a;
-  --c3-tint: #f5e1da;
-  --c4: #3144a6; /* Material reality */
-  --c4-deep: #24337f;
-  --c4-tint: #e5e9f7;
+  /* Files. Colour = which file you are in, and nothing else.
+     -deep is the text-safe tone on paper (4.5:1 or more); -tint is a light wash. */
+  --r: #c8262a; /* 01 Reflection */
+  --r-deep: #a8201f;
+  --r-tint: #f6dedc;
+  --c1: #561f70; /* 02 Reading Existing Products */
+  --c1-deep: #561f70;
+  --c1-tint: #ece2f0;
+  --c2: #317663; /* 03 Reading Visual Culture */
+  --c2-deep: #2a6553;
+  --c2-tint: #dcebe5;
+  --c4: #3b4fd6; /* 04 Reading Material Conditions */
+  --c4-deep: #3346c4;
+  --c4-tint: #e2e5fa;
+  --c3: #b8860b; /* 05 Reading Language Conditions: gold, always with ink text */
+  --c3-deep: #7a5a00;
+  --c3-tint: #f6ebcf;
 
-  /* Sticky-note colours used in examples (booklet colour code, not components) */
+  /* Sticky notes (the template's download notes and the booklet's notes) */
+  --note-pink: #e9b9c4;
+  --note-yellow: #f4e330;
   --note-orange: #fde3d0;
-  --note-yellow: #fbf0d0;
   --note-teal: #dcedea;
 
-  /* Status: colour-neutral on purpose (D19). Green, amber and red would collide with
-     components 1, 2 and 3, so status is carried by a glyph and a border style as well as words. */
+  /* Status: colour-neutral on purpose, carried by a glyph and a border style as well as words. */
   --ok: var(--ink);
   --ok-soft: var(--sand);
   --warn: var(--ink);
@@ -74,7 +133,7 @@
   --bad: var(--ink);
   --bad-soft: var(--sand);
 
-  /* Active accent: overridden per component by [data-c] below */
+  /* Active accent: overridden per file by [data-c] below */
   --accent: var(--ink);
   --accent-deep: var(--ink);
   --accent-ink: #ffffff;
@@ -93,38 +152,48 @@
   --sp-12: 96px;
   --sp-16: 128px;
 
-  /* Radii */
+  /* Radii: paper and folders have small corners; pills stay round */
   --r-sm: 8px;
-  --r-md: 16px;
-  --r-lg: 24px;
+  --r-md: 14px;
+  --r-lg: 22px;
 
-  /* Type scale (px at 16): 12 · 14 · 16 · 18 · 20 · 24 · 32 · 40 · 56 · 72 */
+  /* Type scale */
   --fs-xs: 0.75rem;
   --fs-sm: 0.875rem;
   --fs-ui: 1rem;
-  --fs-body: 1.125rem;
-  --fs-lead: 1.25rem;
+  --fs-body: clamp(1.1875rem, 1.1rem + 0.3vw, 1.3125rem); /* 19–21 px of EB Garamond */
+  --fs-lead: clamp(1.3125rem, 1.15rem + 0.6vw, 1.625rem);
   --fs-h4: 1.25rem;
-  --fs-h3: 1.5rem;
-  --fs-h2: clamp(2rem, 1.35rem + 1.7vw, 3rem);
-  --fs-h1: clamp(2.5rem, 1.5rem + 3.4vw, 4.5rem);
-  --fs-display: clamp(3rem, 1.5rem + 5vw, 6rem);
+  --fs-h3: clamp(1.5rem, 1.3rem + 0.6vw, 1.875rem);
+  --fs-h2: clamp(2rem, 1.5rem + 1.5vw, 2.875rem);
+  --fs-h1: clamp(3rem, 1.6rem + 5vw, 8rem);
+  --fs-display: clamp(3.5rem, 1rem + 8vw, 10rem);
 
   /* Layout */
-  --wrap: 120rem; /* 1920 px; wider screens keep their margins */
-  --gutter: clamp(16px, 2.6vw, 48px);
-  --measure: 68ch; /* longest comfortable line of running text */
-  --strip-h: 56px; /* height of the sticky component strip */
-  --scroll-offset: 88px;
+  --wrap: 100rem; /* 1600 px */
+  --gutter: clamp(16px, 3vw, 48px);
+  --measure: 66ch;
+  --header-h: 72px;
+  --strip-h: var(--header-h); /* sticky bars sit under the sticky header */
+  --scroll-offset: 96px;
 
   /* Motion */
-  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   --t-fast: 160ms;
   --t-med: 280ms;
+  --t-slow: 550ms;
 
-  --font-body: 'Bricolage Grotesque', system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans', 'Noto Sans Devanagari', Arial, sans-serif;
-  --font-head: var(--font-body);
-  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --font-read: 'EB Garamond', 'Noto Serif Devanagari', Georgia, 'Times New Roman', serif;
+  --font-ui: 'IBM Plex Mono', 'Noto Sans Devanagari', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  /* Headings in the layout (sections, notes, folder names): EB Garamond */
+  --font-display: var(--font-read);
+  /* Covers and page titles: Anton, upper case */
+  --font-cover: 'Anton', 'Impact', 'Arial Narrow Bold', sans-serif;
+  --font-code: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --font-booklet: 'Bricolage Grotesque', system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans', 'Noto Sans Devanagari', Arial, sans-serif;
+  --font-body: var(--font-read);
+  --font-head: var(--font-display);
+  --font-mono: var(--font-ui);
 
   /* Names used by the first version of the Language pages */
   --bg: var(--ground);
@@ -132,15 +201,18 @@
   --accent-soft: var(--accent-tint);
   --radius: var(--r-md);
   --radius-sm: var(--r-sm);
-  --shadow: 0 1px 2px rgb(22 20 15 / 0.05);
+  --shadow: 0 1px 2px rgb(27 27 27 / 0.06);
   --prose: var(--measure);
 }
 
+[data-c='r'] { --accent: var(--r); --accent-deep: var(--r-deep); --accent-tint: var(--r-tint); --accent-ink: #fff; }
 [data-c='c1'] { --accent: var(--c1); --accent-deep: var(--c1-deep); --accent-tint: var(--c1-tint); --accent-ink: #fff; }
-[data-c='c2'] { --accent: var(--c2); --accent-deep: var(--c2-deep); --accent-tint: var(--c2-tint); --accent-ink: var(--ink); }
-[data-c='c3'] { --accent: var(--c3); --accent-deep: var(--c3-deep); --accent-tint: var(--c3-tint); --accent-ink: #fff; }
+[data-c='c2'] { --accent: var(--c2); --accent-deep: var(--c2-deep); --accent-tint: var(--c2-tint); --accent-ink: #fff; }
+[data-c='c3'] { --accent: var(--c3); --accent-deep: var(--c3-deep); --accent-tint: var(--c3-tint); --accent-ink: var(--ink); }
 [data-c='c4'] { --accent: var(--c4); --accent-deep: var(--c4-deep); --accent-tint: var(--c4-tint); --accent-ink: #fff; }
-[data-c='ink'] { --accent: var(--ink); --accent-deep: var(--ink); --accent-tint: var(--sand); --accent-ink: #fff; }
+/* 'ink' is Reflection's key in the data (it was neutral before the template gave it red). */
+[data-c='ink'] { --accent: var(--r); --accent-deep: var(--r-deep); --accent-tint: var(--r-tint); --accent-ink: #fff; }
+[data-c='plain'] { --accent: var(--ink); --accent-deep: var(--ink); --accent-tint: var(--sand); --accent-ink: #fff; }
 
 /* ---------- Base ---------- */
 *,
@@ -161,7 +233,7 @@ body {
   color: var(--ink);
   font-family: var(--font-body);
   font-size: var(--fs-body);
-  line-height: 1.55;
+  line-height: 1.5;
   min-height: 100vh;
   min-height: 100dvh;
   display: flex;
@@ -171,6 +243,12 @@ body {
 }
 main {
   flex: 1;
+}
+/* The home page sits on the template's dark desk */
+body[data-theme='night'] {
+  background: var(--night);
+  color: var(--on-night);
+  --focus: #fff;
 }
 
 img,
@@ -185,30 +263,33 @@ h1,
 h2,
 h3,
 h4 {
-  font-family: var(--font-head);
-  font-weight: 800;
-  line-height: 1.1;
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.15;
   margin: 0 0 var(--sp-2);
   text-wrap: balance;
 }
+/* Titles: Anton, upper case, as on the template's covers */
 h1 {
+  font-family: var(--font-cover);
+  font-weight: 400;
   font-size: var(--fs-h1);
-  line-height: 1.02;
-  letter-spacing: -0.025em;
+  line-height: 0.95;
+  text-transform: uppercase;
+  letter-spacing: -0.005em;
 }
 h2 {
   font-size: var(--fs-h2);
-  letter-spacing: -0.015em;
+  line-height: 1.1;
   margin-top: 0;
 }
 h3 {
   font-size: var(--fs-h3);
-  line-height: 1.2;
-  letter-spacing: -0.005em;
+  font-weight: 500;
 }
 h4 {
   font-size: var(--fs-h4);
-  line-height: 1.3;
+  font-weight: 600;
 }
 
 p {
@@ -248,7 +329,7 @@ li {
 
 code,
 kbd {
-  font-family: var(--font-mono);
+  font-family: var(--font-code);
   font-size: 0.88em;
   background: var(--sand);
   padding: 2px 6px;
@@ -368,12 +449,12 @@ table {
 /* Mono label above headings */
 .eyebrow,
 .eb {
-  font-family: var(--font-mono);
+  font-family: var(--font-ui);
   font-size: var(--fs-xs);
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--muted);
-  font-weight: 400;
+  font-weight: 800;
   margin: 0 0 var(--sp-2);
   line-height: 1.5;
 }
@@ -415,9 +496,9 @@ table {
   border: 2px solid var(--ink);
   background: var(--ink);
   color: #fff;
-  font: inherit;
-  font-size: var(--fs-ui);
-  font-weight: 700;
+  font-family: var(--font-ui);
+  font-size: 0.9375rem;
+  font-weight: 800;
   text-decoration: none;
   cursor: pointer;
   line-height: 1.2;
@@ -462,9 +543,6 @@ table {
   border-color: var(--accent-deep);
   color: #fff;
 }
-[data-c='c2'] .btn--accent:hover {
-  color: #fff;
-}
 .btn--sm {
   min-height: 40px;
   padding: var(--sp-1) var(--sp-2);
@@ -484,7 +562,9 @@ table {
   align-items: center;
   gap: var(--sp-1);
   min-height: 44px;
-  font-weight: 700;
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui);
+  font-weight: 800;
   color: inherit;
   text-decoration: none;
 }
@@ -749,44 +829,40 @@ a.chip:hover {
   opacity: 0.6;
 }
 
-/* ---------- Tabs and Paper/Cards switch ---------- */
+/* ---------- Tabs and Paper/Cards switch ----------
+   Tabs are pill buttons that wrap onto a second row when they must (never a strip that scrolls sideways, D44). */
 .tabs {
   display: flex;
-  gap: var(--sp-4);
-  overflow-x: auto;
-  scrollbar-width: thin;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
 }
 .tab {
-  background: none;
-  border: none;
-  min-height: 56px;
-  padding: 0;
-  font: inherit;
-  font-size: var(--fs-ui);
-  font-weight: 700;
-  color: var(--muted);
-  border-bottom: 4px solid transparent;
   display: inline-flex;
   gap: var(--sp-1);
   align-items: center;
+  min-height: 44px;
+  padding: 0 var(--sp-2);
+  border: 2px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--white);
+  font-family: var(--font-ui);
+  font-size: var(--fs-sm);
+  font-weight: 800;
+  color: var(--ink);
   cursor: pointer;
   white-space: nowrap;
   touch-action: manipulation;
+  transition:
+    border-color var(--t-fast) var(--ease),
+    background-color var(--t-fast) var(--ease);
 }
 .tab:hover {
-  color: var(--ink);
+  border-color: var(--accent);
 }
 .tab[aria-selected='true'] {
-  color: var(--ink);
-  border-bottom-color: var(--accent);
-}
-@media (max-width: 36rem) {
-  .tabs {
-    gap: var(--sp-3);
-  }
-  .tab svg {
-    display: none;
-  }
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
 }
 
 .seg {
@@ -801,9 +877,9 @@ a.chip:hover {
   min-height: 40px;
   border-radius: 999px;
   padding: var(--sp-1) var(--sp-2);
-  font: inherit;
+  font-family: var(--font-ui);
   font-size: var(--fs-sm);
-  font-weight: 700;
+  font-weight: 600;
   color: var(--muted);
   display: inline-flex;
   gap: var(--sp-1);
@@ -841,7 +917,7 @@ input[type='text'],
 input[type='search'],
 select,
 textarea {
-  font: inherit;
+  font-family: var(--font-ui);
   font-size: var(--fs-ui);
   min-height: 48px;
   padding: var(--sp-1) var(--sp-2);
@@ -866,7 +942,7 @@ textarea:focus-visible {
   display: flex;
   gap: var(--sp-2);
   align-items: flex-start;
-  font-size: var(--fs-ui);
+  font-size: var(--fs-body);
   line-height: 1.5;
 }
 .stp b {
@@ -876,8 +952,9 @@ textarea:focus-visible {
   flex: none;
   display: grid;
   place-items: center;
+  font-family: var(--font-ui);
   font-size: var(--fs-sm);
-  font-weight: 800;
+  font-weight: 600;
   background: var(--accent);
   color: var(--accent-ink);
 }
@@ -932,7 +1009,7 @@ textarea:focus-visible {
     border: 2px solid CanvasText;
   }
   .tab[aria-selected='true'] {
-    border-bottom-color: Highlight;
+    outline: 3px solid Highlight;
   }
   .seg button[aria-pressed='true'] {
     outline: 2px solid Highlight;
@@ -957,4 +1034,109 @@ textarea:focus-visible {
     background: #fff;
     color: #000;
   }
+}
+
+/* ---------- Keyword tips (scripts/mark-terms.mjs, src/scripts/tips.ts; D43) ----------
+   A marked word: a soft highlight and a dotted underline. Pointing at it, focusing it or tapping it opens a
+   pop-up right under it (no gap, so the pointer can move onto the pop-up and its link). */
+.kw {
+  position: relative;
+}
+.kw-b {
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  margin: 0;
+  padding: 0 1px;
+  border: 0;
+  border-radius: 2px;
+  /* A tint of the text's own colour, so it reads on paper, on dark cards and on coloured folders alike */
+  background: color-mix(in srgb, currentColor 9%, transparent);
+  text-decoration: underline dotted;
+  text-decoration-color: currentColor;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+  cursor: help;
+  display: inline;
+}
+.kw-b:hover,
+.kw-b[aria-expanded='true'] {
+  background: color-mix(in srgb, currentColor 18%, transparent);
+}
+.kw-p {
+  display: none;
+  position: absolute;
+  z-index: 45;
+  left: var(--kw-dx, 0px);
+  top: 100%;
+  width: min(20rem, calc(100vw - 32px));
+  padding: 12px 14px;
+  background: var(--ink);
+  color: var(--on-night);
+  border-radius: var(--r-md);
+  box-shadow: 0 14px 34px rgb(0 0 0 / 0.3);
+  font-family: var(--font-read);
+  font-size: 1.0625rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0;
+  text-align: left;
+  text-transform: none;
+  white-space: normal;
+  --focus: #fff;
+}
+.kw-p a {
+  display: inline-block;
+  margin-top: 6px;
+  color: inherit;
+  font-family: var(--font-ui);
+  font-size: var(--fs-xs);
+}
+.kw:hover .kw-p,
+.kw:focus-within .kw-p,
+.kw-b[aria-expanded='true'] + .kw-p {
+  display: block;
+}
+.kw.kw--off .kw-p {
+  display: none;
+}
+@media print {
+  .kw-b {
+    background: none;
+    text-decoration: none;
+  }
+  .kw-p {
+    display: none !important;
+  }
+}
+
+/* ---------- "Show more" disclosures: a round +/− marker, so they read as something to open (D44) ---------- */
+main details > summary {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  min-height: 44px;
+  cursor: pointer;
+  font-weight: 800;
+  list-style: none;
+}
+main details > summary::-webkit-details-marker {
+  display: none;
+}
+main details > summary::before {
+  content: '+';
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  line-height: 1;
+}
+main details[open] > summary::before {
+  content: '−';
 }
