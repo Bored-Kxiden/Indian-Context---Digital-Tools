@@ -1,0 +1,51 @@
+---
+// A section of a file's paper, from the template: a rule, an italic question on the left, the answer on the right.
+interface Props {
+  id: string;
+  title: string;
+  level?: 2 | 3;
+}
+const { id, title, level = 2 } = Astro.props;
+const H = level === 2 ? 'h2' : 'h3';
+---
+
+<section class="psec" id={id} aria-labelledby={`${id}-h`}>
+  <H id={`${id}-h`} class="ph">{title}</H>
+  <div class="pb">
+    <slot />
+  </div>
+</section>
+
+<style>
+  .psec {
+    margin-top: clamp(var(--sp-6), 6vw, 80px);
+    padding-top: var(--sp-5);
+    border-top: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--sp-3);
+  }
+  @media (min-width: 64rem) {
+    .psec {
+      grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+      gap: 50px;
+    }
+  }
+  .ph {
+    font-family: var(--font-read);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(2rem, 1.6rem + 1.1vw, 2.875rem);
+    line-height: 1.05;
+    margin: 0;
+  }
+  .pb {
+    min-width: 0;
+  }
+  .pb > :global(:last-child) {
+    margin-bottom: 0;
+  }
+  .pb :global(p) {
+    max-width: var(--measure);
+  }
+</style>

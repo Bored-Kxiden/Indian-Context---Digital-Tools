@@ -1,166 +1,130 @@
 ---
 import ComponentLayout from '../../../layouts/ComponentLayout.astro';
-import Section from '../../../components/Section.astro';
-import GoalIndex from '../../../components/GoalIndex.astro';
-import RouteList from '../../../components/RouteList.astro';
+import PaperTop from '../../../components/file/PaperTop.astro';
+import FileBasics from '../../../components/file/FileBasics.astro';
+import PaperSection from '../../../components/file/PaperSection.astro';
 import Icon from '../../../components/Icon.astro';
-import { overview, tools, beforeYouStart } from '../../../data/booklet/material-reality';
-import { goalsByComponent } from '../../../data/goals';
+import { overview } from '../../../data/booklet/material-reality';
 import { componentById } from '../../../data/components';
+import { getDownloadById } from '../../../data/downloads';
+import { bookletImage } from '../../../utils/assets';
 import { url } from '../../../utils/url';
 
+// File 04's overview, in the template's order and in plain words (D41, D42).
 const comp = componentById['material-reality'];
-const toolRoute = tools.map((t) => ({
-  label: `${t.number} · ${t.name}`,
-  href: `${comp.href}${t.slug}/`,
-  blurb: t.question,
-  time: t.time,
-}));
-const routes = [overview.routes.quick, overview.routes.deep];
+const pack = getDownloadById('pack-material-reality')!;
+const strip = getDownloadById('tpl-journey-strip')!;
+const t = (slug: string) => `${comp.href}${slug}/`;
+const how = [
+  { title: 'Before you start', href: t('before-you-start'), body: 'Draw the journey on a Journey Strip, and bring the photos from Reading Visual Culture.' },
+  { title: 'Build', meta: '45 min', href: t('build'), body: 'List everything the task needs, and mark where it stops working for your person.' },
+  { title: 'Break', meta: '45–60 min', href: t('break'), body: 'Find who fills each gap, and what happens when they can’t.' },
+  { title: 'Weigh', meta: '30 min + desk time', href: t('weigh'), body: 'See what gets given up first, and how many people live like this.' },
+  { title: 'Say', meta: '30 min', href: t('say'), body: 'Name the kind of problem, and write a short brief for the team.' },
+  { title: 'Ask your participants', href: t('ask-your-participants'), body: 'Questions to ask, and how to ask them with consent and care.' },
+];
 ---
 
-<ComponentLayout
-  component="material-reality"
-  current="overview"
-  title={comp.name}
-  heading={comp.name}
-  lead={comp.blurb}
-  chips={['Component 4', '2–4 hours', 'Paper']}
->
-  <Section id="idea" eyebrow="The idea" title="Material reality." split>
-    <p class="big">{overview.ideaLead}</p>
-    <div class="callout">
-      <strong>{overview.simpleUpload.title}</strong>
-      <ul class="chip-row up" aria-label={overview.simpleUpload.title}>
-        {overview.simpleUpload.items.map((i) => <li class="chip">{i}</li>)}
+<ComponentLayout component="material-reality" current="overview" title={comp.name} heading={comp.name}>
+  <PaperTop slot="top" image={bookletImage('4.07')} alt="The Build worksheet from the booklet, filled in with Meera’s example." caption="Meera’s Build worksheet · booklet p.4.07" text={comp.plain}>
+    <Fragment slot="buttons">
+      <a class="btn btn--sm" href={url(pack.href)} download>Download PDF ↓</a>
+      <a class="btn btn--sm btn--outline" href={url(strip.href)} download>Journey Strip ↓</a>
+    </Fragment>
+  </PaperTop>
+
+  <FileBasics
+    comp={comp}
+    facts={['2–4 hours', '4 tools', 'Paper']}
+    notes={[
+      { kind: 'Printable worksheets', format: `PDF · ${pack.pages} pages`, title: 'Print and fill in', action: 'download PDF ↓', href: pack.href, tone: 'yellow', download: true },
+      { kind: 'Digital worksheet', format: 'On screen', title: 'Fill it here', action: 'open the Build tool →', href: `${t('build')}#fill`, tone: 'pink' },
+      { kind: 'Start here', format: 'PDF · A4', title: 'The Journey Strip', action: 'download ↓', href: strip.href, tone: 'teal', download: true },
+    ]}
+    why={[overview.ideaLead, 'This file helps you stop asking “do they have it?” and start asking “can they really use it, and who or what do they lean on?”']}
+    how={how}
+  >
+    <div slot="why" class="upload">
+      <p class="lbl-s">{overview.simpleUpload.title}</p>
+      <ul>
+        {overview.simpleUpload.items.map((i) => <li>{i}</li>)}
       </ul>
     </div>
-    <p class="look">
-      <span>{overview.lookPast.from}</span>
-      <Icon name="arrow" size={24} />
-      <b>{overview.lookPast.to}</b>
-    </p>
-  </Section>
+    <p slot="how" class="note-line">Short on time? Do Build and Break, then write a three-line brief (about an hour). With more time, do all four with participants.</p>
+  </FileBasics>
 
-  <Section id="goals" eyebrow="Start here" title="I want to…" tone="white">
-    <p slot="lead" class="lead-text">Start with what you want to find out. Every tool works on its own.</p>
-    <GoalIndex groups={goalsByComponent('c4')} variant="list" search={false} />
-  </Section>
-
-  <Section id="layers" eyebrow="What to look for" title="Nine layers around the screen." split>
+  <PaperSection id="layers" title="What should I look for?">
+    <p>Nine things around the screen that a product quietly assumes are there:</p>
     <ul class="layers">
       {
         overview.layers.map((l) => (
           <li>
-            <span class="ic"><Icon name={l.icon} size={28} /></span>
+            <Icon name={l.icon} size={24} />
             <b>{l.name}</b>
             <span>{l.blurb}</span>
           </li>
         ))
       }
     </ul>
-  </Section>
-
-  <Section id="route" eyebrow="The route" title="Four tools, in order." tone="white" split>
-    <p class="big">Start by mapping the journey. Then build, break, weigh and say.</p>
-    <RouteList
-      items={[
-        { label: 'Reflect: before (R·4A)', href: `${comp.href}reflect-before/`, blurb: 'Say where you stand and what you expect to find, before the Journey Strip.' },
-        { label: 'Before you start', href: `${comp.href}before-you-start/`, blurb: beforeYouStart.step1.title + ' Then bring the Visual Toolkit photos.' },
-        ...toolRoute,
-        { label: 'Ask your participants', href: `${comp.href}ask-your-participants/`, blurb: 'Field cards: questions, consent, care.' },
-        { label: 'Reflect: after (R·4B)', href: `${comp.href}reflect-after/`, blurb: 'Say what the process actually gave you, then check it against your own bias.' },
-      ]}
-    />
-    <div class="routes">
-      {
-        routes.map((r) => (
-          <div class="card">
-            <b>{r.title}</b>
-            <p>{r.body}</p>
-          </div>
-        ))
-      }
-    </div>
-    <p class="small">The whole toolkit, in order: {overview.routes.all}</p>
-    <a class="btn btn--accent" href={url(`${comp.href}before-you-start/`)}>
-      Start with the Journey Strip <Icon name="arrow" size={20} />
-    </a>
-  </Section>
+  </PaperSection>
 </ComponentLayout>
 
 <style>
-  .big {
-    font-size: var(--fs-lead);
-    color: var(--ink-soft);
-    max-width: var(--measure);
+  .upload {
+    margin-top: var(--sp-3);
+    background: var(--white);
+    border: 1px solid var(--line);
+    padding: var(--sp-2) var(--sp-3);
   }
-  .up {
+  .lbl-s {
+    font-family: var(--font-ui);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin: 0 0 var(--sp-1);
+  }
+  .upload ul {
     list-style: none;
     padding: 0;
-    margin: var(--sp-2) 0 0;
-  }
-  .up li {
     margin: 0;
-  }
-  .look {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
-    gap: var(--sp-1) var(--sp-2);
-    font-size: var(--fs-h3);
-    margin: var(--sp-4) 0 0;
+    gap: var(--sp-1);
   }
-  .look span {
-    color: var(--muted);
-    text-decoration: line-through;
-    text-decoration-thickness: 2px;
+  .upload li {
+    margin: 0;
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    padding: 2px 12px;
   }
-  .look b {
-    color: var(--c4-deep);
+  .note-line {
+    margin-top: var(--sp-3);
   }
   .layers {
     list-style: none;
-    margin: 0;
     padding: 0;
+    margin: 0;
     display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
     gap: var(--sp-2);
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
   }
   .layers li {
     margin: 0;
     display: grid;
-    gap: var(--sp-1);
-    align-content: start;
-    padding: var(--sp-3);
-    border-radius: var(--r-md);
-    background: var(--c4-tint);
+    grid-template-columns: 24px 1fr;
+    gap: 2px var(--sp-1);
+    align-items: start;
   }
-  .layers .ic {
-    display: inline-flex;
-    color: var(--c4-deep);
+  .layers li :global(svg) {
+    color: var(--accent-deep);
+    grid-row: span 2;
   }
   .layers b {
-    font-size: var(--fs-h4);
+    font-weight: 600;
   }
-  .layers li > span:last-child {
-    color: var(--ink-soft);
-    font-size: var(--fs-ui);
-    line-height: 1.45;
-  }
-  .routes {
-    display: grid;
-    gap: var(--sp-2);
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
-    margin: var(--sp-4) 0 0;
-  }
-  .routes p {
-    margin: var(--sp-half) 0 0;
-    color: var(--ink-soft);
-  }
-  .small {
+  .layers span {
+    grid-column: 2;
     font-size: var(--fs-ui);
     color: var(--muted);
-    margin: var(--sp-2) 0 var(--sp-3);
   }
 </style>

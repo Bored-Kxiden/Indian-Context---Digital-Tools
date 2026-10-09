@@ -216,7 +216,7 @@ const full: Record<string, FillSection[]> = {
 };
 
 const colour = { 'existing-products': 'c1', 'visual-culture': 'c2', language: 'c3', 'material-reality': 'c4' } as const;
-const label = { 'existing-products': 'Component 1', 'visual-culture': 'Component 2', language: 'Component 3', 'material-reality': 'Component 4' } as const;
+const label = { 'existing-products': 'Reading Existing Products', 'visual-culture': 'Reading Visual Culture', language: 'Reading Language Conditions', 'material-reality': 'Reading Material Conditions' } as const;
 
 const notes: FillSection[] = [
   {
@@ -257,7 +257,7 @@ export const reflectionFills: FillTemplate[] = [
   ...stops.flatMap((s) => [
     {
       id: `reflection/before/${s.id}`,
-      title: `Before Component ${s.n} · ${s.before.code}`,
+      title: `Before ${s.label} · ${s.before.code}`,
       context: `Claim & Reflection · ${s.label}`,
       c: 'ink' as const,
       source: s.before.code,
@@ -285,7 +285,7 @@ export const reflectionFills: FillTemplate[] = [
     },
     {
       id: `reflection/after/${s.id}`,
-      title: `After Component ${s.n} · ${s.after.code}`,
+      title: `After ${s.label} · ${s.after.code}`,
       context: `Claim & Reflection · ${s.label}`,
       c: 'ink' as const,
       source: s.after.code,
@@ -373,7 +373,7 @@ const cardField = (f: CardField): Field =>
 export const meaningCardFill: FillTemplate = {
   id: 'language/meaning-card/cards',
   title: 'Meaning Cards',
-  context: 'Component 3 · Tool 1 · Listen',
+  context: 'Language conditions · Tool 1 · Listen',
   c: 'c3',
   source: 'The Meaning Card',
   page: `${C3}meaning-card/`,

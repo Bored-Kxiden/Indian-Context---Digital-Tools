@@ -38,7 +38,7 @@ export const overview = {
     { where: 'Doesn’t work for this audience?', text: 'New wording, or new questions for Listen.' },
   ],
   worksWith: {
-    title: 'Works with Component 2',
+    title: 'Works with Reading Visual Culture',
     body: 'Words from photo talk-backs come here. Drawings from the Kahavat Relay go there.',
   },
   youNeed: 'Consent to record, a recorder, a local language collaborator, and time to go back to people.',
@@ -607,8 +607,8 @@ export const tools: Tool[] = [
     ],
     extras: [
       {
-        title: 'Feeds Component 2',
-        body: 'Each drawing is a participant-made image. Read it in Component 2 · Read, tagged Reported.',
+        title: 'Feeds Reading Visual Culture',
+        body: 'Each drawing is a participant-made image. Read it in Visual culture · Read, tagged Reported.',
       },
       {
         title: 'Feeds Tool 2 · Translate',
@@ -616,7 +616,7 @@ export const tools: Tool[] = [
       },
     ],
     need: 'Idiom cards (p.3.23), relay sheets (p.3.22), pens, consent to share drawings',
-    endUp: 'Drawings for Component 2, own-language lines for Tool 2, and new questions for Tool 1',
+    endUp: 'Drawings for Reading Visual Culture, own-language lines for Tool 2, and new questions for Tool 1',
     guidePage: '3.20',
     parts: [
       {

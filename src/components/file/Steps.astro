@@ -1,0 +1,80 @@
+---
+import { url } from '../../utils/url';
+
+// "How do I use it?" steps, from the template: a mono number and the step, one per ruled line.
+interface Props {
+  steps: (string | { title: string; body: string; href?: string; meta?: string })[];
+}
+const { steps } = Astro.props;
+---
+
+<ol class="fsteps">
+  {
+    steps.map((s, i) => (
+      <li>
+        <span class="n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+        <span class="t">
+          {typeof s === 'string' ? (
+            s
+          ) : (
+            <>
+              {s.href ? (
+                <a href={url(s.href)} class="st">
+                  {s.title}
+                </a>
+              ) : (
+                <b>{s.title}.</b>
+              )}{' '}
+              {s.meta && <span class="meta">{s.meta}</span>}
+              {s.href ? <span class="sb">{s.body}</span> : s.body}
+            </>
+          )}
+        </span>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .fsteps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  li {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr);
+    gap: var(--sp-2);
+    padding: 18px 0;
+    border-bottom: 1px solid var(--line);
+    margin: 0;
+  }
+  li:first-child {
+    padding-top: 0;
+  }
+  .n {
+    font-family: var(--font-ui);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    padding-top: 4px;
+  }
+  .t {
+    line-height: 1.45;
+  }
+  .t b {
+    font-weight: 600;
+  }
+  .st {
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .meta {
+    font-family: var(--font-ui);
+    font-size: var(--fs-xs);
+    color: var(--muted);
+    margin-left: var(--sp-half);
+  }
+  .sb {
+    display: block;
+  }
+</style>

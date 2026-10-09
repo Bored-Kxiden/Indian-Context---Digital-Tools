@@ -20,7 +20,7 @@ const { id, kind } = Astro.props;
 const stop = stopById[id];
 const isBefore = kind === 'before';
 const page = isBefore ? stop.before : stop.after;
-const name = isBefore ? `Before Component ${stop.n}` : `After Component ${stop.n}`;
+const name = isBefore ? `Before ${stop.label}` : `After ${stop.label}`;
 const w = isBefore ? before : after;
 const plain = (label: string) => label.replace(/^\d · /, '');
 const beforeHref = `${stop.href}reflect-before/`;
@@ -115,7 +115,7 @@ const afterHref = `${stop.href}reflect-after/`;
 
   {
     isBefore ? (
-      <Section id="next" eyebrow="When the component is done" title={`Next: After Component ${stop.n}.`} tone="white" split>
+      <Section id="next" eyebrow="When the component is done" title={`Next: After ${stop.label}.`} tone="white" split>
         <p class="big">Come back to this page only to compare. The After page asks what the process actually gave you.</p>
         <p><a class="btn btn--accent" href={url(afterHref)}>Open {stop.after.code} · After Component {stop.n} <Icon name="arrow" size={20} /></a></p>
       </Section>

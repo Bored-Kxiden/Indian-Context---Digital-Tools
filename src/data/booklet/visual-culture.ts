@@ -75,19 +75,19 @@ export const overview = {
   /** Where the reading goes next. The questions and lines are the write-up's. */
   handOffs: [
     {
-      to: '1 · Existing Products',
+      to: 'Reading Existing Products',
       href: '/components/existing-products/',
       ask: 'What does the existing product assume about this situation?',
       body: 'Use the scenario to stress the product, remove one of its dependencies, trace what happens outside the interface, or investigate the informal work surrounding it.',
     },
     {
-      to: '4 · Material Reality',
+      to: 'Reading Material Conditions',
       href: '/components/material-reality/',
       ask: 'What physical, infrastructural or economic conditions make this situation possible?',
       body: 'Look at devices, documents, spaces, connectivity, money, time, transport, physical labour and other resources.',
     },
     {
-      to: '3 · Reading Language',
+      to: 'Reading Language Conditions',
       href: '/components/language/',
       ask: 'What happens to meaning as information moves between people, languages and systems?',
       body: 'Carry forward the original message, explanation, translation and participant interpretation rather than collapsing them into one final version.',
@@ -112,8 +112,8 @@ export const iWantTo = [
   {
     phrase: '…work with real situations that might be dismissed as “edge cases”, but are ordinary realities for the people experiencing them',
     tool: '',
-    tag: 'Component 2',
-    anchor: '#route',
+    tag: 'Reading Visual Culture',
+    anchor: '#how',
   },
   { phrase: '…check I have what I need before I start', tool: 'before-you-start', tag: 'Before you start', anchor: '' },
   { phrase: '…see what the moment actually looks like in their world', tool: 'show', tag: '1 · Show', anchor: '' },
@@ -204,7 +204,7 @@ export const howToUse = {
   student:
     'Students photograph their own reality against six missions: never the task itself, but what surrounds it. What helps them understand, what they keep beside them, who helps, what changes form before it’s usable, what happens when the normal way breaks, what they check more than once. Every photo gets three prompts, and only three: What is this? Why did you show us this? What were you doing?',
   designer:
-    'The designer runs three affinity passes across the images, then builds the Context Scenario Canvas from the recurring pattern, not the first interesting photo. Every scenario is challenged with one question before it’s trusted: is this really unusual, or did we almost call it “extra”? What survives becomes a Context Scenario and Context Profile, handed to Reading Existing Products and Reading Material Reality.',
+    'The designer runs three affinity passes across the images, then builds the Context Scenario Canvas from the recurring pattern, not the first interesting photo. Every scenario is challenged with one question before it’s trusted: is this really unusual, or did we almost call it “extra”? What survives becomes a Context Scenario and Context Profile, handed to Reading Existing Products and Reading Material Conditions.',
 };
 
 export const movementsNote =
@@ -519,7 +519,7 @@ export const tools: Tool[] = [
         title: 'Meera’s photos, one per mission',
         example: {
           page: '2.04',
-          alt: 'Filled example: Meera’s six photos, one per mission. A class WhatsApp forward with the last date circled; a notebook page of user ID, password and application number beside her phone; the cybercafé counter with the owner’s hand on the mouse and her certificate on the scanner; her certificate becoming a phone photo and then a PDF; her father’s phone on a shelf with a paper slip that says OTP; and the portal’s red “Pending” beside the government emblem. Each has the three answers in her words and an Observed or Reported tag. A note says “Setting” came up in her own words and goes to Component 3 for thick translation.',
+          alt: 'Filled example: Meera’s six photos, one per mission. A class WhatsApp forward with the last date circled; a notebook page of user ID, password and application number beside her phone; the cybercafé counter with the owner’s hand on the mouse and her certificate on the scanner; her certificate becoming a phone photo and then a PDF; her father’s phone on a shelf with a paper slip that says OTP; and the portal’s red “Pending” beside the government emblem. Each has the three answers in her words and an Observed or Reported tag. A note says “Setting” came up in her own words and goes to Reading Language Conditions for thick translation.',
           note: 'Illustrative example. Photos are described, not shown. Mission labels follow the FigJam template; the booklet page uses an earlier wording for three of them. Use your participants’ real photos, with consent.',
         },
         blank: {
@@ -754,7 +754,7 @@ export const tools: Tool[] = [
       },
     ],
     need: 'Your Context Scenario from Tool 3',
-    endUp: 'One traceable statement, handed to Component 1, 3 or 4',
+    endUp: 'One traceable statement, handed to Reading Existing Products, Language Conditions or Material Conditions',
     figjamSection: 'the Context Profile canvas (Canvas 2 of 2 · the person, in the situation), under 3 · Build, and an open space for your scenario',
     guidePage: '2.12',
     parts: [
@@ -764,7 +764,7 @@ export const tools: Tool[] = [
         title: 'Context Profile + the reading',
         example: {
           page: '2.13',
-          alt: 'Filled example: Meera’s Context Profile for uploading documents at night before a deadline. She is trying to submit before the deadline, depends on a café, a senior and Papa’s phone, already knows the emblem means official, doesn’t know yet how to make a PDF, asks her senior before submitting, converts paper to photo to PDF, checks the class group for dates, works around the OTP by calling home, risks her data with a stranger, does a trip to the café instead, has a phone but not a scanner, and almost called “extra” the notebook of IDs. Then a person-claim (“I ask my senior before submitting”), what not to conclude (students depend on seniors) and what to ask instead (what does the senior know that the system hasn’t made visible), one traceable statement, and three hand-offs: to Existing Products, Reading Language and Material Reality.',
+          alt: 'Filled example: Meera’s Context Profile for uploading documents at night before a deadline. She is trying to submit before the deadline, depends on a café, a senior and Papa’s phone, already knows the emblem means official, doesn’t know yet how to make a PDF, asks her senior before submitting, converts paper to photo to PDF, checks the class group for dates, works around the OTP by calling home, risks her data with a stranger, does a trip to the café instead, has a phone but not a scanner, and almost called “extra” the notebook of IDs. Then a person-claim (“I ask my senior before submitting”), what not to conclude (students depend on seniors) and what to ask instead (what does the senior know that the system hasn’t made visible), one traceable statement, and three hand-offs: to Existing Products, Reading Language Conditions and Material Reality.',
           note: 'Illustrative example.',
         },
         blank: {

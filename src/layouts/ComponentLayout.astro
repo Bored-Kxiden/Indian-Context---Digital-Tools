@@ -1,23 +1,24 @@
 ---
 import BaseLayout from './BaseLayout.astro';
-import Breadcrumb from '../components/Breadcrumb.astro';
-import ComponentStepper from '../components/ComponentStepper.astro';
-import { componentById } from '../data/components';
+import FileShell from '../components/file/FileShell.astro';
+import SubBar from '../components/file/SubBar.astro';
+import { componentById, fileNo } from '../data/components';
+import { verbFor } from '../data/goals';
 import { railFor, type RailComponentId } from '../data/rail';
 
-// Shell for a component's own pages: its overview, "Pick a product", "Before you start",
-// "Ask your participants". The step bar under the heading lists every page of the
-// component in order; the content is a stack of Sections that run the full width.
+// Shell for a file's own pages: its overview, "Pick a product", "Before you start", "Ask your participants",
+// the Look back pages. The file's folder and paper (FileShell, D41) hold everything: an optional `top` slot
+// (the overview's opening), the row of steps, then the page.
 
 interface Props {
   component: RailComponentId;
-  /** "overview", or the slug of the page (matches the step bar). */
+  /** "overview", or the slug of the page (matches the step row). */
   current: string;
   title: string;
   heading: string;
   lead?: string;
   description?: string;
-  /** Chips above the heading. */
+  /** Kept for older pages; shown as small facts under the title. */
   chips?: string[];
   /** Last breadcrumb label. Leave out on the overview. */
   crumb?: string;
@@ -26,71 +27,40 @@ interface Props {
 const { component, current, title, heading, lead, description, chips = [], crumb } = Astro.props;
 const comp = componentById[component];
 const rail = railFor(component);
-const compLabel = comp.number ? `${comp.number} · ${comp.short}` : comp.short;
-const crumbs = [
-  { label: 'Home', href: '/' },
-  { label: 'Components', href: '/components/' },
-  crumb ? { label: compLabel, href: comp.href } : { label: compLabel },
-  ...(crumb ? [{ label: crumb }] : []),
-];
+const path = `${comp.href}${current === 'overview' ? '' : `${current}/`}`;
+const verb = current === 'overview' ? comp.verb : verbFor(path);
+const crumbs = [crumb ? { label: `File ${fileNo(comp)} · ${comp.short}`, href: comp.href } : { label: `File ${fileNo(comp)} · ${comp.short}` }, ...(crumb ? [{ label: crumb }] : [])];
+const stepNo = rail.items.findIndex((i) => i.slug === current);
 ---
 
 <BaseLayout title={title} description={description ?? lead} component={comp.c}>
-  <div class="page-head">
-    <div class="wrap head-grid">
-      <div class="hl">
-        <Breadcrumb items={crumbs} />
-        {chips.length > 0 && <div class="chip-row chips">{chips.map((c) => <span class="chip chip--quiet">{c}</span>)}</div>}
-        <h1>{heading}</h1>
-        {lead && <p class="lead">{lead}</p>}
-        <slot name="head" />
-      </div>
-      <span class="bignum" aria-hidden="true">{comp.number ?? 'R'}</span>
-    </div>
-  </div>
-
-  <ComponentStepper rail={rail} current={current} />
-
-  <slot />
+  <FileShell comp={comp} crumbs={crumbs} verb={verb} title={heading} lead={lead} stamp={`${fileNo(comp)}${stepNo >= 0 ? `.${stepNo + 1}` : ''}`}>
+    <Fragment slot="head">
+      {chips.length > 0 && <ul class="facts">{chips.map((c) => <li>{c}</li>)}</ul>}
+      <slot name="head" />
+    </Fragment>
+    <slot name="top" />
+    <SubBar rail={rail} current={current} />
+    <slot />
+  </FileShell>
 </BaseLayout>
 
 <style>
-  .head-grid {
-    display: grid;
-    gap: var(--sp-4);
-    grid-template-columns: minmax(0, 1fr);
-    align-items: end;
+  .facts {
+    list-style: none;
+    padding: 0;
+    margin: var(--sp-3) 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-1);
   }
-  @media (min-width: 64rem) {
-    .head-grid {
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: var(--sp-8);
-    }
-  }
-  .chips {
-    margin-bottom: var(--sp-3);
-  }
-  .page-head h1 {
-    margin-bottom: var(--sp-2);
-    max-width: 18ch;
-  }
-  .page-head .lead {
-    max-width: 44rem;
-    margin-bottom: 0;
-  }
-  /* The component's number, large, in its own colour */
-  .bignum {
-    display: none;
-    font-size: clamp(9rem, 16vw, 16rem);
-    line-height: 0.75;
-    font-weight: 800;
-    letter-spacing: -0.06em;
-    color: var(--accent);
-    user-select: none;
-  }
-  @media (min-width: 64rem) {
-    .bignum {
-      display: block;
-    }
+  .facts li {
+    margin: 0;
+    font-family: var(--font-ui);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.04em;
+    border: 1px solid rgb(27 27 27 / 0.3);
+    border-radius: 999px;
+    padding: 4px 12px;
   }
 </style>

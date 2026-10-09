@@ -1,0 +1,159 @@
+---
+import { files, fileNo, type ComponentId } from '../../data/components';
+import { url } from '../../utils/url';
+
+// "All files in the kit": the five files as folders in a row, from the template's footer. On a file's own
+// pages the file you are in is marked "You are here" and the next one is raised as "Next file".
+interface Props {
+  current?: ComponentId;
+}
+const { current } = Astro.props;
+const at = files.findIndex((f) => f.id === current);
+const next = at >= 0 ? files[(at + 1) % files.length] : undefined;
+---
+
+<nav class="rail" aria-labelledby="rail-h">
+  <div class="rh">
+    <h2 id="rail-h">All files in the kit</h2>
+    <span class="hint" aria-hidden="true">scroll →</span>
+  </div>
+  <ol class="row">
+    {
+      files.map((f) => {
+        const here = f.id === current;
+        const nx = next?.id === f.id;
+        return (
+          <li class:list={['fold', { here, nx }]} data-c={f.c}>
+            <a href={url(f.href)} aria-current={here ? 'page' : undefined}>
+              <span class="tab" aria-hidden="true">
+                <svg viewBox="0 0 300 66" preserveAspectRatio="none" aria-hidden="true">
+                  <path d="M0,66 C26,66 30,0 62,0 H238 C270,0 274,66 300,66 Z" />
+                </svg>
+                <span>{fileNo(f)}</span>
+              </span>
+              <span class="body">
+                <span class="tag">{nx ? 'Next file →' : here ? 'You are here' : `File ${fileNo(f)}`}</span>
+                <span class="nm">{f.name}</span>
+              </span>
+            </a>
+          </li>
+        );
+      })
+    }
+  </ol>
+</nav>
+
+<style>
+  .rail {
+    padding: var(--sp-10) 0 var(--sp-4);
+  }
+  .rh {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 0 var(--gutter);
+    margin-bottom: var(--sp-2);
+  }
+  .rh h2 {
+    font-family: var(--font-ui);
+    font-style: normal;
+    font-size: var(--fs-sm);
+    font-weight: 400;
+    color: var(--muted);
+    margin: 0;
+  }
+  .hint {
+    font-family: var(--font-ui);
+    font-size: var(--fs-sm);
+    color: var(--muted);
+  }
+  .row {
+    list-style: none;
+    margin: 0;
+    display: flex;
+    gap: var(--sp-3);
+    overflow-x: auto;
+    padding: var(--sp-10) var(--gutter) var(--sp-3);
+    scroll-snap-type: x proximity;
+    scrollbar-width: thin;
+  }
+  .fold {
+    flex: 0 0 min(22.5rem, 78vw);
+    margin: 0;
+    scroll-snap-align: start;
+  }
+  .fold a {
+    position: relative;
+    display: block;
+    height: 220px;
+    color: var(--accent-ink);
+    text-decoration: none;
+    transition: transform var(--t-med) var(--ease);
+  }
+  .fold a:hover,
+  .fold a:focus-visible {
+    transform: translateY(-10px);
+  }
+  .tab {
+    position: absolute;
+    bottom: 100%;
+    left: 20px;
+    height: 52px;
+    padding: 0 44px;
+    margin-bottom: -1px;
+    display: flex;
+    align-items: center;
+    font-family: var(--font-read);
+    font-size: 1.375rem;
+  }
+  .tab svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    fill: var(--accent);
+  }
+  .tab span {
+    position: relative;
+  }
+  .body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: var(--sp-3);
+    background: var(--accent);
+    border-radius: 0 var(--r-md) var(--r-md) var(--r-md);
+  }
+  .tag {
+    font-family: var(--font-ui);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .nm {
+    font-family: var(--font-read);
+    font-size: 1.875rem;
+    line-height: 1.08;
+  }
+  /* The file you are in: hatched, so it reads as "open" without losing contrast */
+  .here .body {
+    background-image: repeating-linear-gradient(135deg, rgb(255 255 255 / 0.14) 0 10px, transparent 10px 20px);
+  }
+  .nx a {
+    transform: translateY(-14px);
+  }
+  .nx .body {
+    outline: 3px solid var(--ink);
+    outline-offset: 5px;
+  }
+  :global(body[data-theme='night']) .nx .body {
+    outline-color: var(--on-night);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .fold a {
+      transition: none;
+    }
+  }
+</style>

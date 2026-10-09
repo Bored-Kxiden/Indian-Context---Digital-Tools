@@ -1,0 +1,132 @@
+---
+import type { Rail } from '../../data/rail';
+import { url } from '../../utils/url';
+
+// The steps of a file as one row, from the template: a numbered circle, the name and the time.
+// It runs to the paper's right edge and scrolls sideways when it doesn't fit; the current step is filled.
+interface Props {
+  rail: Rail;
+  /** Slug of the page being viewed, or "overview". */
+  current: string;
+}
+const { rail, current } = Astro.props;
+---
+
+<nav class="subs" aria-label={`Steps in ${rail.name}`}>
+  <ol data-subs>
+    <li>
+      <a href={url(rail.overviewHref)} aria-current={current === 'overview' ? 'page' : undefined}>
+        <span class="n" aria-hidden="true">≡</span>
+        <span class="t"><b>Overview</b><small>Start here</small></span>
+      </a>
+    </li>
+    {
+      rail.items.map((item) => (
+        <li>
+          <a href={url(item.href)} aria-current={item.slug === current ? 'page' : undefined}>
+            <span class="n" aria-hidden="true">{item.n ?? item.glyph ?? '›'}</span>
+            <span class="t">
+              <b>{item.label}</b>
+              {item.meta && <small>{item.meta}</small>}
+            </span>
+          </a>
+        </li>
+      ))
+    }
+  </ol>
+</nav>
+
+<script>
+  // Keep the current step in view when the row scrolls sideways.
+  document.querySelectorAll<HTMLElement>('[data-subs]').forEach((row) => {
+    const here = row.querySelector<HTMLElement>('[aria-current="page"]');
+    if (here && row.scrollWidth > row.clientWidth) row.scrollLeft = here.offsetLeft - (row.clientWidth - here.offsetWidth) / 2;
+  });
+</script>
+
+<style>
+  .subs {
+    margin: var(--sp-6) calc(-1 * var(--sp-2)) var(--sp-4);
+    background: var(--white);
+    border-block: 1px solid var(--line);
+  }
+  @media (min-width: 48rem) {
+    .subs {
+      margin-right: calc(-1 * var(--sp-5));
+      margin-left: 0;
+    }
+  }
+  @media (min-width: 64rem) {
+    .subs {
+      margin: 70px -70px var(--sp-6) 0;
+    }
+  }
+  ol {
+    list-style: none;
+    margin: 0;
+    display: flex;
+    gap: clamp(var(--sp-3), 3vw, var(--sp-6));
+    overflow-x: auto;
+    padding: 18px var(--sp-5) 18px var(--sp-3);
+    scrollbar-width: thin;
+  }
+  li {
+    flex: 0 0 auto;
+    margin: 0;
+  }
+  a {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-height: 48px;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .n {
+    width: 46px;
+    height: 46px;
+    flex: none;
+    border-radius: 50%;
+    border: 2.5px solid var(--accent-deep);
+    color: var(--accent-deep);
+    display: grid;
+    place-items: center;
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: 15px;
+    transition:
+      background-color var(--t-fast) var(--ease),
+      color var(--t-fast) var(--ease);
+  }
+  .t {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .t b {
+    font-family: var(--font-read);
+    font-size: 1.5rem;
+    font-weight: 500;
+    line-height: 1.05;
+  }
+  .t small {
+    font-family: var(--font-ui);
+    font-size: var(--fs-xs);
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  a:hover b {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-thickness: 1px;
+  }
+  a[aria-current='page'] .n {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-ink);
+  }
+  a[aria-current='page'] b {
+    font-weight: 600;
+  }
+</style>

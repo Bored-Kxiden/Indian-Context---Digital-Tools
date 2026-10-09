@@ -69,7 +69,7 @@ export const afterTheToolkit = {
   eyebrow: 'After the toolkit',
   title: 'It doesn’t end here.',
   steps: [
-    'Test your idea: run it back through the Villain Story (Component 1, Tool 3) or the Cut (Component 4, Tool 2).',
+    'Test your idea: run it back through the Villain Story (Reading Existing Products, Tool 3) or the Cut (Reading Material Conditions, Tool 2).',
     'Carry the brief into the next component.',
     'Re-map the same person in six months.',
     'Write your own tool card, and share it back.',

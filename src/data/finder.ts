@@ -11,7 +11,7 @@ import { glossary, scopeLabel } from './glossary';
 // Everything the "Find a tool" search can open, built from the same data as the pages.
 // Order = order of the result groups.
 
-export type FinderColour = 'c1' | 'c2' | 'c3' | 'c4' | 'ink';
+export type FinderColour = 'c1' | 'c2' | 'c3' | 'c4' | 'ink' | 'plain';
 
 export interface FinderItem {
   title: string;
@@ -88,8 +88,8 @@ const tools: FinderItem[] = [
 // Reflection: the Before and After page in every component, and the three Look back pages.
 const reflect: FinderItem[] = [
   ...reflectStops.flatMap((s) => [
-    { title: `Before Component ${s.n} · ${s.before.code}`, hint: `Reflection · position and prediction, before ${s.short}`, href: `${s.href}reflect-before/`, c: 'ink' as const },
-    { title: `After Component ${s.n} · ${s.after.code}`, hint: `Reflection · claim and redaction, after ${s.short}`, href: `${s.href}reflect-after/`, c: 'ink' as const },
+    { title: `Before ${s.label} · ${s.before.code}`, hint: `Reflection · position and prediction, before ${s.short}`, href: `${s.href}reflect-before/`, c: 'ink' as const },
+    { title: `After ${s.label} · ${s.after.code}`, hint: `Reflection · claim and redaction, after ${s.short}`, href: `${s.href}reflect-after/`, c: 'ink' as const },
   ]),
   ...lookBack.map((p) => ({ title: `${p.title} · ${p.code}`, hint: `Reflection · ${p.sub.replace(/^Step 5 · /, '')}`, href: `/components/reflection/${p.slug}/`, c: 'ink' as const })),
 ];
@@ -102,14 +102,14 @@ const pages: FinderItem[] = [
     c: c.c,
   })),
   { title: 'Card kit', hint: 'Boards B1 to B7 and card sheets S1 to S8', href: '/card-kit/', c: 'c1' },
-  { title: 'The guideline', hint: 'Be specific: one real person, one real thing', href: '/guideline/', c: 'ink' },
-  { title: 'How to read a tool', hint: 'Guide, Example, Template, Card kit', href: '/guideline/#how-to-read', c: 'ink' },
-  { title: 'Meet Meera', hint: 'The running example', href: '/guideline/#meera', c: 'ink' },
-  { title: 'Downloads', hint: 'Booklet, card kit, templates', href: '/downloads/', c: 'ink' },
-  { title: 'Ask the toolkit', hint: 'Ask a question; answers come from the toolkit’s own pages', href: '/ask/', c: 'ink' },
-  { title: 'Glossary', hint: 'Every term the toolkit uses, A–Z', href: '/glossary/', c: 'ink' },
-  { title: 'My work', hint: 'Everything you filled on screen, in this browser', href: '/my-work/', c: 'ink' },
-  { title: 'About', hint: 'Who it is for, and what comes after', href: '/about/', c: 'ink' },
+  { title: 'The guideline', hint: 'Be specific: one real person, one real thing', href: '/guideline/', c: 'plain' },
+  { title: 'How to read a tool', hint: 'Guide, Example, Template, Card kit', href: '/guideline/#how-to-read', c: 'plain' },
+  { title: 'Meet Meera', hint: 'The running example', href: '/guideline/#meera', c: 'plain' },
+  { title: 'Downloads', hint: 'Booklet, card kit, templates', href: '/downloads/', c: 'plain' },
+  { title: 'Ask the toolkit', hint: 'Ask a question; answers come from the toolkit’s own pages', href: '/ask/', c: 'plain' },
+  { title: 'Glossary', hint: 'Every term the toolkit uses, A–Z', href: '/glossary/', c: 'plain' },
+  { title: 'My work', hint: 'Everything you filled on screen, in this browser', href: '/my-work/', c: 'plain' },
+  { title: 'About', hint: 'Who it is for, and what comes after', href: '/about/', c: 'plain' },
 ];
 
 export const finderGroups: FinderGroup[] = [
@@ -123,7 +123,7 @@ export const finderGroups: FinderGroup[] = [
       title: t.term,
       hint: `${t.scope === 'general' ? 'General term' : scopeLabel[t.scope]}${t.context && t.context !== 'General term' ? ` · ${t.context}` : ''}`,
       href: `/glossary/#${t.id}`,
-      c: t.scope === 'toolkit' || t.scope === 'general' ? ('ink' as const) : t.scope,
+      c: t.scope === 'toolkit' || t.scope === 'general' ? ('plain' as const) : t.scope,
     })),
   },
 ];

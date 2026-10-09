@@ -1,0 +1,99 @@
+---
+// "Level of involvement", from the template: three bars (light, moderate, complex) and what it asks of you.
+interface Props {
+  level: 1 | 2 | 3;
+  text: string;
+  /** Short facts shown under the text, e.g. the time and who takes part. */
+  facts?: string[];
+}
+const { level, text, facts = [] } = Astro.props;
+const names = ['', 'Light', 'Moderate', 'Complex'];
+---
+
+<section class="inv" aria-labelledby="inv-h">
+  <div class="meter">
+    <div class="bars" role="img" aria-label={`${names[level]}: ${level} of 3`}>
+      {[1, 2, 3].map((n) => <i class:list={{ on: n <= level }} style={`height:${18 + n * 18}px`}></i>)}
+    </div>
+    <p class="lv" aria-hidden="true">{names[level]} · {level} / 3</p>
+  </div>
+  <div>
+    <h2 id="inv-h" class="lbl-h">Level of involvement</h2>
+    <p class="txt">{text}</p>
+    {
+      facts.length > 0 && (
+        <ul class="facts">
+          {facts.map((f) => (
+            <li>{f}</li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .inv {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--sp-3);
+    align-items: start;
+    padding-top: var(--sp-5);
+    border-top: 1px solid var(--line);
+    margin-top: var(--sp-6);
+  }
+  @media (min-width: 48rem) {
+    .inv {
+      grid-template-columns: 200px minmax(0, 1fr);
+      gap: var(--sp-6);
+    }
+  }
+  .bars {
+    display: flex;
+    gap: 6px;
+    align-items: flex-end;
+    height: 72px;
+  }
+  .bars i {
+    width: 24px;
+    border: 1.5px solid var(--ink);
+    border-radius: 2px;
+  }
+  .bars i.on {
+    background: var(--accent);
+  }
+  .lv {
+    margin: var(--sp-2) 0 0;
+    font-family: var(--font-ui);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+  }
+  .lbl-h {
+    font-family: var(--font-ui);
+    font-style: normal;
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    margin: 0 0 12px;
+  }
+  .txt {
+    margin: 0;
+    max-width: 52rem;
+  }
+  .facts {
+    list-style: none;
+    padding: 0;
+    margin: var(--sp-2) 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-1);
+  }
+  .facts li {
+    margin: 0;
+    font-family: var(--font-ui);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.04em;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    padding: 4px 12px;
+  }
+</style>

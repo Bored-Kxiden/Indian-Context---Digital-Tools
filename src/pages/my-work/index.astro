@@ -17,7 +17,7 @@ for (const f of allFills) {
   g.forms.push(f);
 }
 const anchor = (id: string) => `f-${id.replace(/[^a-zA-Z0-9]+/g, '-')}`;
-const colourOf = (f: (typeof allFills)[number]) => (f.c === 'ink' ? undefined : f.c);
+const colourOf = (f: (typeof allFills)[number]) => f.c;
 ---
 
 <BaseLayout title="My work" description="Everything you have filled on screen, in this browser: see it, download it, load it on another device, or delete it.">

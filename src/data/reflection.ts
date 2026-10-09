@@ -12,7 +12,7 @@ const R = '/components/reflection/';
 
 export const overview = {
   quote: 'I want to know what the process gave me that I did not already have.',
-  eyebrow: 'Read before Component 1 · runs through every component',
+  eyebrow: 'Read before Existing products · runs through every component',
   what: {
     title: 'What is it & why should I do it?',
     body: [
@@ -23,7 +23,7 @@ export const overview = {
   },
   howTo: {
     title: 'How to use it',
-    body: 'Fill Before Component N before you open its first tool. Fill After Component N as soon as its last page is done. At the end of the toolkit, go back to your predictions with the three Look back pages.',
+    body: 'Fill a file’s Before page before you open its first tool. Fill its After page as soon as its last page is done. At the end of the toolkit, go back to your predictions with the three Look back pages.',
   },
   onlyOne: 'Only using one component? Do its Before and After pages, then go straight to the three Look back pages. They take about 30 minutes.',
   flow: [
@@ -73,7 +73,7 @@ export const stops: ReflectStop[] = [
   {
     id: 'existing-products',
     n: 1,
-    label: 'Component 1 · Reading Existing Products',
+    label: 'Reading Existing Products',
     short: 'Existing products',
     href: C1,
     before: {
@@ -89,13 +89,13 @@ export const stops: ReflectStop[] = [
       pdf: 'reflection-r1b.pdf',
       image: 'r1b',
       after: { label: 'Synthesis', href: `${C1}synthesis/` },
-      next: { label: 'Component 2 · Reading Visual Culture', href: C2 },
+      next: { label: 'Reading Visual Culture', href: C2 },
     },
   },
   {
     id: 'visual-culture',
     n: 2,
-    label: 'Component 2 · Reading Visual Culture',
+    label: 'Reading Visual Culture',
     short: 'Visual culture',
     href: C2,
     before: {
@@ -111,13 +111,13 @@ export const stops: ReflectStop[] = [
       pdf: 'reflection-r2b.pdf',
       image: 'r2b',
       after: { label: 'Is it working?', href: `${C2}is-it-working/` },
-      next: { label: 'Component 3 · Reading Language', href: C3 },
+      next: { label: 'Reading Language Conditions', href: C3 },
     },
   },
   {
     id: 'language',
     n: 3,
-    label: 'Component 3 · Reading Language',
+    label: 'Reading Language Conditions',
     short: 'Language',
     href: C3,
     before: {
@@ -133,14 +133,14 @@ export const stops: ReflectStop[] = [
       pdf: 'reflection-r3b.pdf',
       image: 'r3b',
       after: { label: 'Is it working?', href: `${C3}is-it-working/` },
-      next: { label: 'Component 4 · Reading Material Reality', href: C4 },
+      next: { label: 'Reading Material Conditions', href: C4 },
     },
   },
   {
     id: 'material-reality',
     n: 4,
-    label: 'Component 4 · Reading Material Reality',
-    short: 'Material reality',
+    label: 'Reading Material Conditions',
+    short: 'Material conditions',
     href: C4,
     before: {
       code: 'R·4A',

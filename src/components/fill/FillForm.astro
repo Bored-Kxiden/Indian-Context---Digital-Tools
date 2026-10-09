@@ -17,7 +17,7 @@ const H = level === 2 ? 'h2' : 'h3';
 const uid = `f-${t.id.replace(/[^a-zA-Z0-9]+/g, '-')}`;
 ---
 
-<div class="fill" id={uid} data-no-index data-fill={t.id} data-uid={uid} data-c={t.c === 'ink' ? undefined : t.c} data-title={t.title}>
+<div class="fill" id={uid} data-no-index data-fill={t.id} data-uid={uid} data-c={t.c} data-title={t.title}>
   <div class="fbar">
     <div class="ftitle">
       <p class="eb">{t.context} · {t.source}</p>
