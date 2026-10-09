@@ -39,7 +39,7 @@ const names = ['', 'Light', 'Moderate', 'Complex'];
     gap: var(--sp-3);
     align-items: start;
     padding-top: var(--sp-5);
-    border-top: 1px solid var(--line);
+    border-top: 2px solid var(--line);
     margin-top: var(--sp-6);
   }
   @media (min-width: 48rem) {
@@ -56,8 +56,8 @@ const names = ['', 'Light', 'Moderate', 'Complex'];
   }
   .bars i {
     width: 24px;
-    border: 1.5px solid var(--ink);
-    border-radius: 2px;
+    border: 2px solid var(--ink);
+    border-radius: 6px;
   }
   .bars i.on {
     background: var(--accent);
@@ -65,15 +65,14 @@ const names = ['', 'Light', 'Moderate', 'Complex'];
   .lv {
     margin: var(--sp-2) 0 0;
     font-family: var(--font-ui);
-    font-size: var(--fs-xs);
-    font-weight: 600;
+    font-size: var(--fs-sm);
+    font-weight: 800;
   }
   .lbl-h {
-    font-family: var(--font-ui);
-    font-style: normal;
-    font-size: var(--fs-sm);
+    font-family: var(--font-display);
+    font-size: clamp(1.625rem, 1.3rem + 1vw, 2.25rem);
     font-weight: 600;
-    margin: 0 0 12px;
+    margin: 0 0 var(--sp-1);
   }
   .txt {
     margin: 0;
@@ -90,9 +89,9 @@ const names = ['', 'Light', 'Moderate', 'Complex'];
   .facts li {
     margin: 0;
     font-family: var(--font-ui);
-    font-size: var(--fs-xs);
-    letter-spacing: 0.04em;
-    border: 1px solid var(--line-strong);
+    font-size: var(--fs-sm);
+    font-weight: 700;
+    background: var(--sand);
     border-radius: 999px;
     padding: 4px 12px;
   }

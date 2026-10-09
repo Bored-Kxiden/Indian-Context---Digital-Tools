@@ -114,7 +114,7 @@ const shownLower = tool.shows.replace(/\.$/, '').toLowerCase();
 const whatParas = tool.whatIsIt
   .map((p) => {
     const i = p.toLowerCase().indexOf(shownLower);
-    return i >= 0 ? (p.slice(0, i) + p.slice(i + shownLower.length)).replace(/^\s*\.\s*/, '').replace(/\s{2,}/g, ' ').trim() : p;
+    return i >= 0 ? (p.slice(0, i) + p.slice(i + shownLower.length)).replace(/\.\s*\./g, '.').replace(/^\s*\.\s*/, '').replace(/\s{2,}/g, ' ').trim() : p;
   })
   .filter((p) => p.replace(/[^a-z]/gi, '').length > 12);
 const howSteps = tool.stepsList ?? (tool.parts.length === 1 ? firstPart.steps : undefined);
@@ -162,7 +162,8 @@ const howSteps = tool.stepsList ?? (tool.parts.length === 1 ? firstPart.steps : 
         </div>
         {
           kit && (
-            <div class="mode" data-mode-switch role="group" aria-label="How are you working?">
+            <div class="mode" data-mode-switch role="group" aria-labelledby="mode-l">
+              <span class="mode-l" id="mode-l">Working with</span>
               <div class="seg">
                 <button type="button" data-mode="paper" aria-pressed="true">
                   <Icon name="print" size={18} /> Paper
@@ -725,15 +726,32 @@ const howSteps = tool.stepsList ?? (tool.parts.length === 1 ? firstPart.steps : 
 
   /* ---------- Tabs: sticky under the component strip ---------- */
   .tabbar {
-    position: sticky;
-    top: var(--header-h);
-    z-index: 30;
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: var(--sp-3);
+    gap: var(--sp-2) var(--sp-3);
+    padding: var(--sp-2) 0;
     background: var(--surface);
-    border-bottom: 2px solid var(--ink);
+    border-bottom: 2px solid var(--line);
+  }
+  /* Sticky only where the tabs fit on one row */
+  @media (min-width: 64rem) {
+    .tabbar {
+      position: sticky;
+      top: var(--header-h);
+      z-index: 30;
+    }
+  }
+  .mode {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-1);
+  }
+  .mode-l {
+    font-size: var(--fs-sm);
+    font-weight: 700;
+    color: var(--muted);
   }
   .tabs {
     flex: 1;

@@ -1,7 +1,7 @@
 ---
 import { url } from '../../utils/url';
 
-// "How do I use it?" steps, from the template: a mono number and the step, one per ruled line.
+// "How do I use it?" steps: a numbered circle in the file's colour, then the step. A step that is a tool links to it.
 interface Props {
   steps: (string | { title: string; body: string; href?: string; meta?: string })[];
 }
@@ -12,21 +12,23 @@ const { steps } = Astro.props;
   {
     steps.map((s, i) => (
       <li>
-        <span class="n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+        <span class="n" aria-hidden="true">{i + 1}</span>
         <span class="t">
           {typeof s === 'string' ? (
             s
           ) : (
             <>
-              {s.href ? (
-                <a href={url(s.href)} class="st">
-                  {s.title}
-                </a>
-              ) : (
-                <b>{s.title}.</b>
-              )}{' '}
-              {s.meta && <span class="meta">{s.meta}</span>}
-              {s.href ? <span class="sb">{s.body}</span> : s.body}
+              <span class="hd">
+                {s.href ? (
+                  <a href={url(s.href)} class="st">
+                    {s.title} <span aria-hidden="true">→</span>
+                  </a>
+                ) : (
+                  <b>{s.title}</b>
+                )}
+                {s.meta && <span class="meta">{s.meta}</span>}
+              </span>
+              <span class="sb">{s.body}</span>
             </>
           )}
         </span>
@@ -40,41 +42,64 @@ const { steps } = Astro.props;
     list-style: none;
     margin: 0;
     padding: 0;
+    display: grid;
+    gap: var(--sp-1);
+    max-width: 52rem;
   }
   li {
     display: grid;
-    grid-template-columns: 48px minmax(0, 1fr);
+    grid-template-columns: 40px minmax(0, 1fr);
     gap: var(--sp-2);
-    padding: 18px 0;
+    align-items: start;
+    padding: var(--sp-2) 0;
     border-bottom: 1px solid var(--line);
     margin: 0;
   }
-  li:first-child {
-    padding-top: 0;
+  li:last-child {
+    border-bottom: 0;
   }
   .n {
-    font-family: var(--font-ui);
-    font-size: var(--fs-sm);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-family: var(--font-display);
     font-weight: 600;
-    padding-top: 4px;
+    font-size: 1.125rem;
   }
   .t {
-    line-height: 1.45;
+    display: grid;
+    gap: 2px;
+    padding-top: 6px;
+    line-height: 1.5;
   }
-  .t b {
-    font-weight: 600;
+  .hd {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--sp-half) var(--sp-1);
+  }
+  .hd b,
+  .st {
+    font-weight: 800;
   }
   .st {
-    font-weight: 600;
     color: var(--ink);
+    text-decoration-thickness: 2px;
+    text-decoration-color: var(--accent);
   }
   .meta {
-    font-family: var(--font-ui);
-    font-size: var(--fs-xs);
+    font-size: var(--fs-sm);
+    font-weight: 700;
     color: var(--muted);
-    margin-left: var(--sp-half);
+    background: var(--sand);
+    border-radius: 999px;
+    padding: 0 10px;
   }
   .sb {
-    display: block;
+    color: var(--ink-soft);
   }
 </style>

@@ -1,14 +1,15 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import VennHero from '../components/VennHero.astro';
 import { files, fileNo } from '../data/components';
 import { railFor } from '../data/rail';
 import { intro } from '../data/site';
 import { url } from '../utils/url';
 
-// The home page, from the owner's template (D41): the kit's name, one plain sentence, and the five files as a
-// stack of folders. Pointing at (or tabbing into) a folder opens it to show what the file is for, its tools and
-// a link into it; Reflection is open to begin with. On a phone every folder is open. No JavaScript needed.
-const lefts = ['1%', '20%', '38%', '10%', '28%'];
+// The home page (D41, D44): the kit's name and the circles, then the five files as a stack of folders.
+// A folder opens when you point at it, tap its "Show what's inside" button, or reach it with the keyboard;
+// one is open at a time, Reflection first. Without JavaScript every folder is simply open.
+const lefts = ['2%', '22%', '40%', '12%', '30%'];
 const stack = [...files].reverse().map((f) => ({
   ...f,
   left: lefts[f.file - 1],
@@ -18,19 +19,27 @@ const stack = [...files].reverse().map((f) => ({
 
 <BaseLayout theme="night">
   <section class="hero" aria-labelledby="hero-h">
-    <h1 id="hero-h">Beyond the Edge Case</h1>
-    <p class="sub">
-      A toolkit for designing in India. It helps you find the people a product treats as exceptions, and ask what made them exceptions
-      in the first place.
-    </p>
+    <div class="copy">
+      <p class="kick">A toolkit for designing in India</p>
+      <h1 id="hero-h">Beyond the Edge Case</h1>
+      <p class="sub">Find the people a product treats as exceptions, and ask what made them exceptions in the first place.</p>
+      <div class="cta">
+        <a class="btn btn--light" href={url('/components/reflection/')}>Start with File 01 →</a>
+        <a class="btn btn--ghost-light" href={url('/components/')} data-finder-open>Find a tool</a>
+      </div>
+      <p class="hint">Five files. Each works on its own. Pick a circle, or open a folder below.</p>
+    </div>
+    <div class="art">
+      <VennHero />
+    </div>
   </section>
 
-  <section class="stack" aria-labelledby="files-h">
-    <h2 id="files-h" class="visually-hidden">The five files of the kit</h2>
-    <ol>
+  <section class="stack-wrap" aria-labelledby="files-h">
+    <h2 id="files-h" class="files-h">The five files</h2>
+    <ol class="stack" data-stack>
       {
         stack.map((f) => (
-          <li class:list={['fold', { first: f.file === 1 }]} data-c={f.c}>
+          <li class:list={['fold', { open: f.file === 1 }]} data-c={f.c} data-fold>
             <a class="ftab" href={url(f.href)} style={`left:${f.left}`}>
               <svg viewBox="0 0 300 66" preserveAspectRatio="none" aria-hidden="true">
                 <path d="M0,66 C26,66 30,0 62,0 H238 C270,0 274,66 300,66 Z" />
@@ -38,28 +47,34 @@ const stack = [...files].reverse().map((f) => ({
               <span>{f.name}</span>
             </a>
             <div class="body">
-              <p class="top">
-                <span>
-                  File {fileNo(f)} — {f.short}
+              <button type="button" class="ftog" aria-expanded={f.file === 1 ? 'true' : 'false'} aria-controls={`fold-${f.id}`} data-fold-toggle>
+                <span class="no">File {fileNo(f)}</span>
+                <span class="sh">{f.short}</span>
+                <span class="act">
+                  <span class="act-open">Show what’s inside</span>
+                  <span class="act-close">Hide</span>
+                  <span class="chev" aria-hidden="true" />
                 </span>
-                <span class="chev" aria-hidden="true" />
-              </p>
-              <div class="more">
-                <p class="verb">“{f.verb}”</p>
-                <p class="plain">{f.plain}</p>
-                <ul class="tools" aria-label={`Tools in ${f.name}`}>
-                  {f.tools.map((t) => (
-                    <li>
-                      <a href={url(t.href)}>
-                        {t.label}
-                        {t.meta && <small>{t.meta}</small>}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-                <a class="open" href={url(f.href)}>
-                  Open file {fileNo(f)} →
-                </a>
+              </button>
+              <div class="more" id={`fold-${f.id}`}>
+                <div class="more-in">
+                  <p class="verb">“{f.verb}”</p>
+                  <p class="plain">{f.plain}</p>
+                  <p class="tl">Its steps</p>
+                  <ul class="tools">
+                    {f.tools.map((t) => (
+                      <li>
+                        <a href={url(t.href)}>
+                          {t.label}
+                          {t.meta && <small>{t.meta}</small>}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                  <a class="btn open-f" href={url(f.href)}>
+                    Open file {fileNo(f)} →
+                  </a>
+                </div>
               </div>
             </div>
           </li>
@@ -72,48 +87,133 @@ const stack = [...files].reverse().map((f) => ({
     <h2 id="idea-h">{intro.central}</h2>
     <p>
       Design often starts from one default user. In India, one person may use the same product across different languages, networks,
-      budgets and kinds of help. Unusual to the system is not unusual to the person. <a href={url('/about/')}>Why the kit exists</a>
+      budgets and kinds of help. Unusual to the system is not unusual to the person.
     </p>
     <ul class="starts">
-      <li><a href={url('/components/reflection/')}>Start with File 01: Reflection</a></li>
-      <li><a href={url('/components/')} data-finder-open>Find a tool for a job</a></li>
-      <li><a href={url('/guideline/')}>How to use the kit</a></li>
-      <li><a href={url('/ask/')} data-ask-open>Ask the toolkit a question</a></li>
+      <li><a class="btn btn--light" href={url('/guideline/')}>How to use the kit</a></li>
+      <li><a class="btn btn--ghost-light" href={url('/ask/')} data-ask-open>Ask a question</a></li>
+      <li><a class="btn btn--ghost-light" href={url('/about/')}>Why the kit exists</a></li>
     </ul>
   </section>
 </BaseLayout>
 
+<script>
+  // Folders: one open at a time. Hover opens on devices that can hover; the button opens on tap, click or keyboard.
+  const stack = document.querySelector<HTMLElement>('[data-stack]');
+  if (stack) {
+    document.documentElement.classList.add('js-folders');
+    const folds = [...stack.querySelectorAll<HTMLElement>('[data-fold]')];
+    const set = (f: HTMLElement | null) =>
+      folds.forEach((x) => {
+        const on = x === f;
+        x.classList.toggle('open', on);
+        x.querySelector('[data-fold-toggle]')?.setAttribute('aria-expanded', String(on));
+      });
+    const canHover = matchMedia('(hover: hover) and (pointer: fine)');
+    let timer = 0;
+    folds.forEach((f) => {
+      const b = f.querySelector<HTMLButtonElement>('[data-fold-toggle]');
+      b?.addEventListener('click', () => set(f.classList.contains('open') ? null : f));
+      f.addEventListener('mouseenter', () => {
+        if (!canHover.matches) return;
+        clearTimeout(timer);
+        timer = window.setTimeout(() => set(f), 120);
+      });
+      f.addEventListener('focusin', (e) => {
+        if ((e.target as HTMLElement).closest('.more')) set(f);
+      });
+    });
+    stack.addEventListener('mouseleave', () => clearTimeout(timer));
+  }
+</script>
+
 <style>
+  /* ---------- Hero: words on the left, the circles on the right ---------- */
   .hero {
-    padding: clamp(var(--sp-10), 9vw, 110px) var(--gutter) clamp(var(--sp-8), 6vw, 80px);
-    text-align: center;
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--sp-6);
     align-items: center;
+    max-width: 92rem;
+    margin: 0 auto;
+    padding: clamp(var(--sp-6), 7vw, var(--sp-12)) var(--gutter) var(--sp-6);
+  }
+  @media (min-width: 60rem) {
+    .hero {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      gap: var(--sp-8);
+    }
+  }
+  .kick {
+    margin: 0 0 var(--sp-2);
+    font-weight: 800;
+    font-size: var(--fs-sm);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--on-night-soft);
   }
   .hero h1 {
-    width: 100%;
-    font-size: clamp(3.5rem, 10.5vw, 11.875rem);
-    line-height: 0.92;
+    font-size: var(--fs-display);
+    line-height: 0.95;
     color: var(--on-night);
-    margin: 0;
-    max-width: none;
+    margin: 0 0 var(--sp-3);
+    max-width: 12ch;
   }
   .sub {
-    font-size: clamp(1.25rem, 1.9vw, 1.75rem);
-    line-height: 1.45;
+    font-size: var(--fs-lead);
+    line-height: 1.5;
     color: var(--on-night-soft);
-    max-width: 56rem;
-    margin: var(--sp-4) 0 0;
+    max-width: 34rem;
+    margin: 0 0 var(--sp-4);
+  }
+  .cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+  }
+  .hint {
+    margin: var(--sp-3) 0 0;
+    font-size: var(--fs-sm);
+    color: var(--on-night-soft);
+  }
+  .art {
+    display: flex;
+    justify-content: center;
+  }
+
+  /* Buttons on the dark page */
+  :global(.btn--light) {
+    background: var(--on-night);
+    border-color: var(--on-night);
+    color: var(--ink);
+  }
+  :global(.btn--light:hover) {
+    background: #fff;
+    border-color: #fff;
+    color: var(--ink);
+  }
+  :global(.btn--ghost-light) {
+    background: transparent;
+    border-color: var(--on-night);
+    color: var(--on-night);
+  }
+  :global(.btn--ghost-light:hover) {
+    background: var(--on-night);
+    border-color: var(--on-night);
+    color: var(--ink);
   }
 
   /* ---------- The stack of folders ---------- */
-  .stack {
-    padding: clamp(var(--sp-10), 6vw, 90px) var(--gutter) 0;
-    max-width: 2200px;
+  .stack-wrap {
+    max-width: 92rem;
     margin: 0 auto;
+    padding: var(--sp-6) var(--gutter) 0;
   }
-  .stack ol {
+  .files-h {
+    color: var(--on-night);
+    margin-bottom: calc(66px + var(--sp-2));
+  }
+  .stack {
     list-style: none;
     margin: 0;
     padding: 0;
@@ -124,23 +224,22 @@ const stack = [...files].reverse().map((f) => ({
     color: var(--accent-ink);
     --focus: currentColor;
   }
-  .fold + .fold {
-    margin-top: 66px;
-  }
   .ftab {
     position: absolute;
     bottom: 100%;
-    height: 66px;
-    padding: 0 clamp(var(--sp-4), 4vw, 64px);
+    height: 62px;
+    padding: 0 clamp(var(--sp-4), 4vw, 60px);
     margin-bottom: -1px;
     display: flex;
     align-items: center;
     color: inherit;
-    font-family: var(--font-read);
-    font-size: clamp(1.25rem, 2.2vw, 2.125rem);
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1.125rem, 1.8vw, 1.625rem);
     white-space: nowrap;
     text-decoration: none;
     z-index: 1;
+    transition: transform var(--t-med) var(--ease);
   }
   .ftab svg {
     position: absolute;
@@ -152,39 +251,133 @@ const stack = [...files].reverse().map((f) => ({
   .ftab span {
     position: relative;
   }
+  .ftab:hover,
+  .fold.open .ftab {
+    transform: translateY(-6px);
+  }
   .ftab:hover span {
     text-decoration: underline;
-    text-underline-offset: 6px;
-    text-decoration-thickness: 1px;
+    text-underline-offset: 5px;
+    text-decoration-thickness: 2px;
   }
   .body {
     position: relative;
     background: var(--accent);
-    border-radius: var(--r-md) var(--r-md) 0 0;
-    padding: var(--sp-3) clamp(var(--sp-3), 3.5vw, 50px) var(--sp-4) clamp(var(--sp-3), 6vw, 90px);
+    border-radius: var(--r-lg) var(--r-lg) 0 0;
+    padding: var(--sp-2) clamp(var(--sp-2), 4vw, 56px) calc(62px + var(--sp-3));
+    box-shadow: 0 -10px 24px -18px rgb(0 0 0 / 0.6);
   }
-  .top {
+  .fold:last-child .body {
+    padding-bottom: var(--sp-5);
+  }
+  .ftog {
     display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin: 0;
-    font-family: var(--font-ui);
-    font-size: 15px;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-1) var(--sp-2);
+    width: 100%;
+    min-height: 48px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
   }
-  .chev::after {
-    content: '‹';
+  .no {
+    font-weight: 800;
+    font-size: var(--fs-sm);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .sh {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: var(--fs-h4);
+  }
+  .act {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-1);
+    min-height: 40px;
+    padding: 0 var(--sp-2);
+    border: 2px solid currentColor;
+    border-radius: 999px;
+    font-weight: 800;
+    font-size: var(--fs-sm);
+  }
+  .ftog:hover .act {
+    background: rgb(255 255 255 / 0.16);
+  }
+  [data-c='c3'] .ftog:hover .act {
+    background: rgb(27 27 27 / 0.1);
+  }
+  .chev {
+    width: 10px;
+    height: 10px;
+    border-right: 2.5px solid currentColor;
+    border-bottom: 2.5px solid currentColor;
+    transform: rotate(45deg) translateY(-3px);
+    transition: transform var(--t-med) var(--ease);
+  }
+  .act-close {
+    display: none;
+  }
+  .fold.open .act-open {
+    display: none;
+  }
+  .fold.open .act-close {
+    display: inline;
+  }
+  .fold.open .chev {
+    transform: rotate(-135deg) translateY(-3px);
+  }
+
+  /* Opening: the folder's contents slide down (grid rows animate from 0 to their full height) */
+  .more {
+    display: grid;
+    grid-template-rows: 1fr;
+  }
+  .more-in {
+    min-height: 0;
+    overflow: hidden;
+  }
+  :global(.js-folders) .more {
+    grid-template-rows: 0fr;
+    transition: grid-template-rows var(--t-slow) var(--ease);
+  }
+  :global(.js-folders) .more-in {
+    opacity: 0;
+    transition: opacity 0.35s var(--ease);
+  }
+  :global(.js-folders) .fold.open .more {
+    grid-template-rows: 1fr;
+  }
+  :global(.js-folders) .fold.open .more-in {
+    opacity: 1;
+  }
+  :global(html:not(.js-folders)) .act {
+    display: none;
   }
   .verb {
     font-style: italic;
-    font-size: clamp(1.25rem, 1.6vw, 1.625rem);
+    font-weight: 600;
+    font-size: var(--fs-lead);
     margin: var(--sp-2) 0 var(--sp-1);
   }
   .plain {
-    font-family: var(--font-ui);
-    font-size: var(--fs-ui);
-    line-height: 1.85;
-    max-width: 48rem;
+    font-size: var(--fs-body);
+    max-width: 46rem;
     margin: 0 0 var(--sp-3);
+  }
+  .tl {
+    margin: 0 0 var(--sp-1);
+    font-weight: 800;
+    font-size: var(--fs-xs);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
   }
   .tools {
     list-style: none;
@@ -203,12 +396,11 @@ const stack = [...files].reverse().map((f) => ({
     gap: var(--sp-1);
     min-height: 40px;
     padding: var(--sp-1) var(--sp-2);
-    border: 1px solid currentColor;
+    border: 2px solid currentColor;
     border-radius: 999px;
     color: inherit;
     text-decoration: none;
-    font-family: var(--font-read);
-    font-size: 1.125rem;
+    font-weight: 700;
   }
   .tools a:hover {
     background: rgb(255 255 255 / 0.16);
@@ -217,54 +409,34 @@ const stack = [...files].reverse().map((f) => ({
     background: rgb(27 27 27 / 0.1);
   }
   .tools small {
-    font-family: var(--font-ui);
     font-size: var(--fs-xs);
+    font-weight: 600;
   }
-  .open {
-    font-family: var(--font-ui);
-    font-size: var(--fs-sm);
-    color: inherit;
-    text-underline-offset: 4px;
+  .open-f {
+    margin-bottom: var(--sp-1);
+    background: var(--accent-ink);
+    border-color: var(--accent-ink);
+    color: var(--accent);
   }
-
-  /* Large screens: folders open one at a time. The first (Reflection) is open until you point at another. */
-  @media (min-width: 48rem) and (hover: hover) {
-    .fold + .fold {
-      margin-top: 0;
-    }
-    .body {
-      height: 146px;
-      overflow: hidden;
-      transition: height var(--t-slow) var(--ease);
-    }
-    .more {
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.4s var(--ease);
-    }
-    .fold:hover .body,
-    .fold:focus-within .body,
-    .stack ol:not(:hover):not(:focus-within) .first .body {
-      height: 396px;
-    }
-    .fold:hover .more,
-    .fold:focus-within .more,
-    .stack ol:not(:hover):not(:focus-within) .first .more {
-      opacity: 1;
-      pointer-events: auto;
-    }
-    .fold:hover .chev::after,
-    .fold:focus-within .chev::after,
-    .stack ol:not(:hover):not(:focus-within) .first .chev::after {
-      content: '⌄';
-    }
-    .fold.first .body {
-      border-radius: var(--r-md) var(--r-md) 0 0;
-    }
+  .open-f:hover {
+    background: var(--accent-ink);
+    border-color: var(--accent-ink);
+    color: var(--accent);
+    opacity: 0.9;
+  }
+  [data-c='c3'] .open-f {
+    color: var(--c3-tint);
   }
   @media (max-width: 47.99rem) {
     .ftab {
       left: 0 !important;
+    }
+    .act-open {
+      font-size: 0;
+    }
+    .act-open::after {
+      content: 'Show';
+      font-size: var(--fs-sm);
     }
   }
 
@@ -278,6 +450,8 @@ const stack = [...files].reverse().map((f) => ({
   }
   .idea > * {
     max-width: 64rem;
+    margin-left: auto;
+    margin-right: auto;
   }
   .idea h2 {
     font-size: clamp(1.75rem, 1.2rem + 1.8vw, 3rem);
@@ -287,31 +461,32 @@ const stack = [...files].reverse().map((f) => ({
     font-size: var(--fs-lead);
     margin-bottom: var(--sp-4);
   }
-  .idea a {
-    color: inherit;
-  }
   .starts {
     list-style: none;
-    margin: 0;
     padding: 0;
     display: flex;
     flex-wrap: wrap;
-    gap: var(--sp-1) var(--sp-3);
-    font-family: var(--font-ui);
-    font-size: var(--fs-sm);
+    gap: var(--sp-2);
   }
   .starts li {
     margin: 0;
   }
-  .starts a {
-    display: inline-flex;
-    min-height: 44px;
-    align-items: center;
+  .idea :global(.btn--light) {
+    color: var(--r-deep);
+  }
+  .idea :global(.btn--ghost-light) {
+    border-color: #fff;
+    color: #fff;
+  }
+  .idea :global(.btn--ghost-light:hover) {
+    background: #fff;
+    color: var(--r-deep);
   }
   @media (prefers-reduced-motion: reduce) {
-    .body,
-    .more {
-      transition: none;
+    .more,
+    .more-in,
+    .ftab {
+      transition: none !important;
     }
   }
 </style>

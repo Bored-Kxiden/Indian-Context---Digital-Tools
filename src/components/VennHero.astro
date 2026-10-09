@@ -1,75 +1,149 @@
 ---
-// Four overlapping circles: one per component, with "you" where they meet. Decorative.
+import { componentById, fileNo } from '../data/components';
+import { url } from '../utils/url';
+
+// The kit as circles (D44): the four readings overlap around "you", and Reflection is the ring around all of
+// them, because it runs through every file. Each circle is a link to its file; pointing at one lifts it.
+const ring = componentById['reflection'];
+const parts = [
+  { c: componentById['existing-products'], cx: 196, cy: 196, lx: 158, ly: 158 },
+  { c: componentById['visual-culture'], cx: 324, cy: 196, lx: 362, ly: 158 },
+  { c: componentById['material-reality'], cx: 196, cy: 324, lx: 158, ly: 344 },
+  { c: componentById['language'], cx: 324, cy: 324, lx: 362, ly: 344 },
+];
+const words = (name: string) => name.replace('Reading ', '').split(' ');
 ---
 
-<svg viewBox="0 0 520 470" role="img" aria-label="Four overlapping circles for the four files: existing products, visual culture, language, and material reality, with “you” in the middle." class="venn">
-  <g class="circles">
-    <circle class="c c1" cx="205" cy="190" r="125" fill="#1e6b52" style="--d: 0ms"></circle>
-    <circle class="c c2" cx="315" cy="190" r="125" fill="#e8a92a" style="--d: 90ms"></circle>
-    <circle class="c c3" cx="205" cy="300" r="125" fill="#b8492c" style="--d: 180ms"></circle>
-    <circle class="c c4" cx="315" cy="300" r="125" fill="#3144a6" style="--d: 270ms"></circle>
-  </g>
-  <circle cx="260" cy="245" r="30" fill="#faf7f0"></circle>
-  <text x="260" y="251" text-anchor="middle" class="you">YOU</text>
-  <g class="lab" fill="#fff">
-    <text x="128" y="128" class="n">1</text>
-    <text x="128" y="152" class="w">EXISTING</text>
-    <text x="128" y="168" class="w">PRODUCTS</text>
-    <g fill="#16140f">
-      <text x="392" y="128" class="n" text-anchor="end">2</text>
-      <text x="392" y="152" class="w" text-anchor="end">VISUAL</text>
-      <text x="392" y="168" class="w" text-anchor="end">CULTURE</text>
-    </g>
-    <text x="128" y="342" class="n">3</text>
-    <text x="128" y="366" class="w">LANGUAGE</text>
-    <text x="392" y="342" class="n" text-anchor="end">4</text>
-    <text x="392" y="366" class="w" text-anchor="end">MATERIAL</text>
-    <text x="392" y="382" class="w" text-anchor="end">REALITY</text>
-  </g>
-</svg>
+<nav class="venn-wrap" aria-label="The five files of the kit">
+  <svg viewBox="0 0 520 520" class="venn">
+    <a href={url(ring.href)} class="ring" aria-label={`File ${fileNo(ring)}: ${ring.name}`}>
+      <circle cx="260" cy="260" r="236" class="ring-c"></circle>
+      <path id="ring-path" d="M 260 260 m -229 0 a 229 229 0 1 1 458 0" fill="none"></path>
+      <text class="ring-t"><textPath href="#ring-path" startOffset="50%" text-anchor="middle">{fileNo(ring)} · REFLECTION · BEFORE AND AFTER EVERY FILE</textPath></text>
+    </a>
+    {
+      parts.map((p, i) => (
+        <a href={url(p.c.href)} class={`part p${i}`} aria-label={`File ${fileNo(p.c)}: ${p.c.name}`} data-c={p.c.c}>
+          <circle cx={p.cx} cy={p.cy} r="108" class="pc" style={`--d:${120 + i * 90}ms`}></circle>
+          <g class="lab" fill={p.c.c === 'c3' ? '#1b1b1b' : '#fff'}>
+            <text x={p.lx} y={p.ly - 18} text-anchor="middle" class="n">
+              {fileNo(p.c)}
+            </text>
+            {words(p.c.name).map((w, k) => (
+              <text x={p.lx} y={p.ly + 4 + k * 17} text-anchor="middle" class="w">
+                {w.toUpperCase()}
+              </text>
+            ))}
+          </g>
+        </a>
+      ))
+    }
+    <circle cx="260" cy="260" r="34" class="you-c"></circle>
+    <text x="260" y="267" text-anchor="middle" class="you">you</text>
+  </svg>
+</nav>
 
 <style>
+  .venn-wrap {
+    width: 100%;
+    max-width: 36rem;
+  }
   .venn {
     width: 100%;
-    max-width: 44rem;
     height: auto;
+    display: block;
+    overflow: visible;
   }
-  .c {
-    fill-opacity: 0.88;
+  .ring-c {
+    fill: none;
+    stroke: var(--r);
+    stroke-width: 34;
+  }
+  .ring-t {
+    font-family: var(--font-ui);
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    fill: #fff;
+  }
+  .pc {
+    fill: var(--accent);
+    fill-opacity: 0.9;
     transform-box: fill-box;
     transform-origin: center;
-    animation: pop 700ms var(--ease) both;
-    animation-delay: var(--d);
+    transition:
+      transform var(--t-med) var(--ease),
+      fill-opacity var(--t-med) var(--ease);
   }
-  @keyframes pop {
-    from {
-      opacity: 0;
-      transform: scale(0.82);
-    }
-    to {
-      opacity: 1;
-      transform: none;
-    }
+  .part,
+  .ring {
+    cursor: pointer;
+    outline: none;
+    text-decoration: none;
   }
-  .lab text {
-    font-family: var(--font-mono);
-    letter-spacing: 0.08em;
-    font-weight: 600;
+  .part:hover .pc,
+  .part:focus-visible .pc {
+    transform: scale(1.06);
+    fill-opacity: 1;
+  }
+  .part:focus-visible .pc,
+  .ring:focus-visible .ring-c {
+    stroke: #fff;
+    stroke-width: 4;
+  }
+  .ring:focus-visible .ring-c {
+    stroke-width: 38;
+    stroke: var(--r-deep);
+  }
+  .ring:hover .ring-c {
+    stroke: var(--r-deep);
+  }
+  .lab {
+    pointer-events: none;
   }
   .lab .n {
-    font-family: var(--font-body);
-    font-size: 44px;
-    font-weight: 800;
-    letter-spacing: -0.02em;
+    font-family: var(--font-display);
+    font-size: 30px;
+    font-weight: 600;
   }
   .lab .w {
-    font-size: 14px;
+    font-family: var(--font-ui);
+    font-size: 12.5px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+  }
+  .you-c {
+    fill: var(--night);
   }
   .you {
-    font-family: var(--font-mono);
-    font-size: 12px;
-    letter-spacing: 0.08em;
+    font-family: var(--font-display);
+    font-size: 20px;
     font-weight: 600;
-    fill: #16140f;
+    fill: var(--on-night);
+    pointer-events: none;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .pc {
+      animation: pop 700ms var(--ease) both;
+      animation-delay: var(--d);
+    }
+    .ring-c {
+      animation: ringin 900ms var(--ease) both;
+    }
+    @keyframes pop {
+      from {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+    }
+    @keyframes ringin {
+      from {
+        opacity: 0;
+        stroke-dasharray: 0 1500;
+      }
+      to {
+        stroke-dasharray: 1500 0;
+      }
+    }
   }
 </style>

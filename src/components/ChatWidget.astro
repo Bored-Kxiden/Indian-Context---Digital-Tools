@@ -70,15 +70,18 @@ const tries = ['What is reverse thick translation?', 'Which tool shows who peopl
   </section>
 
   <button type="button" class="launcher" hidden data-chat-open aria-controls="chat-panel" aria-expanded="false" title="Ask the toolkit">
-    <span class="ic ic-open"><Icon name="chat" size={26} /></span>
-    <span class="ic ic-close"><Icon name="x" size={24} /></span>
-    <span class="visually-hidden">Ask the toolkit</span>
+    <span class="ics" aria-hidden="true">
+      <span class="ic ic-open"><Icon name="chat" size={24} /></span>
+      <span class="ic ic-close"><Icon name="x" size={22} /></span>
+    </span>
+    <span class="ll ll-open">Ask a question</span>
+    <span class="ll ll-close">Close</span>
     <span class="dot" hidden data-chat-dot><span class="visually-hidden">(conversation in progress)</span></span>
   </button>
   <noscript>
     <a class="launcher" href={url('/ask/')} title="Ask the toolkit">
-      <span class="ic ic-open"><Icon name="chat" size={26} /></span>
-      <span class="visually-hidden">Ask the toolkit</span>
+      <span class="ic ic-open"><Icon name="chat" size={24} /></span>
+      <span class="ll">Ask a question</span>
     </a>
   </noscript>
 </aside>
@@ -246,15 +249,19 @@ const tries = ['What is reverse thick translation?', 'Which tool shows who peopl
   }
 
   /* The round button */
+  /* A labelled pill, so it says what it does: "Ask a question", then "Close" while open */
   .launcher {
     position: relative;
-    display: grid;
-    place-items: center;
-    width: var(--btn);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-1);
     height: var(--btn);
-    padding: 0;
+    padding: 0 var(--sp-3) 0 var(--sp-2);
     border: 0;
-    border-radius: 50%;
+    border-radius: 999px;
+    font-family: var(--font-ui);
+    font-size: var(--fs-ui);
+    font-weight: 800;
     background: var(--ink);
     color: #fff;
     cursor: pointer;
@@ -283,6 +290,26 @@ const tries = ['What is reverse thick translation?', 'Which tool shows who peopl
     outline: 3px solid var(--ink);
     outline-offset: 3px;
     box-shadow: 0 0 0 3px #fff;
+  }
+  .ics {
+    display: grid;
+    place-items: center;
+  }
+  .ll-close,
+  .is-open .ll-open {
+    display: none;
+  }
+  .is-open .ll-close {
+    display: inline;
+  }
+  @media (max-width: 26rem) {
+    .ll-open {
+      font-size: 0;
+    }
+    .ll-open::after {
+      content: 'Ask';
+      font-size: var(--fs-ui);
+    }
   }
   .ic {
     grid-area: 1 / 1;

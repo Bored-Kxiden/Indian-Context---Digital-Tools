@@ -63,6 +63,7 @@ const { image, alt = '', caption, text } = Astro.props;
     transform: rotate(-1.5deg);
     background: var(--white);
     padding: 12px 12px 40px;
+    border-radius: 6px;
     box-shadow: 0 8px 24px rgb(0 0 0 / 0.13);
     max-width: 34rem;
   }
@@ -86,7 +87,8 @@ const { image, alt = '', caption, text } = Astro.props;
     left: 14px;
     right: 14px;
     font-family: var(--font-ui);
-    font-size: 11px;
+    font-size: var(--fs-xs);
+    font-weight: 700;
     color: var(--muted);
   }
   .btns {
@@ -98,9 +100,9 @@ const { image, alt = '', caption, text } = Astro.props;
     display: none;
   }
   .intro {
-    font-size: clamp(1.25rem, 1.05rem + 0.65vw, 1.6875rem);
-    line-height: 1.5;
-    max-width: 46rem;
+    font-size: var(--fs-lead);
+    line-height: 1.55;
+    max-width: 44rem;
   }
   .intro .btns {
     margin-top: var(--sp-3);
@@ -110,10 +112,12 @@ const { image, alt = '', caption, text } = Astro.props;
   }
   .dropcap::first-letter {
     float: left;
-    font-size: 4.6em;
-    line-height: 0.82;
-    margin: 6px 14px 0 0;
-    font-weight: 400;
+    font-family: var(--font-display);
+    font-size: 3.6em;
+    line-height: 0.85;
+    margin: 4px 12px 0 0;
+    font-weight: 600;
+    color: var(--accent-deep);
   }
   .intro :global(p) {
     margin: 0 0 var(--sp-2);

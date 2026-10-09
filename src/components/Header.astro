@@ -4,7 +4,7 @@ import { files, fileNo } from '../data/components';
 import { site } from '../data/site';
 import { isActive, url } from '../utils/url';
 
-// The template's header: the kit's name in Anton, "Find a tool", "Ask the toolkit", and a menu with
+// The template's header: the kit's name, "Find a tool", "Ask the toolkit", and a menu with
 // the five files and everything else. Dark on the home page (body[data-theme='night']).
 const current = Astro.url.pathname;
 const more = [
@@ -117,9 +117,9 @@ const more = [
   }
   .logo {
     font-family: var(--font-display);
-    font-size: clamp(1.25rem, 0.9rem + 1.2vw, 1.75rem);
-    letter-spacing: 0.005em;
-    text-transform: uppercase;
+    font-weight: 600;
+    font-size: clamp(1.125rem, 0.9rem + 0.9vw, 1.5rem);
+    letter-spacing: 0.01em;
     color: inherit;
     text-decoration: none;
     white-space: nowrap;
@@ -142,13 +142,32 @@ const more = [
     min-height: 44px;
     font-family: var(--font-ui);
     font-size: var(--fs-sm);
+    font-weight: 700;
     color: inherit;
     text-decoration: none;
     cursor: pointer;
   }
+  /* Every control in the header looks like a button: a pill with a border */
+  .ask,
+  .menu summary {
+    border: 2px solid rgb(27 27 27 / 0.25);
+    border-radius: 999px;
+    padding: 0 var(--sp-2);
+    transition:
+      background-color var(--t-fast) var(--ease),
+      border-color var(--t-fast) var(--ease);
+  }
+  :global(body[data-theme='night']) .ask,
+  :global(body[data-theme='night']) .menu summary {
+    border-color: #6a6964;
+  }
+  .ask:hover,
+  .menu summary:hover,
+  .menu[open] summary {
+    border-color: currentColor;
+  }
   .find {
-    border: 1px solid currentColor;
-    border-color: rgb(27 27 27 / 0.4);
+    border: 2px solid rgb(27 27 27 / 0.25);
     border-radius: 999px;
     padding: 0 var(--sp-2);
     width: clamp(12rem, 18vw, 16.25rem);
@@ -168,17 +187,12 @@ const more = [
     opacity: 0.6;
     padding: 0 6px;
   }
-  .ask:hover,
-  .menu summary:hover {
-    text-decoration: underline;
-    text-underline-offset: 4px;
-  }
+
   .menu {
     position: relative;
   }
   .menu summary {
     list-style: none;
-    padding: 0 var(--sp-1);
   }
   .menu summary::-webkit-details-marker {
     display: none;
@@ -243,8 +257,9 @@ const more = [
     color: var(--muted);
   }
   .nm {
-    font-family: var(--font-read);
-    font-size: 1.25rem;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.125rem;
     line-height: 1.15;
   }
   .files a:hover,
