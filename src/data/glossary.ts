@@ -1597,7 +1597,7 @@ export const scopeLabel: Record<TermScope, string> = {
   toolkit: 'Toolkit',
   c1: 'Existing products',
   c2: 'Visual culture',
-  c3: 'Language',
+  c3: 'Language conditions',
   c4: 'Material conditions',
   ink: 'Reflection',
   general: 'General term',

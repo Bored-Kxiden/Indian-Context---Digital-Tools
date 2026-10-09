@@ -1054,9 +1054,10 @@ textarea:focus-visible {
   padding: 0 1px;
   border: 0;
   border-radius: 2px;
-  background: linear-gradient(transparent 58%, var(--accent-tint, var(--sand)) 58%);
+  /* A tint of the text's own colour, so it reads on paper, on dark cards and on coloured folders alike */
+  background: color-mix(in srgb, currentColor 9%, transparent);
   text-decoration: underline dotted;
-  text-decoration-color: var(--accent-deep, var(--ink));
+  text-decoration-color: currentColor;
   text-decoration-thickness: 2px;
   text-underline-offset: 3px;
   cursor: help;
@@ -1064,7 +1065,7 @@ textarea:focus-visible {
 }
 .kw-b:hover,
 .kw-b[aria-expanded='true'] {
-  background: var(--accent-tint, var(--sand));
+  background: color-mix(in srgb, currentColor 18%, transparent);
 }
 .kw-p {
   display: none;
@@ -1103,11 +1104,6 @@ textarea:focus-visible {
 }
 .kw.kw--off .kw-p {
   display: none;
-}
-.on-dark .kw-b,
-.sec--ink .kw-b {
-  background: none;
-  text-decoration-color: currentColor;
 }
 @media print {
   .kw-b {

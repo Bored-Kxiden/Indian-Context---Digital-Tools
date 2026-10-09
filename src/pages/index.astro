@@ -31,7 +31,7 @@ const stack = [...files].reverse().map((f) => ({
       {
         stack.map((f) => (
           <li class:list={['fold', { first: f.file === 1 }]} data-c={f.c}>
-            <a class="tab" href={url(f.href)} style={`left:${f.left}`}>
+            <a class="ftab" href={url(f.href)} style={`left:${f.left}`}>
               <svg viewBox="0 0 300 66" preserveAspectRatio="none" aria-hidden="true">
                 <path d="M0,66 C26,66 30,0 62,0 H238 C270,0 274,66 300,66 Z" />
               </svg>
@@ -127,7 +127,7 @@ const stack = [...files].reverse().map((f) => ({
   .fold + .fold {
     margin-top: 66px;
   }
-  .tab {
+  .ftab {
     position: absolute;
     bottom: 100%;
     height: 66px;
@@ -142,17 +142,17 @@ const stack = [...files].reverse().map((f) => ({
     text-decoration: none;
     z-index: 1;
   }
-  .tab svg {
+  .ftab svg {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     fill: var(--accent);
   }
-  .tab span {
+  .ftab span {
     position: relative;
   }
-  .tab:hover span {
+  .ftab:hover span {
     text-decoration: underline;
     text-underline-offset: 6px;
     text-decoration-thickness: 1px;
@@ -263,7 +263,7 @@ const stack = [...files].reverse().map((f) => ({
     }
   }
   @media (max-width: 47.99rem) {
-    .tab {
+    .ftab {
       left: 0 !important;
     }
   }

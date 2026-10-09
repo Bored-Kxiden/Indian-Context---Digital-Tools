@@ -300,4 +300,28 @@ const more = [
       gap: var(--sp-half);
     }
   }
+  /* Small phones: the menu becomes an icon too */
+  @media (max-width: 26rem) {
+    .bar {
+      gap: var(--sp-1);
+    }
+    .logo {
+      white-space: normal;
+      line-height: 0.95;
+      max-width: 10ch;
+    }
+    .menu summary {
+      width: 44px;
+      justify-content: center;
+      padding: 0;
+    }
+    .menu summary span {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+  }
 </style>

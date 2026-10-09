@@ -121,7 +121,7 @@ export const finderGroups: FinderGroup[] = [
     title: 'Terms',
     items: glossary.map((t) => ({
       title: t.term,
-      hint: `${t.scope === 'general' ? 'General term' : scopeLabel[t.scope]}${t.context && t.context !== 'General term' ? ` · ${t.context}` : ''}`,
+      hint: t.scope === 'general' ? 'General term' : t.context || scopeLabel[t.scope],
       href: `/glossary/#${t.id}`,
       c: t.scope === 'toolkit' || t.scope === 'general' ? ('plain' as const) : t.scope,
     })),
