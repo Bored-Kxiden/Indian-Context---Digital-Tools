@@ -230,6 +230,14 @@ Fuller wireframes, a simplified wireframe, and task flows are in the owner's Fig
 
 ## 9. Change log (newest first)
 
+### 2026-10-09 · Home folders joined up; the central line on paper
+Requested: “The folder and the section have the same color, change that. Also you can use italics where it’s required. The folder seems disconnected with the heading, and folder cap hovering and the rest just staying static.”
+
+- The central line now sits on a light paper band (with a red rule and the line in italics), so it no longer runs into the red Reflection folder above it.
+- A folder's tab no longer lifts on its own: tab and body stay joined, and the whole folder brightens slightly on hover while its contents slide open. The tab carries the file number and name (“01 Reflection”, “02 Reading Existing Products”), and the folder's top line is its “I want to…” in italics, so the title is not repeated.
+- Italics for quotes and key lines: “I want to…”, the hero's “what made them exceptions in the first place”, and “Unusual to the system is not unusual to the person”.
+- Checked: axe-core clean on the home page at 1440, 390 and 320 px with no sideways scrolling; folders open on hover, Enter and tap.
+
 ### 2026-10-09 · Rounder, calmer, clearer (D44)
 Requested: “The folder layout, hover animations is missing or not done proper. The text layout is not proper and feels all over the place, use more rounded fonts and bring back the concentric circle in the homepage. Make buttons, scrolls, everything more easy to understand.”
 
